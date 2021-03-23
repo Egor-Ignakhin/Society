@@ -5,16 +5,16 @@ public sealed class DogEnemy : Enemy
 {
     private NavMeshAgent mAgent;
     private Animator mAnim;
-    private enum states { wait, attack};
+    private enum states { wait, attack, isDied};
     private states currentState;
     private float distanceForAttack = 2;
     private float powerInjure = 3;
     [SerializeField] private Transform head;
     private void Awake()
     {
-        currentEnemy = FindObjectOfType<BasicNeeds>();
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
+        Health = 100;
     }
     protected override void Attack()
     {
@@ -22,13 +22,15 @@ public sealed class DogEnemy : Enemy
     }
     private void Update()
     {
-
         HarassmentEnemy();
-
     }
 
     protected override void HarassmentEnemy()
     {
+        if (currentState == states.isDied)
+            return;
+        if (!currentEnemy)
+            return;
         mAgent.SetDestination(currentEnemy.transform.position);
         Vector3 startRot = transform.localEulerAngles;
         mAgent.transform.LookAt(currentEnemy.transform);
@@ -54,13 +56,32 @@ public sealed class DogEnemy : Enemy
         currentState = states.wait;
     }
 
-    public override void InjureEnemy()
+    public override void InjureEnemy(float value)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("hit");
+        Health -= value;
+
     }
 
     protected override void Death()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("death");
+        currentState = states.isDied;
+        GetComponent<BoxCollider>().enabled = false;
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.TryGetComponent<BasicNeeds>(out var bn))
+        {
+            if (currentEnemy != bn)
+            {
+                currentEnemy = bn;
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<BasicNeeds>(out var bn))
+            currentEnemy = null;
     }
 }

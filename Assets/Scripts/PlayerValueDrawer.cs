@@ -26,6 +26,11 @@ public class PlayerValueDrawer : MonoBehaviour
         }
         else
             mText = GetComponent<TextMeshProUGUI>();
+
+        if(valueClass == null)
+        {
+            valueClass = FindObjectOfType<BasicNeeds>();
+        }
     }
     private void OnEnable()
     {

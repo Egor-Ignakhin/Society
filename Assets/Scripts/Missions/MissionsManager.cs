@@ -12,7 +12,7 @@ public sealed class MissionsManager : MonoBehaviour
     private void OnEnable()
     {
         LoadState();
-        StartMission(currentState.currentMission);
+        StartOrContinueMission(currentState.currentMission);
     }
     /// <summary>
     /// загрузка состояния миссий
@@ -56,12 +56,16 @@ public sealed class MissionsManager : MonoBehaviour
         string data = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(stateFolder + stateFile, data);
     }
-    public void StartMission(int num)
+    public void ReportTask()
+    {
+        currentState.currentTask++;
+    }
+    public void StartOrContinueMission(int num)
     {
         switch (num)
         {
             case 0:
-                FindObjectOfType<FirstMission>().StartMission();
+                FindObjectOfType<FirstMission>().StartOrContinueMission(currentState.currentTask);
                 break;
         }
     }
@@ -73,5 +77,6 @@ public sealed class MissionsManager : MonoBehaviour
     public class State
     {
         public int currentMission = 0;
+        public int currentTask = 0;
     } 
 }

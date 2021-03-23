@@ -5,10 +5,12 @@ namespace PlayerClasses
     public sealed class PlayerStatements : MonoBehaviour
     {
         private BasicNeeds mBasicNeeds;// класс базовых нужд
+        private bool lockedCursorState;
 
         private void Awake()
         {
             mBasicNeeds = GetComponent<BasicNeeds>();
+            SetCursorState();
         }
         
         public enum Message {meal };
@@ -21,6 +23,16 @@ namespace PlayerClasses
                     break;
             }
         }
-        
+        private void Update()
+        {            
+            if (Input.GetKeyDown(KeyCode.Escape))
+                SetCursorState();
+        }
+        private void SetCursorState()
+        {
+            lockedCursorState = !lockedCursorState;
+            Cursor.lockState = lockedCursorState ? CursorLockMode.Locked : CursorLockMode.None;            
+            Cursor.visible = lockedCursorState;
+        }
     }
 }

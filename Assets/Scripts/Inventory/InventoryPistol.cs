@@ -6,7 +6,7 @@ using UnityEngine;
 public sealed class InventoryPistol : InventoryItem
 {
     [SerializeField] private float damage;
-    private enum typePistols { pistol1, pistol2}
+    private enum typePistols { pistol1, pistol2 }
     [SerializeField] private typePistols typePistol;
     protected override void Awake()
     {

@@ -3,22 +3,30 @@ using UnityEngine.UI;
 
 public class FirstMission : Mission
 {
-    private MissionsManager missionsManager;
+   [SerializeField] private MissionsManager missionsManager;
 
     [SerializeField] private ChairMesh startChair;
     private Image backgroundWhiteImage;
     private bool messageWasListened = false;
     [SerializeField] private GameObject farewallNote;
     [SerializeField] private Transform fNTransform;
-    [SerializeField] private Transform startStayPlace;
-    public override void StartMission()
-    {        
-        CreateBackground();
-        PutOnAChair();
-        ListenMessage();
-        WriteNote();
-        Comment(0);
-        SetTask(currentTask);
+    [SerializeField] private Transform startStayPlace;    
+    public override void StartOrContinueMission(int skipLength)
+    {
+        if (skipLength == 0)
+        {
+            CreateBackground();
+            PutOnAChair();
+            ListenMessage();
+            WriteNote();
+            Comment(0);
+            SetTask(currentTask);
+        }
+        for(int i = 0; i < skipLength; i++)
+        {
+            currentTask++;
+            SetTask(currentTask);
+        }
     }
     public override void FinishMission()
     {
@@ -34,6 +42,7 @@ public class FirstMission : Mission
     public override void Report()
     {
         currentTask++;
+        missionsManager.ReportTask();
         SetTask(currentTask);
     }
     /// <summary>
@@ -51,8 +60,7 @@ public class FirstMission : Mission
     /// фоновый рисунок и постепенно тает
     /// </summary>
     private void CreateBackground()
-    {
-        missionsManager = FindObjectOfType<MissionsManager>();
+    {        
         GameObject image = new GameObject("WhiteBackground");
         Canvas effectsCanvas = missionsManager.GetEffectsCanvas();
         image.transform.SetParent(effectsCanvas.transform);
@@ -97,10 +105,17 @@ public class FirstMission : Mission
     private void SetTask(int i)
     {
         string[] allContent = System.IO.File.ReadAllLines(Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber()));
+        string neededContent;
+        try
+        {
+           neededContent = DecodeTask(allContent[i]);
+        }
 
-        allContent[i] = DecodeTask(allContent[i]);       
+        catch(System.IndexOutOfRangeException)
+        {
+           neededContent = "Ошибка при прочтении задания : недостаточно заданий";
+        }
 
-        string neededContent = allContent[i];
         missionsManager.GetTaskDrawer().DrawNewTask(neededContent);
     }    
     /// <summary>

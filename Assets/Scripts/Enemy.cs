@@ -2,20 +2,32 @@
 
 public abstract class Enemy : MonoBehaviour
 {
-    public int Health { get; protected set; }
+    private float health;
+    public float Health
+    {
+        get { return health; }
+        protected set
+        {
+            if (value <= 0)
+                Death();
+            health = value;
+        }
+    }
+
+    private float minHealth = 0;
     protected BasicNeeds currentEnemy;
     public BasicNeeds CurrentEnemy
     {
         get => currentEnemy;
         protected set
         {
-            currentEnemy = value;            
+            currentEnemy = value;
         }
     }
 
     protected abstract void Attack();
     protected abstract void HarassmentEnemy();
-    public abstract void InjureEnemy();
+    public abstract void InjureEnemy(float value);
     protected abstract void Death();
 
 }

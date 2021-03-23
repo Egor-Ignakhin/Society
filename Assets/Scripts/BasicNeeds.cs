@@ -16,11 +16,11 @@ public sealed class BasicNeeds : MonoBehaviour
             return health;
         }
         private set
-        {            
+        {
             if (value > MaximumHealth)
                 value = MaximumHealth;
             health = value;
-            HealthChangeValue?.Invoke((float)System.Math.Round(value,0));
+            HealthChangeValue?.Invoke((float)System.Math.Round(value, 0));
         }
     }
 
@@ -62,6 +62,7 @@ public sealed class BasicNeeds : MonoBehaviour
         get => radiation;
         private set
         {
+            if (value > MaximumRadiation) value = MaximumRadiation;
             radiation = value;
             RadiationChangeValue?.Invoke(value);
         }
@@ -96,15 +97,15 @@ public sealed class BasicNeeds : MonoBehaviour
     {
         Health = defaultHealth;
         Thirst = defaultThirst;
-        Food = defaultFood;        
-        Radiation = defaultRadiation;        
+        Food = defaultFood;
+        Radiation = defaultRadiation;
     }
 
     private void OnEnable()
     {
         StartCoroutine(nameof(ThirstTimer));
         StartCoroutine(nameof(HungerTimer));
-        StartCoroutine(nameof(RadiationTimer));     
+        StartCoroutine(nameof(RadiationTimer));
     }
     public void InjurePerson(float value)
     {
@@ -118,12 +119,12 @@ public sealed class BasicNeeds : MonoBehaviour
 
     public void AddRadiation(float value)
     {
-        Radiation += value;        
+        Radiation += value;
     }
     public void RemoveRadiation()
-    {        
+    {
         if (Radiation > MinRadiation && !isInsadeRadiationZone)
-        {            
+        {
             Radiation -= radiationDifference;
         }
     }
@@ -143,7 +144,7 @@ public sealed class BasicNeeds : MonoBehaviour
         }
     }
     private IEnumerator ThirstTimer()
-    {        
+    {
         while (true)
         {
             Thirst -= thirstDifference;
@@ -165,5 +166,5 @@ public sealed class BasicNeeds : MonoBehaviour
             RemoveRadiation();
             yield return new WaitForSeconds(waitForRadiation);
         }
-    }    
+    }
 }

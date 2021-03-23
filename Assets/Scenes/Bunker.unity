@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -9067,6 +9067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ea50588b4193943ad878db885aa80b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  missionsManager: {fileID: 1881419663}
   startChair: {fileID: 820265721}
   farewallNote: {fileID: 5665737945224321562, guid: 7166bc91f307e444d8fdfeee3567f78d,
     type: 3}
@@ -10318,6 +10319,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1613862157}
   - component: {fileID: 1613862158}
+  - component: {fileID: 1613862160}
+  - component: {fileID: 1613862159}
   m_Layer: 0
   m_Name: DoorToSurface (1)
   m_TagString: Untagged
@@ -10355,6 +10358,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextScene: 1
+--- !u!114 &1613862159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613862156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5c0d004a1e07834ea6c2b871988b6f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receiver: {fileID: 1613862160}
+--- !u!114 &1613862160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613862156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a0d05a6fe60b0d49b47112e32ae0625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mMission: {fileID: 1380747772}
+  target: {fileID: 0}
 --- !u!1 &1615740154
 GameObject:
   m_ObjectHideFlags: 0
