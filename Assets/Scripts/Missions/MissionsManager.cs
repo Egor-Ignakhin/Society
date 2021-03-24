@@ -6,8 +6,8 @@ public sealed class MissionsManager : MonoBehaviour
     [SerializeField] private Canvas effectsCanvas;
     [SerializeField] private Dialogs.DialogDrawer dialogDrawer;
     [SerializeField] private TaskDrawer taskDrawer;
-    private string stateFolder = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
-    private string stateFile = "\\State.json";// сохранение
+    public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
+    public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
     private void OnEnable()
     {
@@ -21,7 +21,7 @@ public sealed class MissionsManager : MonoBehaviour
     {
         try
         {
-            string data = File.ReadAllText(stateFolder + stateFile);
+            string data = File.ReadAllText(StateFolder + StateFile);
             currentState = JsonUtility.FromJson<State>(data);
 
         }
@@ -29,13 +29,12 @@ public sealed class MissionsManager : MonoBehaviour
         {
 
             currentState = new State();
-            if (!Directory.Exists(stateFolder))
+            if (!Directory.Exists(StateFolder))
             {
-                Directory.CreateDirectory(stateFolder);
-                File.Create(stateFolder + stateFile);
+                Directory.CreateDirectory(StateFolder);
+                File.Create(StateFolder + StateFile);
             }
         }
-
     }
 
     internal Canvas GetEffectsCanvas()
@@ -54,7 +53,7 @@ public sealed class MissionsManager : MonoBehaviour
     private void SaveState()
     {
         string data = JsonUtility.ToJson(currentState, true);
-        File.WriteAllText(stateFolder + stateFile, data);
+        File.WriteAllText(StateFolder + StateFile, data);
     }
     public void ReportTask()
     {
@@ -78,5 +77,5 @@ public sealed class MissionsManager : MonoBehaviour
     {
         public int currentMission = 0;
         public int currentTask = 0;
-    } 
+    }
 }
