@@ -1,5 +1,5 @@
 ﻿
-public enum State { locked, unlocked }
+public enum State { unlocked, locked }
 public interface IState
 {   
     State CurrentState { get; set; }

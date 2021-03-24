@@ -8,7 +8,7 @@ public abstract class Enemy : MonoBehaviour
         get { return health; }
         protected set
         {
-            if (value <= 0)
+            if (value <= minHealth)
                 Death();
             health = value;
         }

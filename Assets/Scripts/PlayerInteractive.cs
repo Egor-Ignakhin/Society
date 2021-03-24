@@ -22,7 +22,11 @@ namespace PlayerClasses
         {
             if (Input.GetKeyDown(inputInteractive))
             {
-                inputedButton = true;              
+                inputedButton = true;
+            }
+            if (Input.GetKeyUp(inputInteractive))
+            {
+                inputedButton = false;
             }
         }
         private void FixedUpdate()
@@ -36,17 +40,23 @@ namespace PlayerClasses
             string desc = string.Empty;
             if (Physics.Raycast(ray, out hit, interctionDistance, interactionLayer))
             {
-                if (hit.transform.TryGetComponent<InteractiveObject>(out var component))
+                var components = hit.transform.GetComponents<InteractiveObject>();
+                int i = 0;
+                foreach (var c in components)
                 {
-                    desc = component.GetDescription();
+                    string getDesc = c.GetDescription();
+                    if (!string.IsNullOrEmpty(getDesc))
+                        desc = getDesc;
+
                     if (inputedButton)
                     {
-                        component.Interact(playerStatements);
-                        inputedButton = false;
+                        c.Interact(playerStatements);                        
+                        if (++i == components.Length)
+                            inputedButton = false;
                     }
                 }
             }
             DescriptionDrawer.Instance.SetHint(desc);
         }
-    }    
+    }
 }

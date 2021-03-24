@@ -3,6 +3,7 @@ using UnityEngine;
 
 public sealed class DoorManager : MonoBehaviour// класс реализует взаимодействие, а так же движение двери
 {
+    [SerializeField] private State currentState;
     public bool IsOpen { get; private set; }// открытость двери
     private bool canInteract { get; set; } = true;// возможность взаимодействия
 
@@ -12,7 +13,9 @@ public sealed class DoorManager : MonoBehaviour// класс реализует 
     private float lerpRate { get; set; } = 1;// скорость движения двери
     private DoorMesh lastDoorMesh;
     public void Interact(DoorMesh doorMesh)
-    {        
+    {
+        if (currentState == State.locked)
+            return;
         if (!canInteract)
             return;
 
@@ -21,12 +24,16 @@ public sealed class DoorManager : MonoBehaviour// класс реализует 
         lastDoorMesh = doorMesh;
         lastDoorMesh.SetType("None");
     }
+    public void SetState(State state)
+    {
+        currentState = state;
+    }
     private void FixedUpdate()
     {
         if (IsOpen && !canInteract)
         {
             if (canInteract = Rotate(openState))
-                SetDescription();      
+                SetDescription();
         }
         else if (!canInteract)
         {
@@ -35,7 +42,7 @@ public sealed class DoorManager : MonoBehaviour// класс реализует 
         }
     }
     private bool Rotate(Vector3 state)
-    {        
+    {
         Quaternion rotation = Quaternion.Euler(state);
         transform.localRotation = Quaternion.Lerp(transform.localRotation, rotation, lerpRate * Time.deltaTime);
 
