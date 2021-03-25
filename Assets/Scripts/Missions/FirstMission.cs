@@ -1,16 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class FirstMission : Mission
 {
-   [SerializeField] private MissionsManager missionsManager;
+    [SerializeField] private MissionsManager missionsManager;
 
     [SerializeField] private ChairMesh startChair;
     private Image backgroundWhiteImage;
     private bool messageWasListened = false;
     [SerializeField] private GameObject farewallNote;
     [SerializeField] private Transform fNTransform;
-    [SerializeField] private Transform startStayPlace;    
+    [SerializeField] private Transform startStayPlace;
+
+    [SerializeField] private GameObject dogsForInstance;
     public override void StartOrContinueMission(int skipLength)
     {
         if (skipLength == 0)
@@ -22,7 +25,7 @@ public class FirstMission : Mission
             Comment(0);
             SetTask(currentTask);
         }
-        for(int i = 0; i < skipLength; i++)
+        for (int i = 0; i < skipLength; i++)
         {
             currentTask++;
             SetTask(currentTask);
@@ -52,7 +55,7 @@ public class FirstMission : Mission
     {
         var player = FindObjectOfType<PlayerClasses.PlayerStatements>();
         player.transform.position = startStayPlace.position;
-        startChair.Interact(player);      
+        startChair.Interact(player);
     }
     /// <summary>
     /// на специальном холсте для
@@ -60,7 +63,7 @@ public class FirstMission : Mission
     /// фоновый рисунок и постепенно тает
     /// </summary>
     private void CreateBackground()
-    {        
+    {
         GameObject image = new GameObject("WhiteBackground");
         Canvas effectsCanvas = missionsManager.GetEffectsCanvas();
         image.transform.SetParent(effectsCanvas.transform);
@@ -108,16 +111,17 @@ public class FirstMission : Mission
         string neededContent;
         try
         {
-           neededContent = DecodeTask(allContent[i]);
+            neededContent = DecodeTask(allContent[i]);
         }
 
-        catch(System.IndexOutOfRangeException)
+        catch (System.IndexOutOfRangeException)
         {
-           neededContent = "Ошибка при прочтении задания : недостаточно заданий";
+            neededContent = "Ошибка при прочтении задания : недостаточно заданий";
         }
 
         missionsManager.GetTaskDrawer().DrawNewTask(neededContent);
-    }    
+        DoingsInMission.CheckTaskForPossibleDoing(i, this);
+    }
     /// <summary>
     /// преобразование текста в нормальный текст, убираются спецсимволы
     /// </summary>
@@ -133,9 +137,36 @@ public class FirstMission : Mission
                 retStr += "\n";
                 i++;
             }
-            else            
-               retStr += str[i];            
+            else
+                retStr += str[i];
         }
         return retStr;
+    }
+
+    static class DoingsInMission
+    {
+        private const int codeForIFD = 11;// code for instance flock dogs
+        public static void CheckTaskForPossibleDoing(int i, FirstMission mission)
+        {
+            switch (i)
+            {
+                case codeForIFD:
+                    InstanceFlockDogs(mission);
+                    break;
+            }
+        }
+        private static void InstanceFlockDogs(FirstMission mission)
+        {
+            mission.dogsForInstance.SetActive(true);
+        }
+    }
+    private const int dogsToKill = 3;
+    private int killedDogs = 0;
+    public void KillTheDogs()
+    {
+        if (++killedDogs == dogsToKill)
+        {
+            Report();
+        }
     }
 }

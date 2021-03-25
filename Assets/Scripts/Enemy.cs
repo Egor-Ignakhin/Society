@@ -8,13 +8,14 @@ public abstract class Enemy : MonoBehaviour
         get { return health; }
         protected set
         {
-            if (value <= minHealth)
+            if (value <= MinHealth)
                 Death();
             health = value;
+            ChangeHealthEvent?.Invoke(value);
         }
     }
 
-    private float minHealth = 0;
+    public const float MinHealth = 0;
     protected BasicNeeds currentEnemy;
     public BasicNeeds CurrentEnemy
     {
@@ -24,6 +25,9 @@ public abstract class Enemy : MonoBehaviour
             currentEnemy = value;
         }
     }
+
+    public delegate void HealthHandler(float health);
+    public event HealthHandler ChangeHealthEvent;
 
     protected abstract void Attack();
     protected abstract void HarassmentEnemy();

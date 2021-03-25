@@ -9,18 +9,24 @@ public sealed class TaskChecker : InteractiveObject
     [SerializeField] private Mission mMission;
     [SerializeField] private MonoBehaviour target;
 
-    [Space(25)]
+    [Space(15)]
     [SerializeField] private bool delayedToInvoke;
-    [SerializeField] private float delayToInvoke;
+    [ShowIf(nameof(delayedToInvoke), true)] [SerializeField] private float delayToInvoke;
+
+    [Space(15)]
+    [SerializeField] private bool EnableNextChecker;
+    [ShowIf(nameof(EnableNextChecker), true)] [SerializeField] private GameObject nextChecker;
 
     private bool hasInteracted;
+
+
     public override void Interact(PlayerStatements pl)
     {
         Report();
     }
 
     private void OnTriggerEnter(Collider other)
-    {        
+    {
         if (other.gameObject == target.gameObject)
         {
             Report();
@@ -34,6 +40,9 @@ public sealed class TaskChecker : InteractiveObject
         if (delayedToInvoke)
             await System.Threading.Tasks.Task.Delay((int)delayToInvoke * 1000);
 
-        mMission.Report();        
+        mMission.Report();
+
+        if (EnableNextChecker)
+            nextChecker.SetActive(true);
     }
 }
