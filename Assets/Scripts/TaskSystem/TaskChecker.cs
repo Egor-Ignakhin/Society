@@ -17,6 +17,13 @@ public sealed class TaskChecker : InteractiveObject
     [SerializeField] private bool EnableNextChecker;
     [ShowIf(nameof(EnableNextChecker), true)] [SerializeField] private GameObject nextChecker;
 
+    [Space(15)]
+    [SerializeField] private bool reportAfterChangeStateOfObject;
+    [ShowIf(nameof(reportAfterChangeStateOfObject), true)] [SerializeField] private GameObject changedObject;
+
+    [Space(15)]
+    [SerializeField] private bool isSupportForExtrmCloseDoor;
+
     private bool hasInteracted;
 
 
@@ -43,6 +50,15 @@ public sealed class TaskChecker : InteractiveObject
         mMission.Report();
 
         if (EnableNextChecker)
+        {
+            if (isSupportForExtrmCloseDoor)
+            {
+                while (!(mMission as FirstMission).PossibleMoveToBunker())
+                {
+                    await System.Threading.Tasks.Task.Delay(100);
+                }
+            }
             nextChecker.SetActive(true);
+        }
     }
 }

@@ -60,7 +60,6 @@ public sealed class DogEnemy : Enemy
     {
         Debug.Log("hit");
         Health -= value;
-
     }
 
     protected override void Death()
@@ -71,17 +70,21 @@ public sealed class DogEnemy : Enemy
     }
     private void OnTriggerStay(Collider other)
     {
+        if (currentEnemyForewer)
+            return;
         if(other.TryGetComponent<BasicNeeds>(out var bn))
         {
             if (currentEnemy != bn)
             {
-                currentEnemy = bn;
+                SetEnemy(bn);
             }
         }
     }
     private void OnTriggerExit(Collider other)
     {
+        if (currentEnemyForewer)
+            return;
         if (other.TryGetComponent<BasicNeeds>(out var bn))
-            currentEnemy = null;
+            SetEnemy(null);
     }
 }

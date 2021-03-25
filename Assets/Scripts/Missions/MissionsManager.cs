@@ -3,6 +3,7 @@ using UnityEngine;
 
 public sealed class MissionsManager : MonoBehaviour
 {
+    [SerializeField] private BasicNeeds playerBasicNeeds;
     [SerializeField] private Canvas effectsCanvas;
     [SerializeField] private Dialogs.DialogDrawer dialogDrawer;
     [SerializeField] private TaskDrawer taskDrawer;
@@ -67,6 +68,10 @@ public sealed class MissionsManager : MonoBehaviour
                 FindObjectOfType<FirstMission>().StartOrContinueMission(currentState.currentTask);
                 break;
         }
+    }
+    public BasicNeeds GetPlayerBasicNeeds()
+    {
+        return playerBasicNeeds;
     }
     private void OnDisable()
     {

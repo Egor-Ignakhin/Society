@@ -9,11 +9,15 @@ public class FirstMission : Mission
     [SerializeField] private ChairMesh startChair;
     private Image backgroundWhiteImage;
     private bool messageWasListened = false;
-    [SerializeField] private GameObject farewallNote;
-    [SerializeField] private Transform fNTransform;
-    [SerializeField] private Transform startStayPlace;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private GameObject farewallNote;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private Transform fNTransform;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private Transform startStayPlace;
 
+    [Space(15)]
     [SerializeField] private GameObject dogsForInstance;
+    [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private List<DogEnemy> dogsFI = new List<DogEnemy>();
+    [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private DoorManager doorOnSurface;
+
     public override void StartOrContinueMission(int skipLength)
     {
         if (skipLength == 0)
@@ -146,6 +150,7 @@ public class FirstMission : Mission
     static class DoingsInMission
     {
         private const int codeForIFD = 11;// code for instance flock dogs
+        private const int codeForECD = 12;// code for extrim close door
         public static void CheckTaskForPossibleDoing(int i, FirstMission mission)
         {
             switch (i)
@@ -153,11 +158,25 @@ public class FirstMission : Mission
                 case codeForIFD:
                     InstanceFlockDogs(mission);
                     break;
+                case codeForECD:
+                    ExtrimCloseDoor(mission);
+                    break;
             }
         }
         private static void InstanceFlockDogs(FirstMission mission)
         {
             mission.dogsForInstance.SetActive(true);
+            foreach(var d in mission.dogsFI)
+            {
+                d.SetEnemy(mission.missionsManager.GetPlayerBasicNeeds());
+                d.SetCurrentEnemyForewer(true);
+            }
+        }
+        private static void ExtrimCloseDoor(FirstMission mission)
+        {
+            mission.PFT = false;
+            mission.doorOnSurface.SetExtrimSituation(true);
+            mission.doorOnSurface.SetStateAfterNextInteract(State.locked);            
         }
     }
     private const int dogsToKill = 3;
@@ -168,5 +187,10 @@ public class FirstMission : Mission
         {
             Report();
         }
+    }
+    private bool PFT = true;// possible finish task
+    public bool PossibleMoveToBunker()
+    {
+        return doorOnSurface.GetState() == State.locked;
     }
 }

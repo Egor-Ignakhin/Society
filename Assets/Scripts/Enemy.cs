@@ -25,6 +25,7 @@ public abstract class Enemy : MonoBehaviour
             currentEnemy = value;
         }
     }
+    protected bool currentEnemyForewer;
 
     public delegate void HealthHandler(float health);
     public event HealthHandler ChangeHealthEvent;
@@ -34,4 +35,12 @@ public abstract class Enemy : MonoBehaviour
     public abstract void InjureEnemy(float value);
     protected abstract void Death();
 
+    public void SetCurrentEnemyForewer(bool value)
+    {
+        currentEnemyForewer = value;
+    }
+    public void SetEnemy(BasicNeeds enemy)
+    {
+        currentEnemy = enemy;
+    }
 }
