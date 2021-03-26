@@ -15,25 +15,22 @@ public class FirstMission : Mission
 
     [Space(15)]
     [SerializeField] private GameObject dogsForInstance;
+    [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private GameObject deadMan;
     [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private List<DogEnemy> dogsFI = new List<DogEnemy>();
     [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private DoorManager doorOnSurface;
 
-    public override void StartOrContinueMission(int skipLength)
+    public override void ContinueMission(int skipLength)
     {
+        currentTask = skipLength;
         if (skipLength == 0)
         {
             CreateBackground();
             PutOnAChair();
             ListenMessage();
             WriteNote();
-            Comment(0);
-            SetTask(currentTask);
-        }
-        for (int i = 0; i < skipLength; i++)
-        {
-            currentTask++;
-            SetTask(currentTask);
-        }
+            Comment(0);            
+        }                   
+            SetTask(currentTask);        
     }
     public override void FinishMission()
     {
@@ -149,12 +146,20 @@ public class FirstMission : Mission
 
     static class DoingsInMission
     {
+        private const int codeForAT = 6;// code for add tracker
+        private const int codeForRT = 10;// code for remove tracker
         private const int codeForIFD = 11;// code for instance flock dogs
         private const int codeForECD = 12;// code for extrim close door
         public static void CheckTaskForPossibleDoing(int i, FirstMission mission)
         {
             switch (i)
             {
+                case codeForAT:
+                    AddTracker(mission);
+                    break;
+                case codeForRT:
+                    RemoveTracker(mission);
+                    break;
                 case codeForIFD:
                     InstanceFlockDogs(mission);
                     break;
@@ -174,9 +179,16 @@ public class FirstMission : Mission
         }
         private static void ExtrimCloseDoor(FirstMission mission)
         {
-            mission.PFT = false;
             mission.doorOnSurface.SetExtrimSituation(true);
             mission.doorOnSurface.SetStateAfterNextInteract(State.locked);            
+        }
+        private static void AddTracker(FirstMission mission)
+        {
+             mission.deadMan.AddComponent<Maps.PointOnMap>();
+        }
+        private static void RemoveTracker(FirstMission mission)
+        {
+            Destroy(Maps.MapManager.GetTracker(mission.deadMan));
         }
     }
     private const int dogsToKill = 3;
@@ -188,7 +200,6 @@ public class FirstMission : Mission
             Report();
         }
     }
-    private bool PFT = true;// possible finish task
     public bool PossibleMoveToBunker()
     {
         return doorOnSurface.GetState() == State.locked;

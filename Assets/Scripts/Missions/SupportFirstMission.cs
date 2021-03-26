@@ -27,5 +27,5 @@ public sealed class SupportFirstMission : MonoBehaviour
     {
         if (itskillingDog)
             GetComponent<DogEnemy>().ChangeHealthEvent -= ReportKillingDog;
-    }
+    }    
 }

@@ -65,7 +65,7 @@ public sealed class MissionsManager : MonoBehaviour
         switch (num)
         {
             case 0:
-                FindObjectOfType<FirstMission>().StartOrContinueMission(currentState.currentTask);
+                FindObjectOfType<FirstMission>().ContinueMission(currentState.currentTask);
                 break;
         }
     }
