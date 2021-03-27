@@ -12,7 +12,7 @@ namespace Maps
             mapDrawer = FindObjectOfType<MapDrawer>();
         }
         private void FixedUpdate()
-        {
+        {if(mapDrawer)
             mapDrawer.SetCurrentRect(transform.position.x, transform.position.z, transform.localEulerAngles);
         }
     }
