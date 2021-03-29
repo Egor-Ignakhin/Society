@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Times;
 
 public sealed class BedController : MonoBehaviour, IState
 {
@@ -7,13 +8,8 @@ public sealed class BedController : MonoBehaviour, IState
     private KeyCode pressToStay = KeyCode.Space;// клавиша для того, чтобы встать
     private BedManager lastBedManager;// активная система кроватей
     private BedMesh lastBedMesh;// активная кровать
-    private Times.WorldTime worldTime;
     private int timeMultiply = 4;// множитель времени, на который умножается время во время сна
 
-    private void Awake()
-    {
-        worldTime = FindObjectOfType<Times.WorldTime>();
-    }
     /// <summary>
     /// запись состояния в контроллёр
     /// </summary>
@@ -40,12 +36,12 @@ public sealed class BedController : MonoBehaviour, IState
                 lastBedManager.RiseUp(lastBedMesh);// заправить кровать
                 lastBedMesh = null;
                 lastBedManager = null;
-                worldTime.ReduceSpeed(timeMultiply);// возвращение скорости времени к обычному состоянию
+                WorldTime.Instance.ReduceSpeed(timeMultiply);// возвращение скорости времени к обычному состоянию
                 break;
 
             case State.locked:// в случае укладывания в кровать
                 isSleeping = true;
-                worldTime.IncreaseSpeed(timeMultiply);// повышение скорости времени
+                WorldTime.Instance.IncreaseSpeed(timeMultiply);// повышение скорости времени
                 break;
         }
     }

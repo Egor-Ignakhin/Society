@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 namespace Times
 {
-    public class WorldTime : MonoBehaviour
+    public class WorldTime : Singleton<WorldTime>
     {
         public static int Time { get; private set; }// добавленное время за такт
         private int additionalTime = 1;// множитель времени

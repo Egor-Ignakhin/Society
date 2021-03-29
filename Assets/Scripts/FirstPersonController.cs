@@ -7,8 +7,7 @@
 
 public sealed class FirstPersonController : MonoBehaviour, IState
 {
-    #region Variables
-
+    #region Variables    
     #region Look Settings
     public bool isLocked;
     public float VerticalRotationRange { get; set; } = 0f;
@@ -61,7 +60,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     [System.Serializable]
     public sealed class AdvancedSettings
     {
-        public float GravityMultiplier { get; set; } = 1f;
+        public float GravityMultiplier { get; set; } = 2f;
 
         public PhysicMaterial ZeroFrictionMaterial { get; set; }
 
@@ -82,7 +81,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     }
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
-    private CapsuleCollider capsule;
+    private static CapsuleCollider capsule;
     public bool IsGrounded { get; private set; }
     private Vector2 inputXY;
     private bool isCrouching;
@@ -90,6 +89,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     private bool isSprinting = true;
 
     private Rigidbody _fpsRigidbody;
+    public static CapsuleCollider GetCollider() => capsule;
 
     #endregion
 
