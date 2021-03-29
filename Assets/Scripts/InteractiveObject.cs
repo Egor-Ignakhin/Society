@@ -7,6 +7,7 @@ public abstract class InteractiveObject : MonoBehaviour
     {
         public const string OpenedDoor = "OpenedDoor";
         public const string ClosedDoor = "ClosedDoor";
+        public const string LockedDoor = "LockedDoor";
     }
     protected virtual void Awake()
     {

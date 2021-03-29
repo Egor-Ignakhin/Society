@@ -5,7 +5,8 @@
     {
         base.Awake();
         mManager = transform.parent.GetComponent<DoorManager>();
-        SetType(mManager.IsOpen ? Types.OpenedDoor : Types.ClosedDoor);
+
+        mManager.SetType(this);       
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

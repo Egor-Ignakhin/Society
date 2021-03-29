@@ -16,16 +16,22 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     private DoorMesh lastDoorMesh;
 
     private bool isExtrimSituation;
+
     public void Interact(DoorMesh doorMesh)
     {
-        if (currentState == State.locked)
-            return;
         if (!canInteract)
             return;
 
+        lastDoorMesh = doorMesh;
+        if (currentState == State.locked)
+        {
+            SetDescription();
+
+            return;
+        }
+
         canInteract = !canInteract;
         IsOpen = !IsOpen;
-        lastDoorMesh = doorMesh;
         lastDoorMesh.SetType("None");
     }
     public void SetStateAfterNextInteract(State state)
@@ -67,8 +73,26 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     }
     private void SetDescription()
     {
-        lastDoorMesh.SetType(IsOpen ? InteractiveObject.Types.OpenedDoor : InteractiveObject.Types.ClosedDoor);
+        string output;
+        if (currentState == State.locked)
+        {
+            output = InteractiveObject.Types.LockedDoor;
+        }
+        else if (IsOpen)
+        {
+            output = InteractiveObject.Types.OpenedDoor;
+        }
+        else
+        {
+            output = InteractiveObject.Types.ClosedDoor;
+        }
+        lastDoorMesh.SetType(output);
         ChangeState();
+    }
+    public void SetType(DoorMesh d)
+    {
+        lastDoorMesh = d;
+        SetDescription();
     }
     public void SetExtrimSituation(bool value)
     {

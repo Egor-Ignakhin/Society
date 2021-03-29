@@ -9,7 +9,15 @@ public abstract class Gun : MonoBehaviour
 
     public float GetDamage() { return damage; }
     public int GetAmmoCount() { return ammoCount; }
-    protected abstract void Shoot();
+    protected virtual bool Shoot()
+    {
+        if (ammoCount > 0)
+        {
+            ammoCount--;
+            return true;
+        }
+        return false;
+    }
     protected void Update()
     {
         if (Input.GetMouseButtonDown(0))
