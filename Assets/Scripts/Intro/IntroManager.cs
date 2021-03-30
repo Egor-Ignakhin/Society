@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Intro
+namespace IntroScripts
 {
-    public sealed class IntroManager : MonoBehaviour
+    sealed class IntroManager : MonoBehaviour// класс отвечающий за интро-сцену
     {
-        private const int listsCount = 3;
-        [SerializeField] private List<GameObject> lists = new List<GameObject>(listsCount);
-        [SerializeField] private List<float> listsLength = new List<float>(listsCount);
-        private int currentList = 0;
-        private float timeToChange = 0;
+        private const int listsCount = 3;// количество слайдов
+        [SerializeField] private List<GameObject> lists = new List<GameObject>(listsCount);// слайды
+        [SerializeField] private List<float> listsLength = new List<float>(listsCount);// уникальная длина воспроизведения для каждого слайда
+        private int currentList = 0;// текущий слайд
+        private float timeToChange = 0;// время до смены слайда
 
         private void OnEnable()
         {
@@ -21,7 +21,7 @@ namespace Intro
             lists[currentList].SetActive(false);
         }
         private void EnableNextList()
-        {            
+        {
             lists[currentList].SetActive(true);
             timeToChange = listsLength[currentList];
         }

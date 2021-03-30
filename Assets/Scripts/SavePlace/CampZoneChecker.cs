@@ -1,27 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public sealed class CampZoneChecker : MonoBehaviour
+namespace BarrelCampScripts
 {
-    [SerializeField] private BarrelCampManager campManager;
-    private CapsuleCollider playerCollider;
-    private void Start()
+    sealed class CampZoneChecker : MonoBehaviour// класс отвечающий за проверку входа и выхода игрока из зоны лагеря
     {
-        playerCollider = FirstPersonController.GetCollider();
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other == playerCollider)
+        [SerializeField] private BarrelCampManager campManager;// менеджер лагеря
+        private CapsuleCollider playerCollider;// коллизия игрока
+        private void Start()
         {
-            campManager.InsidePlayer();
+            playerCollider = FirstPersonController.GetCollider();
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other == playerCollider)
+        private void OnTriggerEnter(Collider other)
         {
-            campManager.OutsidePlayer();
+            if (other == playerCollider)
+            {
+                campManager.InsidePlayer();
+            }
+        }
+        private void OnTriggerExit(Collider other)
+        {
+            if (other == playerCollider)
+            {
+                campManager.OutsidePlayer();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PlayerClasses;
+using UnityEngine;
 
 public sealed class RadiationZone : MonoBehaviour
 {

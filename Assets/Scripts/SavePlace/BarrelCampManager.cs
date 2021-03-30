@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public sealed class BarrelCampManager : MonoBehaviour
+namespace BarrelCampScripts
 {
-    private bool playerIsInside;
-    public void InsidePlayer()
+    public sealed class BarrelCampManager : MonoBehaviour// класс отвечающий за горящую бочку
     {
-        playerIsInside = true;
-    }
-    public void OutsidePlayer()
-    {
-        playerIsInside = false;
+        private bool playerIsInside;
+        public void InsidePlayer()
+        {
+            playerIsInside = true;
+        }
+        public void OutsidePlayer()
+        {
+            playerIsInside = false;
+        }
     }
 }

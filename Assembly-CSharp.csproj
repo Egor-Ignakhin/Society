@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Models\OldRadio\Alpinist\CamRotat.cs" />
-    <Compile Include="Assets\Scripts\BasicNeeds.cs" />
     <Compile Include="Assets\Scripts\BedController.cs" />
     <Compile Include="Assets\Scripts\BedManager.cs" />
     <Compile Include="Assets\Scripts\BedMesh.cs" />
@@ -77,13 +76,10 @@
     <Compile Include="Assets\Scripts\DarkiningBackground.cs" />
     <Compile Include="Assets\Scripts\DeadScene\DeadSceneManager.cs" />
     <Compile Include="Assets\Scripts\Dialogs\DialogDrawer.cs" />
-    <Compile Include="Assets\Scripts\DogEnemy.cs" />
     <Compile Include="Assets\Scripts\DoorManager.cs" />
     <Compile Include="Assets\Scripts\DoorMesh.cs" />
     <Compile Include="Assets\Scripts\EatingObject.cs" />
     <Compile Include="Assets\Scripts\EatingObjectsPool.cs" />
-    <Compile Include="Assets\Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\IChangeable.cs" />
     <Compile Include="Assets\Scripts\IState.cs" />
     <Compile Include="Assets\Scripts\InteractiveObject.cs" />
@@ -111,10 +107,15 @@
     <Compile Include="Assets\Scripts\Missions\MusicPlayer.cs" />
     <Compile Include="Assets\Scripts\Missions\SupportFirstMission.cs" />
     <Compile Include="Assets\Scripts\Monsters\BloodDogsLair.cs" />
+    <Compile Include="Assets\Scripts\Monsters\DogEnemy.cs" />
     <Compile Include="Assets\Scripts\Monsters\DogLairChecker.cs" />
-    <Compile Include="Assets\Scripts\PlayerInteractive.cs" />
-    <Compile Include="Assets\Scripts\PlayerStatements.cs" />
-    <Compile Include="Assets\Scripts\PlayerValueDrawer.cs" />
+    <Compile Include="Assets\Scripts\Monsters\Enemy.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeeds.cs" />
+    <Compile Include="Assets\Scripts\Player\DeadLine.cs" />
+    <Compile Include="Assets\Scripts\Player\FirstPersonController.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInteractive.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerStatements.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerValueDrawer.cs" />
     <Compile Include="Assets\Scripts\RadiationZone.cs" />
     <Compile Include="Assets\Scripts\RadioButton.cs" />
     <Compile Include="Assets\Scripts\RadioManager.cs" />

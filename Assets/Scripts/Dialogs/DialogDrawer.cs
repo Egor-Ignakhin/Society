@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 namespace Dialogs
 {
-    public sealed class DialogDrawer : MonoBehaviour
+    public sealed class DialogDrawer : MonoBehaviour// класс отвечающий за отрисовку диалогов
     {
         private float delayToDimming;
         [SerializeField] private TMPro.TextMeshProUGUI text;
+        [SerializeField] private UnityEngine.UI.Image backgroundImage;
         public void DrawNewDialog(Dialog d, float delay = 1)
         {
             delayToDimming = delay;
@@ -15,7 +14,7 @@ namespace Dialogs
         }
         private void Update()
         {
-            if(delayToDimming > 0)
+            if (delayToDimming > 0)
             {
                 delayToDimming -= Time.deltaTime;
             }
@@ -27,11 +26,11 @@ namespace Dialogs
 
         private void EnableDialog()
         {
-            text.enabled = true;
+            backgroundImage.enabled = text.enabled = true;
         }
         private void DisableDialog()
         {
-            text.enabled = false;
+            backgroundImage.enabled = text.enabled = false;
         }
     }
     public class Dialog

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using PlayerClasses;
+using System.IO;
 using UnityEngine;
 
 public sealed class MissionsManager : MonoBehaviour

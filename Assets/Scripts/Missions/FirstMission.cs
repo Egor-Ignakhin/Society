@@ -27,18 +27,9 @@ public class FirstMission : Mission
     [ShowIf(nameof(startChair), true)] [SerializeField] private MusicPlayer musicPlayer;
     [ShowIf(nameof(startChair), true)] [SerializeField] private TaskChecker taskChecker2Part;
 
-    private bool part2IsStarted;
     public override void ContinueMission(int skipLength)
     {
         currentTask = skipLength;
-        if (skipLength == 0)
-        {
-            CreateBackground(true);
-            PutOnAChair();
-            ListenMessage();
-            WriteNote();
-            Comment(0);
-        }
         SetTask(currentTask);
         SetActiveCheckers();
     }
@@ -168,37 +159,60 @@ public class FirstMission : Mission
 
     static class DoingsInMission
     {
+        private static FirstMission mission;
+
+        private const int codeForSM = 0;//code for start mission
+        private const int codeForOFB = 4;// code for outside from bunker
         private const int codeForAT = 6;// code for add tracker
         private const int codeForRT = 10;// code for remove tracker
         private const int codeForIFD = 11;// code for instance flock dogs
         private const int codeForECD = 12;// code for extrim close door
         private const int codeForTPMD = 13;// code for translate player to main door
         private const int codeForDB = 15;// code for darkining background
-        public static void CheckTaskForPossibleDoing(int i, FirstMission mission)
+        public static void CheckTaskForPossibleDoing(int i, FirstMission m)
         {
+            mission = m;
             switch (i)
             {
+                case codeForSM:
+                    StartMission();
+                    break;
+                case codeForOFB:
+                    OutsideFromBunker();
+                    break;
                 case codeForAT:
-                    AddTracker(mission);
+                    AddTracker();
                     break;
                 case codeForRT:
-                    RemoveTracker(mission);
+                    RemoveTracker();
                     break;
                 case codeForIFD:
-                    InstanceFlockDogs(mission);
+                    InstanceFlockDogs();
                     break;
                 case codeForECD:
-                    ExtrimCloseDoor(mission);
+                    ExtrimCloseDoor();
                     break;
                 case codeForTPMD:
-                    TranslatePlayerToMainDoor(mission);
+                    TranslatePlayerToMainDoor();
                     break;
                 case codeForDB:
-                    DarkiningBackground(mission);                    
+                    DarkiningBackground();                    
                     break;
             }
         }
-        private static void InstanceFlockDogs(FirstMission mission)
+        private static void StartMission()
+        {
+            mission.CreateBackground(true);
+            mission.PutOnAChair();
+            mission.ListenMessage();
+            mission.WriteNote();
+            mission.Comment(0);
+        }
+        private static void OutsideFromBunker()
+        {
+            mission.Comment(1);
+        }
+        private static void InstanceFlockDogs()
         {
             mission.dogsForInstance.SetActive(true);
             foreach (var d in mission.dogsFI)
@@ -207,25 +221,25 @@ public class FirstMission : Mission
                 d.SetCurrentEnemyForewer(true);
             }
         }
-        private static void ExtrimCloseDoor(FirstMission mission)
+        private static void ExtrimCloseDoor()
         {
             mission.doorOnSurface.SetExtrimSituation(true);
             mission.doorOnSurface.SetStateAfterNextInteract(State.locked);
         }
-        private static void AddTracker(FirstMission mission)
+        private static void AddTracker()
         {
             mission.deadMan.AddComponent<Maps.PointOnMap>();
         }
-        private static void RemoveTracker(FirstMission mission)
+        private static void RemoveTracker()
         {
             Destroy(Maps.MapManager.GetTracker(mission.deadMan));
         }
-        private static void TranslatePlayerToMainDoor(FirstMission mission)
+        private static void TranslatePlayerToMainDoor()
         {
             var playerT =FindObjectOfType<FirstPersonController>();
             playerT.SetPosAndRot(mission.startPointBeforePart2);
         }
-        private static void DarkiningBackground(FirstMission mission)
+        private static void DarkiningBackground()
         {
             mission.CreateBackground(false);
         }        
@@ -249,7 +263,6 @@ public class FirstMission : Mission
         {
             part2Object.SetActive(true);
             musicPlayer.DisablePlayer();
-            part2IsStarted = true;
             taskChecker2Part.SetActive(true);
         }
         for (int i = 0; i < checkers.Count; i++)
