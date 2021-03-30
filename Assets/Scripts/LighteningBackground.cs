@@ -11,7 +11,7 @@ public sealed class LighteningBackground : MonoBehaviour
     public void Init(UnityEngine.UI.Image img, float neededSpeed = 1)
     {
         mImage = img;
-        speed = neededSpeed;
+        speed = neededSpeed;       
     }
     private void Update()
     {

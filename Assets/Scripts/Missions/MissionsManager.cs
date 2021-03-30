@@ -10,6 +10,7 @@ public sealed class MissionsManager : MonoBehaviour
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
+    
     private void OnEnable()
     {
         LoadState();

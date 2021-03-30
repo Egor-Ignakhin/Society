@@ -5,19 +5,21 @@ using UnityEngine;
 public class MusicPlayer : MonoBehaviour
 {
     [SerializeField] private System.Collections.Generic.List<AudioClip> loopedClips = new System.Collections.Generic.List<AudioClip>();
-    private AudioSource mAudioS;
+   [SerializeField] private AudioSource mAudioS;
     private int currentI = 0;
-    private void Awake()
+    private bool isStopped;
+    private void Start()
     {
-        mAudioS = GetComponent<AudioSource>();
         StartCoroutine(nameof(IEnumeratorChangeClip));
-    }    
+    }
     private IEnumerator IEnumeratorChangeClip()
     {
         while (true)
         {
+            if (isStopped)
+                break;
             ChangeClip();
-            yield return new WaitForSeconds(mAudioS.clip.length);            
+            yield return new WaitForSeconds(mAudioS.clip.length);
         }
     }
     private void ChangeClip()
@@ -29,6 +31,12 @@ public class MusicPlayer : MonoBehaviour
     }
     private void OnDestroy()
     {
+        StopCoroutine(nameof(IEnumeratorChangeClip));
+    }    
+    public void DisablePlayer()
+    {
+        isStopped = true;
+        mAudioS.clip = null;
         StopCoroutine(nameof(IEnumeratorChangeClip));
     }
 }

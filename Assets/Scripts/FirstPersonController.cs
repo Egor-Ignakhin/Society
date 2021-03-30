@@ -96,7 +96,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     #endregion
 
     private void Awake()
-    {
+    {        
         #region Movement Settings - Awake
 
         PlayerCamera = Camera.main;
@@ -108,6 +108,9 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         _crouchModifiers.colliderHeight = capsule.height;
+
+        targetAngles = transform.localEulerAngles;
+        followAngles = targetAngles;
         #endregion
     }
 
@@ -119,7 +122,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
 
     private void Start()
-    {
+    {        
         #region Look Settings - Start
         VerticalRotationRange = 2 * HeadMaxY + Mathf.Clamp(0, HeadMinY, 0);
         baseCamFOV = PlayerCamera.fieldOfView;
@@ -454,6 +457,14 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 CanJump = false;
                 break;
         }
+    }
+    public void SetPosAndRot(Transform point)
+    {
+        transform.position = point.position;
+        transform.rotation = point.rotation;
+
+        targetAngles = point.eulerAngles;
+        followAngles = targetAngles;
     }
 }
 

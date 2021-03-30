@@ -8,6 +8,7 @@ public class FirstMission : Mission
 
     [SerializeField] private ChairMesh startChair;
     private Image backgroundWhiteImage;
+    private Image backgroundDarkImage;
     private bool messageWasListened = false;
     [ShowIf(nameof(startChair), true)] [SerializeField] private GameObject farewallNote;
     [ShowIf(nameof(startChair), true)] [SerializeField] private Transform fNTransform;
@@ -19,18 +20,27 @@ public class FirstMission : Mission
     [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private List<DogEnemy> dogsFI = new List<DogEnemy>();
     [ShowIf(nameof(dogsForInstance), true)] [SerializeField] private DoorManager doorOnSurface;
 
+    [SerializeField] private List<TaskChecker> checkers = new List<TaskChecker>();
+    private const int part2Task = 13;
+    [SerializeField] private GameObject part2Object;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private Transform startPointBeforePart2;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private MusicPlayer musicPlayer;
+    [ShowIf(nameof(startChair), true)] [SerializeField] private TaskChecker taskChecker2Part;
+
+    private bool part2IsStarted;
     public override void ContinueMission(int skipLength)
     {
         currentTask = skipLength;
         if (skipLength == 0)
         {
-            CreateBackground();
+            CreateBackground(true);
             PutOnAChair();
             ListenMessage();
             WriteNote();
-            Comment(0);            
-        }                   
-            SetTask(currentTask);        
+            Comment(0);
+        }
+        SetTask(currentTask);
+        SetActiveCheckers();
     }
     public override void FinishMission()
     {
@@ -63,15 +73,27 @@ public class FirstMission : Mission
     /// спец-эффектов вознкикает
     /// фоновый рисунок и постепенно тает
     /// </summary>
-    private void CreateBackground()
+    private void CreateBackground(bool whited)
     {
-        GameObject image = new GameObject("WhiteBackground");
         Canvas effectsCanvas = missionsManager.GetEffectsCanvas();
-        image.transform.SetParent(effectsCanvas.transform);
-        backgroundWhiteImage = image.AddComponent<Image>();
-        backgroundWhiteImage.gameObject.AddComponent<LighteningBackground>().Init(backgroundWhiteImage, 0.25f);
-        backgroundWhiteImage.transform.localScale = effectsCanvas.GetComponent<CanvasScaler>().referenceResolution / 100;
-        backgroundWhiteImage.transform.localPosition = Vector2.zero;
+        if (whited)
+        {
+            GameObject image = new GameObject("WhiteBackground");
+            image.transform.SetParent(effectsCanvas.transform);
+            backgroundWhiteImage = image.AddComponent<Image>();
+            backgroundWhiteImage.gameObject.AddComponent<LighteningBackground>().Init(backgroundWhiteImage, 0.25f);
+            backgroundWhiteImage.transform.localScale = effectsCanvas.GetComponent<CanvasScaler>().referenceResolution / 100;
+            backgroundWhiteImage.transform.localPosition = Vector2.zero;
+        }
+        else// blacked
+        {
+            GameObject image = new GameObject("BlackBackground");
+            image.transform.SetParent(effectsCanvas.transform);
+            backgroundDarkImage = image.AddComponent<Image>();
+            backgroundDarkImage.gameObject.AddComponent<DarkiningBackground>().Init(backgroundDarkImage, 0.5f);
+            backgroundDarkImage.transform.localScale = effectsCanvas.GetComponent<CanvasScaler>().referenceResolution / 100;
+            backgroundDarkImage.transform.localPosition = Vector2.zero;
+        }
     }
     /// <summary>
     /// переключается радио и слушается сигнал
@@ -150,6 +172,8 @@ public class FirstMission : Mission
         private const int codeForRT = 10;// code for remove tracker
         private const int codeForIFD = 11;// code for instance flock dogs
         private const int codeForECD = 12;// code for extrim close door
+        private const int codeForTPMD = 13;// code for translate player to main door
+        private const int codeForDB = 15;// code for darkining background
         public static void CheckTaskForPossibleDoing(int i, FirstMission mission)
         {
             switch (i)
@@ -166,12 +190,18 @@ public class FirstMission : Mission
                 case codeForECD:
                     ExtrimCloseDoor(mission);
                     break;
+                case codeForTPMD:
+                    TranslatePlayerToMainDoor(mission);
+                    break;
+                case codeForDB:
+                    DarkiningBackground(mission);                    
+                    break;
             }
         }
         private static void InstanceFlockDogs(FirstMission mission)
         {
             mission.dogsForInstance.SetActive(true);
-            foreach(var d in mission.dogsFI)
+            foreach (var d in mission.dogsFI)
             {
                 d.SetEnemy(mission.missionsManager.GetPlayerBasicNeeds());
                 d.SetCurrentEnemyForewer(true);
@@ -180,16 +210,25 @@ public class FirstMission : Mission
         private static void ExtrimCloseDoor(FirstMission mission)
         {
             mission.doorOnSurface.SetExtrimSituation(true);
-            mission.doorOnSurface.SetStateAfterNextInteract(State.locked);            
+            mission.doorOnSurface.SetStateAfterNextInteract(State.locked);
         }
         private static void AddTracker(FirstMission mission)
         {
-             mission.deadMan.AddComponent<Maps.PointOnMap>();
+            mission.deadMan.AddComponent<Maps.PointOnMap>();
         }
         private static void RemoveTracker(FirstMission mission)
         {
             Destroy(Maps.MapManager.GetTracker(mission.deadMan));
         }
+        private static void TranslatePlayerToMainDoor(FirstMission mission)
+        {
+            var playerT =FindObjectOfType<FirstPersonController>();
+            playerT.SetPosAndRot(mission.startPointBeforePart2);
+        }
+        private static void DarkiningBackground(FirstMission mission)
+        {
+            mission.CreateBackground(false);
+        }        
     }
     private const int dogsToKill = 3;
     private int killedDogs = 0;
@@ -203,5 +242,19 @@ public class FirstMission : Mission
     public bool PossibleMoveToBunker()
     {
         return doorOnSurface.GetState() == State.locked;
+    }
+    private void SetActiveCheckers()
+    {
+        if (currentTask == part2Task)
+        {
+            part2Object.SetActive(true);
+            musicPlayer.DisablePlayer();
+            part2IsStarted = true;
+            taskChecker2Part.SetActive(true);
+        }
+        for (int i = 0; i < checkers.Count; i++)
+        {
+            checkers[i].SetInteracted(i < currentTask);
+        }
     }
 }

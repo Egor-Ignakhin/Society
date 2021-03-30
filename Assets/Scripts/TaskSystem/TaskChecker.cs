@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public sealed class TaskChecker : InteractiveObject
 {
+    [SerializeField] private bool active = true;
     [SerializeField] private Mission mMission;
     [SerializeField] private MonoBehaviour target;
 
@@ -41,6 +42,8 @@ public sealed class TaskChecker : InteractiveObject
     }
     private async void Report()
     {
+        if (!active)
+            return;
         if (hasInteracted)
             return;
         hasInteracted = true;
@@ -60,5 +63,13 @@ public sealed class TaskChecker : InteractiveObject
             }
             nextChecker.SetActive(true);
         }
+    }
+    public void SetInteracted(bool value)
+    {
+        hasInteracted = value;
+    }
+    public void SetActive(bool v)
+    {
+        active = v;
     }
 }
