@@ -3,11 +3,14 @@
 /// <summary>
 /// класс имеет фото, которое постепенно светлеет
 /// </summary>
-public sealed class LighteningBackground : MonoBehaviour
+public sealed class LighteningBackground : MonoBehaviour, IDelayable
 {
     private UnityEngine.UI.Image mImage;
     private Color targetColor = new Color(0, 0, 0, 0);
     private float speed;
+
+    public event EventHandlers.EventHandler FinishPart;
+
     public void Init(UnityEngine.UI.Image img, float neededSpeed = 1)
     {
         mImage = img;
@@ -15,10 +18,15 @@ public sealed class LighteningBackground : MonoBehaviour
     }
     private void Update()
     {
+        LerpColor();
+    }
+    private void LerpColor()
+    {
         mImage.color = Color.Lerp(mImage.color, targetColor, Time.deltaTime * speed);
-        if (System.Math.Round(mImage.color.a, 4) == 0)
+        if (mImage.color.a <= 0)
         {
-            enabled = false;
+            FinishPart?.Invoke();
+            enabled = false;            
         }
     }
 }

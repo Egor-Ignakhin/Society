@@ -1,23 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-
-public sealed class DarkiningBackground : MonoBehaviour
+/// <summary>
+/// класс имеет фото, которое постепенно темнеет
+/// </summary>
+public sealed class DarkiningBackground : MonoBehaviour, IDelayable
 {
     private UnityEngine.UI.Image mImage;
-    private Color targetColor =Color.black;
+    private Color targetColor = Color.black;
     private float speed;
+
+    public event EventHandlers.EventHandler FinishPart;
+
     public void Init(UnityEngine.UI.Image img, float neededSpeed = 1)
     {
         mImage = img;
         speed = neededSpeed;
-        mImage.color = new Color(0, 0, 0, 0);
+        targetColor.a = 0;
+        mImage.color = targetColor;
     }
     private void Update()
     {
-        mImage.color = Color.Lerp(mImage.color, targetColor, Time.deltaTime * speed);
-        if (System.Math.Round(mImage.color.a, 4) == 0)
-        {
+        LerpColor();
+    }
+    private void LerpColor()
+    {
+        mImage.color += new Color(0, 0, 0, Time.deltaTime * speed);
+        if (mImage.color.a >= 1)
+        {            
+            FinishPart?.Invoke();            
             enabled = false;
         }
     }

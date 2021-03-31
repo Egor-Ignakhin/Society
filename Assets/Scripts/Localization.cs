@@ -3,25 +3,45 @@ using System.IO;
 
 public static class Localization
 {
-    private static List<string> dialogContents = new List<string>();// пути к диалогам
-    private static List<string> taskContents = new List<string>();// пути к задачам
+    private static Dictionary<int, string> dialogContents = new Dictionary<int, string>();// пути к диалогам    
+    private static Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
 
     private static Dictionary<string, string> hintContents = new Dictionary<string, string>();// массив подсказок
     public enum Type { Dialogs, Tasks, Hints }
 
     static Localization()
     {
+        Init();
+    }
+    static void Init()
+    {
         // инициализация путей
         #region SetDialogs
         {
-            string firstMissionContent = Directory.GetCurrentDirectory() + "\\Localization\\MissionDialogs_1.json";
-            dialogContents.Add(firstMissionContent);
+            List<string> contents = new List<string>
+            {
+                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_1.json",
+                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_2.json"
+            };
+
+            for (int i = 0; i < contents.Count; i++)
+            {
+                dialogContents.Add(i, contents[i]);
+            }
         }
         #endregion
         #region SetTasks
         {
-            string firstTaskContent = Directory.GetCurrentDirectory() + "\\Localization\\MissionTask_1.json";
-            taskContents.Add(firstTaskContent);
+            List<string> contents = new List<string>
+            {
+                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_1.json",
+                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_2.json"
+            };
+
+            for (int i = 0; i < contents.Count; i++)
+            {
+                taskContents.Add(i, contents[i]);
+            }
         }
         #endregion
         #region SetHints
@@ -67,8 +87,8 @@ public static class Localization
             default:
                 return null;
         }
-    }    
-    private static string GetDialog(int missionNumber)
+    }
+    private static string GetDialog(int missionNumber, int dialog = 0)
     {
         return dialogContents[missionNumber];
     }

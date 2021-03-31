@@ -11,7 +11,14 @@ public sealed class MissionsManager : MonoBehaviour
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
-    
+
+    private string nextMission;
+    public enum MissionType
+    {
+        none,
+        narrative,
+        additional    
+    }
     private void OnEnable()
     {
         LoadState();
@@ -26,11 +33,9 @@ public sealed class MissionsManager : MonoBehaviour
         {
             string data = File.ReadAllText(StateFolder + StateFile);
             currentState = JsonUtility.FromJson<State>(data);
-
         }
         catch
         {
-
             currentState = new State();
             if (!Directory.Exists(StateFolder))
             {
@@ -58,6 +63,15 @@ public sealed class MissionsManager : MonoBehaviour
         string data = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(StateFolder + StateFile, data);
     }
+    public void ResetTasks()
+    {
+        currentState.currentTask = 0;
+    }
+    public void ReportMission()
+    {
+        currentState.currentMission++;
+        ResetTasks();
+    }
     public void ReportTask()
     {
         currentState.currentTask++;
@@ -68,6 +82,7 @@ public sealed class MissionsManager : MonoBehaviour
         {
             case 0:
                 FindObjectOfType<FirstMission>().ContinueMission(currentState.currentTask);
+                ChangeMissionType(MissionType.narrative);                
                 break;
         }
     }
@@ -82,7 +97,33 @@ public sealed class MissionsManager : MonoBehaviour
     [System.Serializable]
     public class State
     {
+        public MissionType missionType = MissionType.none;
         public int currentMission = 0;
         public int currentTask = 0;
+    }
+    public void FinishMission(int n)
+    {
+        switch (n)
+        {
+            case 0:
+                Finish1Mission();
+                break;
+        }
+    }
+    private void Finish1Mission()
+    {
+        // игрок где-то просыпается или появляется    
+        nextMission = "Направляйтесь куда-то на поверхность к дяде Биллу";
+        ChangeMissionType(MissionType.none);
+        ReportMission();
+    }
+    private void ChangeMissionType(MissionType type)
+    {
+        currentState.missionType = type;
+
+        if(type == MissionType.none)// если миссия закончилась и новая не началась
+        {
+            taskDrawer.DrawNewTask(nextMission);
+        }
     }
 }

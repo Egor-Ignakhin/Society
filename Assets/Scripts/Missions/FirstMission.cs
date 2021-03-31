@@ -7,8 +7,6 @@ public class FirstMission : Mission
     [SerializeField] private MissionsManager missionsManager;
 
     [SerializeField] private ChairMesh startChair;
-    private Image backgroundWhiteImage;
-    private Image backgroundDarkImage;
     private bool messageWasListened = false;
     [ShowIf(nameof(startChair), true)] [SerializeField] private GameObject farewallNote;
     [ShowIf(nameof(startChair), true)] [SerializeField] private Transform fNTransform;
@@ -27,6 +25,7 @@ public class FirstMission : Mission
     [ShowIf(nameof(startChair), true)] [SerializeField] private MusicPlayer musicPlayer;
     [ShowIf(nameof(startChair), true)] [SerializeField] private TaskChecker taskChecker2Part;
 
+    GameObject finishBackground;
     public override void ContinueMission(int skipLength)
     {
         currentTask = skipLength;
@@ -35,7 +34,9 @@ public class FirstMission : Mission
     }
     public override void FinishMission()
     {
-        throw new System.NotImplementedException();
+        missionsManager.FinishMission(0);
+        Destroy(finishBackground);
+        gameObject.SetActive(false);
     }
     public override int GetMissionNumber()
     {
@@ -64,27 +65,38 @@ public class FirstMission : Mission
     /// спец-эффектов вознкикает
     /// фоновый рисунок и постепенно тает
     /// </summary>
-    private void CreateBackground(bool whited)
+    private IDelayable CreateBackground(bool whited)
     {
         Canvas effectsCanvas = missionsManager.GetEffectsCanvas();
+        IDelayable delayable;
+        GameObject image;
         if (whited)
         {
-            GameObject image = new GameObject("WhiteBackground");
+            image = new GameObject("WhiteBackground");
+            Image backgroundWhiteImage = image.AddComponent<Image>();
+
+            LighteningBackground background = backgroundWhiteImage.gameObject.AddComponent<LighteningBackground>();
+            delayable = background;
+
             image.transform.SetParent(effectsCanvas.transform);
-            backgroundWhiteImage = image.AddComponent<Image>();
-            backgroundWhiteImage.gameObject.AddComponent<LighteningBackground>().Init(backgroundWhiteImage, 0.25f);
+            background.Init(backgroundWhiteImage, 0.25f);
             backgroundWhiteImage.transform.localScale = effectsCanvas.GetComponent<CanvasScaler>().referenceResolution / 100;
             backgroundWhiteImage.transform.localPosition = Vector2.zero;
         }
         else// blacked
         {
-            GameObject image = new GameObject("BlackBackground");
+            finishBackground = image = new GameObject("BlackBackground");
+            Image backgroundDarkImage = image.AddComponent<Image>();
+
+            DarkiningBackground background = backgroundDarkImage.gameObject.AddComponent<DarkiningBackground>();
+            delayable = background;
+
             image.transform.SetParent(effectsCanvas.transform);
-            backgroundDarkImage = image.AddComponent<Image>();
-            backgroundDarkImage.gameObject.AddComponent<DarkiningBackground>().Init(backgroundDarkImage, 0.5f);
+            background.Init(backgroundDarkImage, 0.5f);
             backgroundDarkImage.transform.localScale = effectsCanvas.GetComponent<CanvasScaler>().referenceResolution / 100;
             backgroundDarkImage.transform.localPosition = Vector2.zero;
         }
+        return delayable;
     }
     /// <summary>
     /// переключается радио и слушается сигнал
@@ -196,7 +208,7 @@ public class FirstMission : Mission
                     TranslatePlayerToMainDoor();
                     break;
                 case codeForDB:
-                    DarkiningBackground();                    
+                    DarkiningBackground();
                     break;
             }
         }
@@ -236,13 +248,15 @@ public class FirstMission : Mission
         }
         private static void TranslatePlayerToMainDoor()
         {
-            var playerT =FindObjectOfType<FirstPersonController>();
+            if (mission.startChair == null)
+                return;
+            var playerT = FindObjectOfType<FirstPersonController>();
             playerT.SetPosAndRot(mission.startPointBeforePart2);
         }
         private static void DarkiningBackground()
         {
-            mission.CreateBackground(false);
-        }        
+            mission.CreateBackground(false).FinishPart += mission.FinishMission;
+        }
     }
     private const int dogsToKill = 3;
     private int killedDogs = 0;
