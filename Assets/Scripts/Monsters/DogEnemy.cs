@@ -3,13 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public sealed class DogEnemy : Enemy
-{
-    private NavMeshAgent mAgent;
-    private Animator mAnim;
-    private enum states { wait, attack, isDied};
-    private states currentState;
-    private float distanceForAttack = 2;
-    private float powerInjure = 3;
+{    
     [SerializeField] private Transform head;
     private void Awake()
     {
@@ -39,7 +33,7 @@ public sealed class DogEnemy : Enemy
         head.transform.LookAt(currentEnemy.transform);
         SetAnimationClip();
     }
-    private void SetAnimationClip()
+    protected override void SetAnimationClip(string state = "")
     {
         float dist = Vector3.Distance(transform.position, currentEnemy.transform.position);
         if (dist < distanceForAttack)

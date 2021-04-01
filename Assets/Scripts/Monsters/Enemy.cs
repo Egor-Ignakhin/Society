@@ -1,8 +1,15 @@
 ﻿using PlayerClasses;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class Enemy : MonoBehaviour
 {
+    protected NavMeshAgent mAgent;
+    protected Animator mAnim;
+    protected float distanceForAttack = 2;
+    protected float powerInjure = 3;
+    protected enum states { wait, attack, isDied };
+    protected states currentState;
     private float health;
     public float Health
     {
@@ -44,4 +51,5 @@ public abstract class Enemy : MonoBehaviour
     {
         currentEnemy = enemy;
     }
+    protected abstract void SetAnimationClip(string state = "");
 }
