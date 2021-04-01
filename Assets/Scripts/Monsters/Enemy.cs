@@ -4,6 +4,10 @@ using UnityEngine.AI;
 
 public abstract class Enemy : MonoBehaviour
 {
+    protected abstract float timePursuitAfterSaw();//время преследования после обнаружения игрока
+    protected float currentTPAS;
+    [SerializeField] protected Transform defenderPoint;
+    protected Transform currentPoint;
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
     protected float distanceForAttack = 2;
@@ -49,7 +53,18 @@ public abstract class Enemy : MonoBehaviour
     }
     public void SetEnemy(BasicNeeds enemy)
     {
+        if (currentTPAS >= 0 && enemy == null)
+        {
+            currentTPAS -= Time.deltaTime;
+            return;
+        }
         currentEnemy = enemy;
+        currentTPAS = timePursuitAfterSaw();
     }
-    protected abstract void SetAnimationClip(string state = "");
+    protected virtual void SetTarget(Transform target)
+    {
+        mAgent.SetDestination(target.position);
+    }
+    protected abstract void LookOnTarget();
+    protected abstract void SetAnimationClip(string state = "", bool value = true);
 }

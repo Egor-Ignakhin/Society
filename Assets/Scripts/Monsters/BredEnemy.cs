@@ -22,8 +22,14 @@ public class BredEnemy : Enemy
     private void Update()
     {
         HarassmentEnemy();
-        Debug.Log(mAnim.GetBool("Attack"));
-
+        if(currentTPAS >= 0)
+        {
+            SetEnemy(null);
+        }
+        else if(currentEnemy != null)
+        {
+            SetEnemy(null);
+        }
     }
     protected override void Death()
     {
@@ -36,34 +42,34 @@ public class BredEnemy : Enemy
     {
         if (currentState == states.isDied)
             return;
-        if (!currentEnemy)
+        SetAnimationClip("IsMoveToPerson");
+        if (currentEnemy == null)
+        {
+            SetTarget(defenderPoint);
             return;
-        mAgent.SetDestination(currentEnemy.transform.position);
-        Vector3 startRot = transform.localEulerAngles;
-        transform.LookAt(currentEnemy.transform);
-        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
+        }
 
+        SetTarget(currentEnemy.transform);
 
         if (mAgent.remainingDistance <= mAgent.stoppingDistance * 2)
-        {           
-           SetAnimationClip("Attack");
+        {
+            SetAnimationClip("Attack");
             currentState = states.attack;
             Attack();
         }
         else
         {
-            SetAnimationClip("IsMoveToPerson");
             currentState = states.wait;
         }
     }
-    protected override void SetAnimationClip(string state)
+    protected override void SetAnimationClip(string state, bool value = true)
     {
         mAnim.SetBool("IsMoveToPerson", false);
         mAnim.SetBool("Death", false);
-        mAnim.SetBool("Attack",false);
+        mAnim.SetBool("Attack", false);
 
 
-        mAnim.SetBool(state, true);
+        mAnim.SetBool(state, value);
 
     }
 
@@ -83,7 +89,29 @@ public class BredEnemy : Enemy
     {
         if (currentEnemyForewer)
             return;
-        if (other.TryGetComponent<BasicNeeds>(out var bn))
+        if (other.GetComponent<BasicNeeds>())
             SetEnemy(null);
+    }
+
+    protected override void LookOnTarget()
+    {
+        Vector3 startRot = transform.localEulerAngles;
+        transform.LookAt(currentPoint.transform);
+        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
+    }
+    protected override void SetTarget(Transform target)
+    {
+        currentPoint = target;
+        base.SetTarget(target);
+        LookOnTarget();
+        if (mAgent.remainingDistance <= mAgent.stoppingDistance * 2)
+        {
+            SetAnimationClip("IsMoveToPerson", false);
+        }
+    }
+
+    protected override float timePursuitAfterSaw()
+    {
+        return 5f;
     }
 }

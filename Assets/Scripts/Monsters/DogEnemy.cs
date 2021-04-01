@@ -33,7 +33,7 @@ public sealed class DogEnemy : Enemy
         head.transform.LookAt(currentEnemy.transform);
         SetAnimationClip();
     }
-    protected override void SetAnimationClip(string state = "")
+    protected override void SetAnimationClip(string state = "",bool value = true)
     {
         float dist = Vector3.Distance(transform.position, currentEnemy.transform.position);
         if (dist < distanceForAttack)
@@ -81,5 +81,15 @@ public sealed class DogEnemy : Enemy
             return;
         if (other.TryGetComponent<BasicNeeds>(out var bn))
             SetEnemy(null);
+    }
+
+    protected override void LookOnTarget()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override float timePursuitAfterSaw()
+    {
+        return 5f;
     }
 }
