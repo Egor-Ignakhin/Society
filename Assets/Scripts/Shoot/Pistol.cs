@@ -4,11 +4,13 @@ using UnityEngine;
 
 public sealed class Pistol : Gun
 {
+    private PlayerClasses.BasicNeeds basicNeeds;
     private Camera cam;
     private Vector3 rayStartPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     private void Awake()
     {
         cam = Camera.main;
+        basicNeeds = FindObjectOfType<PlayerClasses.BasicNeeds>();
     }
     protected override bool Shoot()
     {
@@ -24,7 +26,7 @@ public sealed class Pistol : Gun
 
             if (hit.transform.TryGetComponent<Enemy>(out var enemy))
             {
-                enemy.InjureEnemy(damage);
+                enemy.InjureEnemy(damage, basicNeeds);
             }
         }
         return canShoot;

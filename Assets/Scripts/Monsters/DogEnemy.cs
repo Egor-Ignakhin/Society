@@ -51,11 +51,11 @@ public sealed class DogEnemy : Enemy
         currentState = states.wait;
     }
 
-    public override void InjureEnemy(float value)
+    /*public override void InjureEnemy(float value)
     {
         Debug.Log("hit");
         Health -= value;
-    }
+    }*/
 
     protected override void Death()
     {
@@ -90,6 +90,6 @@ public sealed class DogEnemy : Enemy
 
     protected override float timePursuitAfterSaw()
     {
-        return 5f;
+      return 5f;
     }
 }
