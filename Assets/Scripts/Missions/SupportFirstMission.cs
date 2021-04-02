@@ -14,11 +14,11 @@ public sealed class SupportFirstMission : MonoBehaviour
     private void OnEnable()
     {
         if (itskillingDog)
-            GetComponent<DogEnemy>().ChangeHealthEvent += ReportKillingDog;
+            GetComponent<DogEnemy>().UVariables.ChangeHealthEvent += ReportKillingDog;
     }
     private void ReportKillingDog(float healthDog)
     {
-        if(healthDog <= Enemy.MinHealth)
+        if(healthDog <= Enemy.UniqueVariables.MinHealth)
         {
             mMission.KillTheDogs();
         }
@@ -26,6 +26,6 @@ public sealed class SupportFirstMission : MonoBehaviour
     private void OnDisable()
     {
         if (itskillingDog)
-            GetComponent<DogEnemy>().ChangeHealthEvent -= ReportKillingDog;
+            GetComponent<DogEnemy>().UVariables.ChangeHealthEvent -= ReportKillingDog;
     }    
 }

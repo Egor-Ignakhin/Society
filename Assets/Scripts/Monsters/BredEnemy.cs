@@ -1,21 +1,19 @@
 ﻿using PlayerClasses;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public sealed class BredEnemy : Enemy
 {
-    private List<Transform> eyes = new List<Transform>();
+    private readonly List<Transform> eyes = new List<Transform>();
     [SerializeField] private Transform head;
     private void Awake()
-    {
-        mAgent = GetComponent<NavMeshAgent>();
-        mAnim = GetComponent<Animator>();
-        Health = 500;
+    {                      
         for (int i = 0; i < head.childCount; i++)
         {
             eyes.Add(head.GetChild(i));
         }
+
+        base.Init(2, 3, 25, 500);        
     }
 
     private void Update()
@@ -30,8 +28,10 @@ public sealed class BredEnemy : Enemy
     {
         RayCastToEnemy();
     }
-    protected override void Death()
+    protected override void Death(float health)
     {
+        if (health > UniqueVariables.MinHealth)
+            return;
         currentTPAS = 0;
         mAgent.enabled = false;
         SetAnimationClip(AnimationsContainer.Death);
@@ -53,7 +53,7 @@ public sealed class BredEnemy : Enemy
 
         SetTarget(currentEnemy.transform);
 
-        if (mAgent.remainingDistance <= mAgent.stoppingDistance * 2)
+        if (mAgent.remainingDistance <= mAgent.stoppingDistance)
         {
             SetAnimationClip(AnimationsContainer.Attack);
             currentState = states.attack;
@@ -113,7 +113,6 @@ public sealed class BredEnemy : Enemy
     {
         if (currentEnemyForewer)
             return;
-        BasicNeeds enemy = null;
 
         if (currentTarget == null)
             return;
@@ -123,39 +122,44 @@ public sealed class BredEnemy : Enemy
             {
                 if (hit.transform.TryGetComponent<BasicNeeds>(out var bn))
                 {
-                    if (Vector3.Distance(e.position, currentTarget.position) > seeDistance)
+                    if (Vector3.Distance(e.position, currentTarget.position) > UVariables.SeeDistance)
                         break;
                     if (currentEnemy != bn)
                     {
-                        enemy = bn;
-                        break;
+                        SetEnemy(bn);
+                        return;
                     }
                 }
             }
         }
-        SetEnemy(enemy);
+        SetEnemy(null);
     }
-    void OnDrawGizmos()
+
+    protected override string Type()
     {
-        try
+        return TypesEnemies.Bred;
+    }
+    /* void OnDrawGizmos()
+{
+    try
+    {
+        foreach (var e in eyes)
         {
-            foreach (var e in eyes)
+            bool isHit = Physics.Linecast(e.position, currentTarget.position);
+            if (isHit)
             {
-                bool isHit = Physics.Linecast(e.position, currentTarget.position);
-                if (isHit)
-                {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawLine(e.position, currentTarget.position);
-                }
-                else
-                {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawLine(e.position, currentTarget.position);
-                }
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(e.position, currentTarget.position);
+            }
+            else
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(e.position, currentTarget.position);
             }
         }
-        catch
-        {
-        }
     }
+    catch
+    {
+    }
+}*/
 }

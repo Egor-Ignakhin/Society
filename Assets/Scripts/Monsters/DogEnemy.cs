@@ -9,12 +9,9 @@ public sealed class DogEnemy : Enemy
     {
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
-        Health = 100;
+        base.Init(2, 3, 5, 100);
     }
-    protected override void Attack()
-    {
-        currentEnemy.InjurePerson(powerInjure * Time.deltaTime);
-    }
+
     private void Update()
     {
         HarassmentEnemy();
@@ -26,17 +23,13 @@ public sealed class DogEnemy : Enemy
             return;
         if (!currentEnemy)
             return;
-        mAgent.SetDestination(currentEnemy.transform.position);
-        Vector3 startRot = transform.localEulerAngles;
-        mAgent.transform.LookAt(currentEnemy.transform);
-        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
-        head.transform.LookAt(currentEnemy.transform);
+        mAgent.SetDestination(currentEnemy.transform.position);       
         SetAnimationClip();
     }
     protected override void SetAnimationClip(string state = "",bool value = true)
     {
         float dist = Vector3.Distance(transform.position, currentEnemy.transform.position);
-        if (dist < distanceForAttack)
+        if (dist < mAgent.stoppingDistance)
         {
             mAnim.SetInteger("IsMoveToPerson", 0);
             mAnim.SetInteger("IsAttack", 1);
@@ -51,14 +44,10 @@ public sealed class DogEnemy : Enemy
         currentState = states.wait;
     }
 
-    /*public override void InjureEnemy(float value)
+    protected override void Death(float health)
     {
-        Debug.Log("hit");
-        Health -= value;
-    }*/
-
-    protected override void Death()
-    {
+        if (health > UniqueVariables.MinHealth)
+            return;
         Debug.Log("death");
         currentState = states.isDied;
         GetComponent<BoxCollider>().enabled = false;
@@ -85,11 +74,19 @@ public sealed class DogEnemy : Enemy
 
     protected override void LookOnTarget()
     {
-        throw new System.NotImplementedException();
+        Vector3 startRot = transform.localEulerAngles;
+        mAgent.transform.LookAt(currentEnemy.transform);
+        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
+        head.transform.LookAt(currentEnemy.transform);
     }
 
     protected override float timePursuitAfterSaw()
     {
       return 5f;
+    }
+
+    protected override string Type()
+    {
+        return TypesEnemies.BloodDog;
     }
 }

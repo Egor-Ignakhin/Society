@@ -7,40 +7,70 @@ using UnityEngine.AI;
 /// </summary>
 public abstract class Enemy : MonoBehaviour
 {
+    public UniqueVariables UVariables { get; private set; }
+    public class UniqueVariables
+    {
+        public delegate void HealthHandler(float health);
+        public event HealthHandler ChangeHealthEvent;// событие смены здоровья
+        public float DistanceForAttack { get; private set; } = 0;// дистанция для атаки
+        public float PowerInjure { get; private set; } = 0;// сила удара
+        public float SeeDistance { get; private set; } = 0;//радиус взора
+
+        public const float MinHealth = 0;
+
+        private float health;
+        public float Health
+        {
+            get { return health; }
+            set
+            {
+                if (value <= MinHealth)
+                {
+                    value = MinHealth;
+                }
+                health = value;
+                ChangeHealthEvent?.Invoke(value);
+            }
+        }
+        public void Init(float SdistanceForAttack, float SpowerInjure, float SseeDistance, float Shealth)
+        {
+            this.DistanceForAttack = SdistanceForAttack;
+            this.PowerInjure = SpowerInjure;
+            this.SeeDistance = SseeDistance;
+            this.Health = Shealth;
+        }
+    }
+
+    public class TypesEnemies
+    {
+        public const string Bred = "Bred";
+        public const string BloodDog = "BloodDog";
+    }
+    protected abstract string Type();
     protected abstract float timePursuitAfterSaw();//время преследования после обнаружения игрока
     protected float currentTPAS;//текущее время преследования
     [SerializeField] protected Transform defenderPoint;//защитная точка бреда
     protected Transform currentTarget;// текущая цель
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
-    protected float distanceForAttack = 2;// дистанция для атаки
-    protected float powerInjure = 3;// сила удара
-    protected float seeDistance = 25;
     protected enum states { wait, attack, isDied };
     protected states currentState;
-    private float health;
-    public float Health
-    {
-        get { return health; }
-        protected set
-        {
-            if (value <= MinHealth)
-            {
-                Death();
-                value = MinHealth;
-            }
-            health = value;
-            ChangeHealthEvent?.Invoke(value);
-        }
-    }
 
-    public const float MinHealth = 0;
+
     protected BasicNeeds currentEnemy;// текущий противник
     protected bool currentEnemyForewer;// при включенной булевой враг монстра никогда не сменит цель
 
-    public delegate void HealthHandler(float health);
-    public event HealthHandler ChangeHealthEvent;// событие смены здоровья
 
+    protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
+    {
+        UVariables = new UniqueVariables();
+        UVariables.Init(distanceForAttack, powerInjure, seeDistance, health);
+        mAgent = GetComponent<NavMeshAgent>();
+        mAnim = GetComponent<Animator>();
+
+        mAgent.stoppingDistance = UVariables.DistanceForAttack;
+        UVariables.ChangeHealthEvent += Death;
+    }
     protected class AnimationsContainer
     {
         public const string MoveToPerson = "MoveToPerson";
@@ -52,9 +82,9 @@ public abstract class Enemy : MonoBehaviour
     /// <summary>
     /// функция нанесения урона монстром
     /// </summary>
-    protected virtual void Attack()
+    protected void Attack()
     {
-        currentEnemy.InjurePerson(powerInjure * Time.deltaTime);
+        currentEnemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
     }
     /// <summary>
     /// функция установки цели задания состояний
@@ -64,16 +94,16 @@ public abstract class Enemy : MonoBehaviour
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
-    public virtual void InjureEnemy(float value,BasicNeeds bn)
+    public virtual void InjureEnemy(float value, BasicNeeds bn)
     {
         if (bn != null)
             SetEnemy(bn);
-        Health -= value;
+        UVariables.Health -= value;
     }
     /// <summary>
     /// функция смерти
     /// </summary>
-    protected abstract void Death();
+    protected abstract void Death(float health);
     /// <summary>
     /// задаёт несменяемость текущей цели
     /// </summary>
@@ -101,8 +131,8 @@ public abstract class Enemy : MonoBehaviour
     /// </summary>
     /// <param name="target"></param>
     protected virtual void SetTarget(Transform target)
-    {    
-            mAgent.SetDestination(target.position);
+    {
+        mAgent.SetDestination(target.position);
     }
     /// <summary>
     /// функция поворота к цели
@@ -114,4 +144,8 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="state"></param>
     /// <param name="value"></param>
     protected abstract void SetAnimationClip(string state = "", bool value = true);
+    protected void OnDestroy()
+    {
+        UVariables.ChangeHealthEvent -= Death;
+    }
 }

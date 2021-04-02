@@ -104,6 +104,7 @@ public class FirstMission : Mission
     private void ListenMessage()
     {
         //TODO: сделать переключение и калибровку радио для прослушивания сообщения       
+        messageWasListened = true;
     }
     /// <summary>
     /// на столе пишется записка
