@@ -11,7 +11,8 @@ namespace PlayerClasses
         }
 
         Camera mainCamera;
-        float interctionDistance = 2;
+        private float interctionDistance = 2;
+        private const float sphereCasterRadius = 0.1f;
         [SerializeField] LayerMask interactionLayer;
         private KeyCode inputInteractive = KeyCode.F;
         private PlayerStatements playerStatements;
@@ -35,10 +36,9 @@ namespace PlayerClasses
         }
         private void RayThrow()
         {
-            RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
             string desc = string.Empty;
-            if (Physics.Raycast(ray, out hit, interctionDistance, interactionLayer))
+            if (Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer))
             {
                 var components = hit.transform.GetComponents<InteractiveObject>();
                 int i = 0;
@@ -50,7 +50,7 @@ namespace PlayerClasses
 
                     if (inputedButton)
                     {
-                        c.Interact(playerStatements);                        
+                        c.Interact(playerStatements);
                         if (++i == components.Length)
                             inputedButton = false;
                     }
@@ -58,5 +58,21 @@ namespace PlayerClasses
             }
             DescriptionDrawer.Instance.SetHint(desc);
         }
+     /*   void OnDrawGizmos()
+        {
+            try
+            {
+                Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
+                bool isHit = Physics.SphereCast(ray.origin, 0.1f, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer);
+                if (isHit)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireSphere(ray.origin + ray.direction * hit.distance, 0.1f);
+                }
+            }
+            catch
+            {
+            }
+        }*/
     }
 }

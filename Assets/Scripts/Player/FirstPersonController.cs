@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 
 [RequireComponent(typeof(CapsuleCollider)), RequireComponent(typeof(Rigidbody)), AddComponentMenu("First Person Controller")]
@@ -9,7 +10,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 {
     #region Variables    
     #region Look Settings
-    public bool isLocked;
+    private readonly List<bool> isLockeds = new List<bool>();
     public float VerticalRotationRange { get; set; } = 0f;
     public float HeadMaxY { get; set; } = 90;
     public float HeadMinY { get; set; } = -90;
@@ -23,7 +24,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private Vector3 targetAngles;
     private Vector3 followAngles;
-    private Vector3 followVelocity;   
+    private Vector3 followVelocity;
     #endregion
 
     #region Movement Settings
@@ -96,7 +97,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     #endregion
 
     private void Awake()
-    {        
+    {
         #region Movement Settings - Awake
 
         PlayerCamera = Camera.main;
@@ -115,14 +116,14 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
 
     private void OnEnable()
-    {               
+    {
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
     }
 
     private void Start()
-    {        
+    {
         #region Look Settings - Start
         VerticalRotationRange = 2 * HeadMaxY + Mathf.Clamp(0, HeadMinY, 0);
         baseCamFOV = PlayerCamera.fieldOfView;
@@ -150,7 +151,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void Update()
     {
-        if (isLocked)
+        if (isLockeds.Count > 0)
             return;
         #region Look Settings - Update
 
@@ -197,7 +198,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void FixedUpdate()
     {
-        if (isLocked)
+        if (isLockeds.Count > 0)
             return;
         #region Movement Settings - FixedUpdate        
 
@@ -209,8 +210,8 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             if (Advanced.IsTouchingUpright && Advanced.IsTouchingWalkable)
             {
                 MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
-                if (!didJump) 
-                    _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation; 
+                if (!didJump)
+                    _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
             else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable)
             {
@@ -228,7 +229,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
 
         #region step logic
-        
+
         if (Advanced.MaxStepHeight > 0 && Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - 0.01f, 0), MoveDirection, out RaycastHit WT, capsule.radius - 3, Physics.AllLayers, QueryTriggerInteraction.Ignore) && Vector3.Angle(WT.normal, Vector3.up) > 88)
         {
             if (!Physics.Raycast(transform.position - new Vector3(0, (capsule.height / 2 * transform.localScale.y) - Advanced.MaxStepHeight, 0), MoveDirection, out RaycastHit ST, capsule.radius + 0.25f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
@@ -242,8 +243,8 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         inputXY = new Vector2(horizontalInput, verticalInput);
-        if (inputXY.magnitude > 1) 
-            inputXY.Normalize(); 
+        if (inputXY.magnitude > 1)
+            inputXY.Normalize();
 
         #region Jump
         yVelocity = _fpsRigidbody.velocity.y;
@@ -279,10 +280,10 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             {
                 yVelocity *= SlopeCheck() / 4;
             }
-          /*  if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable && !didJump)
-            {
-                // yVelocity += Physics.gravity.y;  //  этот баг не давал запрыгивать на блоки и платформы стоящие близко от точки прыжка
-            }*/
+            /*  if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable && !didJump)
+              {
+                  // yVelocity += Physics.gravity.y;  //  этот баг не давал запрыгивать на блоки и платформы стоящие близко от точки прыжка
+              }*/
         }
 
         #endregion
@@ -293,7 +294,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
         }
         else _fpsRigidbody.velocity = Vector3.zero;
-        
+
         if (inputXY.magnitude > 0 || !IsGrounded)
             capsule.sharedMaterial = Advanced.ZeroFrictionMaterial;
         else
@@ -359,7 +360,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void OnCollisionEnter(Collision CollisionData)
     {
-        if (isLocked)
+        if (isLockeds.Count > 0)
             return;
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
@@ -370,8 +371,8 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 {
                     IsGrounded = true;
                     Advanced.stairMiniHop = false;
-                    if (didJump && a <= 70) 
-                        didJump = false; 
+                    if (didJump && a <= 70)
+                        didJump = false;
                 }
 
                 if (Advanced.MaxSlopeAngle > 0)
@@ -393,7 +394,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     private void OnCollisionStay(Collision CollisionData)
     {
-        if (isLocked)
+        if (isLockeds.Count > 0)
             return;
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
@@ -425,7 +426,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     private void OnCollisionExit(Collision CollisionData)
     {
-        if (isLocked)
+        if (isLockeds.Count > 0)
             return;
         IsGrounded = false;
         if (Advanced.MaxSlopeAngle > 0)
@@ -436,13 +437,20 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             Advanced.IsTouchingUpright = false;
         }
     }
-    public State CurrentState { get; set; }
+    public State CurrentState { get; set; } = State.unlocked;
     public async void SetState(State s)
     {
+        if (s == State.locked)
+            isLockeds.Add(true);// добавление ограничителся
+        else if (s == State.unlocked && isLockeds.Count > 0)
+            isLockeds.RemoveAt(0);// удаление ограничителя
+
         switch (s)
         {
             case State.unlocked:
-                isLocked = false;
+                if (isLockeds.Count > 0)
+                    return;
+
                 _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
                 _fpsRigidbody.useGravity = true;
                 await System.Threading.Tasks.Task.Delay(1);
@@ -450,13 +458,13 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 break;
 
             case State.locked:
-                isLocked = true;
                 _fpsRigidbody.constraints = RigidbodyConstraints.FreezeAll;
                 _fpsRigidbody.useGravity = false;
                 _fpsRigidbody.velocity = Vector3.zero;
                 CanJump = false;
                 break;
         }
+        Debug.Log(isLockeds.Count);
     }
     public void SetPosAndRot(Transform point)
     {
@@ -527,7 +535,7 @@ public sealed class FirstPersonController_Editor : Editor
         GUI.enabled = t.PlayerCanMove;
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
-        
+
         EditorGUILayout.EndFoldoutHeaderGroup();
         GUI.enabled = true;
         EditorGUILayout.Space();

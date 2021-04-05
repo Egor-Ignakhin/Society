@@ -18,6 +18,7 @@ public sealed class ChairManager : MonoBehaviour
     }
     internal void Interact(ChairMesh c)
     {
+        SeatController.RemoveLastChair();
         GetOutOfChair(c);
     }   
 
@@ -33,13 +34,7 @@ public sealed class ChairManager : MonoBehaviour
         }
         if (c.IsOccupied)// если стул занят
         {
-            //Возвращение позиций в исходное значение
-            playerT.SetParent(lastPlayerParent);
-            playerT.localEulerAngles = lastPlayerLocalEulerAngles;
-            playerT.position = lastPlayerPosition;
-            //конец возвращений позиций
-            fps.SetState(State.unlocked);// разблокировка персонажа
-            c.SetOccupied(false);// стул больше не занят
+            DeOccupied(c);
             return;
         }
         //иначе если стул свободен
@@ -65,5 +60,15 @@ public sealed class ChairManager : MonoBehaviour
     public void RiseUp(ChairMesh cMesh)
     {
         GetOutOfChair(cMesh);
+    }
+    public void DeOccupied(ChairMesh c)
+    {
+        //Возвращение позиций в исходное значение
+        playerT.SetParent(lastPlayerParent);
+        playerT.localEulerAngles = lastPlayerLocalEulerAngles;
+        playerT.position = lastPlayerPosition;
+        //конец возвращений позиций
+        fps.SetState(State.unlocked);// разблокировка персонажа
+        c.SetOccupied(false);// стул больше не занят
     }
 }

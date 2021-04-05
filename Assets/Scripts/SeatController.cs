@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SeatController : MonoBehaviour, IState
+public class SeatController : Singleton<SeatController>, IState
 {
     public State CurrentState { get; set; }
     private bool isSitting;
@@ -57,7 +57,7 @@ public class SeatController : MonoBehaviour, IState
     private float minimumVert = -45.0f;
     private float maximumVert = 45.0f;
     private float rotationX = 0;
-  
+
 
     private void Update()
     {
@@ -74,5 +74,11 @@ public class SeatController : MonoBehaviour, IState
             float rotationY = transform.localEulerAngles.y + delta;
             transform.localEulerAngles = new Vector3(rotationX, rotationY, 0);
         }
+    }
+
+    public static void RemoveLastChair()
+    {
+        if (Instance.lastChairManager != null && Instance.lastChairMesh != null)
+            Instance.lastChairManager.DeOccupied(Instance.lastChairMesh);
     }
 }

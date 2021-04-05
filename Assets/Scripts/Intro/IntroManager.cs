@@ -38,6 +38,13 @@ namespace IntroScripts
         }
         private void Update()
         {
+            //dev only
+            if (Input.anyKeyDown)
+            {
+                StartGame();
+            }
+            //dev only
+
             if (timeToChange <= 0)
             {
                 DisableOldList();

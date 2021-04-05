@@ -86,14 +86,15 @@
     <Compile Include="Assets\Scripts\InteractiveObject.cs" />
     <Compile Include="Assets\Scripts\Intro\IntroManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\DescriptionDrawer.cs" />
-    <Compile Include="Assets\Scripts\Inventory\InventoryBullets.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventoryCell.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryContainer.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryDrawer.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventoryInput.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryItem.cs" />
-    <Compile Include="Assets\Scripts\Inventory\InventoryPistol.cs" />
     <Compile Include="Assets\Scripts\Inventory\PickUpAndDropDrawer.cs" />
-    <Compile Include="Assets\Scripts\Inventory\Singleton.cs" />
     <Compile Include="Assets\Scripts\Inventory\SlotForAddingItems.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Types\InventoryBullets.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Types\InventoryPistol.cs" />
     <Compile Include="Assets\Scripts\LighteningBackground.cs" />
     <Compile Include="Assets\Scripts\Localization.cs" />
     <Compile Include="Assets\Scripts\Maps\MapDrawer.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets\Scripts\Maps\MapMover.cs" />
     <Compile Include="Assets\Scripts\Maps\PointOnMap.cs" />
     <Compile Include="Assets\Scripts\MealSpawner.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuClock.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Missions\FirstMission.cs" />
     <Compile Include="Assets\Scripts\Missions\Mission.cs" />
@@ -130,6 +132,7 @@
     <Compile Include="Assets\Scripts\SeatController.cs" />
     <Compile Include="Assets\Scripts\Shoot\Gun.cs" />
     <Compile Include="Assets\Scripts\Shoot\Pistol.cs" />
+    <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TaskChecker.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TaskDrawer.cs" />
     <Compile Include="Assets\Scripts\Test\TestRotate.cs" />

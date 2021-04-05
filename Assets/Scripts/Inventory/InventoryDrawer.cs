@@ -1,18 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class InventoryDrawer : MonoBehaviour
+public sealed class InventoryDrawer : Singleton<InventoryDrawer>
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private GameObject mainField;
 
-    // Update is called once per frame
-    void Update()
+    [Space(15)]
+    [SerializeField] private Transform mainContainer;
+    [SerializeField] private Transform supportContainer;
+
+    public static bool MainFieldEnabled { get; private set; } = false;
+    private delegate void EventHandler();
+    private static event EventHandler mainFieldActiveEvent;
+    public Transform GetMainContainer()
     {
-        
+        return mainContainer;
+    }
+    public Transform GetSupportContainer()
+    {
+        return supportContainer;
+    }
+    private void OnEnable()
+    {
+        mainFieldActiveEvent += SetActiveMainField;
+    }
+    private void Start()
+    {
+        mainFieldActiveEvent?.Invoke();
+    }
+    /// <summary>
+    /// включение видимости инвентаря
+    /// </summary>
+    private void SetActiveMainField()
+    {
+        mainField.SetActive(MainFieldEnabled);
+    }
+    /// <summary>
+    /// смена активности инвентаря
+    /// </summary>
+    public static void ChangeActiveMainField()
+    {
+        MainFieldEnabled = !MainFieldEnabled;
+        mainFieldActiveEvent?.Invoke();
+    }
+    private void OnDisable()
+    {
+        mainFieldActiveEvent -= SetActiveMainField;
     }
 }

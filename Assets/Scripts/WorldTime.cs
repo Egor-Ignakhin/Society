@@ -26,8 +26,8 @@ namespace Times
         }
 
         private float waitTime = 1;// ожидание следующего такта
-        private string dateFolder = Directory.GetCurrentDirectory() + "\\Saves";// папка с датой
-        private string dateFile = "\\Date.json";// дата
+        public static string dateFolder = Directory.GetCurrentDirectory() + "\\Saves";// папка с датой
+        public static string dateFile = "\\Date.json";// дата
 
         public delegate void ChangeTime(string time);
         public event ChangeTime ChangeTimeEvent;// событие изменения времени
