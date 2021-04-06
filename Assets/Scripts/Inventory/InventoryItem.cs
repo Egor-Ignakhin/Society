@@ -8,6 +8,7 @@ public abstract class InventoryItem : InteractiveObject
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {
         InventoryContainer.Instance.AddItem(this);
+        Destroy(gameObject);
     }
     public int GetCount()
     {

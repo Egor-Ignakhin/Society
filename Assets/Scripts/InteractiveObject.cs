@@ -13,7 +13,7 @@ public abstract class InteractiveObject : MonoBehaviour
     {
         SetDescription();
     }
-    public string GetTypeObject()
+    public string GetObjectType()
     {
         return typeObject;
     }

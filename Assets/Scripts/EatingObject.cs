@@ -15,6 +15,7 @@ public sealed class EatingObject : InteractiveObject
     {
         defaultThirstNutrition = thirstNutrition;
         defaultFoodNutrition = foodNutrition;
+        SetType("Milk");
     }
     public override void Interact(PlayerClasses.PlayerStatements player)
     {        

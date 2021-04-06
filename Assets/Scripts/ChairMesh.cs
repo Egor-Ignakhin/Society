@@ -13,6 +13,7 @@ public class ChairMesh : InteractiveObject
         base.Awake();
         if (timeMultiply == 0)
             Debug.LogError("time is stopped!");
+        SetType("Сhair");
     }
 
     public void SetOccupied(bool value)

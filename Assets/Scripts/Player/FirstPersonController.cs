@@ -464,7 +464,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 CanJump = false;
                 break;
         }
-        Debug.Log(isLockeds.Count);
     }
     public void SetPosAndRot(Transform point)
     {

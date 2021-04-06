@@ -40,18 +40,28 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
     /// <param name="item"></param>
     public void AddItem(InventoryItem item)
     {
-        queueOfItems.Enqueue(item);
+        if (cells.FindAll(c => c.isEmpty).Count == 0)// если нашлись свободные слоты
+            return;        
+        AddNewItem(item);// добавить новый предмет
+        queueOfItems.Enqueue(item);// добавить предмет в очередь
         MessageToPUDD();
+
+
     }
     private void MessageToPUDD()
     {
         var peek = queueOfItems.Dequeue();
-        PUDD.DrawNewItem(peek.GetTypeObject(), peek.GetCount());
+        PUDD.DrawNewItem(peek.GetObjectType(), peek.GetCount());
     }
     private void ChangeActiveEvent()
     {
         InventoryDrawer.ChangeActiveMainField();
         SetPause();
+    }
+
+    private void AddNewItem(InventoryItem item)
+    {
+        cells.Find(c => c.isEmpty).SetItem(item);
     }
     private void OnDisable()
     {
@@ -72,5 +82,14 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
             Cursor.lockState = CursorLockMode.None;
             fps.SetState(State.locked);
         }
+    }
+
+    public void InsideCursorCell(InventoryCell cell)
+    {
+        Debug.Log(cell);
+    }
+    public void OutsideCursorCell(InventoryCell cell)
+    {
+        Debug.Log(cell);
     }
 }
