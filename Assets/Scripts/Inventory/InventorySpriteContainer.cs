@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public static class InventorySpriteContainer
@@ -11,17 +8,18 @@ public static class InventorySpriteContainer
         new Dictionary<string, Sprite>();
     static InventorySpriteContainer()
     {
+        sprites.Add(NameSprites.DefaultIcon, Resources.Load<Sprite>("InventoryItems/Test_Item_DefaultIcon"));
         sprites.Add(NameSprites.Axe, Resources.Load<Sprite>("InventoryItems/Test_Item_Axe"));
         sprites.Add(NameSprites.Pistol1, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol1"));
         sprites.Add(NameSprites.Pistol2, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol2"));
     }
     public static Sprite GetSprite(string type)
     {
-        Debug.LogWarning(type);
         return sprites[type];
     }
     public class NameSprites
     {
+        public const string DefaultIcon = "DefaultIcon";
         public const string Axe = "Axe";
         public const string Pistol1 = "Pistol1";
         public const string Pistol2 = "Pistol2";

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class InventoryContainer : Singleton<InventoryContainer>
 {
@@ -9,6 +10,13 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
 
 
     private readonly List<InventoryCell> cells = new List<InventoryCell>();//слоты инвентаря
+
+    private InventoryCell draggedCell;
+    private RectTransform draggedItem;
+    private bool isDragged;
+
+    private Transform candidateForReplaceItem;
+    private InventoryCell candidateForReplaceCell;
     private void Awake()
     {
         fps = FindObjectOfType<FirstPersonController>();
@@ -29,6 +37,10 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
         {
             AddCell(cell);
         }
+        foreach (var c in cells)
+        {
+            c.Init();
+        }
     }
     private void AddCell(InventoryCell cell)
     {
@@ -40,8 +52,8 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
     /// <param name="item"></param>
     public void AddItem(InventoryItem item)
     {
-        if (cells.FindAll(c => c.isEmpty).Count == 0)// если нашлись свободные слоты
-            return;        
+        if (cells.FindAll(c => c.IsEmpty).Count == 0)// если нашлись свободные слоты
+            return;
         AddNewItem(item);// добавить новый предмет
         queueOfItems.Enqueue(item);// добавить предмет в очередь
         MessageToPUDD();
@@ -61,7 +73,7 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
 
     private void AddNewItem(InventoryItem item)
     {
-        cells.Find(c => c.isEmpty).SetItem(item);
+        cells.Find(c => c.IsEmpty).SetItem(item);
     }
     private void OnDisable()
     {
@@ -84,12 +96,73 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
         }
     }
 
+    public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        draggedItem.position = eventData.position;
+    }
+
+    public void BeginDrag(InventoryCell cell)
+    {
+        SetDragged(true);
+        draggedCell = cell;
+        draggedItem = cell.GetItemTransform();
+    }
+    public void EndDrag()
+    {
+        SetDragged(false);
+
+        if (candidateForReplaceItem != null && candidateForReplaceItem != draggedItem)
+        {
+            var bufferingSelectItemParent = draggedItem.parent;
+
+            draggedItem.SetParent(candidateForReplaceItem.parent);
+            draggedItem.localPosition = Vector3.zero;
+
+            candidateForReplaceItem.SetParent(bufferingSelectItemParent);
+            candidateForReplaceItem.localPosition = Vector3.zero;
+
+            RectTransform rr = candidateForReplaceCell.GetItemTransform();
+            Image ri = candidateForReplaceCell.GetImage();
+            candidateForReplaceCell.SetItem(draggedCell.GetItemTransform(), draggedCell.GetImage());
+
+            draggedCell.SetItem(rr, ri);
+
+            Debug.LogWarning("select = " + draggedCell.GetItemTransform().name);
+            Debug.LogWarning("candidate = " + candidateForReplaceCell.GetItemTransform().name);
+        }
+        else
+        {
+            draggedItem.localPosition = draggedCell.LastParent.localPosition;
+        }
+
+        draggedCell = null;
+        draggedItem = null;
+        candidateForReplaceCell = null;
+        candidateForReplaceItem = null;
+    }
     public void InsideCursorCell(InventoryCell cell)
     {
-        Debug.Log(cell);
+        candidateForReplaceCell = cell;
+        candidateForReplaceItem = cell.GetItemTransform();
+
+        if (isDragged)
+            return;
+        draggedCell = cell;
+        draggedItem = cell.GetItemTransform();
     }
-    public void OutsideCursorCell(InventoryCell cell)
+
+    public void OutsideCursorCell()
     {
-        Debug.Log(cell);
+        candidateForReplaceItem = null;
+        candidateForReplaceCell = null;
+
+        if (isDragged)
+            return;
+        draggedCell = null;
+        draggedItem = null;
+    }
+    private void SetDragged(bool value)
+    {
+        isDragged = value;
     }
 }
