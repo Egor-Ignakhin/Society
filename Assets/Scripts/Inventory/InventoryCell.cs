@@ -40,13 +40,13 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
     /// вызывается для смены предмета другим предметом
     /// </summary>
     /// <param name="cell"></param>
-    public void SetItem(RectTransform rt, Image i)
+    public void SetItem(CopyPasteCell copyPaste)
     {
      //   mItemClass.Type = cell.mItemClass.Type;
       //  ChangeSprite(mItemClass.Type);
 
-        mItem = rt;
-        mImage = i;
+        mItem = copyPaste.mItem;
+        mImage = copyPaste.mImage;
 
         IsEmpty = false;
     }
@@ -135,5 +135,16 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
     {
         public string Type { get; set; } = InventorySpriteContainer.NameSprites.DefaultIcon;
         
+    }
+    public struct CopyPasteCell
+    {
+        public RectTransform mItem;
+        public Image mImage;
+
+        public CopyPasteCell(InventoryCell c)
+        {
+            mItem = c.GetItemTransform();
+            mImage = c.GetImage();
+        }
     }
 }

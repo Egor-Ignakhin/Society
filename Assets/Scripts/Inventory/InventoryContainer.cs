@@ -121,14 +121,10 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
             candidateForReplaceItem.SetParent(bufferingSelectItemParent);
             candidateForReplaceItem.localPosition = Vector3.zero;
 
-            RectTransform rr = candidateForReplaceCell.GetItemTransform();
-            Image ri = candidateForReplaceCell.GetImage();
-            candidateForReplaceCell.SetItem(draggedCell.GetItemTransform(), draggedCell.GetImage());
+            InventoryCell.CopyPasteCell copyPaste = new InventoryCell.CopyPasteCell(candidateForReplaceCell);
+            candidateForReplaceCell.SetItem(new InventoryCell.CopyPasteCell(draggedCell));
 
-            draggedCell.SetItem(rr, ri);
-
-            Debug.LogWarning("select = " + draggedCell.GetItemTransform().name);
-            Debug.LogWarning("candidate = " + candidateForReplaceCell.GetItemTransform().name);
+            draggedCell.SetItem(copyPaste);
         }
         else
         {
