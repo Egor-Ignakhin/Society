@@ -9,19 +9,19 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
 
     [SerializeField] private Image mImage;// картинка
     [SerializeField] private RectTransform mItem;// трансформация предмета
-    public Item mItemClass { get; private set; }
+    public Item MItemContainer { get; private set; }
 
 
     private Vector3 SelectSize;// обычный размер
     private Vector3 defaultSize;// анимированный размер
 
-    public Transform LastParent { get; private set; }// родитель объекта    
+    private Transform LastParent;// родитель объекта    
 
     public void Init()
     {
         defaultSize = transform.localScale;
         SelectSize = transform.localScale /* 1.1f*/;
-        mItemClass = new Item();
+        MItemContainer = new Item();
     }
 
     /// <summary>
@@ -30,8 +30,8 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
     /// <param name="item"></param>
     public void SetItem(InventoryItem item)
     {
-        mItemClass.Type = item.GetObjectType();
-        ChangeSprite(mItemClass.Type);
+        MItemContainer.SetType(item.GetObjectType());
+        ChangeSprite(MItemContainer.GetItemType());
 
         IsEmpty = false;
     }
@@ -42,8 +42,7 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
     /// <param name="cell"></param>
     public void SetItem(CopyPasteCell copyPaste)
     {
-     //   mItemClass.Type = cell.mItemClass.Type;
-      //  ChangeSprite(mItemClass.Type);
+        MItemContainer.SetType(copyPaste.Type);
 
         mItem = copyPaste.mItem;
         mImage = copyPaste.mImage;
@@ -131,20 +130,33 @@ public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
         return mImage;
     }
 
+    public Transform GetLastParent()
+    {
+        return LastParent;
+    }
     public class Item
     {
-        public string Type { get; set; } = InventorySpriteContainer.NameSprites.DefaultIcon;
-        
+        private string Type  = InventorySpriteContainer.NameSprites.DefaultIcon;
+        public void SetType(string t)
+        {
+            Type = t;
+        }
+        public string GetItemType()
+        {
+            return Type;
+        }
     }
     public struct CopyPasteCell
     {
         public RectTransform mItem;
         public Image mImage;
+        public string Type;
 
         public CopyPasteCell(InventoryCell c)
         {
             mItem = c.GetItemTransform();
             mImage = c.GetImage();
+            Type = c.MItemContainer.GetItemType();
         }
     }
 }

@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public sealed class InventoryContainer : Singleton<InventoryContainer>
 {
     private FirstPersonController fps;
     private Queue<InventoryItem> queueOfItems = new Queue<InventoryItem>();// очередь предметов на отображение
     [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
-
+    [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
     private readonly List<InventoryCell> cells = new List<InventoryCell>();//слоты инвентаря
 
-    private InventoryCell draggedCell;
-    private RectTransform draggedItem;
-    private bool isDragged;
+    private InventoryCell draggedCell;// удерживаемая ячейка
+    private RectTransform draggedItem;// удерживаемый предмет
+    private bool isDragged;// происходит ли удержание
 
-    private Transform candidateForReplaceItem;
-    private InventoryCell candidateForReplaceCell;
+    private Transform candidateForReplaceItem;// кандидат для смены местами в инветаре(предмет)
+    private InventoryCell candidateForReplaceCell;// кандидат для смены местами в инветаре(ячейка)
     private void Awake()
     {
         fps = FindObjectOfType<FirstPersonController>();
@@ -27,25 +26,23 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
     }
     private void Start()
     {
+        // добавление всех ячеек в список
         var mc = InventoryDrawer.Instance.GetMainContainer();
         foreach (var cell in mc.GetComponentsInChildren<InventoryCell>())
         {
-            AddCell(cell);
+            cells.Add(cell);
         }
         var sc = InventoryDrawer.Instance.GetSupportContainer();
         foreach (var cell in sc.GetComponentsInChildren<InventoryCell>())
         {
-            AddCell(cell);
+            cells.Add(cell);
         }
         foreach (var c in cells)
         {
             c.Init();
         }
     }
-    private void AddCell(InventoryCell cell)
-    {
-        cells.Add(cell);
-    }
+
     /// <summary>
     /// добавление поднятого предмета в очередь
     /// </summary>
@@ -57,8 +54,6 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
         AddNewItem(item);// добавить новый предмет
         queueOfItems.Enqueue(item);// добавить предмет в очередь
         MessageToPUDD();
-
-
     }
     private void MessageToPUDD()
     {
@@ -81,6 +76,7 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
     }
     private void SetPause()
     {
+        // пауза при открытии инвентаря
         bool enabled = InventoryDrawer.MainFieldEnabled;
 
         Cursor.visible = enabled;
@@ -98,22 +94,36 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
 
     public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
     {
+        //удержание предмета
         draggedItem.position = eventData.position;
     }
 
     public void BeginDrag(InventoryCell cell)
     {
+        //начало удержания
         SetDragged(true);
         draggedCell = cell;
         draggedItem = cell.GetItemTransform();
+        draggedItem.SetParent(mainParent);
     }
     public void EndDrag()
     {
+        //конец удержания
         SetDragged(false);
 
+        ParentingDraggedObject();
+
+        draggedCell = null;
+        draggedItem = null;
+        candidateForReplaceCell = null;
+        candidateForReplaceItem = null;
+    }
+    private void ParentingDraggedObject()
+    {
+        // смена местами с кандидатом на ячейку или возврат на место
         if (candidateForReplaceItem != null && candidateForReplaceItem != draggedItem)
         {
-            var bufferingSelectItemParent = draggedItem.parent;
+            var bufferingSelectItemParent = draggedCell.transform;
 
             draggedItem.SetParent(candidateForReplaceItem.parent);
             draggedItem.localPosition = Vector3.zero;
@@ -128,16 +138,14 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
         }
         else
         {
-            draggedItem.localPosition = draggedCell.LastParent.localPosition;
+            draggedItem.SetParent(draggedCell.transform);
+            draggedItem.localPosition = Vector3.zero;
         }
 
-        draggedCell = null;
-        draggedItem = null;
-        candidateForReplaceCell = null;
-        candidateForReplaceItem = null;
     }
     public void InsideCursorCell(InventoryCell cell)
     {
+        // событие входа курсора в сектор ячейки
         candidateForReplaceCell = cell;
         candidateForReplaceItem = cell.GetItemTransform();
 
@@ -149,6 +157,7 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
 
     public void OutsideCursorCell()
     {
+        // событие выхода курсора из сектора ячейки
         candidateForReplaceItem = null;
         candidateForReplaceCell = null;
 
