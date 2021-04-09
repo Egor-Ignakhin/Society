@@ -11,8 +11,8 @@ public sealed class ScenesManager : InteractiveObject
         LoadNextScene();
     }
 
-    public void LoadNextScene()
+    public void LoadNextScene(int scene = -1)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(scene == -1 ? nextScene : scene);
     }
 }

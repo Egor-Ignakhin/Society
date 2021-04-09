@@ -35,6 +35,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     public KeyCode SprintKey = KeyCode.LeftShift;
     public float SprintSpeed { get; set; } = 8f;
     public float JumpPower { get; set; } = 5f;
+    public bool CanSprint { get; set; } = true;
     public bool CanJump { get; set; } = true;
     private bool jumpInput;
     private bool didJump;
@@ -189,7 +190,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 isCrouching = !isCrouching || _crouchModifiers.crouchOverride;
         }
 
-        if (Input.GetKey(SprintKey))
+        if (Input.GetKey(SprintKey) && CanSprint)
             Sprint = true;
         else
             Sprint = false;

@@ -21,6 +21,11 @@ namespace MenuScripts
             string data = JsonUtility.ToJson(state, true);
             File.WriteAllText(MissionsManager.StateFolder + MissionsManager.StateFile, data);
         }
+
+        public void LoadDemoMouseAnton()
+        {
+            FindObjectOfType<ScenesManager>().LoadNextScene(5);
+        }
         public void ExitFromGame()
         {
             Application.Quit();
