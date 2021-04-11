@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using Times;
+using UnityEngine;
 
 public sealed class ClockManager : MonoBehaviour
 {
-    private Times.WorldTime worldTime;
     [SerializeField] private TMPro.TextMeshPro text;
     [SerializeField] private bool isElectronicClock;
     [SerializeField] private Transform[] pointers = new Transform[2];
@@ -10,11 +10,10 @@ public sealed class ClockManager : MonoBehaviour
     [SerializeField] private Vector3 additionalRotateForHours;
     private void OnEnable()
     {
-        worldTime = FindObjectOfType<Times.WorldTime>();
         if (isElectronicClock)
-            worldTime.ChangeTimeEvent += RenderOnText;
+            WorldTime.Instance.ChangeTimeEvent += RenderOnText;
         else
-            worldTime.ChangeTimeEventInNumbers += RenderOnPointers;
+            WorldTime.Instance.ChangeTimeEventInNumbers += RenderOnPointers;
     }
 
     private void RenderOnText(string value)
@@ -33,8 +32,8 @@ public sealed class ClockManager : MonoBehaviour
     private void OnDisable()
     {
         if (isElectronicClock)
-            worldTime.ChangeTimeEvent -= RenderOnText;
+            WorldTime.Instance.ChangeTimeEvent -= RenderOnText;
         else
-            worldTime.ChangeTimeEventInNumbers -= RenderOnPointers;
+            WorldTime.Instance.ChangeTimeEventInNumbers -= RenderOnPointers;
     }
 }

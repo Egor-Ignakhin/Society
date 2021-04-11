@@ -4,20 +4,20 @@ using System.IO;
 using UnityEngine;
 namespace Times
 {
-    public class WorldTime : Singleton<WorldTime>
+    public sealed class WorldTime : Singleton<WorldTime>
     {
-        public static int Time { get; private set; }// добавленное время за такт
+        private static int Time;// добавленное время за такт
         private int additionalTime = 1;// множитель времени
         private Date currentDate;// текущая дата
         public Date CurrentDate
         {
             get
             {
-                if(currentDate == null)
+                if (currentDate == null)
                 {
                     LoadDate();
                 }
-                    return  currentDate;
+                return currentDate;
             }
             private set
             {
@@ -38,7 +38,7 @@ namespace Times
         private void OnEnable()
         {
             LoadData();
-            StartCoroutine(nameof(TimeThread));            
+            StartCoroutine(nameof(TimeThread));
         }
 
         /// <summary>
@@ -51,6 +51,10 @@ namespace Times
             File.WriteAllText(dateFolder + dateFile, savingDate);
             // End save date
         }
+        private void Start()
+        {
+            InvokeTimeEvent();
+        }
 
         /// <summary>
         /// ускорение времени
@@ -58,7 +62,7 @@ namespace Times
         /// <param name="timeMultiply"></param>
         internal void IncreaseSpeed(float timeMultiply)
         {
-            waitTime /= timeMultiply;            
+            waitTime /= timeMultiply;
         }
         /// <summary>
         /// замедление времени
@@ -86,15 +90,15 @@ namespace Times
                 {
                     Directory.CreateDirectory(dateFolder);
                     File.Create(dateFolder + dateFile);
-                }                
+                }
             }
         }
         #endregion
         private void LoadData()
         {
             // Start load date
-            if(CurrentDate == null)
-            LoadDate();
+            if (CurrentDate == null)
+                LoadDate();
             // End load Date
         }
         /// <summary>
@@ -112,7 +116,7 @@ namespace Times
 
                 Time = 0;
                 InvokeTimeEvent();
-                
+
                 yield return new WaitForSeconds(waitTime);
             }
         }
@@ -139,8 +143,8 @@ namespace Times
         public int days;
 
         public void SetTime()
-        {         
-            if(seconds >= 60)
+        {
+            if (seconds >= 60)
             {
                 minutes++;
                 seconds -= 60;
@@ -157,7 +161,7 @@ namespace Times
                 days++;
                 hours -= 24;
                 SetTime();
-            }          
+            }
         }
     }
 }
