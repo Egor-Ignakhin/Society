@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 namespace Times
 {
@@ -162,6 +163,13 @@ namespace Times
                 hours -= 24;
                 SetTime();
             }
+        }
+        public async void ForceSetTime(string hoursMins)
+        {
+            await Task.Delay(10);//delay for possible constructors
+            int.TryParse(hoursMins.Substring(0, hoursMins.IndexOf(':')), out hours);
+            int.TryParse(hoursMins.Substring(hoursMins.IndexOf(':') + 1), out minutes);
+            Debug.LogWarning(hours + " " + minutes);
         }
     }
 }
