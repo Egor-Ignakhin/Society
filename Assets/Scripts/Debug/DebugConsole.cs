@@ -12,7 +12,7 @@ public class DebugConsole : MonoBehaviour
     private bool commandWasChanged = false;
     private string lastCommand;
     private bool isSelected;
-
+    //private string 
 
     private void Update()
     {
@@ -24,30 +24,37 @@ public class DebugConsole : MonoBehaviour
             ErrorsHandler(CommandExecution());
             commandWasChanged = false;
         }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            WriteLastCommand();
+        }
     }
     public void ReadCommand(string command)
     {
-        lastCommand = command;
+        if(command != string.Empty)
+            lastCommand = command;
         commandWasChanged = true;
+    }
+    private void CreateField(string value)
+    {
+        var field = Instantiate(FieldPrefab, EventsContainer);
+        var text = field.transform.GetChild(0).transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        text.SetText(value);
     }
     private string CommandExecution()
     {
-        string errorType = string.Empty;
-        var field = Instantiate(FieldPrefab, EventsContainer);
-        var text = field.transform.GetChild(0).transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        text.SetText(lastCommand);
-
-        CommandsContainer.Execution(lastCommand);
-
+        string errorType = CommandsContainer.Execution(lastCommand);
+        if (errorType == string.Empty)// if command was exe.
+            CreateField(lastCommand);
 
         inputField.text = string.Empty;
-        lastCommand = string.Empty;
         return errorType;
     }
     private void ErrorsHandler(string type)
     {
         if (type == string.Empty)
             return;
+        CreateField(type);
     }
     public void OnSelect()
     {
@@ -56,6 +63,11 @@ public class DebugConsole : MonoBehaviour
     public void OnDeselect()
     {
         isSelected = false;
+    }
+    private void WriteLastCommand()
+    {
+        inputField.text = lastCommand;
+        inputField.Select();
     }
     public static class CommandsContainer
     {
@@ -75,12 +87,13 @@ public class DebugConsole : MonoBehaviour
 
             return (type, command);
         }
-        public static void Execution(string input)
+        public static string Execution(string input)
         {
             (string type, string command) = Substring(input);
             if (!commands.ContainsKey(type))
-                return;
+                return $"Erorr: {input}: command not found!";
             commands[type](command);
+            return string.Empty;
         }
         static CommandsContainer()
         {

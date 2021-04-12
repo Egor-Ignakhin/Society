@@ -167,9 +167,12 @@ namespace Times
         public async void ForceSetTime(string hoursMins)
         {
             await Task.Delay(10);//delay for possible constructors
-            int.TryParse(hoursMins.Substring(0, hoursMins.IndexOf(':')), out hours);
-            int.TryParse(hoursMins.Substring(hoursMins.IndexOf(':') + 1), out minutes);
-            Debug.LogWarning(hours + " " + minutes);
+            try
+            {
+                int.TryParse(hoursMins.Substring(0, hoursMins.IndexOf(':')), out hours);
+                int.TryParse(hoursMins.Substring(hoursMins.IndexOf(':') + 1), out minutes);
+            }
+            catch { }            
         }
     }
 }
