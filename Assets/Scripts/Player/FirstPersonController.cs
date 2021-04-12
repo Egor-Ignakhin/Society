@@ -10,7 +10,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 {
     #region Variables    
     #region Look Settings
-    private readonly List<bool> isLockeds = new List<bool>();
     public float VerticalRotationRange { get; set; } = 0f;
     public float HeadMaxY { get; set; } = 90;
     public float HeadMinY { get; set; } = -90;
@@ -152,37 +151,37 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void Update()
     {
-        if (isLockeds.Count > 0)
-            return;
         #region Look Settings - Update
 
-        float camFOV = PlayerCamera.fieldOfView;
-        float mouseYInput = Input.GetAxis("Mouse Y");
-        float mouseXInput = Input.GetAxis("Mouse X");
+        if (InputManager.IsLockeds == 0)
+        {
+            float camFOV = PlayerCamera.fieldOfView;
+            float mouseYInput = Input.GetAxis("Mouse Y");
+            float mouseXInput = Input.GetAxis("Mouse X");
 
-        if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
-        if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
+            if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
+            if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
 
-        targetAngles.y += mouseXInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);//rotate camera
+            targetAngles.y += mouseXInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);//rotate camera
 
-        targetAngles.x += mouseYInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);
+            targetAngles.x += mouseYInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);
 
-        targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
-        followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, (CameraSmoothing) / 100);
+            targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
+            followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, (CameraSmoothing) / 100);
 
-        PlayerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x, 0, 0);
-        transform.localRotation = Quaternion.Euler(0, followAngles.y, 0);
-
+            PlayerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x, 0, 0);
+            transform.localRotation = Quaternion.Euler(0, followAngles.y, 0);
+        }
         #endregion
 
         #region Input Settings - Update
-        if (Input.GetButtonDown("Jump") && CanJump)
+        if (Input.GetButtonDown("Jump") && CanJump && InputManager.IsLockeds == 0)
             jumpInput = true;
         else if (Input.GetButtonUp("Jump"))
             jumpInput = false;
 
 
-        if (_crouchModifiers.useCrouch)
+        if (_crouchModifiers.useCrouch && InputManager.IsLockeds == 0)
         {
             if (!_crouchModifiers.toggleCrouch)
                 isCrouching = _crouchModifiers.crouchOverride || Input.GetKey(_crouchModifiers.crouchKey);
@@ -190,7 +189,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                 isCrouching = !isCrouching || _crouchModifiers.crouchOverride;
         }
 
-        if (Input.GetKey(SprintKey) && CanSprint)
+        if (Input.GetKey(SprintKey) && CanSprint && InputManager.IsLockeds == 0)
             Sprint = true;
         else
             Sprint = false;
@@ -199,8 +198,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void FixedUpdate()
     {
-        if (isLockeds.Count > 0)
-            return;
         #region Movement Settings - FixedUpdate        
 
         Vector3 MoveDirection = Vector3.zero;
@@ -240,9 +237,9 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             }
         }
         #endregion
-
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        float m = InputManager.IsLockeds > 0 ? 0 : 1;
+        float horizontalInput = Input.GetAxis("Horizontal") * m;
+        float verticalInput = Input.GetAxis("Vertical") * m;
         inputXY = new Vector2(horizontalInput, verticalInput);
         if (inputXY.magnitude > 1)
             inputXY.Normalize();
@@ -361,8 +358,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private void OnCollisionEnter(Collision CollisionData)
     {
-        if (isLockeds.Count > 0)
-            return;
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
             float a = Vector3.Angle(CollisionData.GetContact(i).normal, Vector3.up);
@@ -395,8 +390,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     private void OnCollisionStay(Collision CollisionData)
     {
-        if (isLockeds.Count > 0)
-            return;
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
             float a = Vector3.Angle(CollisionData.GetContact(i).normal, Vector3.up);
@@ -427,8 +420,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     private void OnCollisionExit(Collision CollisionData)
     {
-        if (isLockeds.Count > 0)
-            return;
         IsGrounded = false;
         if (Advanced.MaxSlopeAngle > 0)
         {
@@ -442,14 +433,14 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     public async void SetState(State s)
     {
         if (s == State.locked)
-            isLockeds.Add(true);// добавление ограничителся
-        else if (s == State.unlocked && isLockeds.Count > 0)
-            isLockeds.RemoveAt(0);// удаление ограничителя
+            InputManager.LockInput();
+        else if (s == State.unlocked && InputManager.IsLockeds > 0)
+            InputManager.Unlock();// удаление ограничителя
 
         switch (s)
         {
             case State.unlocked:
-                if (isLockeds.Count > 0)
+                if (InputManager.IsLockeds > 0)
                     return;
 
                 _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;

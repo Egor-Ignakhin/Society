@@ -171,6 +171,7 @@ namespace Times
             {
                 int.TryParse(hoursMins.Substring(0, hoursMins.IndexOf(':')), out hours);
                 int.TryParse(hoursMins.Substring(hoursMins.IndexOf(':') + 1), out minutes);
+                seconds = 0;
             }
             catch { }            
         }

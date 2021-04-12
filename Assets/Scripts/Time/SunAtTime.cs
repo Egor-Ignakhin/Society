@@ -20,7 +20,7 @@ namespace Weather
 
         private void Rotate(int sec, int min, int hours)
         {
-            sunT.transform.localRotation = Quaternion.Euler(hours * 15 - 120, 180, 0);
+            sunT.transform.localRotation = Quaternion.Euler(hours * 15 - 120 + min / 4, 180, 0);
         }
         private void OnDisable()
         {

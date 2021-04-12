@@ -5,9 +5,9 @@ public sealed class ClockManager : MonoBehaviour
 {
     [SerializeField] private TMPro.TextMeshPro text;
     [SerializeField] private bool isElectronicClock;
-    [SerializeField] private Transform[] pointers = new Transform[2];
-    [SerializeField] private Vector3 additionalRotateForMin;
-    [SerializeField] private Vector3 additionalRotateForHours;
+    [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Transform[] pointers = new Transform[2];
+    [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForMin;
+    [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForHours;
     private void OnEnable()
     {
         if (isElectronicClock)
@@ -31,6 +31,8 @@ public sealed class ClockManager : MonoBehaviour
     }
     private void OnDisable()
     {
+        if (WorldTime.Instance == null)
+            return;
         if (isElectronicClock)
             WorldTime.Instance.ChangeTimeEvent -= RenderOnText;
         else

@@ -29,7 +29,7 @@ namespace PlayerClasses
                 SetCursorState();
         }
         private void SetCursorState()
-        {
+        {            
             lockedCursorState = !lockedCursorState;
             Cursor.lockState = lockedCursorState ? CursorLockMode.Locked : CursorLockMode.None;            
             Cursor.visible = lockedCursorState;

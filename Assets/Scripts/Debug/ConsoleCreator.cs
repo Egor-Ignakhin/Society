@@ -2,37 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-sealed class ConsoleCreator : MonoBehaviour
+namespace Debugger
 {
-    private bool isShowed;
-    private GameObject mainParent;
-    private void Awake()
+    sealed class ConsoleCreator : MonoBehaviour
     {
-        Init();
-    }
-    private void Init()
-    {
-        mainParent = Instantiate(Resources.Load<GameObject>("Debug\\[Canvas] DebugConsole"));
-        mainParent.transform.SetParent(transform);
-    }
-    private void SetEnable()
-    {
-        isShowed = !isShowed;
-
-    }
-    private void PlayAnim()
-    {
-
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
+        private void Awake()
         {
-            SetEnable();
+            Init();
         }
-        if (isShowed)
+        private void Init()
         {
-            PlayAnim();
+            Instantiate(Resources.Load<GameObject>("Debug\\[Canvas] DebugConsole"), transform);
         }
     }
 }

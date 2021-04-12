@@ -265,7 +265,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 255
   m_TargetDisplay: 0
 --- !u!114 &1884501911723964311
 MonoBehaviour:
@@ -318,10 +318,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a33d32e6d47fa864fb45044fd112423a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  background: {fileID: 7424597613565392825}
   FieldPrefab: {fileID: 3289858763655287206, guid: 5b4b9977fe0942a49a3533f18f674779,
     type: 3}
   EventsContainer: {fileID: 2367633523208580379}
   inputField: {fileID: 3143515179753960895}
+  hiddenPos: {x: 0, y: 900, z: 0}
+  ShowingPos: {x: 0, y: 200, z: 0}
 --- !u!1 &1623727869001767448
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,10 +493,10 @@ RectTransform:
   m_Father: {fileID: 7101503226622794312}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 199.97328}
-  m_SizeDelta: {x: 1920, y: -400.05344}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 900}
+  m_SizeDelta: {x: 1920, y: 680}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2107515638109878505
 CanvasRenderer:
@@ -589,7 +592,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 1
   m_CellSize: {x: 1900, y: 25}
-  m_Spacing: {x: 33.2, y: 75}
+  m_Spacing: {x: 33.2, y: 25}
   m_Constraint: 1
   m_ConstraintCount: 1
 --- !u!1 &7473888936558511914

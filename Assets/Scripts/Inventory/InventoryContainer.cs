@@ -90,6 +90,7 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
             Cursor.lockState = CursorLockMode.None;
             fps.SetState(State.locked);
         }
+        EndDrag();
     }
 
     public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
@@ -138,8 +139,11 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
         }
         else
         {
-            draggedItem.SetParent(draggedCell.transform);
-            draggedItem.localPosition = Vector3.zero;
+            if (draggedCell != null)
+            {
+                draggedItem.SetParent(draggedCell.transform);
+                draggedItem.localPosition = Vector3.zero;
+            }
         }
 
     }
