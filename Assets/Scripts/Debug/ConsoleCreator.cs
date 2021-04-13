@@ -12,7 +12,7 @@ namespace Debugger
         }
         private void Init()
         {
-            Instantiate(Resources.Load<GameObject>("Debug\\[Canvas] DebugConsole"), transform);
+            Instantiate(Resources.Load<GameObject>("Debug\\[Canvas] Debug"), transform);
         }
     }
 }

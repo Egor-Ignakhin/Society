@@ -4,33 +4,28 @@ using TMPro;
 
 namespace Debugger
 {
-    sealed class DebugConsole : MonoBehaviour
+    sealed class DebugConsole : MonoBehaviour, IDebug
     {
-        [SerializeField] private Transform background;
         [SerializeField] private GameObject FieldPrefab;
         [SerializeField] private Transform EventsContainer;
         [SerializeField] private TMP_InputField inputField;
         private bool commandWasChanged = false;
         private string lastCommand;
+        private readonly List<string> enteredCommands = new List<string>();
+        private int commandIterator = 0;
         private bool isSelected;
-        private bool isHidden = true;
-        private bool isMoving = false;
-        [SerializeField] private Vector3 hiddenPos;
-        [SerializeField] private Vector3 ShowingPos;
+
+        public bool Active { get; set; } = true;
+        GameObject IDebug.gameObject => gameObject; 
+
         private void Awake()
         {
-            CreateField("Society Console", true);            
+            CreateField("Society Console", true);
         }
         private void Update()
         {
-            if (isMoving)
-                Move();
-
-            if (Input.GetKeyDown(KeyCode.F1))
-            {
-                isHidden = !isHidden;
-                isMoving = true;
-            }
+            if (!Active)
+                return;
             if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
             {
                 if (!commandWasChanged || !isSelected)
@@ -39,40 +34,23 @@ namespace Debugger
                 ErrorsHandler(CommandExecution());
                 commandWasChanged = false;
             }
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 WriteLastCommand();
             }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                ClearInputField();
+            }
         }
-
-        private void Move()
+        public void Activate()
         {
-            Vector3 direction;
-            if (isHidden)
-            {
-                direction = hiddenPos;
-            }
-            else
-                direction = ShowingPos;
-            if (background.localPosition != direction)
-            {
-                background.localPosition = Vector3.MoveTowards(background.localPosition, direction, 100);
-            }
-            else
-            {
-                background.gameObject.SetActive(!isHidden);
-                if (!isHidden)
-                {
-                    InputManager.LockInput();
-                }
-                else
-                    InputManager.Unlock();
-                isMoving = false;
-                inputField.Select();
-            }
+            inputField.ActivateInputField();
         }
         public void ReadCommand(string command)
         {
+            if (!Active)
+                return;
             if (command != string.Empty)
                 lastCommand = command;
             commandWasChanged = true;
@@ -93,11 +71,15 @@ namespace Debugger
         }
         private string CommandExecution()
         {
+            enteredCommands.Add(lastCommand);
+            commandIterator = enteredCommands.Count;
+
             string errorType = CommandsContainer.Execution(lastCommand);
             if (errorType == string.Empty)// if command was exe.
                 CreateField("> " + lastCommand);
 
             inputField.text = string.Empty;
+            inputField.ActivateInputField();
             return errorType;
         }
         private void ErrorsHandler(string type)
@@ -116,13 +98,31 @@ namespace Debugger
         }
         private void WriteLastCommand()
         {
-            inputField.text = lastCommand;
-            inputField.Select();
+            if (commandIterator == 0)
+                return;
+
+            inputField.text = enteredCommands[--commandIterator];
+            inputField.ActivateInputField();
         }
+        private void ClearInputField()
+        {
+            if (commandIterator >= enteredCommands.Count - 1)
+            {
+                inputField.text = string.Empty;
+                commandIterator = enteredCommands.Count;
+            }
+            else
+            {
+                inputField.text = enteredCommands[++commandIterator];
+            }
+            inputField.ActivateInputField();
+        }
+
         public static class CommandsContainer
         {
             public delegate void Func(string command);
             public static Dictionary<string, Func> commands = new Dictionary<string, Func>();
+            private static int gameMode;// 0 is deadly; 1 is godly
             private static (string, string) Substring(string input)
             {
                 string type = string.Empty;
@@ -142,12 +142,15 @@ namespace Debugger
                 (string type, string command) = Substring(input);
                 if (!commands.ContainsKey(type))
                     return $"Erorr: {input}: command not found!";
+                if (gameMode == 0 && type != nameof(GameMode))
+                    return $"Error: {input}: insufficient permissions!";
                 commands[type](command);
                 return string.Empty;
             }
             static CommandsContainer()
             {
                 commands.Add(nameof(SetTime), SetTime);
+                commands.Add(nameof(GameMode), GameMode);
             }
             private static void SetTime(string command)
             {
@@ -163,6 +166,10 @@ namespace Debugger
                     Times.WorldTime.Instance.CurrentDate.ForceSetTime(command);
                 }
                 catch { }
+            }
+            private static void GameMode(string command)
+            {
+                int.TryParse(command, out gameMode);
             }
         }
     }

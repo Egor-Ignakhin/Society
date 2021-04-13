@@ -8,7 +8,7 @@ public sealed class InventoryInput : MonoBehaviour
     private const KeyCode changeActiveKeyCode = KeyCode.E;
     private void Update()
     {
-        if (Input.GetKeyDown(changeActiveKeyCode))
+        if (Input.GetKeyDown(changeActiveKeyCode) && InputManager.IsEnableInput == 0)
         {
             ChangeActive();
         }
