@@ -46,7 +46,7 @@ public sealed class InventoryContainer : Singleton<InventoryContainer>
     /// <summary>
     /// добавление поднятого предмета в очередь
     /// </summary>
-    /// <param name="item"></param>
+    /// <param name="item"></param>    
     public void AddItem(InventoryItem item)
     {
         if (cells.FindAll(c => c.IsEmpty).Count == 0)// если нашлись свободные слоты
