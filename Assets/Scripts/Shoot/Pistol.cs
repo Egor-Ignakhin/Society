@@ -1,41 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public sealed class Pistol : Gun
+namespace Shoots
 {
-    private PlayerClasses.BasicNeeds basicNeeds;
-    private Camera cam;
-    private Vector3 rayStartPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-    private void Awake()
+    public sealed class Pistol : Gun
     {
-        cam = Camera.main;
-        basicNeeds = FindObjectOfType<PlayerClasses.BasicNeeds>();
-    }
-    protected override bool Shoot()
-    {
-        bool canShoot = base.Shoot();
-        if (!canShoot)
-            return canShoot;
-        Ray ray = cam.ScreenPointToRay(rayStartPos);
-
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        private PlayerClasses.BasicNeeds basicNeeds;
+        private Camera cam;
+        [SerializeField] private Transform spawnBulletPlace;
+        private Bullet bullet;
+        private void Awake()
         {
-            TestCreateCube(hit);
-
-            if (hit.transform.TryGetComponent<Enemy>(out var enemy))
-            {
-                enemy.InjureEnemy(damage, basicNeeds);
-            }
+            cam = Camera.main;
+            basicNeeds = FindObjectOfType<PlayerClasses.BasicNeeds>();
+            bullet = Resources.Load<Bullet>("Guns\\PistolBullet");
         }
-        return canShoot;
-    }
-    private void TestCreateCube(RaycastHit hit)
-    {
-        GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        g.transform.localScale = Vector3.one * 0.1f;
-        g.transform.position = hit.point;
-        Destroy(g.GetComponent<BoxCollider>());
+        protected override bool Shoot()
+        {
+            bool canShoot = base.Shoot() && possibleShoot;
+            if (!canShoot)
+                return canShoot;
+            Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            CreateBullet(ray.direction);
+            return canShoot;
+        }
+        private void TestCreateCube(RaycastHit hit)
+        {
+            GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            g.transform.localScale = Vector3.one * 0.1f;
+            g.transform.position = hit.point;
+            Destroy(g.GetComponent<BoxCollider>());
+        }
+        private void CreateBullet(Vector3 target)
+        {
+            Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation).Init(basicNeeds,damage, target);
+        }
     }
 }

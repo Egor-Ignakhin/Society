@@ -11,17 +11,18 @@ namespace Debugger
         private bool isMoving = false;
         [SerializeField] private Vector3 hiddenPos;
         [SerializeField] private Vector3 ShowingPos;
-        [SerializeField] private DebugConsole console;
-
         private IDebug activeDebugger;
         [SerializeField] private List<GameObject> DebuggersObjects = new List<GameObject>();
-        private List<IDebug> Debuggers = new List<IDebug>();
+        private readonly List<IDebug> Debuggers = new List<IDebug>();
         private void Awake()
         {
-            foreach(var d in DebuggersObjects)
+            foreach (var d in DebuggersObjects)
             {
-                Debuggers.Add(d.GetComponent<IDebug>());                
+                Debuggers.Add(d.GetComponent<IDebug>());
             }
+            
+            DisableDebuggers();
+            activeDebugger = Debuggers[0];
         }
         private void Update()
         {
@@ -33,17 +34,19 @@ namespace Debugger
                 isMoving = true;
             }
         }
-        public void SetActiveDebugger(GameObject ad)
+        private void DisableDebuggers()
         {
             foreach (var d in Debuggers)
             {
                 d.Active = false;
                 d.gameObject.SetActive(false);
             }
-            activeDebugger = ad.GetComponent<IDebug>();
-            activeDebugger.Active = true;
-            ad.SetActive(true);
-            Debug.Log(ad.name);
+        }
+        public void SetActiveDebugger(GameObject ad)
+        {
+            DisableDebuggers();
+            activeDebugger = ad.GetComponent<IDebug>();            
+            activeDebugger.Activate();
         }
         private void Move()
         {
@@ -71,8 +74,8 @@ namespace Debugger
                     InputManager.Unlock();
                     InputManager.EnableInput();
                 }
-                isMoving = false;                
-                console.Activate();
+                isMoving = false;
+                activeDebugger.Activate();
             }
         }
     }

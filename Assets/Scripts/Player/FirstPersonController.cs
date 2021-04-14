@@ -305,14 +305,16 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         {
             if (isSprinting && !isCrouching && PlayerCamera.fieldOfView != (baseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
             {
-                if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)
+             /*  if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
                 {
                     PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
                 }
 
+                else if (PlayerCamera.fieldOfView != baseCamFOV)
+                {
+                    PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
+                }*/
             }
-            else if (PlayerCamera.fieldOfView != baseCamFOV)
-                PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
         }
 
         if (_crouchModifiers.useCrouch)

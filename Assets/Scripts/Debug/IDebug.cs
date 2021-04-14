@@ -4,5 +4,6 @@
     {
         bool Active { get; set; }
         UnityEngine.GameObject gameObject { get;}
+        void Activate();
     }
 }

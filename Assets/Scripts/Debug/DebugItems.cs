@@ -12,14 +12,13 @@ namespace Debugger
 
         public void AddItem(int i)
         {
-            if(i == 0)
-            {
+            InventoryContainer.Instance.AddItem(items[i]);
+        }
 
-            }
-            else if (i == 1)
-            {
-                InventoryContainer.Instance.AddItem(items[i]);
-            }
+        public void Activate()
+        {
+            Active = true;
+            gameObject.SetActive(true);
         }
     }
 }

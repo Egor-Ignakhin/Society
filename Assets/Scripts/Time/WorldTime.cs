@@ -169,11 +169,12 @@ namespace Times
             await Task.Delay(10);//delay for possible constructors
             try
             {
-                int.TryParse(hoursMins.Substring(0, hoursMins.IndexOf(':')), out hours);
+                int.TryParse(hoursMins.Substring(0, hoursMins.Contains(":") ?
+                    hoursMins.IndexOf(':') : hoursMins.Length), out hours);
                 int.TryParse(hoursMins.Substring(hoursMins.IndexOf(':') + 1), out minutes);
                 seconds = 0;
             }
-            catch { }            
+            catch { }
         }
     }
 }

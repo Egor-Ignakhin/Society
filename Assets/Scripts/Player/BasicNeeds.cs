@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace PlayerClasses
 {
-    public sealed class BasicNeeds : MonoBehaviour
+    public sealed class BasicNeeds : Singleton<BasicNeeds>
     {
         private float waitForThirst = 2;// частота таймера воды
         private float waitForHunger = 2;// частота таймера еды
@@ -26,7 +27,7 @@ namespace PlayerClasses
                     Dead();
                 }
                 health = value;
-                HealthChangeValue?.Invoke((float)System.Math.Round(value, 0));
+                HealthChangeValue?.Invoke((float)Math.Round(value, 0));
             }
         }
 
@@ -75,7 +76,8 @@ namespace PlayerClasses
         }
 
         private float defaultHealth = 80;// изначальное здоровья
-        public float MaximumHealth = 100;// максимальное кол-во здоровья
+        public float MaximumHealth = 100;// максимальное кол-во здоровья      
+
         private float MinimumHealth = 0;// минимальное кол-во здоровья
 
         private int defaultThirst = 100;// изначальное кол-во воды
@@ -183,5 +185,25 @@ namespace PlayerClasses
                 yield return new WaitForSeconds(waitForRadiation);
             }
         }
+        #region ForceCommands
+
+        internal static void ForceSetHealth(int value)
+        {
+            Instance.Health = value;
+        }
+        internal static void ForceSetFood(int value)
+        {
+            Instance.Food = value;
+        }
+        internal static void ForceSetWater(int value)
+        {
+            Instance.Thirst = value;
+        }
+        internal static void ForceSetRadiation(int value)
+        {
+            Instance.Radiation = value;
+        }
+
+        #endregion
     }
 }

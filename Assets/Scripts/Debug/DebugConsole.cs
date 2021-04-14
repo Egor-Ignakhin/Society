@@ -45,6 +45,8 @@ namespace Debugger
         }
         public void Activate()
         {
+            Active = true;
+            gameObject.SetActive(true);
             inputField.ActivateInputField();
         }
         public void ReadCommand(string command)
