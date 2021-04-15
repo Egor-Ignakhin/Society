@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
+    public delegate void RecoilHandler();
+    public event RecoilHandler RecoilEvent;
     [SerializeField] protected float damage;
     [SerializeField] protected int ammoCount;
     protected bool possibleShoot;
@@ -11,12 +13,14 @@ public abstract class Gun : MonoBehaviour
     public int GetAmmoCount() { return ammoCount; }
     protected virtual bool Shoot()
     {
+        bool canShooting = false;
         if (ammoCount > 0)
         {
             ammoCount--;
-            return true;
+            canShooting = true;
+            RecoilEvent?.Invoke();
         }
-        return false;
+        return canShooting;
     }
     protected void Update()
     {

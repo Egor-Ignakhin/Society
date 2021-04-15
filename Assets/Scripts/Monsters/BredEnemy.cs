@@ -15,7 +15,7 @@ namespace Enemies
                 eyes.Add(head.GetChild(i));
             }
 
-            base.Init(2, 3, 25, 500);
+            base.Init(2, 3, 25, 500);            
         }
 
         private void Update()

@@ -32,7 +32,7 @@ public abstract class Enemy : MonoBehaviour
                 ChangeHealthEvent?.Invoke(value);
             }
         }
-        public void Init(float SdistanceForAttack, float SpowerInjure, float SseeDistance, float Shealth)
+        public UniqueVariables(float SdistanceForAttack, float SpowerInjure, float SseeDistance, float Shealth)
         {
             this.DistanceForAttack = SdistanceForAttack;
             this.PowerInjure = SpowerInjure;
@@ -62,9 +62,8 @@ public abstract class Enemy : MonoBehaviour
 
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
-    {
-        UVariables = new UniqueVariables();
-        UVariables.Init(distanceForAttack, powerInjure, seeDistance, health);
+    {        
+        UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
 

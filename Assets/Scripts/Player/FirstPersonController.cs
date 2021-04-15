@@ -17,7 +17,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     public float FOVToMouseSensitivity { get; private set; } = 1f;
     public float CameraSmoothing { get; private set; } = 5f;
 
-    public Camera PlayerCamera { get; set; }
+    private Camera PlayerCamera;
 
     private float baseCamFOV;
 
@@ -466,6 +466,12 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
         targetAngles = point.eulerAngles;
         followAngles = targetAngles;
+    }
+
+    public void Recoil(Vector3 v)
+    {
+       followAngles += v;
+        targetAngles += v;
     }
 }
 
