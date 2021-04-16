@@ -15,7 +15,7 @@ namespace Enemies
                 eyes.Add(head.GetChild(i));
             }
 
-            base.Init(2, 3, 25, 500);            
+            base.Init(2, 10, 25, 250);            
         }
 
         private void Update()
@@ -38,7 +38,6 @@ namespace Enemies
             mAgent.enabled = false;
             SetAnimationClip(AnimationsContainer.Death);
             currentState = states.isDied;
-            GetComponent<BoxCollider>().enabled = false;
             enabled = false;
         }
 
