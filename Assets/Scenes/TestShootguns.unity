@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -561,25 +561,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!1 &898774219 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6117951662169992368, guid: 96c329b244cc8de40a91887f262b1338,
-    type: 3}
-  m_PrefabInstance: {fileID: 1333662349}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &898774220
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 898774219}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.42362812, y: 1.9842126, z: 0.5641003}
-  m_Center: {x: 0.012101531, y: 0.86650145, z: 0.018974245}
 --- !u!1001 &1082926142
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -949,11 +930,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BRED
       objectReference: {fileID: 0}
-    - target: {fileID: 6117951661815571311, guid: 96c329b244cc8de40a91887f262b1338,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6453053150532000926, guid: 96c329b244cc8de40a91887f262b1338,
         type: 3}
       propertyPath: m_RootOrder
@@ -1009,8 +985,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6117951661815571311, guid: 96c329b244cc8de40a91887f262b1338, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96c329b244cc8de40a91887f262b1338, type: 3}
 --- !u!1 &1583388534
 GameObject:
