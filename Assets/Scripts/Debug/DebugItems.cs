@@ -1,17 +1,19 @@
 ﻿using Inventory;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Debugger
 {
-    public class DebugItems : MonoBehaviour, IDebug
+    /// <summary>
+    /// клас для взятия предметов из дебаггера
+    /// </summary>
+     class DebugItems : MonoBehaviour, IDebug
     {
         public bool Active { get; set; }
         GameObject IDebug.gameObject => gameObject;
         [SerializeField] private List<InventoryItem> items = new List<InventoryItem>();
 
-        public void AddItem(int i)
+        public void AddItem(int i)// выдача инвентарю предмета
         {
             InventoryContainer.Instance.AddItem(items[i]);
         }

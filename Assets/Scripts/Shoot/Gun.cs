@@ -1,22 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// оружие
+/// </summary>
 public abstract class Gun : MonoBehaviour
 {
     public delegate void RecoilHandler();
-    public event RecoilHandler RecoilEvent;
-    [SerializeField] protected float damage;
-    [SerializeField] protected int ammoCount;
-    protected bool possibleShoot;
-    public float GetDamage() { return damage; }
-    public int GetAmmoCount() { return ammoCount; }
-    public virtual float CartridgeDispenser() => 1;
+    public event RecoilHandler RecoilEvent;// событие перезарядки
+    [SerializeField] protected float damage;// урон оружия
+    [SerializeField] protected int ammoCount;// количество патрон
+    protected bool possibleShoot;// возможность стрелять
+    public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
     private float currentCartridgeDispenser;
 
-    public virtual float ReloadTime() => 5;
+    public virtual float ReloadTime() => 5;// время перезарядки
     private float currentReloadTime = 0;
-    private bool isReloaded = true;
+    private bool isReloaded = true;// перезаряжено ли оружие
     private Dispenser dispenser = new Dispenser(8, 8);
     protected virtual bool Shoot()
     {
@@ -69,6 +68,9 @@ public abstract class Gun : MonoBehaviour
     {
         possibleShoot = isAnimFinish;
     }
+    /// <summary>
+    /// "магазин" оружия
+    /// </summary>
     class Dispenser
     {
         public int CountBullets { get; private set; }

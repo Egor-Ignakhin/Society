@@ -1,26 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Debugger
 {
-    public class DebugManager : MonoBehaviour
+    class DebugManager : MonoBehaviour
     {
-        [SerializeField] private Transform background;
+        [SerializeField] private Transform background;// фон
         private bool isHidden = true;
         private bool isMoving = false;
         [SerializeField] private Vector3 hiddenPos;
         [SerializeField] private Vector3 ShowingPos;
         private IDebug activeDebugger;
-        [SerializeField] private List<GameObject> DebuggersObjects = new List<GameObject>();
-        private readonly List<IDebug> Debuggers = new List<IDebug>();
+        [SerializeField] private List<GameObject> DebuggersObjects = new List<GameObject>();// лист дебаггеров-частиц
+        private readonly List<IDebug> Debuggers = new List<IDebug>();// тот же лист но с уже взятым от частиц интерфейсом
         private void Awake()
         {
-            foreach (var d in DebuggersObjects)
+            foreach (var d in DebuggersObjects)// заполнение листа частиц
             {
                 Debuggers.Add(d.GetComponent<IDebug>());
             }
-            
+
             DisableDebuggers();
             activeDebugger = Debuggers[0];
         }
@@ -34,6 +33,9 @@ namespace Debugger
                 isMoving = true;
             }
         }
+        /// <summary>
+        /// выключатель всех дебаггеров-частиц
+        /// </summary>
         private void DisableDebuggers()
         {
             foreach (var d in Debuggers)
@@ -42,41 +44,43 @@ namespace Debugger
                 d.gameObject.SetActive(false);
             }
         }
+        /// <summary>
+        /// установка активного дебаггера
+        /// </summary>
+        /// <param name="ad"></param>
         public void SetActiveDebugger(GameObject ad)
         {
             DisableDebuggers();
-            activeDebugger = ad.GetComponent<IDebug>();            
+            activeDebugger = ad.GetComponent<IDebug>();
             activeDebugger.Activate();
         }
+        /// <summary>
+        /// анимация движения
+        /// </summary>
         private void Move()
         {
-            Vector3 direction;
-            if (isHidden)
-            {
-                direction = hiddenPos;
-            }
-            else
-                direction = ShowingPos;
-            if (background.localPosition != direction)
+            Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
+
+            if (background.localPosition != direction)// если анимация не кончилась
             {
                 background.localPosition = Vector3.MoveTowards(background.localPosition, direction, 100);
+                return;
+            }
+
+
+            background.gameObject.SetActive(!isHidden);
+            if (!isHidden)
+            {
+                InputManager.LockInput();
+                InputManager.DisableInput();
             }
             else
             {
-                background.gameObject.SetActive(!isHidden);
-                if (!isHidden)
-                {
-                    InputManager.LockInput();
-                    InputManager.DisableInput();
-                }
-                else
-                {
-                    InputManager.Unlock();
-                    InputManager.EnableInput();
-                }
-                isMoving = false;
-                activeDebugger.Activate();
+                InputManager.Unlock();
+                InputManager.EnableInput();
             }
+            isMoving = false;
+            activeDebugger.Activate();
         }
     }
 }

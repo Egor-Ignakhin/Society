@@ -3,7 +3,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Inventory
-{
+{/// <summary>
+/// класс - слота в инвентаре
+/// </summary>
     public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
         IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler
     {
@@ -15,9 +17,7 @@ namespace Inventory
 
 
         private Vector3 SelectSize;// обычный размер
-        private Vector3 defaultSize;// анимированный размер
-
-        private Transform LastParent;// родитель объекта    
+        private Vector3 defaultSize;// анимированный размер   
 
         public delegate void ItemHandler(int count);
         public event ItemHandler ChangeCountEvent;
@@ -92,7 +92,6 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            LastParent = transform.parent;
             InventoryContainer.Instance.BeginDrag(this);
             mImage.raycastTarget = false;//отключение чувствительности предмета
         }
@@ -136,25 +135,22 @@ namespace Inventory
         {
             return mImage;
         }
-
-        public Transform GetLastParent()
-        {
-            return LastParent;
-        }
         public class Item
         {
             private string Type = InventorySpriteContainer.NameSprites.DefaultIcon;
             private int count = 0;
-            public int maxCount { get; private set; } = 10;
+            public int MaxCount { get; private set; } = 10;
             public TMPro.TextMeshProUGUI mText { get; private set; }
             public int SetItem(string t, int c)
             {
-                int outRangeCount = maxCount - c;
                 Type = t;
-                count = c + count;
-                if (count > maxCount)
-                    count = maxCount;
-                return outRangeCount;
+                count += c;
+                int outRangeCount = count - MaxCount;
+                if (count > MaxCount)
+                    count = MaxCount;
+                if (outRangeCount > 0)
+                    return outRangeCount;
+                else return 0;
             }
             public string GetItemType() => Type;
 
@@ -162,13 +158,16 @@ namespace Inventory
 
             public void SetMaxCount(int mc)
             {
-                maxCount = mc;
+                MaxCount = mc;
             }
             public void SetText(TMPro.TextMeshProUGUI t)
             {
                 mText = t;
             }
         }
+        /// <summary>
+        /// структура для копирования слота
+        /// </summary>
         public struct CopyPasteCell
         {
             public InventoryCell mCell;

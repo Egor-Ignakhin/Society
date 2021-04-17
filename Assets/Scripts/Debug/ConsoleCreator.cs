@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Debugger
 {
-    sealed class ConsoleCreator : MonoBehaviour
+    sealed class ConsoleCreator : MonoBehaviour// объект с этим классом создаёт экземпляр дебаггера
     {
         private void Awake()
         {

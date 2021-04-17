@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+/// <summary>
+/// класс блокирующий управление
+/// </summary>
 public sealed class InputManager
 {
     public static int IsLockeds { get; private set; } = 0;

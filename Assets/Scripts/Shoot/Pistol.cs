@@ -1,28 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 namespace Shoots
 {
-    public sealed class Pistol : Gun
+    sealed class Pistol : Gun
     {
-        private PlayerClasses.BasicNeeds basicNeeds;
-        [SerializeField] private Transform spawnBulletPlace;
+        [SerializeField] private Transform spawnBulletPlace;// место появление патрона
         private Bullet bullet;
         [SerializeField] private LayerMask layerMask;
-        private float maxDistance = 100;
-        [SerializeField] private ParticleSystem flashEffect;
+        private float maxDistance = 100;// максимальная дистанция поражения
+        [SerializeField] private ParticleSystem flashEffect;// эффект выстрела
 
-        private Dictionary<string, GameObject> impacts = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> impacts;// эффекты столкновений
         private void LoadAssets()
         {
             bullet = Resources.Load<Bullet>("Guns\\PistolBullet");
+            impacts = new Dictionary<string, GameObject> {
 
-            impacts.Add("Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect"));
-            impacts.Add("Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect"));
+                { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
+                { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
+            };
         }
         private void Awake()
         {
-            basicNeeds = FindObjectOfType<PlayerClasses.BasicNeeds>();
             LoadAssets();
         }
         public override float CartridgeDispenser()
@@ -38,21 +37,23 @@ namespace Shoots
             PlayFlashEffect();
             return canShoot;
         }
+        /// <summary>
+        /// создание пули
+        /// </summary>
         private void CreateBullet()
         {
             Ray ray = new Ray(transform.position, -transform.right);
-            Bullet newBullet;
-            newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
+            Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
 
             if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.transform.parent && hit.transform.parent.GetComponent<Enemy>())
-                    newBullet.Init(basicNeeds, damage, hit, impacts["Enemy"]);
+                    newBullet.Init(damage, hit, impacts["Enemy"], 75);
                 else
-                    newBullet.Init(basicNeeds, damage, hit, impacts["Default"]);
+                    newBullet.Init(damage, hit, impacts["Default"], 75);
             }
             else
-                newBullet.Init(basicNeeds, damage, ray.GetPoint(maxDistance));
+                newBullet.Init(damage, ray.GetPoint(maxDistance), 75);
         }
         private void PlayFlashEffect()
         {

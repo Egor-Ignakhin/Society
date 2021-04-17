@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-
+//объект с возможностью положить в инвентарь
 public abstract class InventoryItem : InteractiveObject
 {
     [SerializeField] protected int count = 1;
