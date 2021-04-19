@@ -1,119 +1,153 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-/// <summary>
-/// оружие
-/// </summary>
-public abstract class Gun : MonoBehaviour
+namespace Shoots
 {
-    public delegate void RecoilHandler();
-    public event RecoilHandler RecoilEvent;// событие перезарядки
-    [SerializeField] protected int ammoCount;// количество патрон
-    [SerializeField] protected float caliber = 10;// калибр снаряда    
-    protected bool possibleShoot;// возможность стрелять
-    public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
-    private float currentCartridgeDispenser;
-
-    public virtual float ReloadTime() => 5;// время перезарядки
-    private float currentReloadTime = 0;
-    private bool isReloaded = true;// перезаряжено ли оружие
-    private Dispenser dispenser = new Dispenser(8, 8);
-    [SerializeField] private Animator mAnimator;
-    public bool isReload { get; protected set; }
-    protected virtual void Awake()
-    {
-        mAnimator = GetComponent<Animator>();
-    }
-    protected virtual bool Shoot()
-    {
-        bool canShooting = ammoCount > 0 && currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0;
-        if (canShooting)
-        {
-            ammoCount--;
-            currentCartridgeDispenser = 0;
-            dispenser.Dispens();
-            mAnimator.SetTrigger("Fire");
-        }
-        else if (dispenser.CountBullets == 0)
-        {
-            isReloaded = false;
-        }     
-        return canShooting;
-    }
-    protected void CallRecoilEvent()
-    {
-        RecoilEvent?.Invoke();
-    }
-    protected void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-            Shoot();
-
-        CartridgeDispens();
-
-        if (!isReloaded)
-        {
-            Reload();
-        }
-    }
-    private void CartridgeDispens()
-    {
-        if (currentCartridgeDispenser < CartridgeDispenser())
-            currentCartridgeDispenser += Time.deltaTime;
-    }
-    private void Reload()
-    {        
-        if (currentReloadTime < ReloadTime())
-        {
-            currentReloadTime += Time.deltaTime;
-            mAnimator.SetBool("Reload", true);
-            isReload = true;
-        }
-        else
-        {
-            isReloaded = true;
-            dispenser.Reload();
-            currentReloadTime = 0;
-            mAnimator.SetBool("Reload", false);
-            isReload = false;
-        }
-    }
-    public static float GetOptimalDamage(float G, float V, float F, float S,
-        float distance, float maxDistance)
-    {
-        //mass * speed * area * shape coefficient
-        float damage = 0.178f * G * V * F * S;
-
-        if (distance != 0)
-            damage /= (distance * 10 / maxDistance);
-        Debug.Log(damage);
-        return damage;
-    }
-
-
-    internal void SetPossibleShooting(bool isAnimFinish)
-    {
-        possibleShoot = isAnimFinish;
-    }
     /// <summary>
-    /// "магазин" оружия
+    /// оружие
     /// </summary>
-    class Dispenser
+    public abstract class Gun : MonoBehaviour
     {
-        public int CountBullets { get; private set; }
-        private int maxBullets;
-        public Dispenser(int cb, int maxB)
+        public delegate void RecoilHandler();
+        public event RecoilHandler RecoilEvent;// событие перезарядки
+        [SerializeField] protected int ammoCount;// количество патрон
+        [SerializeField] protected float caliber = 10;// калибр снаряда    
+        protected bool possibleShoot = true;// возможность стрелять
+        public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
+        private float currentCartridgeDispenser;
+
+        public virtual float ReloadTime() => 5;// время перезарядки
+        private float currentReloadTime = 0;
+        protected Dispenser dispenser;
+        [SerializeField] private Animator mAnimator;
+        public bool IsReload { get; protected set; }
+        protected Bullet bullet;
+        protected UsedUpBullet upBullet;
+
+        [SerializeField] protected float bulletSpeed = 315;
+        [SerializeField] protected float maxDistance = 350;// максимальная дистанция поражения
+
+
+        [SerializeField] protected ParticleSystem flashEffect;// эффект выстрела
+        [SerializeField] protected Transform droppingPlace;
+        [SerializeField] protected LayerMask layerMask;
+        [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
+        protected abstract void Awake();
+        protected abstract void LoadAssets();
+        protected virtual bool Shoot()
         {
-            CountBullets = cb;
-            maxBullets = maxB;
+            bool canShooting = ammoCount > 0 && currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0 && !IsReload;
+            if (canShooting)
+            {
+                ammoCount--;
+                currentCartridgeDispenser = 0;
+                dispenser.Dispens();
+                mAnimator.SetTrigger("Fire");
+            }
+
+            return canShooting;
         }
-        public void Dispens()
+
+        public abstract float getRecoilPower();
+
+        protected void CallRecoilEvent()
         {
-            CountBullets--;
+            RecoilEvent?.Invoke();
         }
-        public void Reload()
+        protected virtual void Update()
+        {         
+            CartridgeDispens();
+
+            Reload();
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                IsReload = true;
+            }
+        }
+        private void CartridgeDispens()
         {
-            CountBullets = maxBullets;
+            if (currentCartridgeDispenser < CartridgeDispenser())
+                currentCartridgeDispenser += Time.deltaTime;
+        }
+        private void Reload()
+        {
+            if (dispenser.IsFull)
+                IsReload = false;
+            if (!IsReload)
+                return;
+
+            IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime();
+            mAnimator.SetBool("Reload", IsReload);
+
+            if (!IsReload)
+            {
+                dispenser.Reload();
+                currentReloadTime = 0;
+            }
+        }
+        /// <summary>
+        /// возвращает оптимальный урон по противнику
+        /// </summary>
+        /// <param name="G"></param>
+        /// <param name="V"></param>
+        /// <param name="F"></param>
+        /// <param name="S"></param>
+        /// <param name="distance"></param>
+        /// <param name="maxDistance"></param>
+        /// <returns></returns>
+        public static float GetOptimalDamage(float G, float V, float F, float S,
+            float distance, float maxDistance)
+        {
+            //mass * speed * area * shape coefficient
+            float damage = 0.178f * G * V * F * S;
+
+            if (distance != 0)
+                damage /= (distance * 10 / maxDistance);
+            Debug.Log(damage);
+            return damage;
+        }
+
+
+        public void SetPossibleShooting(bool isAnimFinish)
+        {
+            possibleShoot = isAnimFinish;
+        }
+        protected abstract void DropUsedBullet();
+        protected abstract void PlayFlashEffect();
+        protected abstract void CreateBullet();
+        /// <summary>
+        /// "магазин" оружия
+        /// </summary>
+        protected class Dispenser
+        {
+            public int CountBullets { get; private set; }
+            private readonly int maxBullets;
+            public Dispenser(int cb, int maxB)
+            {
+                CountBullets = cb;
+                maxBullets = maxB;
+            }
+            public void Dispens()
+            {
+                CountBullets--;
+                IsFull = false;
+            }
+            public void Reload()
+            {
+                CountBullets = maxBullets;
+                IsFull = true;
+            }
+            public bool IsFull { get; private set; }// полна ли обойма
+        }
+
+        public static class ImpactsContainer
+        {
+            public static Dictionary<string, GameObject> Impacts = new Dictionary<string, GameObject> {// эффекты столкновений
+                { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
+                { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
+        };
         }
     }
 }
-

@@ -3,7 +3,7 @@ namespace Shoots
 {/// <summary>
 /// патрон для оружия
 /// </summary>
-    class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour
     {
         private Vector3 target;//точка назначения
         private float speed;// скорость полёта
@@ -18,11 +18,11 @@ namespace Shoots
         private float maxDistance;
         public void Init(BulletValues bv, RaycastHit t, GameObject impact, Enemy e)
         {
-            maxDistance = bv.maxDistance;
-            distance = bv.currentDistance;
-            this.caliber = bv.caliber;
+            maxDistance = bv.MaxDistance;
+            distance = bv.CurrentDistance;
+            this.caliber = bv.Caliber;
             target = t.point;
-            speed = bv.speed;
+            speed = bv.Speed;
             impactEffect = impact;
             var parent = new GameObject("parentForImpact").transform;
             parent.SetParent(t.transform);
@@ -36,11 +36,11 @@ namespace Shoots
         }
         public void Init(BulletValues bv, Vector3 t)
         {
-            maxDistance = bv.maxDistance;
+            maxDistance = bv.MaxDistance;
             target = t;
-            speed = bv.speed;
-            this.caliber = bv.caliber;
-            distance = bv.currentDistance;
+            speed = bv.Speed;
+            this.caliber = bv.Caliber;
+            distance = bv.CurrentDistance;
         }
 
         private void Update()
