@@ -59,12 +59,16 @@ class GunAnimator : MonoBehaviour
     }
     private void Animate()
     {
-        Vector3 target = isAiming ? aimPlace.position : hangPlace.position;// следующая позиция
+        Vector3 target = isAiming && !pistol.isReload ? aimPlace.position : hangPlace.position;// следующая позиция
         pistol.transform.position = Vector3.MoveTowards(pistol.transform.position, target, lerpSpeed);
+
 
         isAnimFinish = pistol.transform.position == target;
 
         playerCamera.fieldOfView = Mathf.SmoothDamp(playerCamera.fieldOfView, pistol.transform.position == aimPlace.position ?// анимирование угла обзора
             advanced.BaseCamFOV - (advanced.FOVKickAmount * 2) : advanced.BaseCamFOV, ref advanced.fovRef, lerpSpeed);
+        if (pistol.isReload)
+            return;
+        pistol.transform.localRotation = Quaternion.RotateTowards(pistol.transform.localRotation, Quaternion.identity, 1);     
     }
 }

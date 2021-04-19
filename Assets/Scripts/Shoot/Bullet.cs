@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 namespace Shoots
 {/// <summary>
 /// патрон для оружия
@@ -9,37 +7,40 @@ namespace Shoots
     {
         private Vector3 target;//точка назначения
         private float speed;// скорость полёта
-        private float damage;//урон по возможному врагу
         private Enemy enemy;// возможный враг
         private bool isFinished;// долетел ли снаряд
         private GameObject impactEffect;// эффекта столкновения
-        private float caliber = 4;// калибр снаряда
-        public void Init(float d, RaycastHit t, GameObject impact, float s)
+        private float caliber;// калибр снаряда
+        [SerializeField] private float mass = 0;
+        [SerializeField] private float area = 0.649f;
+        [SerializeField] private float kf = 1;
+        private float distance;
+        private float maxDistance;
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, Enemy e)
         {
-            damage = d;
+            maxDistance = bv.maxDistance;
+            distance = bv.currentDistance;
+            this.caliber = bv.caliber;
             target = t.point;
-            speed = s;
+            speed = bv.speed;
             impactEffect = impact;
             var parent = new GameObject("parentForImpact").transform;
             parent.SetParent(t.transform);
 
             impactEffect = Instantiate(impactEffect, target, Quaternion.identity, parent);
-            if (t.transform.parent && t.transform.parent.TryGetComponent<Enemy>(out var enemy))
-            {
-                this.enemy = enemy;
-            }
-            else
-            {
-                impactEffect.transform.localScale *= caliber / 10;
-            }
+
+            this.enemy = e;
+
             impactEffect.transform.forward = t.normal;
             impactEffect.SetActive(false);
         }
-        public void Init(float d, Vector3 t, float s)
+        public void Init(BulletValues bv, Vector3 t)
         {
-            damage = d;
+            maxDistance = bv.maxDistance;
             target = t;
-            speed = s;
+            speed = bv.speed;
+            this.caliber = bv.caliber;
+            distance = bv.currentDistance;
         }
 
         private void Update()
@@ -60,7 +61,7 @@ namespace Shoots
             if (impactEffect)
             {
                 if (enemy)
-                    enemy.InjureEnemy(damage, PlayerClasses.BasicNeeds.Instance);
+                    enemy.InjureEnemy(Gun.GetOptimalDamage(mass, speed, area, kf, distance, maxDistance), PlayerClasses.BasicNeeds.Instance);
                 impactEffect.SetActive(true);
             }
 
