@@ -128,6 +128,8 @@ namespace Shoots
             {
                 CountBullets = cb;
                 maxBullets = maxB;
+                if (CountBullets == maxBullets)
+                    IsFull = true;
             }
             public void Dispens()
             {

@@ -37,18 +37,20 @@ namespace Shoots
         {
             if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
             {
-                rb.AddForce(droppingPlace.right, ForceMode.Impulse);
-                rb.AddForce(-droppingPlace.forward, ForceMode.Impulse);
+                float m = Random.Range(1, 2);
+                rb.AddForce(droppingPlace.right * m, ForceMode.Impulse);
+                rb.AddForce(-droppingPlace.forward * m, ForceMode.Impulse);
             }
         }
 
         protected override void PlayFlashEffect()
         {
+            flashEffect.time = 0;
             flashEffect.Play();
         }      
         public override float CartridgeDispenser()
         {
-            return 0.1f;
+            return 0.125f;
         }
         protected override void CreateBullet()
         {            
@@ -70,7 +72,11 @@ namespace Shoots
         }
         public override float getRecoilPower()
         {
-            return 0.75f;
+            return 0.25f;
+        }
+        public override float ReloadTime()
+        {
+            return 3.75f;
         }
     }
 }

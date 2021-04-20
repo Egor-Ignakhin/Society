@@ -13,8 +13,9 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     public float VerticalRotationRange { get; set; } = 0f;
     public float HeadMaxY { get; set; } = 90;
     public float HeadMinY { get; set; } = -90;
-    public int Sensitivity { get; set; } = 3;
-    public float FOVToMouseSensitivity { get; private set; } = 1f;
+    public float Sensitivity { get; set; } = 2;
+
+    public float SensivityM { get; set; } = 1;
     public float CameraSmoothing { get; private set; } = 5f;
 
     private Camera PlayerCamera;
@@ -24,6 +25,16 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     private Vector3 targetAngles;
     private Vector3 followAngles;
     private Vector3 followVelocity;
+
+    private float ZSlant { get; set; }
+    public void SetZSlant(int n)
+    {
+        ZSlant = n;
+        float rPos = n > 0 ? -0.375f : (n < 0 ? 0.375f : 0);
+
+        PlayerCamera.transform.localPosition = Vector3.MoveTowards(PlayerCamera.transform.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime);
+    }
+
     #endregion
 
     #region Movement Settings
@@ -155,21 +166,20 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
         if (InputManager.IsLockeds == 0)
         {
-            float camFOV = PlayerCamera.fieldOfView;
             float mouseYInput = Input.GetAxis("Mouse Y");
             float mouseXInput = Input.GetAxis("Mouse X");
 
             if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
             if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
 
-            targetAngles.y += mouseXInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);//rotate camera
+            targetAngles.y += mouseXInput * Sensitivity * SensivityM;//rotate camera
 
-            targetAngles.x += mouseYInput * (Sensitivity - ((baseCamFOV - camFOV) * FOVToMouseSensitivity) / 6f);
+            targetAngles.x += mouseYInput * Sensitivity * SensivityM;
 
             targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
             followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, (CameraSmoothing) / 100);
 
-            PlayerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x, 0, 0);
+            PlayerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x, 0, ZSlant);
             transform.localRotation = Quaternion.Euler(0, followAngles.y, 0);
         }
         #endregion
@@ -230,7 +240,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
         if (Advanced.MaxStepHeight > 0 && Physics.Raycast(transform.position - new Vector3(0, ((capsule.height / 2) * transform.localScale.y) - 0.01f, 0), MoveDirection, out RaycastHit WT, capsule.radius - 3, Physics.AllLayers, QueryTriggerInteraction.Ignore) && Vector3.Angle(WT.normal, Vector3.up) > 88)
         {
-            if (!Physics.Raycast(transform.position - new Vector3(0, (capsule.height / 2 * transform.localScale.y) - Advanced.MaxStepHeight, 0), MoveDirection, out RaycastHit ST, capsule.radius + 0.25f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            if (!Physics.Raycast(transform.position - new Vector3(0, (capsule.height / 2 * transform.localScale.y) - Advanced.MaxStepHeight, 0), MoveDirection, out _, capsule.radius + 0.25f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
                 Advanced.stairMiniHop = true;
                 transform.position += new Vector3(0, Advanced.MaxStepHeight * 1.2f, 0);
@@ -305,15 +315,15 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         {
             if (isSprinting && !isCrouching && PlayerCamera.fieldOfView != (baseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
             {
-             /*  if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
-                {
-                    PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
-                }
+                /*  if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
+                   {
+                       PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
+                   }
 
-                else if (PlayerCamera.fieldOfView != baseCamFOV)
-                {
-                    PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
-                }*/
+                   else if (PlayerCamera.fieldOfView != baseCamFOV)
+                   {
+                       PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
+                   }*/
             }
         }
 
@@ -470,7 +480,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     public void Recoil(Vector3 v)
     {
-       followAngles += v;
+        followAngles += v;
         targetAngles += v;
     }
 }

@@ -39,7 +39,7 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     /// </summary>
     public static void ChangeActiveMainField()
     {
-        MainFieldEnabled = !MainFieldEnabled;
+        MainFieldEnabled = !Shoots.GunAnimator.Instance.isAiming && !MainFieldEnabled;
         mainFieldActiveEvent?.Invoke();
     }
     private void OnDisable()

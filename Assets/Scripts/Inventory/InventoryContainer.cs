@@ -86,7 +86,8 @@ namespace Inventory
         private void SetPause()
         {
             // пауза при открытии инвентаря
-            bool enabled = InventoryDrawer.MainFieldEnabled;
+            bool enabled = InventoryDrawer.MainFieldEnabled && !Shoots.GunAnimator.Instance.isAiming;            
+            
 
             Cursor.visible = enabled;
             if (!enabled)
