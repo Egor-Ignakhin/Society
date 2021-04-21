@@ -4,10 +4,10 @@ using UnityEngine;
 
 public sealed class MissionsManager : MonoBehaviour
 {
-    [SerializeField] private BasicNeeds playerBasicNeeds;
-    [SerializeField] private Canvas effectsCanvas;
-    [SerializeField] private Dialogs.DialogDrawer dialogDrawer;
-    [SerializeField] private TaskDrawer taskDrawer;
+    private BasicNeeds playerBasicNeeds;
+    private EffectsCanvas effectsCanvas;
+    private Dialogs.DialogDrawer dialogDrawer;
+    private TaskDrawer taskDrawer;
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
@@ -21,9 +21,14 @@ public sealed class MissionsManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        taskDrawer = FindObjectOfType<TaskDrawer>();
+        dialogDrawer = FindObjectOfType<Dialogs.DialogDrawer>();
+        effectsCanvas = FindObjectOfType<EffectsCanvas>();
+        playerBasicNeeds = BasicNeeds.Instance;
         LoadState();
         StartOrContinueMission(currentState.currentMission);
     }
+    
     /// <summary>
     /// загрузка состояния миссий
     /// </summary>
@@ -45,7 +50,7 @@ public sealed class MissionsManager : MonoBehaviour
         }
     }
 
-    internal Canvas GetEffectsCanvas()
+    internal EffectsCanvas GetEffectsCanvas()
     {
         return effectsCanvas;
     }

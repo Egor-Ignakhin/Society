@@ -54,7 +54,7 @@ namespace Shoots
         }
         protected override void CreateBullet()
         {            
-            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            Ray ray = GunAnimator.Instance.isAiming? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)): new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
             Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
             BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed);
 

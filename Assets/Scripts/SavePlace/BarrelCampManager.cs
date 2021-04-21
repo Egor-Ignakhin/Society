@@ -8,6 +8,10 @@ namespace BarrelCampScripts
         public void InsidePlayer()
         {
             playerIsInside = true;
+            if (playerIsInside)
+            {
+
+            }
         }
         public void OutsidePlayer()
         {

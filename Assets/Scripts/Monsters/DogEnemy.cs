@@ -50,6 +50,7 @@ public sealed class DogEnemy : Enemy
             return;
         Debug.Log("death");
         currentState = states.isDied;
+        mAgent.enabled = false;
         GetComponent<BoxCollider>().enabled = false;
     }
     private void OnTriggerStay(Collider other)

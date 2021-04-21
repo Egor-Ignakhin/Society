@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\EatingObject.cs" />
     <Compile Include="Assets\Scripts\EatingObjectsPool.cs" />
     <Compile Include="Assets\Scripts\Effects\DarkiningBackground.cs" />
+    <Compile Include="Assets\Scripts\Effects\EffectsCanvas.cs" />
     <Compile Include="Assets\Scripts\Effects\LighteningBackground.cs" />
     <Compile Include="Assets\Scripts\IChangeable.cs" />
     <Compile Include="Assets\Scripts\IDelayable.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Assets\Scripts\Monsters\Enemy.cs" />
     <Compile Include="Assets\Scripts\Monsters\EnemyChekerTrigger.cs" />
     <Compile Include="Assets\Scripts\Player\BasicNeeds.cs" />
+    <Compile Include="Assets\Scripts\Player\CanvasesCreator.cs" />
     <Compile Include="Assets\Scripts\Player\DeadLine.cs" />
     <Compile Include="Assets\Scripts\Player\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteractive.cs" />
@@ -821,6 +823,18 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>F:/Society/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.ProBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.Editor">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.ProBuilder.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AddOns.Editor">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.ProBuilder.AddOns.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

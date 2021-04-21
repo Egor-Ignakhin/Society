@@ -56,7 +56,7 @@ namespace Shoots
             RecoilEvent?.Invoke();
         }
         protected virtual void Update()
-        {         
+        {
             CartridgeDispens();
 
             Reload();
@@ -105,7 +105,7 @@ namespace Shoots
 
             if (distance != 0)
                 damage /= (distance * 10 / maxDistance);
-            Debug.Log(damage);
+            // Debug.Log(damage);
             return damage;
         }
 
@@ -117,6 +117,15 @@ namespace Shoots
         protected abstract void DropUsedBullet();
         protected abstract void PlayFlashEffect();
         protected abstract void CreateBullet();
+
+        private void OnDisable()
+        {
+            //стабилизация перезарядки (обнуление при выключении)
+            IsReload = false;
+            mAnimator.SetBool("Reload", false);
+            currentReloadTime = 0;
+        }
+
         /// <summary>
         /// "магазин" оружия
         /// </summary>

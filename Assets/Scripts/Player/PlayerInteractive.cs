@@ -25,6 +25,7 @@ namespace PlayerClasses
             {
                 inputedButton = true;
             }
+            else
             if (Input.GetKeyUp(inputInteractive))
             {
                 inputedButton = false;
@@ -58,21 +59,21 @@ namespace PlayerClasses
             }
             DescriptionDrawer.Instance.SetHint(desc);
         }
-     /*   void OnDrawGizmos()
-        {
-            try
-            {
-                Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
-                bool isHit = Physics.SphereCast(ray.origin, 0.1f, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer);
-                if (isHit)
-                {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawWireSphere(ray.origin + ray.direction * hit.distance, 0.1f);
-                }
-            }
-            catch
-            {
-            }
-        }*/
+        /*   void OnDrawGizmos()
+           {
+               try
+               {
+                   Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
+                   bool isHit = Physics.SphereCast(ray.origin, 0.1f, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer);
+                   if (isHit)
+                   {
+                       Gizmos.color = Color.red;
+                       Gizmos.DrawWireSphere(ray.origin + ray.direction * hit.distance, 0.1f);
+                   }
+               }
+               catch
+               {
+               }
+           }*/
     }
 }

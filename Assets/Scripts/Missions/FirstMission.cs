@@ -28,6 +28,10 @@ public class FirstMission : Mission
     GameObject finishBackground;
     public override void ContinueMission(int skipLength)
     {
+        if (messageWasListened)
+        {
+
+        }
         currentTask = skipLength;
         SetTask(currentTask);
         SetActiveCheckers();
@@ -67,7 +71,7 @@ public class FirstMission : Mission
     /// </summary>
     private IDelayable CreateBackground(bool whited)
     {
-        Canvas effectsCanvas = missionsManager.GetEffectsCanvas();
+        var effectsCanvas = missionsManager.GetEffectsCanvas();
         IDelayable delayable;
         GameObject image;
         if (whited)
