@@ -5,26 +5,17 @@ namespace Inventory
 {
     public sealed class InventoryContainer : Singleton<InventoryContainer>
     {
-        private FirstPersonController fps;
         private Queue<InventoryItem> queueOfItems = new Queue<InventoryItem>();// очередь предметов на отображение
         [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
         private readonly List<InventoryCell> cells = new List<InventoryCell>();//слоты инвентаря
+        private InventoryEventReceiver eventReceiver;
 
-        private InventoryCell draggedCell;// удерживаемая ячейка
-        private RectTransform draggedItem;// удерживаемый предмет
-        private bool isDragged;// происходит ли удержание
-
-        private Transform candidateForReplaceItem;// кандидат для смены местами в инветаре(предмет)
-        private InventoryCell candidateForReplaceCell;// кандидат для смены местами в инветаре(ячейка)
-        private void Awake()
-        {
-            fps = FindObjectOfType<FirstPersonController>();
-        }
         private void OnEnable()
         {
-            InventoryInput.ChangeActiveEvent += this.ChangeActiveEvent;
+            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>());
+            eventReceiver.OnEnable();
         }
         private void Start()
         {
@@ -62,11 +53,6 @@ namespace Inventory
             var peek = queueOfItems.Dequeue();
             PUDD.DrawNewItem(peek.GetObjectType(), peek.GetCount());
         }
-        private void ChangeActiveEvent()
-        {
-            InventoryDrawer.ChangeActiveMainField();
-            SetPause();
-        }
 
         private void AddNewItem(InventoryItem item)
         {
@@ -75,19 +61,51 @@ namespace Inventory
             if (cell == null)
                 cell = cells.Find(c => c.IsEmpty);
 
-                cell.SetItem(item);
-
-            //  cells.Find(c => c.IsEmpty).SetItem(item);
+            cell.SetItem(item);
         }
         private void OnDisable()
         {
+            eventReceiver.OnDisable();
+        }
+
+
+
+    }
+
+    public class InventoryEventReceiver
+    {
+        public InventoryEventReceiver(Transform mp, FirstPersonController fps)
+        {
+            mainParent = mp;
+            Instance = this;
+            this.fps = fps;
+        }
+        public static InventoryEventReceiver Instance { get; private set; }
+        private Transform mainParent;
+        private FirstPersonController fps;
+        private Transform candidateForReplaceItem;// кандидат для смены местами в инветаре(предмет)
+        private InventoryCell candidateForReplaceCell;// кандидат для смены местами в инветаре(ячейка)
+        private InventoryCell draggedCell;// удерживаемая ячейка
+        private RectTransform draggedItem;// удерживаемый предмет
+        private bool isDragged;// происходит ли удержание
+        public void OnEnable()
+        {
+            InventoryInput.ChangeActiveEvent += this.ChangeActiveEvent;
+        }
+        public void OnDisable()
+        {
             InventoryInput.ChangeActiveEvent -= this.ChangeActiveEvent;
+        }
+        private void ChangeActiveEvent()
+        {
+            InventoryDrawer.ChangeActiveMainField();
+            SetPause();
         }
         private void SetPause()
         {
             // пауза при открытии инвентаря
-            bool enabled = InventoryDrawer.MainFieldEnabled && !Shoots.GunAnimator.Instance.isAiming;            
-            
+            bool enabled = InventoryDrawer.MainFieldEnabled && !Shoots.GunAnimator.Instance.isAiming;
+
 
             Cursor.visible = enabled;
             if (!enabled)
@@ -102,7 +120,33 @@ namespace Inventory
             }
             EndDrag();
         }
+        public void InsideCursorCell(InventoryCell cell)
+        {
+            // событие входа курсора в сектор ячейки
+            candidateForReplaceCell = cell;
+            candidateForReplaceItem = cell.GetItemTransform();
 
+            if (isDragged)
+                return;
+            draggedCell = cell;
+            draggedItem = cell.GetItemTransform();
+        }
+
+        public void OutsideCursorCell()
+        {
+            // событие выхода курсора из сектора ячейки
+            candidateForReplaceItem = null;
+            candidateForReplaceCell = null;
+
+            if (isDragged)
+                return;
+            draggedCell = null;
+            draggedItem = null;
+        }
+        private void SetDragged(bool value)
+        {
+            isDragged = value;
+        }
         public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
         {
             //удержание предмета
@@ -148,44 +192,14 @@ namespace Inventory
                 candidateForReplaceCell.SetItem(new InventoryCell.CopyPasteCell(draggedCell));
 
                 draggedCell.SetItem(copyPaste);
+                return;
             }
-            else
+            if (draggedCell != null)
             {
-                if (draggedCell != null)
-                {
-                    draggedItem.SetParent(draggedCell.transform);
-                    draggedItem.SetAsLastSibling();
-                    draggedItem.localPosition = Vector3.zero;
-                }
+                draggedItem.SetParent(draggedCell.transform);
+                draggedItem.SetAsLastSibling();
+                draggedItem.localPosition = Vector3.zero;
             }
-
-        }
-        public void InsideCursorCell(InventoryCell cell)
-        {
-            // событие входа курсора в сектор ячейки
-            candidateForReplaceCell = cell;
-            candidateForReplaceItem = cell.GetItemTransform();
-
-            if (isDragged)
-                return;
-            draggedCell = cell;
-            draggedItem = cell.GetItemTransform();
-        }
-
-        public void OutsideCursorCell()
-        {
-            // событие выхода курсора из сектора ячейки
-            candidateForReplaceItem = null;
-            candidateForReplaceCell = null;
-
-            if (isDragged)
-                return;
-            draggedCell = null;
-            draggedItem = null;
-        }
-        private void SetDragged(bool value)
-        {
-            isDragged = value;
         }
     }
 }

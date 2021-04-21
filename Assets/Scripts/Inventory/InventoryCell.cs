@@ -12,6 +12,7 @@ namespace Inventory
         public bool IsEmpty { get; private set; } = true;// пуст ли слот
 
         [SerializeField] private Image mImage;// картинка
+
         [SerializeField] private RectTransform mItem;// трансформация предмета
         public Item MItemContainer { get; private set; } = new Item();
 
@@ -37,6 +38,7 @@ namespace Inventory
             MItemContainer.SetItem(item.GetObjectType(), item.GetCount());
             ChangeSprite(MItemContainer.GetItemType());
             ChangeCountEvent?.Invoke(MItemContainer.GetItemCount());
+
             IsEmpty = false;
         }
 
@@ -50,6 +52,7 @@ namespace Inventory
             ChangeCountEvent?.Invoke(MItemContainer.GetItemCount());
             mItem = copyPaste.mItem;
             mImage = copyPaste.mImage;
+
             copyPaste.mCell.MItemContainer.SetItem(copyPaste.mCell.MItemContainer.GetItemType(), outRangeCount);
 
             IsEmpty = false;
@@ -62,6 +65,7 @@ namespace Inventory
         public void ChangeSprite(string type)
         {
             mImage.sprite = InventorySpriteContainer.GetSprite(type);
+            mImage.color = type == InventorySpriteContainer.NameSprites.DefaultIcon? new Color(1, 1, 1, 0) : Color.white;
         }
         #region moveEvents
         /// <summary>
@@ -70,7 +74,7 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnPointerEnter(PointerEventData eventData)
         {
-            InventoryContainer.Instance.InsideCursorCell(this);
+            InventoryEventReceiver.Instance.InsideCursorCell(this);
             transform.localScale = SelectSize;
         }
         /// <summary>
@@ -79,7 +83,7 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnPointerExit(PointerEventData eventData)
         {
-            InventoryContainer.Instance.OutsideCursorCell();
+            InventoryEventReceiver.Instance.OutsideCursorCell();
             transform.localScale = defaultSize;
         }
 
@@ -92,7 +96,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            InventoryContainer.Instance.BeginDrag(this);
+            InventoryEventReceiver.Instance.BeginDrag(this);
             mImage.raycastTarget = false;//отключение чувствительности предмета
         }
 
@@ -106,7 +110,7 @@ namespace Inventory
                 return;
             //кнопка для удержания обязательно должна быть левой
 
-            InventoryContainer.Instance.DragCell(eventData);
+            InventoryEventReceiver.Instance.DragCell(eventData);
         }
 
         /// <summary>
@@ -118,7 +122,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            InventoryContainer.Instance.EndDrag();
+            InventoryEventReceiver.Instance.EndDrag();
             mImage.raycastTarget = true;//возврат чувствительности предмету
         }
         #endregion

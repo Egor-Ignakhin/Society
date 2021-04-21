@@ -12,7 +12,7 @@ public static class InventorySpriteContainer
         sprites = new Dictionary<string, Sprite> {
             { NameSprites.DefaultIcon, Resources.Load<Sprite>("InventoryItems/Test_Item_DefaultIcon") },
             { NameSprites.Axe, Resources.Load<Sprite>("InventoryItems/Test_Item_Axe") },
-            { NameSprites.Pistol1, Resources.Load<Sprite>("InventoryItems/Test_Item_Pitol1") },
+            { NameSprites.Pistol1, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol1") },
             { NameSprites.Pistol2, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol2") } };
     }
     public static Sprite GetSprite(string type)

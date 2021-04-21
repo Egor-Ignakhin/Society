@@ -10,20 +10,21 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (wasDestroyed)
                 return null;
-            if(instance == null)
+            if (instance == null)
             {
                 instance = FindObjectOfType<T>();
-                if(instance == null)
+                if (instance == null)
                 {
                     GameObject singleton = new GameObject(typeof(T).ToString());
                     instance = singleton.AddComponent<T>();
                 }
             }
             return instance;
-        }        
+        }
     }
     protected void OnDestroy()
     {
         wasDestroyed = true;
     }
 }
+
