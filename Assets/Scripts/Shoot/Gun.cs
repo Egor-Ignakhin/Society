@@ -33,6 +33,16 @@ namespace Shoots
         [SerializeField] protected Transform droppingPlace;
         [SerializeField] protected LayerMask layerMask;
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
+        [SerializeField] protected AudioSource mAudioSource;
+
+
+        protected AudioClip fireClip;
+        protected AudioClip startReloadClip;
+        protected AudioClip reloadClip;
+        protected AudioClip lastReloadClip;
+        protected AudioClip nullBulletsClip;
+
+        private bool isAutomatic;
         protected abstract void Awake();
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
@@ -44,8 +54,14 @@ namespace Shoots
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
+                mAudioSource.PlayOneShot(fireClip);                
             }
-
+            else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())
+            {
+                currentCartridgeDispenser = 0;
+                mAudioSource.PlayOneShot(nullBulletsClip);
+                isAutomatic = true;                
+            }
             return canShooting;
         }
 
@@ -57,6 +73,9 @@ namespace Shoots
         }
         protected virtual void Update()
         {
+            if (Input.GetMouseButtonUp(0))
+                isAutomatic = false;
+
             CartridgeDispens();
 
             Reload();
@@ -107,6 +126,18 @@ namespace Shoots
                 damage /= (distance * 10 / maxDistance);
             // Debug.Log(damage);
             return damage;
+        }
+        public void PlayStartReloadClip()
+        {
+            mAudioSource.PlayOneShot(startReloadClip);
+        }
+        public void PlayReloadSound()
+        {
+            mAudioSource.PlayOneShot(reloadClip);
+        }
+        public void PlayLastReloadSound()
+        {
+            mAudioSource.PlayOneShot(lastReloadClip);
         }
 
 

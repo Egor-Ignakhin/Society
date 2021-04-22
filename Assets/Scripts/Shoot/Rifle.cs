@@ -15,6 +15,10 @@ namespace Shoots
         {
             bullet = Resources.Load<Bullet>("Guns\\NotNormal\\7.62 bullet");
             upBullet = Resources.Load<UsedUpBullet>("Guns\\NotNormal\\7.62 bullet (usedup)");
+            fireClip = Resources.Load<AudioClip>("Guns\\AkFire");
+            reloadClip = Resources.Load<AudioClip>("Guns\\AkReload");
+            lastReloadClip = Resources.Load<AudioClip>("Guns\\AkLastReload");
+            nullBulletsClip = Resources.Load<AudioClip>("Guns\\MakarovBulletsNull");
         }
         protected override void Update()
         {
@@ -24,7 +28,7 @@ namespace Shoots
         }
         protected override bool Shoot()
         {
-            bool canShoot = base.Shoot() && possibleShoot;            
+            bool canShoot = base.Shoot() && possibleShoot;
             if (!canShoot)
                 return canShoot;
             CreateBullet();
@@ -47,20 +51,23 @@ namespace Shoots
         {
             flashEffect.time = 0;
             flashEffect.Play();
-        }      
+        }
         public override float CartridgeDispenser()
         {
             return 0.125f;
         }
         protected override void CreateBullet()
-        {            
-            Ray ray = GunAnimator.Instance.isAiming? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)): new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
+        {
+            Ray ray = GunAnimator.Instance.isAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
             Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
-            BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed);
+            BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
 
             if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
             {
                 bv.CurrentDistance = hit.distance;
+                bv.Angle = Vector3.Angle(transform.position, hit.point);
+                bv.PossibleReflectionPoint = Vector3.Reflect(transform.forward, hit.normal);
+
                 Enemy e = null;
                 bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
 

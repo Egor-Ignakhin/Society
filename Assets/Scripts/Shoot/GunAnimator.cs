@@ -27,7 +27,7 @@ namespace Shoots
         private FirstPersonController fps;
         public bool isAiming { get; private set; }// прицеливается ли игрок
         [ReadOnlyField] private bool isAnimFinish;
-        [SerializeField] [Range(0, 1)] private float lerpSpeed = 0.02f;// скорость смены состояний : 1) у бедра 2) прицельный огонь
+        [SerializeField] [Range(0, 1)] private float lerpSpeed = 10;// скорость смены состояний : 1) у бедра 2) прицельный огонь
         [SerializeField] private List<Camera> cameras = new List<Camera>();
         private AdvancedSettings advanced;
         private enum States { dSlant, LSlant, Rlant };
@@ -165,7 +165,7 @@ namespace Shoots
             var hangPlace = guns[currentI].HangPlace;
 
             Vector3 target = isAiming && !gun.IsReload ? aimPlace.position : hangPlace.position;// следующая позиция
-            tGun.position = Vector3.MoveTowards(gun.transform.position, target, lerpSpeed);
+            tGun.position = Vector3.MoveTowards(gun.transform.position, target, Time.deltaTime / lerpSpeed);
 
             isAnimFinish = tGun.position == target;
             fps.SensivityM = isAiming ? 0.25f : 1;
