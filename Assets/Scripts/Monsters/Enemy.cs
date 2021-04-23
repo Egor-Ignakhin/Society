@@ -62,7 +62,7 @@ public abstract class Enemy : MonoBehaviour
 
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
-    {        
+    {
         UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
@@ -93,10 +93,9 @@ public abstract class Enemy : MonoBehaviour
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
-    public virtual void InjureEnemy(float value, BasicNeeds bn)
+    public virtual void InjureEnemy(float value)
     {
-        if (bn != null)
-            SetEnemy(bn);
+        SetEnemy(BasicNeeds.Instance);
         UVariables.Health -= value;
     }
     /// <summary>

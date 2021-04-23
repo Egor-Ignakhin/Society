@@ -14,19 +14,19 @@ namespace PlayerClasses
         private float interctionDistance = 2;
         private const float sphereCasterRadius = 0.1f;
         [SerializeField] LayerMask interactionLayer;
-        private KeyCode inputInteractive = KeyCode.F;
+        public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private PlayerStatements playerStatements;
         private Vector3 rayStartPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         private bool inputedButton = false;
 
         private void Update()
         {
-            if (Input.GetKeyDown(inputInteractive))
+            if (Input.GetKeyDown(InputInteractive))
             {
                 inputedButton = true;
             }
             else
-            if (Input.GetKeyUp(inputInteractive))
+            if (Input.GetKeyUp(InputInteractive))
             {
                 inputedButton = false;
             }

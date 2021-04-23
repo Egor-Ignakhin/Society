@@ -13,12 +13,12 @@ namespace Shoots
         private readonly List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
         public class PlayerGun
         {
-            public Gun mGun { get; }
+            public Gun MGun { get; }
             public Transform HangPlace { get; }
             public Transform AimPlace { get; }
             public PlayerGun(Gun g, Transform hp, Transform ap)
             {
-                mGun = g;
+                MGun = g;
                 HangPlace = hp;
                 AimPlace = ap;
             }
@@ -63,7 +63,7 @@ namespace Shoots
 
             TestChangeGun(0);
             advanced = new AdvancedSettings(cameras[0].fieldOfView);
-            guns[currentI].mGun.RecoilEvent += RecoilReceiver;
+            guns[currentI].MGun.RecoilEvent += RecoilReceiver;
             fps = FindObjectOfType<FirstPersonController>();
         }
         private void Update()
@@ -77,7 +77,7 @@ namespace Shoots
                 TestChangeGun(scroll);
 
             Animate();
-            guns[currentI].mGun.SetPossibleShooting(isAnimFinish);
+            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);
         }
         private States GetSlant()
         {
@@ -110,7 +110,7 @@ namespace Shoots
 
         public void TestChangeGun(float scroll)
         {
-            guns[currentI].mGun.RecoilEvent -= RecoilReceiver;
+            guns[currentI].MGun.RecoilEvent -= RecoilReceiver;
             if (scroll > 0)
                 currentI++;
             else if (scroll < 0)
@@ -120,7 +120,7 @@ namespace Shoots
             else if (currentI > guns.Count - 1)
                 currentI = 0;
 
-            guns[currentI].mGun.RecoilEvent += RecoilReceiver;
+            guns[currentI].MGun.RecoilEvent += RecoilReceiver;
             DisableGuns();
         }
 
@@ -138,7 +138,7 @@ namespace Shoots
         /// </summary>
         private void RecoilReceiver()
         {
-            double value = (lastAngle += 12 / guns[currentI].mGun.getRecoilPower()) * Math.PI / 180;
+            double value = (lastAngle += 12 / guns[currentI].MGun.GetRecoilPower()) * Math.PI / 180;
             float cos = (float)Math.Abs(Math.Sin(value));
             float sin = (float)Math.Cos(value);
 
@@ -159,7 +159,7 @@ namespace Shoots
         }
         private void Animate()
         {
-            var gun = guns[currentI].mGun;
+            var gun = guns[currentI].MGun;
             var tGun = gun.transform;
             var aimPlace = guns[currentI].AimPlace;
             var hangPlace = guns[currentI].HangPlace;

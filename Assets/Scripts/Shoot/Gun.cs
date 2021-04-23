@@ -19,18 +19,18 @@ namespace Shoots
 
         public virtual float ReloadTime() => 5;// время перезарядки
         private float currentReloadTime = 0;
-        protected Dispenser dispenser;
+        protected Dispenser dispenser;// магазин
         [SerializeField] private Animator mAnimator;
-        public bool IsReload { get; protected set; }
-        protected Bullet bullet;
-        protected UsedUpBullet upBullet;
+        public bool IsReload { get; protected set; }// перезаряжается ли оружие
+        protected Bullet bullet;// пуля летящая
+        protected UsedUpBullet upBullet;// гильза выпадающая
 
-        [SerializeField] protected float bulletSpeed = 315;
+        [SerializeField] protected float bulletSpeed = 315;// стартовая скорость пули
         [SerializeField] protected float maxDistance = 350;// максимальная дистанция поражения
 
 
         [SerializeField] protected ParticleSystem flashEffect;// эффект выстрела
-        [SerializeField] protected Transform droppingPlace;
+        [SerializeField] protected Transform droppingPlace;// затвор
         [SerializeField] protected LayerMask layerMask;
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
         [SerializeField] protected AudioSource mAudioSource;
@@ -42,7 +42,7 @@ namespace Shoots
         protected AudioClip lastReloadClip;
         protected AudioClip nullBulletsClip;
 
-        private bool isAutomatic;
+        private bool isAutomatic;// автоматическое ли оружие
         protected abstract void Awake();
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
@@ -56,7 +56,7 @@ namespace Shoots
                 mAnimator.SetTrigger("Fire");
                 mAudioSource.PlayOneShot(fireClip);                
             }
-            else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())
+            else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())// если пуль нет, то происходит щелчок пустого затвора
             {
                 currentCartridgeDispenser = 0;
                 mAudioSource.PlayOneShot(nullBulletsClip);
@@ -65,7 +65,7 @@ namespace Shoots
             return canShooting;
         }
 
-        public abstract float getRecoilPower();
+        public abstract float GetRecoilPower();
 
         protected void CallRecoilEvent()
         {
@@ -161,7 +161,6 @@ namespace Shoots
                 bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
 
                 newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);
-
                 return;
             }
             newBullet.Init(bv, ray.GetPoint(maxDistance));

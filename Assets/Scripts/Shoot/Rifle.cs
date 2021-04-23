@@ -39,7 +39,7 @@ namespace Shoots
         {
             if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
             {
-                float m = UnityEngine.Random.Range(1, 2);
+                float m = Random.Range(1, 2);
                 rb.AddForce(droppingPlace.right * m, ForceMode.Impulse);
                 rb.AddForce(-droppingPlace.forward * m, ForceMode.Impulse);
             }
@@ -54,7 +54,7 @@ namespace Shoots
         {
             return 0.125f;
         }
-        public override float getRecoilPower()
+        public override float GetRecoilPower()
         {
             return 0.25f;
         }

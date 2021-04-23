@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 namespace Shoots
 {
-    public class Pistol : Gun
+    class Pistol : Gun
     {
         protected override void LoadAssets()
         {
@@ -13,14 +11,12 @@ namespace Shoots
             startReloadClip = Resources.Load<AudioClip>("Guns\\MakarovTakeOfMag");
             lastReloadClip = Resources.Load<AudioClip>("Guns\\MakarovLastReload");
             nullBulletsClip = Resources.Load<AudioClip>("Guns\\MakarovBulletsNull");
-            g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         }
         protected override void Awake()
         {
             dispenser = new Dispenser(8, 8);
             LoadAssets();
         }
-        GameObject g;
         public override float CartridgeDispenser()
         {
             return 0.25f;
@@ -54,7 +50,7 @@ namespace Shoots
                 rb.AddForce(-droppingPlace.forward, ForceMode.Impulse);
             }
         }
-        public override float getRecoilPower()
+        public override float GetRecoilPower()
         {
             return 0.125f;
         }

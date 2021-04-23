@@ -16,9 +16,6 @@ public sealed class InventoryInput : MonoBehaviour
         {
             ChangeActive();
         }
-        Regex regex = new Regex("[0-9]");
-
-
         if (Input.anyKeyDown)
         {
             SelectCell(Input.inputString);
