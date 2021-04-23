@@ -7,16 +7,16 @@
         public float Caliber { get; }
         public float Speed { get; set; }
         public float StartSpeed { get; }
-        public float Angle { get; set; }// угол между стрелком и местом попадания
+        public float Angle { get; private set; }// угол между стрелком и местом попадания
         public UnityEngine.Vector3 PossibleReflectionPoint { get; set; }
         public UnityEngine.LayerMask Layers { get; set; }
         public static float Energy(float mass, float speed)
         {//m*V*V/2
             return ((float)(mass * System.Math.Pow(speed, 2)) / 2) * 0.01f;
         }
-        public static bool CanReflect(float currentE, float startE)
-        {            
-            return currentE / startE >= 0.5f;
+        public static bool CanReflect(float currentE, float startE, float speed, float angle)
+        {
+            return (currentE / startE) * speed > 1f && angle > 10 && angle < 15 && UnityEngine.Random.Range(0, 101) > 25;
         }
         public BulletValues(float currentDistance, float maxDistance, float caliber, float speed,
             float angle, UnityEngine.Vector3 prp, UnityEngine.LayerMask lm)
@@ -28,6 +28,12 @@
             Angle = angle;
             PossibleReflectionPoint = prp;
             Layers = lm;
+        }
+        public void SetValues(float d, UnityEngine.Vector3 prp, float a)
+        {
+            CurrentDistance += d;
+            PossibleReflectionPoint = prp;
+            Angle = a;
         }
     }
 }

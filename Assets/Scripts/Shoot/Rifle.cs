@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Shoots
 {
-    public class Rifle : Gun
+    class Rifle : Gun
     {
         protected override void Awake()
         {
@@ -41,7 +39,7 @@ namespace Shoots
         {
             if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
             {
-                float m = Random.Range(1, 2);
+                float m = UnityEngine.Random.Range(1, 2);
                 rb.AddForce(droppingPlace.right * m, ForceMode.Impulse);
                 rb.AddForce(-droppingPlace.forward * m, ForceMode.Impulse);
             }
@@ -55,27 +53,6 @@ namespace Shoots
         public override float CartridgeDispenser()
         {
             return 0.125f;
-        }
-        protected override void CreateBullet()
-        {
-            Ray ray = GunAnimator.Instance.isAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
-            Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
-            BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
-            {
-                bv.CurrentDistance = hit.distance;
-                bv.Angle = Vector3.Angle(transform.position, hit.point);
-                bv.PossibleReflectionPoint = Vector3.Reflect(transform.forward, hit.normal);
-
-                Enemy e = null;
-                bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
-
-                newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);
-
-                return;
-            }
-            newBullet.Init(bv, ray.GetPoint(maxDistance));
         }
         public override float getRecoilPower()
         {

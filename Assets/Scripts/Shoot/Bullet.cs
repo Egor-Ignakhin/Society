@@ -56,27 +56,22 @@ namespace Shoots
         {
             if (impactEffect)
             {
-                var calculateSpeed = mBv.MaxDistance / mBv.CurrentDistance;
-                mBv.Speed = calculateSpeed;
-                print(BulletValues.Energy(mass * kf, mBv.Speed)/ BulletValues.Energy(mass * kf, mBv.StartSpeed));
+                mBv.Speed = mBv.MaxDistance / mBv.CurrentDistance;
+                print(mBv.Angle);
                 if (enemy)
                 {
                     enemy.InjureEnemy(Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CurrentDistance, mBv.MaxDistance), PlayerClasses.BasicNeeds.Instance);
                 }
-                else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed)) && mBv.Angle < 20 && Physics.Raycast(target, mBv.PossibleReflectionPoint,
+                else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle) && Physics.Raycast(target, mBv.PossibleReflectionPoint,
                     out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
                 {
                     if (hit.transform.parent)
                         hit.transform.parent.TryGetComponent(out enemy);
 
-                    mBv.Angle = Vector3.Angle(transform.position, hit.point);
-                    mBv.PossibleReflectionPoint = Vector3.Reflect(transform.forward, hit.normal);
-                    mBv.CurrentDistance += hit.distance;
+                    mBv.SetValues(hit.distance + mBv.CurrentDistance, Vector3.Reflect(transform.forward, hit.normal), Mathf.Abs(90 - Vector3.Angle(transform.forward, hit.normal)));
                     target = hit.point;
 
-                    var gg = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    gg.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                    gg.GetComponent<BoxCollider>().isTrigger = true;
+                    var gg = new GameObject("Source");
                     gg.AddComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Guns\\BulletReflect"));
                     gg.transform.position = hit.point;
                     return;

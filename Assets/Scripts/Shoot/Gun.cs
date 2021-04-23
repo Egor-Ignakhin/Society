@@ -147,7 +147,25 @@ namespace Shoots
         }
         protected abstract void DropUsedBullet();
         protected abstract void PlayFlashEffect();
-        protected abstract void CreateBullet();
+        protected void CreateBullet()
+        {
+            Ray ray = GunAnimator.Instance.isAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
+            Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
+            BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
+            {              
+                bv.SetValues(hit.distance, Vector3.Reflect(transform.forward, hit.normal), Math.Abs(90 - Vector3.Angle(ray.direction, hit.normal)));
+
+                Enemy e = null;
+                bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
+
+                newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);
+
+                return;
+            }
+            newBullet.Init(bv, ray.GetPoint(maxDistance));
+        }
 
         private void OnDisable()
         {

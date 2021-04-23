@@ -30,16 +30,6 @@ namespace Shoots
             if (Input.GetMouseButtonDown(0))
                 Shoot();
             base.Update();
-            /*
-            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-            if (Physics.Raycast(ray, out RaycastHit hit, 10000, layerMask, QueryTriggerInteraction.Ignore))
-            {
-                var dir = Vector3.Reflect(transform.forward, hit.point);
-                if (Physics.Raycast(hit.point, dir, out RaycastHit hit2, 10000, layerMask, QueryTriggerInteraction.Ignore))
-                {
-                   // g.transform.position = hit2.point;
-                }
-            }*/
         }
         protected override bool Shoot()
         {
@@ -51,30 +41,6 @@ namespace Shoots
             DropUsedBullet();
             CallRecoilEvent();
             return canShoot;
-        }
-
-        /// <summary>
-        /// создание пули
-        /// </summary>
-        protected override void CreateBullet()
-        {
-            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-            Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
-            BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
-            {
-                bv.CurrentDistance = hit.distance;
-                bv.Angle = Vector3.Angle(transform.position, hit.point);
-                bv.PossibleReflectionPoint = Vector3.Reflect(transform.forward, hit.normal);
-
-                Enemy e = null;
-                bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
-
-                newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);          
-                return;
-            }
-            newBullet.Init(bv, ray.GetPoint(maxDistance));
         }
         protected override void PlayFlashEffect()
         {
