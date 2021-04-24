@@ -26,6 +26,10 @@ namespace MenuScripts
         {
             FindObjectOfType<ScenesManager>().LoadNextScene(5);
         }
+        public void LoadPolygon()
+        {
+            FindObjectOfType<ScenesManager>().LoadNextScene(6);
+        }
         public void ExitFromGame()
         {
             Application.Quit();

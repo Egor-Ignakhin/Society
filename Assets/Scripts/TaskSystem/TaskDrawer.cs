@@ -7,5 +7,7 @@ public sealed class TaskDrawer : MonoBehaviour// класс отрисовыва
     public void DrawNewTask(string c)
     {
         text.SetText(c);
+        gameObject.SetActive(c != string.Empty);
+
     }
 }

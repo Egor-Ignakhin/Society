@@ -1,4 +1,5 @@
 ﻿using PlayerClasses;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,6 +8,8 @@ using UnityEngine.AI;
 /// </summary>
 public abstract class Enemy : MonoBehaviour
 {
+    [SerializeField] private Transform centerEnemy;
+    [SerializeField] protected float Fov = 90;
     public UniqueVariables UVariables { get; private set; }
     public class UniqueVariables
     {
@@ -47,15 +50,13 @@ public abstract class Enemy : MonoBehaviour
         public const string BloodDog = "BloodDog";
     }
     protected abstract string Type();
-    protected abstract float timePursuitAfterSaw();//время преследования после обнаружения игрока
-    protected float currentTPAS;//текущее время преследования
     [SerializeField] protected Transform defenderPoint;//защитная точка бреда
     protected Transform currentTarget;// текущая цель
+    protected Vector3 lastTargetPos;
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
-    protected enum states { wait, attack, isDied };
-    protected states currentState;
-
+    [SerializeField] protected LayerMask layerMasks;
+    [SerializeField] private List<Transform> eyes = new List<Transform>();
 
     protected BasicNeeds currentEnemy;// текущий противник
     protected bool currentEnemyForewer;// при включенной булевой враг монстра никогда не сменит цель
@@ -69,6 +70,16 @@ public abstract class Enemy : MonoBehaviour
 
         mAgent.stoppingDistance = UVariables.DistanceForAttack;
         UVariables.ChangeHealthEvent += Death;
+
+        if (!defenderPoint)
+        {
+            var dp = new GameObject($"DefenderPointFor{name}").transform;
+            dp.position = transform.position;
+            defenderPoint = dp;
+        }
+
+        currentTarget = defenderPoint;
+        lastTargetPos = currentTarget.position;
     }
     protected class AnimationsContainer
     {
@@ -77,7 +88,46 @@ public abstract class Enemy : MonoBehaviour
         public const string Attack = "Attack";
     }
 
+    private void FixedUpdate()
+    {
+        RayCastToEnemy(BasicNeeds.Instance.transform.position);
+    }
+    private bool FindEnemies()
+    {
+        if (currentEnemyForewer)
+            return false;
 
+        Vector3 targetDir = BasicNeeds.Instance.transform.position - transform.position;
+        float angle = Vector3.Angle(targetDir, transform.forward);
+        float borderMin = Mathf.Sin(-Fov / 2) * Mathf.Rad2Deg;
+        float borderMax = Mathf.Sin(Fov / 2) * Mathf.Rad2Deg;
+
+        bool isIntersected = angle > borderMin && angle < borderMax;
+        return isIntersected;
+
+    }
+    private void RayCastToEnemy(Vector3 end)
+    {
+        Transform target = defenderPoint;
+        BasicNeeds enemy = null;
+        foreach (var e in eyes)
+        {
+            if (Physics.Linecast(e.position, end, out RaycastHit hit, layerMasks, QueryTriggerInteraction.Ignore))
+            {
+                if (!hit.transform.TryGetComponent<BasicNeeds>(out var bn))
+                    continue;
+                if (Vector3.Distance(e.position, end) > UVariables.SeeDistance)
+                    continue;
+                if (!FindEnemies())
+                    continue;
+
+                target = hit.transform;
+                enemy = bn;
+            }
+        }
+        SetEnemy(enemy);
+        SetTarget(target);
+    }
     /// <summary>
     /// функция нанесения урона монстром
     /// </summary>
@@ -86,22 +136,26 @@ public abstract class Enemy : MonoBehaviour
         currentEnemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
     }
     /// <summary>
-    /// функция установки цели задания состояний
-    /// </summary>
-    protected abstract void HarassmentEnemy();
-    /// <summary>
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
     public virtual void InjureEnemy(float value)
     {
         SetEnemy(BasicNeeds.Instance);
+        lastTargetPos = BasicNeeds.Instance.transform.position;
         UVariables.Health -= value;
     }
     /// <summary>
     /// функция смерти
     /// </summary>
-    protected abstract void Death(float health);
+    protected void Death(float health)
+    {
+        if (health > UniqueVariables.MinHealth)
+            return;
+        mAgent.enabled = false;
+        SetAnimationClip(AnimationsContainer.Death);
+        enabled = false;
+    }
     /// <summary>
     /// задаёт несменяемость текущей цели
     /// </summary>
@@ -110,19 +164,14 @@ public abstract class Enemy : MonoBehaviour
     {
         currentEnemyForewer = value;
     }
+
     /// <summary>
     /// функция установки противника
     /// </summary>
     /// <param name="enemy"></param>
     public void SetEnemy(BasicNeeds enemy)
     {
-        if (currentTPAS >= 0 && enemy == null)
-        {
-            currentTPAS -= Time.deltaTime;
-            return;
-        }
-        currentEnemy = enemy;
-        currentTPAS = timePursuitAfterSaw();
+        currentEnemy = enemy;        
     }
     /// <summary>
     /// функция установки цели
@@ -130,7 +179,30 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="target"></param>
     protected virtual void SetTarget(Transform target)
     {
-        mAgent.SetDestination(target.position);
+        currentTarget = target;
+        if (currentEnemy)//враг не потерян
+        {
+            lastTargetPos = currentEnemy.transform.position;// запись в последнюю известную точку                         
+        }
+        else if (Vector3.Distance(centerEnemy.position, lastTargetPos) < mAgent.stoppingDistance)
+        {
+            lastTargetPos = defenderPoint.position;
+        }
+        mAgent.SetDestination(lastTargetPos);
+
+        if (mAgent.remainingDistance > mAgent.stoppingDistance)// если до цели не дошёл агент
+        {
+            SetAnimationClip(AnimationsContainer.MoveToPerson);// идти к цели
+        }
+        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && currentEnemy)// если дошёл
+        {//атаковать
+            SetAnimationClip(AnimationsContainer.Attack);
+            Attack();
+        }
+        else
+        {
+            SetAnimationClip();
+        }
     }
     /// <summary>
     /// функция поворота к цели
@@ -141,7 +213,15 @@ public abstract class Enemy : MonoBehaviour
     /// </summary>
     /// <param name="state"></param>
     /// <param name="value"></param>
-    protected abstract void SetAnimationClip(string state = "", bool value = true);
+    protected void SetAnimationClip(string state = "", bool value = true)
+    {
+        mAnim.SetBool(AnimationsContainer.MoveToPerson, false);
+        mAnim.SetBool(AnimationsContainer.Death, false);
+        mAnim.SetBool(AnimationsContainer.Attack, false);
+        if (state != string.Empty)
+            mAnim.SetBool(state, value);
+    }
+
     protected void OnDestroy()
     {
         UVariables.ChangeHealthEvent -= Death;
