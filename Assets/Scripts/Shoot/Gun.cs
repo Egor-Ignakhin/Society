@@ -83,7 +83,7 @@ namespace Shoots
             if (Input.GetKeyDown(KeyCode.R))
             {
                 IsReload = true;
-            }
+            }            
         }
         private void CartridgeDispens()
         {
@@ -157,8 +157,7 @@ namespace Shoots
             {              
                 bv.SetValues(hit.distance, Vector3.Reflect(transform.forward, hit.normal), Math.Abs(90 - Vector3.Angle(ray.direction, hit.normal)));
 
-                Enemy e = null;
-                bool enemyFound = hit.transform.parent && hit.transform.parent.TryGetComponent(out e);
+                bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);
 
                 newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);
                 return;

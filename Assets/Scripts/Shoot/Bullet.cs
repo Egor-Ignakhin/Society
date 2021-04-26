@@ -6,7 +6,7 @@ namespace Shoots
     public class Bullet : MonoBehaviour
     {
         private Vector3 target;//точка назначения
-        private Enemy enemy;// возможный враг
+        private EnemyCollision enemy;// возможный враг
         private bool isFinished;// долетел ли снаряд
         private bool haveTarget;// имеет ли патрон цель(возможен выстрел в воздух)
         private GameObject impactEffect;// эффекта столкновения
@@ -16,7 +16,7 @@ namespace Shoots
         [SerializeField] private float kf = 1;
 
         BulletValues mBv;
-        public void Init(BulletValues bv, RaycastHit t, GameObject impact, Enemy e)
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e)
         {
             mBv = bv;
             target = t.point;
@@ -59,8 +59,7 @@ namespace Shoots
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
                 {
-                    if (hit.transform.parent)
-                        hit.transform.parent.TryGetComponent(out enemy);
+                    hit.transform.TryGetComponent(out enemy);
 
                     mBv.SetValues(hit.distance + mBv.CoveredDistance, Vector3.Reflect(transform.forward, hit.normal), Mathf.Abs(90 - Vector3.Angle(transform.forward, hit.normal)));
                     target = hit.point;

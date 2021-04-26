@@ -56,7 +56,7 @@ namespace Shoots
         }
         public override float GetRecoilPower()
         {
-            return 0.25f;
+            return 0.125f;
         }
         public override float ReloadTime()
         {

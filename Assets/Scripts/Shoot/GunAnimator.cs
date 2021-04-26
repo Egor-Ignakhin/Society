@@ -77,8 +77,8 @@ namespace Shoots
                 TestChangeGun(scroll);
 
             Animate();
-            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);
-        }
+            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);            
+        }        
         private States GetSlant()
         {
             if (Input.GetKey(KeyCode.Q))

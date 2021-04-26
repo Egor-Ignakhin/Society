@@ -60,7 +60,8 @@ public abstract class Enemy : MonoBehaviour
 
     protected BasicNeeds currentEnemy;// текущий противник
     protected bool currentEnemyForewer;// при включенной булевой враг монстра никогда не сменит цель
-
+    public delegate void EnemyEvent();
+    public event EnemyEvent DeathEvent;
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
     {
@@ -153,8 +154,11 @@ public abstract class Enemy : MonoBehaviour
         if (health > UniqueVariables.MinHealth)
             return;
         mAgent.enabled = false;
-        SetAnimationClip(AnimationsContainer.Death);
+        SetAnimationClip();
+        mAnim.SetTrigger(AnimationsContainer.Death);
+        mAnim.applyRootMotion = true;
         enabled = false;
+        DeathEvent.Invoke();
     }
     /// <summary>
     /// задаёт несменяемость текущей цели
@@ -171,7 +175,7 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="enemy"></param>
     public void SetEnemy(BasicNeeds enemy)
     {
-        currentEnemy = enemy;        
+        currentEnemy = enemy;
     }
     /// <summary>
     /// функция установки цели
