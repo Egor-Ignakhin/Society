@@ -56,8 +56,8 @@ namespace Inventory
 
         private void AddNewItem(InventoryItem item)
         {
-            var cell = cells.Find(c => c.MItemContainer.GetItemCount() < 10
-            && c.MItemContainer.GetItemType() == item.GetObjectType());
+            var cell = cells.Find(c => c.MItemContainer.Count < c.MItemContainer.MaxCount
+            && c.MItemContainer.Type == item.GetObjectType());
             if (cell == null)
                 cell = cells.Find(c => c.IsEmpty);
 
@@ -67,9 +67,6 @@ namespace Inventory
         {
             eventReceiver.OnDisable();
         }
-
-
-
     }
 
     public class InventoryEventReceiver

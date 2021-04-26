@@ -14,19 +14,16 @@ namespace Inventory
         [SerializeField] private Image mImage;// картинка
 
         [SerializeField] private RectTransform mItem;// трансформация предмета
-        public Item MItemContainer { get; private set; } = new Item();
+        [SerializeField] private TMPro.TextMeshProUGUI mText;// счётчик предметов
+        public Item MItemContainer { get; private set; }
 
-
-        private Vector3 SelectSize;// обычный размер
-        private Vector3 defaultSize;// анимированный размер   
 
         public delegate void ItemHandler(int count);
         public event ItemHandler ChangeCountEvent;
 
         public void Init()
         {
-            defaultSize = transform.localScale;
-            SelectSize = transform.localScale /* 1.1f*/;
+            MItemContainer = new Item(mText);
         }
 
         /// <summary>
@@ -35,10 +32,10 @@ namespace Inventory
         /// <param name="item"></param>
         public void SetItem(InventoryItem item)
         {
-            MItemContainer.SetItem(item.GetObjectType(), item.GetCount());
-            ChangeSprite(MItemContainer.GetItemType());
-            ChangeCountEvent?.Invoke(MItemContainer.GetItemCount());
+            MItemContainer.SetItem(item.GetObjectType(), item.GetCount() + MItemContainer.Count);
+            ChangeSprite(MItemContainer.Type);
 
+            ChangeCountEvent?.Invoke(MItemContainer.Count);
             IsEmpty = false;
         }
 
@@ -48,13 +45,13 @@ namespace Inventory
         /// <param name="cell"></param>
         public void SetItem(CopyPasteCell copyPaste)
         {
-            int outRangeCount = MItemContainer.SetItem(copyPaste.Type, copyPaste.count);
-            ChangeCountEvent?.Invoke(MItemContainer.GetItemCount());
-            mItem = copyPaste.mItem;
-            mImage = copyPaste.mImage;
+            int outRangeCount = MItemContainer.SetItem(copyPaste.Type, copyPaste.count + MItemContainer.Count);//запись в свободную ячейку кол-во и возвращение излишка
 
-            copyPaste.mCell.MItemContainer.SetItem(copyPaste.mCell.MItemContainer.GetItemType(), outRangeCount);
+            mItem = copyPaste.mItem;// присвоение новых транс-ов
+            mImage = copyPaste.mImage;// и новых image            
+            copyPaste.mCell.MItemContainer.SetItem(MItemContainer.Type, outRangeCount);// затем обратный вызов 
 
+            ChangeCountEvent?.Invoke(MItemContainer.Count);
             IsEmpty = false;
         }
 
@@ -65,27 +62,21 @@ namespace Inventory
         public void ChangeSprite(string type)
         {
             mImage.sprite = InventorySpriteContainer.GetSprite(type);
-            mImage.color = type == InventorySpriteContainer.NameSprites.DefaultIcon? new Color(1, 1, 1, 0) : Color.white;
+            mImage.color = type == InventorySpriteContainer.NameSprites.DefaultIcon ? new Color(1, 1, 1, 0) : Color.white;
         }
         #region moveEvents
         /// <summary>
         /// вызывается при входе курсором в пространство ячейки
         /// </summary>
         /// <param name="eventData"></param>
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            InventoryEventReceiver.Instance.InsideCursorCell(this);
-            transform.localScale = SelectSize;
-        }
+        public void OnPointerEnter(PointerEventData eventData) => InventoryEventReceiver.Instance.InsideCursorCell(this);
+
         /// <summary>
         /// вызывается при выходе курсора из пространства ячейки
         /// </summary>
         /// <param name="eventData"></param>
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            InventoryEventReceiver.Instance.OutsideCursorCell();
-            transform.localScale = defaultSize;
-        }
+        public void OnPointerExit(PointerEventData eventData) => InventoryEventReceiver.Instance.OutsideCursorCell();
+
 
         /// <summary>
         /// вызывается в начале удержания
@@ -131,42 +122,35 @@ namespace Inventory
         /// возвращает трансформацию предмета
         /// </summary>
         /// <returns></returns>
-        public RectTransform GetItemTransform()
-        {
-            return mItem;
-        }
-        public Image GetImage()
-        {
-            return mImage;
-        }
+        public RectTransform GetItemTransform() => mItem;
+
+        public Image GetImage() => mImage;
+
         public class Item
         {
-            private string Type = InventorySpriteContainer.NameSprites.DefaultIcon;
-            private int count = 0;
+            public string Type { get; private set; } = InventorySpriteContainer.NameSprites.DefaultIcon;
+            public int Count { get; private set; } = 0;
             public int MaxCount { get; private set; } = 10;
-            public TMPro.TextMeshProUGUI mText { get; private set; }
+            public TMPro.TextMeshProUGUI MText { get; private set; }
             public int SetItem(string t, int c)
             {
-                Type = t;
-                count += c;
-                int outRangeCount = count - MaxCount;
-                if (count > MaxCount)
-                    count = MaxCount;
-                if (outRangeCount > 0)
-                    return outRangeCount;
-                else return 0;
-            }
-            public string GetItemType() => Type;
+                MaxCount = ItemStates.GetMaxCount(Type = t);
 
-            public int GetItemCount() => count;
+                Count = c;
+               int outRange = (Count) - MaxCount;
+                if (Count > MaxCount)
+                    Count = MaxCount;
 
-            public void SetMaxCount(int mc)
-            {
-                MaxCount = mc;
+                ReDraw();
+                return outRange;
             }
-            public void SetText(TMPro.TextMeshProUGUI t)
+            private void ReDraw()
             {
-                mText = t;
+                MText.SetText(/*Count > 1 ? */Count.ToString() /*: string.Empty*/);// если кол-во > 1 то пишется число предметов
+            }
+            public Item(TMPro.TextMeshProUGUI t)
+            {
+                MText = t;
             }
         }
         /// <summary>
@@ -185,9 +169,9 @@ namespace Inventory
             {
                 mItem = c.GetItemTransform();
                 mImage = c.GetImage();
-                Type = c.MItemContainer.GetItemType();
-                count = c.MItemContainer.GetItemCount();
-                mText = c.MItemContainer.mText;
+                Type = c.MItemContainer.Type;
+                count = c.MItemContainer.Count;
+                mText = c.MItemContainer.MText;
                 mCell = c;
             }
         }
