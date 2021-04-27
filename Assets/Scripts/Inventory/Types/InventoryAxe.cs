@@ -1,20 +1,19 @@
 ﻿using PlayerClasses;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace InventoryItems
+namespace Inventory
 {
-    public sealed class InventoryAxe : InventoryItem
+    namespace InventoryItems
     {
-        protected override void Awake()
+        public sealed class InventoryAxe : InventoryItem
         {
-            base.Awake();
-            SetType(InventorySpriteContainer.NameSprites.Axe);
-        }
-        public override void Interact(PlayerStatements pl)
-        {
-            base.Interact(pl);
+            protected override void Awake()
+            {
+                base.Awake();
+                SetType(NameItems.Axe);
+            }
+            public override void Interact(PlayerStatements pl)
+            {
+                base.Interact(pl);
+            }
         }
     }
 }

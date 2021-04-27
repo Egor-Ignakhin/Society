@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -7,23 +9,33 @@ namespace Inventory
 /// класс - слота в инвентаре
 /// </summary>
     public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
-        IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler
+        IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler
     {
-        public bool IsEmpty { get; private set; } = true;// пуст ли слот
-
+        [SerializeField] private Image background;
         [SerializeField] private Image mImage;// картинка
 
         [SerializeField] private RectTransform mItem;// трансформация предмета
-        [SerializeField] private TMPro.TextMeshProUGUI mText;// счётчик предметов
-        public Item MItemContainer { get; private set; }
-
-
-        public delegate void ItemHandler(int count);
-        public event ItemHandler ChangeCountEvent;
+        [SerializeField] private TextMeshProUGUI mText;// счётчик предметов
+        public Item MItemContainer { get; private set; } = new Item();
+        private AdditionalSettins additionalSettins;
+        public sealed class AdditionalSettins
+        {
+            public Vector3 DefaultScale { get; }
+            public Vector3 AnimatedScale { get; }
+            public Color FocusedColor { get; }
+            public Color UnfocusedColor { get; }
+            public AdditionalSettins(Image bg)
+            {
+                DefaultScale = bg.GetComponent<RectTransform>().localScale;
+                AnimatedScale = DefaultScale * 1.1f;
+                FocusedColor = new Color(0, 1, 0, bg.color.a);
+                UnfocusedColor = bg.color;
+            }
+        }
 
         public void Init()
-        {
-            MItemContainer = new Item(mText);
+        {            
+            additionalSettins = new AdditionalSettins(background);
         }
 
         /// <summary>
@@ -32,27 +44,29 @@ namespace Inventory
         /// <param name="item"></param>
         public void SetItem(InventoryItem item)
         {
-            MItemContainer.SetItem(item.GetObjectType(), item.GetCount() + MItemContainer.Count);
+            MItemContainer.SetItem(item.GetObjectType(), item.GetCount());
+
             ChangeSprite(MItemContainer.Type);
-
-            ChangeCountEvent?.Invoke(MItemContainer.Count);
-            IsEmpty = false;
+            UpdateText();
         }
-
         /// <summary>
         /// вызывается для смены предмета другим предметом
         /// </summary>
         /// <param name="cell"></param>
-        public void SetItem(CopyPasteCell copyPaste)
+        public int SetItem(CopyPasteCell copyPaste)
         {
-            int outRangeCount = MItemContainer.SetItem(copyPaste.Type, copyPaste.count + MItemContainer.Count);//запись в свободную ячейку кол-во и возвращение излишка
+            int outRangeCount = MItemContainer.SetItem(copyPaste.Type, copyPaste.count, true);//запись в свободную ячейку кол-во и возвращение излишка
 
             mItem = copyPaste.mItem;// присвоение новых транс-ов
-            mImage = copyPaste.mImage;// и новых image            
-            copyPaste.mCell.MItemContainer.SetItem(MItemContainer.Type, outRangeCount);// затем обратный вызов 
-
-            ChangeCountEvent?.Invoke(MItemContainer.Count);
-            IsEmpty = false;
+            mImage = copyPaste.mImage;// и новых image                        
+            mText = copyPaste.mText;
+            ChangeSprite(MItemContainer.Type);
+            UpdateText();
+            return outRangeCount;
+        }
+        private void UpdateText()
+        {
+            mText.SetText(MItemContainer.Count > 1 ? MItemContainer.Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
         }
 
         /// <summary>
@@ -62,20 +76,27 @@ namespace Inventory
         public void ChangeSprite(string type)
         {
             mImage.sprite = InventorySpriteContainer.GetSprite(type);
-            mImage.color = type == InventorySpriteContainer.NameSprites.DefaultIcon ? new Color(1, 1, 1, 0) : Color.white;
+            mImage.color = type == NameItems.DefaultIcon ? new Color(1, 1, 1, 0) : Color.white;
         }
-        #region moveEvents
+        #region Events
         /// <summary>
         /// вызывается при входе курсором в пространство ячейки
         /// </summary>
         /// <param name="eventData"></param>
-        public void OnPointerEnter(PointerEventData eventData) => InventoryEventReceiver.Instance.InsideCursorCell(this);
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            InventoryEventReceiver.Instance.InsideCursorCell(this);            
+            StartCoroutine(nameof(BackgroundAnimate));
+        }
 
         /// <summary>
         /// вызывается при выходе курсора из пространства ячейки
         /// </summary>
         /// <param name="eventData"></param>
-        public void OnPointerExit(PointerEventData eventData) => InventoryEventReceiver.Instance.OutsideCursorCell();
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            InventoryEventReceiver.Instance.OutsideCursorCell();
+        }
 
 
         /// <summary>
@@ -88,7 +109,7 @@ namespace Inventory
                 return;
 
             InventoryEventReceiver.Instance.BeginDrag(this);
-            mImage.raycastTarget = false;//отключение чувствительности предмета
+            mImage.raycastTarget = false;//отключение чувствительности предмета            
         }
 
         /// <summary>
@@ -116,6 +137,34 @@ namespace Inventory
             InventoryEventReceiver.Instance.EndDrag();
             mImage.raycastTarget = true;//возврат чувствительности предмету
         }
+
+        /// <summary>
+        /// вызывается при нажатии на слот
+        /// </summary>
+        /// <param name="eventData"></param>
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+            InventoryEventReceiver.Instance.FocusCell(this);
+        }
+        private IEnumerator BackgroundAnimate()
+        {
+            bool wasAnimated = false;
+            while (true)
+            {
+                var rt = background.GetComponent<RectTransform>();
+                Vector3 nextState = wasAnimated? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
+                rt.localScale = Vector3.MoveTowards(rt.localScale, nextState, 1);
+                if (rt.localScale == additionalSettins.AnimatedScale)
+                {
+                    wasAnimated = true;
+                }
+                if (wasAnimated && rt.localScale == additionalSettins.DefaultScale)
+                    break;
+                yield return null;
+            }
+        }
         #endregion
 
         /// <summary>
@@ -125,32 +174,32 @@ namespace Inventory
         public RectTransform GetItemTransform() => mItem;
 
         public Image GetImage() => mImage;
+        public void SetFocus(bool v)
+        {
+            background.color = v ? additionalSettins.FocusedColor : additionalSettins.UnfocusedColor;
+        }
 
         public class Item
         {
-            public string Type { get; private set; } = InventorySpriteContainer.NameSprites.DefaultIcon;
+            public bool IsFilled { get => Count > MaxCount - 1; }
+            public string Type { get; private set; } = NameItems.DefaultIcon;
             public int Count { get; private set; } = 0;
-            public int MaxCount { get; private set; } = 10;
-            public TMPro.TextMeshProUGUI MText { get; private set; }
-            public int SetItem(string t, int c)
+            public int MaxCount { get => ItemStates.GetMaxCount(Type); }
+            public bool IsEmpty { get => Count == 0; }
+            public int SetItem(string ntype, int ncount, bool isMerge = false)
             {
-                MaxCount = ItemStates.GetMaxCount(Type = t);
+                int outRange = 0;
+                if (ntype == Type && !isMerge)// если тип предмета тот же, что и был в слоте
+                {
+                    outRange = MaxCount - (Count += ncount);// получаем выход за границу
+                    if (Count > MaxCount)
+                        Count = MaxCount;
+                }
+                else// иначе просто замена
+                    Count = ncount;
 
-                Count = c;
-               int outRange = (Count) - MaxCount;
-                if (Count > MaxCount)
-                    Count = MaxCount;
-
-                ReDraw();
+                Type = ntype;
                 return outRange;
-            }
-            private void ReDraw()
-            {
-                MText.SetText(/*Count > 1 ? */Count.ToString() /*: string.Empty*/);// если кол-во > 1 то пишется число предметов
-            }
-            public Item(TMPro.TextMeshProUGUI t)
-            {
-                MText = t;
             }
         }
         /// <summary>
@@ -158,10 +207,9 @@ namespace Inventory
         /// </summary>
         public struct CopyPasteCell
         {
-            public InventoryCell mCell;
+            public TextMeshProUGUI mText;
             public RectTransform mItem;
             public Image mImage;
-            public TMPro.TextMeshProUGUI mText;
             public string Type;
             public int count;
 
@@ -171,8 +219,7 @@ namespace Inventory
                 mImage = c.GetImage();
                 Type = c.MItemContainer.Type;
                 count = c.MItemContainer.Count;
-                mText = c.MItemContainer.MText;
-                mCell = c;
+                mText = c.mText;
             }
         }
     }

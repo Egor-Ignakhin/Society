@@ -11,14 +11,10 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     public static bool MainFieldEnabled { get; private set; } = false;
     private delegate void EventHandler();
     private static event EventHandler mainFieldActiveEvent;
-    public Transform GetMainContainer()
-    {
-        return mainContainer;
-    }
-    public Transform GetSupportContainer()
-    {
-        return supportContainer;
-    }
+    public Transform GetMainContainer() => mainContainer;
+
+    public Transform GetSupportContainer() => supportContainer;
+
     private void OnEnable()
     {
         mainFieldActiveEvent += SetActiveMainField;
@@ -37,9 +33,9 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     /// <summary>
     /// смена активности инвентаря
     /// </summary>
-    public static void ChangeActiveMainField()
+    public static void ChangeActiveMainField(bool isSimular = false)
     {
-        MainFieldEnabled = !Shoots.GunAnimator.Instance.isAiming && !MainFieldEnabled;
+        MainFieldEnabled = !Shoots.GunAnimator.Instance.isAiming && !MainFieldEnabled && !isSimular;
         mainFieldActiveEvent?.Invoke();
     }
     private void OnDisable()

@@ -28,9 +28,9 @@ namespace Debugger
             if (isMoving)
                 Move();
             if (Input.GetKeyDown(KeyCode.F1))
-            {
+            {                
                 isHidden = !isHidden;
-                isMoving = true;
+                isMoving = true;                
             }
         }
         /// <summary>
@@ -59,16 +59,7 @@ namespace Debugger
         /// </summary>
         private void Move()
         {
-            Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
-
-            if (background.localPosition != direction)// если анимация не кончилась
-            {
-                background.localPosition = Vector3.MoveTowards(background.localPosition, direction, 100);
-                return;
-            }
-
-
-            background.gameObject.SetActive(!isHidden);
+            InventoryInput.Instance.SimularActive(false);
             if (!isHidden)
             {
                 InputManager.LockInput();
@@ -79,6 +70,17 @@ namespace Debugger
                 InputManager.Unlock();
                 InputManager.EnableInput();
             }
+
+            Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
+
+            if (background.localPosition != direction)// если анимация не кончилась
+            {
+                background.localPosition = Vector3.MoveTowards(background.localPosition, direction, 100);
+                return;
+            }
+
+
+            background.gameObject.SetActive(!isHidden);           
             isMoving = false;
             activeDebugger.Activate();
         }

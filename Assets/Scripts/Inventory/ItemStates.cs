@@ -8,10 +8,10 @@ namespace Inventory
         {
             items = new Dictionary<string, int>
             {
-                {InventorySpriteContainer.NameSprites.DefaultIcon, 0 },
-                {InventorySpriteContainer.NameSprites.Axe, 10 },
-                {InventorySpriteContainer.NameSprites.Pistol1, 5 },
-                {InventorySpriteContainer.NameSprites.Pistol2, 5 }
+                {NameItems.DefaultIcon, 0 },
+                {NameItems.Axe, 10 },
+                {NameItems.Pistol1, 5 },
+                {NameItems.Pistol2, 5 }
             };
         }
         /// <summary>
@@ -23,5 +23,12 @@ namespace Inventory
         {
             return items[type];
         }
+    }
+    public class NameItems
+    {
+        public const string DefaultIcon = "DefaultIcon";
+        public const string Axe = "Axe";
+        public const string Pistol1 = "Pistol1";
+        public const string Pistol2 = "Pistol2";
     }
 }
