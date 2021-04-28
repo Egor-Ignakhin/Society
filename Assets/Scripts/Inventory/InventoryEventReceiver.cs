@@ -27,21 +27,14 @@ namespace Inventory
             InventoryInput.ChangeActiveEvent -= this.ChangeActiveEvent;
             InventoryInput.InputKeyEvent -= SelectCell;
         }
-        private void ChangeActiveEvent(bool value)
+        private void ChangeActiveEvent(bool isSimular)
         {
-            if (!value)// if simular active
-            {
-                InventoryDrawer.ChangeActiveMainField(true);
-                SetPause();
-                return;
-            }
-            InventoryDrawer.ChangeActiveMainField();
-            SetPause();
+            SetPause(InventoryDrawer.Instance.ChangeActiveMainField(isSimular));
         }
-        private void SetPause()
+        private void SetPause(bool mfEnabled)
         {
             // пауза при открытии инвентаря
-            bool enabled = InventoryDrawer.MainFieldEnabled && !Shoots.GunAnimator.Instance.isAiming;
+            bool enabled = mfEnabled && !Shoots.GunAnimator.Instance.IsAiming;
 
 
             Cursor.visible = enabled;
@@ -56,7 +49,7 @@ namespace Inventory
                 fps.SetState(State.locked);
             }
             EndDrag();
-        }
+        }        
         public void InsideCursorCell(InventoryCell cell)
         {
             // событие входа курсора в сектор ячейки
@@ -96,6 +89,8 @@ namespace Inventory
         }
         public void EndDrag()
         {
+            if(isDragged)
+                UnfocusAllCells();
             //конец удержания
             isDragged = false;
 
@@ -104,8 +99,7 @@ namespace Inventory
             draggedCell = null;
             draggedItem = null;
             candidateForReplaceCell = null;
-            candidateForReplaceItem = null;
-            UnfocusAllCells();
+            candidateForReplaceItem = null;                          
         }
         private void ParentingDraggedObject()
         {
@@ -149,7 +143,7 @@ namespace Inventory
         }
         private void SelectCell(int c)
         {
-            if (c >= 0 && c <= InventoryContainer.Instance.HotCells.Count)
+            if (c > 0 && c <= InventoryContainer.Instance.HotCells.Count)
                 FocusCell(InventoryContainer.Instance.HotCells[c - 1]);
         }
     }

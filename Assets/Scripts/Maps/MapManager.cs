@@ -38,7 +38,6 @@ namespace Maps
         }
         public static GameObject GetTracker(GameObject object3d)
         {
-            //return mMapContainer.InsedPoints[0].gameObject;
             for (int i = 0; i < mMapContainer.InsedPoints.Count; i++)
             {
                 if (mMapContainer.InsedPoints[i].GetMy3dTransform() == object3d.transform)
@@ -50,8 +49,8 @@ namespace Maps
         }
         public class MapContainer
         {
-            public readonly List<Transform> GameObjects3D = new List<Transform>();
-            public readonly List<PointOnMap> InsedPoints = new List<PointOnMap>();
+            public List<Transform> GameObjects3D = new List<Transform>();
+            public List<PointOnMap> InsedPoints = new List<PointOnMap>();
         }
 
         internal Transform GetLastPoint()

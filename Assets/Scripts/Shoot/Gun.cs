@@ -148,8 +148,8 @@ namespace Shoots
         protected abstract void DropUsedBullet();
         protected abstract void PlayFlashEffect();
         protected void CreateBullet()
-        {
-            Ray ray = GunAnimator.Instance.isAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
+        {            
+            Ray ray = GunAnimator.Instance.IsAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
             Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
             BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
 

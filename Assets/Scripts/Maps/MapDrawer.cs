@@ -13,7 +13,7 @@ namespace Maps
         private MapManager mapManager;
 
         [SerializeField] private GameObject PointForInstance;
-        private void Awake()
+        private void OnEnable()
         {
             mapManager = new MapManager();
             MapManager.AddPointEvent += this.AddPoint;
@@ -61,6 +61,11 @@ namespace Maps
         {
             Vector3 position = new Vector3(point.position.x, point.position.z, 0);
             insedPoint.transform.localPosition = -position * insedPoint.defaultScale.x;
+        }
+        private void OnDisable()
+        {
+            mapManager = null;
+            MapManager.AddPointEvent -= this.AddPoint;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Shoots
         }
 
         private FirstPersonController fps;
-        public bool isAiming { get; private set; }// прицеливается ли игрок
+        public bool IsAiming { get; private set; }// прицеливается ли игрок
         [ReadOnlyField] private bool isAnimFinish;
         [SerializeField] [Range(0, 1)] private float lerpSpeed = 10;// скорость смены состояний : 1) у бедра 2) прицельный огонь
         [SerializeField] private List<Camera> cameras = new List<Camera>();
@@ -68,7 +68,7 @@ namespace Shoots
         }
         private void Update()
         {
-            isAiming = Input.GetMouseButton(1);
+            IsAiming = Input.GetMouseButton(1);
 
             TiltCamera(GetSlant());
 
@@ -94,11 +94,11 @@ namespace Shoots
         }
         private void TiltCamera(States s)
         {
-            if (s == States.LSlant && isAiming)
+            if (s == States.LSlant && IsAiming)
             {
                 fps.SetZSlant(15);
             }
-            else if (s == States.Rlant && isAiming)
+            else if (s == States.Rlant && IsAiming)
             {
                 fps.SetZSlant(-15);
             }
@@ -164,13 +164,13 @@ namespace Shoots
             var aimPlace = guns[currentI].AimPlace;
             var hangPlace = guns[currentI].HangPlace;
 
-            Vector3 target = isAiming && !gun.IsReload ? aimPlace.position : hangPlace.position;// следующая позиция
+            Vector3 target = IsAiming && !gun.IsReload ? aimPlace.position : hangPlace.position;// следующая позиция
             tGun.position = Vector3.MoveTowards(gun.transform.position, target, Time.deltaTime / lerpSpeed);
 
             isAnimFinish = tGun.position == target;
-            fps.SensivityM = isAiming ? 0.25f : 1;
+            fps.SensivityM = IsAiming ? 0.25f : 1;
 
-            float targetFOV = isAiming && !gun.IsReload ?// анимирование угла обзора
+            float targetFOV = IsAiming && !gun.IsReload ?// анимирование угла обзора
                   advanced.BaseCamFOV - (advanced.FOVKickAmount * 3) : advanced.BaseCamFOV;
             foreach (var c in cameras)
             {
@@ -178,7 +178,7 @@ namespace Shoots
             }
             if (gun.IsReload)
                 return;
-            Quaternion q = isAiming && !gun.IsReload ? aimPlace.rotation : hangPlace.rotation;// следующая позиция
+            Quaternion q = IsAiming && !gun.IsReload ? aimPlace.rotation : hangPlace.rotation;// следующая позиция
             tGun.rotation = Quaternion.RotateTowards(gun.transform.rotation, q, 1);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Inventory
 {
@@ -12,10 +13,12 @@ namespace Inventory
         public readonly List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
         private InventoryEventReceiver eventReceiver;
         public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
+        private InventoryEffects inventoryEffects;
         private void OnEnable()
         {
             eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>());
-            eventReceiver.OnEnable();            
+            eventReceiver.OnEnable();
+            inventoryEffects = new InventoryEffects(gameObject);
         }
         private void Start()
         {
@@ -56,6 +59,10 @@ namespace Inventory
             queueOfItems.Enqueue(item);// добавить предмет в очередь
             MessageToPUDD();
         }
+        public void SpendOnCell()
+        {
+            inventoryEffects.PlaySpendClip();
+        }
         private void MessageToPUDD()
         {
             var peek = queueOfItems.Dequeue();
@@ -64,7 +71,21 @@ namespace Inventory
 
         private void OnDisable()
         {
-            eventReceiver.OnDisable();            
+            eventReceiver.OnDisable();
+        }
+        public class InventoryEffects
+        {
+            private AudioClip spendOnCellClip;
+            private AudioSource inventorySpeaker;
+            public InventoryEffects(GameObject main)
+            {
+                spendOnCellClip = Resources.Load<AudioClip>("Inventory\\tic");
+                inventorySpeaker = main.AddComponent<AudioSource>();
+            }
+            public void PlaySpendClip()
+            {
+                inventorySpeaker.PlayOneShot(spendOnCellClip);
+            }
         }
     }
 }

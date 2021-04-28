@@ -151,11 +151,12 @@ namespace Inventory
         private IEnumerator BackgroundAnimate()
         {
             bool wasAnimated = false;
+            InventoryContainer.Instance.SpendOnCell();
             while (true)
             {
                 var rt = background.GetComponent<RectTransform>();
                 Vector3 nextState = wasAnimated? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
-                rt.localScale = Vector3.MoveTowards(rt.localScale, nextState, 1);
+                rt.localScale = Vector3.MoveTowards(rt.localScale, nextState, 0.5f);
                 if (rt.localScale == additionalSettins.AnimatedScale)
                 {
                     wasAnimated = true;

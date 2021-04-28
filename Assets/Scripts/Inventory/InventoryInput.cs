@@ -13,7 +13,7 @@ sealed class InventoryInput : Singleton<InventoryInput>
     {
         if (Input.GetKeyDown(changeActiveKeyCode) && InputManager.IsEnableInput == 0)
         {
-            ChangeActive(true);
+            ChangeActive(false);
         }
         if (Input.anyKeyDown)
         {
@@ -23,10 +23,10 @@ sealed class InventoryInput : Singleton<InventoryInput>
     /// <summary>
     /// включение видимости инвентаря
     /// </summary>
-    private void ChangeActive(bool value) => ChangeActiveEvent?.Invoke(value);
-    public void SimularActive(bool value)
+    private void ChangeActive(bool isSimular) => ChangeActiveEvent?.Invoke(isSimular);
+    public void DisableInventory()
     {
-        ChangeActive(value);
+        ChangeActive(true);
     }
 
     /// <summary>

@@ -5,10 +5,8 @@ using UnityEngine.AI;
 public sealed class DogEnemy : Enemy
 {
     [SerializeField] private Transform head;
-    private void Awake()
+    private void OnEnable()
     {
-        mAgent = GetComponent<NavMeshAgent>();
-        mAnim = GetComponent<Animator>();
         base.Init(2, 3, 15, 100);      
     }
     protected override void LookOnTarget()

@@ -8,7 +8,7 @@ public sealed class ClockManager : MonoBehaviour
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Transform[] pointers = new Transform[2];
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForMin;
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForHours;
-    private void OnEnable()
+    private void Start()
     {
         if (isElectronicClock)
             WorldTime.Instance.ChangeTimeEvent += RenderOnText;

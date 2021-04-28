@@ -7,12 +7,9 @@ public sealed class SupportFirstMission : MonoBehaviour
     [SerializeField] private bool itskillingDog;
     private FirstMission mMission;
 
-    private void Awake()
+    private void Start()
     {
         mMission = FindObjectOfType<FirstMission>();
-    }
-    private void OnEnable()
-    {
         if (itskillingDog)
             GetComponent<DogEnemy>().UVariables.ChangeHealthEvent += ReportKillingDog;
     }

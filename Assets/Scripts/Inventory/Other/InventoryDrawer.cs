@@ -8,20 +8,16 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     [SerializeField] private Transform mainContainer;
     [SerializeField] private Transform supportContainer;
 
-    public static bool MainFieldEnabled { get; private set; } = false;
-    private delegate void EventHandler();
-    private static event EventHandler mainFieldActiveEvent;
+    private static bool MainFieldEnabled { get; set; } = false;
     public Transform GetMainContainer() => mainContainer;
 
     public Transform GetSupportContainer() => supportContainer;
 
-    private void OnEnable()
-    {
-        mainFieldActiveEvent += SetActiveMainField;
-    }
+
     private void Start()
     {
-        mainFieldActiveEvent?.Invoke();
+        EffectsManager.Instance.Init();
+        SetActiveMainField();
     }
     /// <summary>
     /// включение видимости инвентаря
@@ -33,13 +29,15 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     /// <summary>
     /// смена активности инвентаря
     /// </summary>
-    public static void ChangeActiveMainField(bool isSimular = false)
+    public bool ChangeActiveMainField(bool isSimular)
     {
-        MainFieldEnabled = !Shoots.GunAnimator.Instance.isAiming && !MainFieldEnabled && !isSimular;
-        mainFieldActiveEvent?.Invoke();
+        MainFieldEnabled = !Shoots.GunAnimator.Instance.IsAiming && !MainFieldEnabled && !isSimular;
+        SetActiveMainField();
+        SetActiveDOF(MainFieldEnabled);
+        return MainFieldEnabled;
     }
-    private void OnDisable()
+    private void SetActiveDOF(bool active)
     {
-        mainFieldActiveEvent -= SetActiveMainField;
+        EffectsManager.Instance.SetEnableDOF(active);
     }
 }

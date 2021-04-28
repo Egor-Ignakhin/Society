@@ -4,7 +4,7 @@ namespace Enemies
 {
     public sealed class BredEnemy : Enemy
     {
-        private void Awake()
+        private void OnEnable()
         {
             base.Init(2, 10, 25, 250);
         }

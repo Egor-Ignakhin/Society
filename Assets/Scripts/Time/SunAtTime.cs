@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Times;
+﻿using Times;
 using UnityEngine;
 
 namespace Weather
@@ -8,19 +6,16 @@ namespace Weather
     /// <summary>
     /// поворачивает солнце в зависимости от времени
     /// </summary>
-    public class SunAtTime : MonoBehaviour
+    sealed class SunAtTime : MonoBehaviour
     {
-        [SerializeField] private Transform sunT;
-
-        private float defaultY;
-        private void OnEnable()
+        private void Start()
         {
             WorldTime.Instance.ChangeTimeEventInNumbers += Rotate;
         }
 
         private void Rotate(int sec, int min, int hours)
         {
-            sunT.transform.localRotation = Quaternion.Euler(hours * 15 - 120 + min / 4, 180, 0);
+            transform.localRotation = Quaternion.Euler(hours * 15 - 120 + min / 4, 180, 0);
         }
         private void OnDisable()
         {

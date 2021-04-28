@@ -59,7 +59,7 @@ namespace Debugger
         /// </summary>
         private void Move()
         {
-            InventoryInput.Instance.SimularActive(false);
+            InventoryInput.Instance.DisableInventory();
             if (!isHidden)
             {
                 InputManager.LockInput();
