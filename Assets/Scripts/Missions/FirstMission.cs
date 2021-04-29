@@ -150,7 +150,7 @@ public class FirstMission : Mission
             neededContent = "Ошибка при прочтении задания : недостаточно заданий";
         }
 
-        missionsManager.GetTaskDrawer().DrawNewTask(neededContent);
+        TaskDrawer.Instance.DrawNewTask(neededContent);
         DoingsInMission.CheckTaskForPossibleDoing(i, this);
     }
     /// <summary>

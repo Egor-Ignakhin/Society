@@ -7,7 +7,6 @@ public sealed class MissionsManager : MonoBehaviour
     private BasicNeeds playerBasicNeeds;
     private EffectsCanvas effectsCanvas;
     private Dialogs.DialogDrawer dialogDrawer;
-    private TaskDrawer taskDrawer;
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
@@ -21,7 +20,6 @@ public sealed class MissionsManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        taskDrawer = FindObjectOfType<TaskDrawer>();
         dialogDrawer = FindObjectOfType<Dialogs.DialogDrawer>();
         effectsCanvas = FindObjectOfType<EffectsCanvas>();
         playerBasicNeeds = BasicNeeds.Instance;
@@ -57,10 +55,6 @@ public sealed class MissionsManager : MonoBehaviour
     internal Dialogs.DialogDrawer GetDialogDrawer()
     {
         return dialogDrawer;
-    }
-    internal TaskDrawer GetTaskDrawer()
-    {
-        return taskDrawer;
     }
 
     private void SaveState()
@@ -128,7 +122,7 @@ public sealed class MissionsManager : MonoBehaviour
 
         if(type == MissionType.none)// если миссия закончилась и новая не началась
         {
-            taskDrawer.DrawNewTask(nextMission);
+            TaskDrawer.Instance.DrawNewTask(nextMission);
         }
     }
 }

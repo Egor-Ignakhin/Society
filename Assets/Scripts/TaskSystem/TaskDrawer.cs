@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public sealed class TaskDrawer : MonoBehaviour// класс отрисовывает задачи
+public sealed class TaskDrawer : Singleton<TaskDrawer>// класс отрисовывает задачи
 {
     [SerializeField] private TMPro.TextMeshProUGUI text;
 

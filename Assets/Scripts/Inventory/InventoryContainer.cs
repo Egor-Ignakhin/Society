@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace Inventory
 {
@@ -10,10 +11,11 @@ namespace Inventory
         [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
-        public readonly List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
+        public List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
         private InventoryEventReceiver eventReceiver;
         public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         private InventoryEffects inventoryEffects;
+        private InventorySaver inventorySaver = new InventorySaver();
         private void OnEnable()
         {
             eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>());
@@ -38,8 +40,8 @@ namespace Inventory
             {
                 c.Init();
             }
+            inventorySaver.Load(ref Cells);
         }
-
         /// <summary>
         /// добавление поднятого предмета в очередь
         /// </summary>
@@ -71,7 +73,12 @@ namespace Inventory
 
         private void OnDisable()
         {
+            Save(Cells);
             eventReceiver.OnDisable();
+        }
+        private void Save(List<InventoryCell> cells)
+        {
+            inventorySaver.Save(cells);
         }
         public class InventoryEffects
         {

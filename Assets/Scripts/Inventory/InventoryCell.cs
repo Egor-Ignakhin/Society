@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -37,7 +38,17 @@ namespace Inventory
         {            
             additionalSettins = new AdditionalSettins(background);
         }
-
+        /// <summary>
+        /// вызывается для записи предмета в ячейку после загрузки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="count"></param>
+        /// <param name="pos"></param>
+        public void SetItem(int id, int count)
+        {
+            MItemContainer.SetItem(ItemStates.GetType(id), count);
+            ChangeSprite(MItemContainer.Type);            
+        }
         /// <summary>
         /// вызывается для изначальной записи предмета в ячейку
         /// </summary>
@@ -45,9 +56,7 @@ namespace Inventory
         public void SetItem(InventoryItem item)
         {
             MItemContainer.SetItem(item.GetObjectType(), item.GetCount());
-
-            ChangeSprite(MItemContainer.Type);
-            UpdateText();
+            ChangeSprite(MItemContainer.Type);            
         }
         /// <summary>
         /// вызывается для смены предмета другим предметом
@@ -60,8 +69,7 @@ namespace Inventory
             mItem = copyPaste.mItem;// присвоение новых транс-ов
             mImage = copyPaste.mImage;// и новых image                        
             mText = copyPaste.mText;
-            ChangeSprite(MItemContainer.Type);
-            UpdateText();
+            ChangeSprite(MItemContainer.Type);            
             return outRangeCount;
         }
         private void UpdateText()
@@ -77,6 +85,7 @@ namespace Inventory
         {
             mImage.sprite = InventorySpriteContainer.GetSprite(type);
             mImage.color = type == NameItems.DefaultIcon ? new Color(1, 1, 1, 0) : Color.white;
+            UpdateText();
         }
         #region Events
         /// <summary>
@@ -179,11 +188,12 @@ namespace Inventory
         {
             background.color = v ? additionalSettins.FocusedColor : additionalSettins.UnfocusedColor;
         }
-
+        
         public class Item
         {
             public bool IsFilled { get => Count > MaxCount - 1; }
             public string Type { get; private set; } = NameItems.DefaultIcon;
+            public int Id { get => ItemStates.GetId(Type); }
             public int Count { get; private set; } = 0;
             public int MaxCount { get => ItemStates.GetMaxCount(Type); }
             public bool IsEmpty { get => Count == 0; }
