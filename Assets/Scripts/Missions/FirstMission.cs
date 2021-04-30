@@ -130,7 +130,7 @@ public class FirstMission : Mission
         string[] allContent = System.IO.File.ReadAllLines(Localization.PathToCurrentLanguageContent(Localization.Type.Dialogs, GetMissionNumber()));
         string neededContent = allContent[i];
         Dialogs.Dialog dialog = new Dialogs.Dialog(neededContent);
-        missionsManager.GetDialogDrawer().DrawNewDialog(dialog, 4);
+        Dialogs.DialogDrawer.Instance.DrawNewDialog(dialog, 4);
     }
     /// <summary>
     /// назначение задачи 

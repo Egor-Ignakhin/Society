@@ -9,7 +9,7 @@ class CanvasesCreator : MonoBehaviour
         Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas] EffectsCanvas"), transform);
         Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas] InventoryCanvas"), transform);
         Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas] TaskCanvas"), transform);
-        Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas]BasicNeeds"), transform);      
+        Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas]BasicNeeds"), transform);
+        Instantiate(Resources.Load<Canvas>("Canvases\\[Canvas] PauseMenu"), transform);
     }
-
 }

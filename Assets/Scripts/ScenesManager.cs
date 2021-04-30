@@ -15,4 +15,5 @@ public sealed class ScenesManager : InteractiveObject
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(scene == -1 ? nextScene : scene);
     }
+    public static int MainMenu = 0;
 }

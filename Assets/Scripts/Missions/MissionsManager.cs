@@ -5,8 +5,7 @@ using UnityEngine;
 public sealed class MissionsManager : MonoBehaviour
 {
     private BasicNeeds playerBasicNeeds;
-    private EffectsCanvas effectsCanvas;
-    private Dialogs.DialogDrawer dialogDrawer;
+    private EffectsCanvas effectsCanvas;    
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
@@ -19,8 +18,7 @@ public sealed class MissionsManager : MonoBehaviour
         additional    
     }
     private void OnEnable()
-    {
-        dialogDrawer = FindObjectOfType<Dialogs.DialogDrawer>();
+    {        
         effectsCanvas = FindObjectOfType<EffectsCanvas>();
         playerBasicNeeds = BasicNeeds.Instance;
         LoadState();
@@ -52,11 +50,6 @@ public sealed class MissionsManager : MonoBehaviour
     {
         return effectsCanvas;
     }
-    internal Dialogs.DialogDrawer GetDialogDrawer()
-    {
-        return dialogDrawer;
-    }
-
     private void SaveState()
     {
         string data = JsonUtility.ToJson(currentState, true);

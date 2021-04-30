@@ -4,7 +4,8 @@ using UnityEngine.Rendering.Universal;
 public class EffectsManager : Singleton<EffectsManager>
 {
     private Volume globalVolume;
-    private DepthOfField volumeDOF;    
+    private DepthOfField volumeDOF;
+    private Bloom volumeBloom;
 
     public override void Init()
     {
@@ -12,6 +13,7 @@ public class EffectsManager : Singleton<EffectsManager>
         if (!globalVolume)
             return;
         globalVolume.profile.TryGet(out volumeDOF);
+        globalVolume.profile.TryGet(out volumeBloom);
 
         SetEnableDOF(false);
         base.Init();
@@ -26,4 +28,8 @@ public class EffectsManager : Singleton<EffectsManager>
         volumeDOF.active = active;
         //dph.kernelSize.value = KernelSize.VeryLarge;
     }    
+    public void SetEnableBloom(bool v)
+    {
+        volumeBloom.active = v;
+    }
 }

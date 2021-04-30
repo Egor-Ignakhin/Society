@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Dialogs
 {
-    public sealed class DialogDrawer : MonoBehaviour// класс отвечающий за отрисовку диалогов
+    public sealed class DialogDrawer : Singleton<DialogDrawer>// класс отвечающий за отрисовку диалогов
     {
         private float delayToDimming;
         [SerializeField] private TMPro.TextMeshProUGUI text;
