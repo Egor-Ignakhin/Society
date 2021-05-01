@@ -8,30 +8,32 @@ namespace MenuScripts
 {
     namespace PauseMenu
     {
-        class MenuPauseManager : MonoBehaviour
+        /// <summary>
+        /// класс - управлящий меню паузой
+        /// </summary>
+        sealed class MenuPauseManager : MonoBehaviour
         {
-            private MenuEventReceiver eventReceiver;
-            [SerializeField] private Transform mainParent;
-            [SerializeField] GameObject MenuUI;
-            [SerializeField] private GameObject SettingsObj;
-            private bool MenuEnabled;
-            private FirstPersonController fps;
+            private MenuEventReceiver eventReceiver;// обработчик событий меню-паузы
+            [SerializeField] private Transform mainParent;// контейнер сод. кнопки
+            [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
+            [SerializeField] private GameObject SettingsObj;// меню настроек            
+            private FirstPersonController fps;// контроллёр игрока
 
             private void Start()
             {
                 fps = FindObjectOfType<FirstPersonController>();
                 eventReceiver = new MenuEventReceiver(MenuUI, mainParent, fps, SettingsObj);
-                CommandContainer.SetEnableMenu(false, MenuUI, fps);
             }
             private void Update()
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    CommandContainer.SetEnableMenu(MenuEnabled = !MenuEnabled, MenuUI, fps);
-                }
+                eventReceiver.Update();
             }
+            /// <summary>
+            /// смена активности bloom'а
+            /// </summary>
+            /// <param name="t"></param>
             public void SetActiveGlobalBloom(Toggle t)
-            {                
+            {
                 EffectsManager.Instance.SetEnableBloom(t.isOn);
             }
         }
@@ -40,15 +42,15 @@ namespace MenuScripts
             private readonly GameObject menuUI;
             private readonly FirstPersonController fps;
             private readonly GameObject SettingsObj;
-            public class AdvancedSettings
-            {
-                public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);
-                public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);
-                public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);
-            }
+            private readonly CommandContainer commandContainer = new CommandContainer();
             private readonly AdvancedSettings advanced = new AdvancedSettings();
             private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
-
+            public class AdvancedSettings
+            {
+                public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
+                public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
+                public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
+            }
             public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn)
             {
                 menuUI = menu;
@@ -56,7 +58,7 @@ namespace MenuScripts
                 SettingsObj = stn;
                 for (int i = 0; i < mainParent.childCount; i++)
                 {
-                    var c = mainParent.GetChild(i).GetChild(0).gameObject.GetComponent<EventTrigger>();
+                    var c = mainParent.GetChild(i).GetChild(0).GetComponent<EventTrigger>();
 
                     EventTrigger.Entry entry = new EventTrigger.Entry
                     {
@@ -82,25 +84,47 @@ namespace MenuScripts
                     btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
                 }
                 DisableAllTriggers();
+                commandContainer.SetEnableMenu(false, menuUI, fps);// выключение  меню
             }
+
+            public void Update()
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    commandContainer.SetEnableMenu(!menuUI.activeInHierarchy, menuUI, fps);
+                }
+            }
+
+            /// <summary>
+            /// наведение на кнопку
+            /// </summary>
+            /// <param name="sender"></param>
             public void IntersectMouse(GameObject sender)
             {
                 DisableAllTriggers();
                 btns[sender].image.color = advanced.SelectedColor;
                 btns[sender].text.color = Color.white;
             }
+            /// <summary>
+            /// нажатие на кнопку
+            /// </summary>
+            /// <param name="sender"></param>
             public void Down(GameObject sender)
             {
                 btns[sender].image.color = advanced.PressedColor;
                 btns[sender].text.color = Color.white;
                 Doing(btns[sender].index);
             }
+            //отжатие кнопки
             public void Up(GameObject sender)
             {
                 DisableAllTriggers();
                 btns[sender].image.color = advanced.SelectedColor;
                 btns[sender].text.color = Color.white;
             }
+            /// <summary>
+            /// выключение видимости всех кнопок
+            /// </summary>
             public void DisableAllTriggers()
             {
                 foreach (var obj in btns)
@@ -114,64 +138,63 @@ namespace MenuScripts
                 switch (index)
                 {
                     case 0:
-                        CommandContainer.FastLoad();
+                        commandContainer.FastLoad();
                         break;
                     case 1:
-                        CommandContainer.LoadLastCheckpoint();
+                        commandContainer.LoadLastCheckpoint();
                         break;
                     case 2:
-                        CommandContainer.NoteBook();
+                        commandContainer.NoteBook();
                         break;
                     case 3:
-                        CommandContainer.Hints();
+                        commandContainer.Hints();
                         break;
                     case 4:
-                        CommandContainer.PhotoMode();
+                        commandContainer.PhotoMode();
                         break;
                     case 5:
-                        CommandContainer.Settings(SettingsObj);
+                        commandContainer.Settings(SettingsObj);
                         break;
                     case 6:
-                        CommandContainer.ExitToMainMenu();
+                        commandContainer.ExitToMainMenu();
                         break;
                     case 7:
-                        CommandContainer.SetEnableMenu(false, menuUI, fps);
+                        commandContainer.SetEnableMenu(false, menuUI, fps);
                         break;
                 }
             }
         }
-        class CommandContainer
+        public sealed class CommandContainer
         {
-
-            public static void FastLoad()
+            public void FastLoad()
             {
                 Debug.Log("TODO:FASTLOAD");
             }
-            public static void LoadLastCheckpoint()
+            public void LoadLastCheckpoint()
             {
                 Debug.Log("TODO:LOADLASTCHECKPOINT");
             }
-            public static void NoteBook()
+            public void NoteBook()
             {
                 Debug.Log("TODO:NOTEBOOK");
             }
-            public static void Hints()
+            public void Hints()
             {
                 Debug.Log("TODO:HINTS");
             }
-            public static void PhotoMode()
+            public void PhotoMode()
             {
                 Debug.Log("TODO:PHOTOMODE");
             }
-            public static void Settings(GameObject SettingsObj)
+            public void Settings(GameObject SettingsObj)
             {
                 SettingsObj.SetActive(!SettingsObj.activeInHierarchy);
             }
-            public static void ExitToMainMenu()
+            public void ExitToMainMenu()
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
             }
-            public static void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps)
+            public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps)
             {
                 menu.SetActive(v);
                 // пауза при открытии инвентаря
@@ -187,7 +210,7 @@ namespace MenuScripts
                 {
                     Cursor.lockState = CursorLockMode.None;
                     fps.SetState(State.locked);
-                }                
+                }
             }
         }
 

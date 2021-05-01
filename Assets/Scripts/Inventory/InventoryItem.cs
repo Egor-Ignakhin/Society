@@ -9,8 +9,5 @@ public abstract class InventoryItem : InteractiveObject
         Inventory.InventoryContainer.Instance.AddItem(this);
         Destroy(gameObject);
     }
-    public int GetCount()
-    {
-        return count;
-    }
+    public int GetCount() => count;
 }

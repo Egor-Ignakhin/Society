@@ -40,7 +40,7 @@ namespace Inventory
             {
                 c.Init();
             }
-            inventorySaver.Load(ref Cells);
+            inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря
         }
         /// <summary>
         /// добавление поднятого предмета в очередь
@@ -76,23 +76,22 @@ namespace Inventory
             Save(Cells);
             eventReceiver.OnDisable();
         }
-        private void Save(List<InventoryCell> cells)
-        {
-            inventorySaver.Save(cells);
-        }
+        /// <summary>
+        /// сохранение инвентаря
+        /// </summary>
+        /// <param name="cells"></param>
+        private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
+
         public class InventoryEffects
         {
-            private AudioClip spendOnCellClip;
-            private AudioSource inventorySpeaker;
+            private readonly AudioClip spendOnCellClip;// звук при наведении на слот
+            private readonly AudioSource inventorySpeaker;
             public InventoryEffects(GameObject main)
             {
                 spendOnCellClip = Resources.Load<AudioClip>("Inventory\\tic");
                 inventorySpeaker = main.AddComponent<AudioSource>();
             }
-            public void PlaySpendClip()
-            {
-                inventorySpeaker.PlayOneShot(spendOnCellClip);
-            }
+            public void PlaySpendClip() => inventorySpeaker.PlayOneShot(spendOnCellClip);
         }
     }
 }

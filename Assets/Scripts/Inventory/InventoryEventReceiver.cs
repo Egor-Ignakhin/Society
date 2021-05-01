@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 namespace Inventory
 {
+    /// <summary>
+    /// класс - обработчик событий инвентаря
+    /// </summary>
     public sealed class InventoryEventReceiver
     {
         public InventoryEventReceiver(Transform mp, FirstPersonController fps)
@@ -19,22 +22,20 @@ namespace Inventory
         private bool isDragged;// происходит ли удержание
         public void OnEnable()
         {
-            InventoryInput.ChangeActiveEvent += this.ChangeActiveEvent;
+            InventoryInput.ChangeActiveEvent += ChangeActiveEvent;
             InventoryInput.InputKeyEvent += SelectCell;
         }
         public void OnDisable()
         {
-            InventoryInput.ChangeActiveEvent -= this.ChangeActiveEvent;
+            InventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
             InventoryInput.InputKeyEvent -= SelectCell;
         }
-        private void ChangeActiveEvent(bool isSimular)
-        {
-            SetPause(InventoryDrawer.Instance.ChangeActiveMainField(isSimular));
-        }
+        private void ChangeActiveEvent(bool isSimular) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(isSimular));
+
         private void SetPause(bool mfEnabled)
         {
             // пауза при открытии инвентаря
-            bool enabled = mfEnabled && !Shoots.GunAnimator.Instance.IsAiming;
+            bool enabled = mfEnabled && !Shoots.GunAnimator.Instance.IsAiming;// открытие инвентаря возможно при нажатии на клавишу и не при прицеливании
 
 
             Cursor.visible = enabled;
@@ -49,7 +50,7 @@ namespace Inventory
                 fps.SetState(State.locked);
             }
             EndDrag();
-        }        
+        }
         public void InsideCursorCell(InventoryCell cell)
         {
             // событие входа курсора в сектор ячейки
@@ -89,7 +90,7 @@ namespace Inventory
         }
         public void EndDrag()
         {
-            if(isDragged)
+            if (isDragged)
                 UnfocusAllCells();
             //конец удержания
             isDragged = false;
@@ -99,7 +100,7 @@ namespace Inventory
             draggedCell = null;
             draggedItem = null;
             candidateForReplaceCell = null;
-            candidateForReplaceItem = null;                          
+            candidateForReplaceItem = null;
         }
         private void ParentingDraggedObject()
         {
@@ -128,11 +129,18 @@ namespace Inventory
             draggedItem.localPosition = Vector3.zero;
         }
 
+        /// <summary>
+        /// выделение слота по нажатию на слот
+        /// </summary>
+        /// <param name="ic"></param>
         public void FocusCell(InventoryCell ic)
         {
             UnfocusAllCells();
             ic.SetFocus(true);
         }
+        /// <summary>
+        /// снятие выделения со слотов
+        /// </summary>
         private void UnfocusAllCells()
         {
             var cells = InventoryContainer.Instance.Cells;
@@ -141,6 +149,10 @@ namespace Inventory
                 cell.SetFocus(false);
             }
         }
+        /// <summary>
+        /// выделение по нажатию на клавишу
+        /// </summary>
+        /// <param name="c"></param>
         private void SelectCell(int c)
         {
             if (c > 0 && c <= InventoryContainer.Instance.HotCells.Count)

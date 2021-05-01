@@ -21,10 +21,10 @@ namespace Inventory
         private AdditionalSettins additionalSettins;
         public sealed class AdditionalSettins
         {
-            public Vector3 DefaultScale { get; }
-            public Vector3 AnimatedScale { get; }
-            public Color FocusedColor { get; }
-            public Color UnfocusedColor { get; }
+            public Vector3 DefaultScale { get; } // обычный размер
+            public Vector3 AnimatedScale { get; } // анимированный размер
+            public Color FocusedColor { get; }// цвет при выделении
+            public Color UnfocusedColor { get; }// обычный цвет
             public AdditionalSettins(Image bg)
             {
                 DefaultScale = bg.GetComponent<RectTransform>().localScale;

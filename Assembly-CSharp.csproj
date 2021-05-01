@@ -68,12 +68,13 @@
     <Compile Include="Assets\Scripts\AntonScenes\Checkpoint.cs" />
     <Compile Include="Assets\Scripts\AntonScenes\MouseAntonManager.cs" />
     <Compile Include="Assets\Scripts\AntonScenes\PlayerTaker.cs" />
-    <Compile Include="Assets\Scripts\BedController.cs" />
     <Compile Include="Assets\Scripts\BedManager.cs" />
     <Compile Include="Assets\Scripts\BedMesh.cs" />
     <Compile Include="Assets\Scripts\CallInteractObject.cs" />
     <Compile Include="Assets\Scripts\ChairManager.cs" />
     <Compile Include="Assets\Scripts\ChairMesh.cs" />
+    <Compile Include="Assets\Scripts\Controllers\BedController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\SeatController.cs" />
     <Compile Include="Assets\Scripts\CupboardManager.cs" />
     <Compile Include="Assets\Scripts\CupboardMesh.cs" />
     <Compile Include="Assets\Scripts\DeadScene\DeadSceneManager.cs" />
@@ -149,7 +150,6 @@
     <Compile Include="Assets\Scripts\SavePlace\CampSaver.cs" />
     <Compile Include="Assets\Scripts\SavePlace\CampZoneChecker.cs" />
     <Compile Include="Assets\Scripts\ScenesManager.cs" />
-    <Compile Include="Assets\Scripts\SeatController.cs" />
     <Compile Include="Assets\Scripts\Shoot\Bullet.cs" />
     <Compile Include="Assets\Scripts\Shoot\BulletValues.cs" />
     <Compile Include="Assets\Scripts\Shoot\Gun.cs" />

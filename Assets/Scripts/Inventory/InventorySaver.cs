@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace Inventory
 {
-    public class InventorySaver
+    /// <summary>
+    /// класс отвечающий за сохранение инвентаря
+    /// </summary>
+    public sealed class InventorySaver
     {
-        private string path = Directory.GetCurrentDirectory() + "\\Saves\\Inventory.json";
-        public void Load(ref List<InventoryCell> cells)
-        {
-            SaverContainer.Load(path, ref cells);
-        }
+        private readonly string path = Directory.GetCurrentDirectory() + "\\Saves\\Inventory.json";
+        public void Load(ref List<InventoryCell> cells) => SaverContainer.Load(path, ref cells);
+
         public void Save(List<InventoryCell> cells)
         {
             // Start save date
@@ -25,16 +26,15 @@ namespace Inventory
     [System.Serializable]
     public class SaverContainer
     {
-        public List<int> types = new List<int>();
-        public List<int> counts = new List<int>();
-        public int cellsCount;
+        public List<int> types = new List<int>();// типы предметов в слотах
+        public List<int> counts = new List<int>();// кол-во предметов в слотах
+        public int cellsCount;// кол-во слотов
         public SaverContainer(List<InventoryCell> cells)
         {
-            for (int i = 0; i < cells.Count; i++)
+            for (cellsCount = 0; cellsCount < cells.Count; cellsCount++)
             {
-                types.Add(cells[i].MItemContainer.Id);// запись ID предмета
-                counts.Add(cells[i].MItemContainer.Count);// запись кол-ва предмета                
-                cellsCount++;
+                types.Add(cells[cellsCount].MItemContainer.Id);// запись ID предмета
+                counts.Add(cells[cellsCount].MItemContainer.Count);// запись кол-ва предмета                                
             }
         }
         /// <summary>

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
+/// </summary>
 sealed class InventoryInput : Singleton<InventoryInput>
 {
     public delegate void EventHandler(bool value);
@@ -24,6 +27,9 @@ sealed class InventoryInput : Singleton<InventoryInput>
     /// включение видимости инвентаря
     /// </summary>
     private void ChangeActive(bool isSimular) => ChangeActiveEvent?.Invoke(isSimular);
+    /// <summary>
+    /// насильное выключение инвентаря
+    /// </summary>
     public void DisableInventory()
     {
         ChangeActive(true);

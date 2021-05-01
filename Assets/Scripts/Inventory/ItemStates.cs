@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Inventory
 {
+    /// <summary>
+    /// класс содержащий статы предметов
+    /// </summary>
     class ItemStates
     {
         private static readonly Dictionary<string, (int maxCount, int id)> items;
@@ -22,28 +25,23 @@ namespace Inventory
         /// </summary>
         /// <param type="type"></param>
         /// <returns></returns>
-        public static int GetMaxCount(string type)
-        {
-            return items[type].maxCount;
-        }
+        public static int GetMaxCount(string type) => items[type].maxCount;
 
-        internal static int GetId(string type)
-        {
-            return items[type].id;
-        }
+        /// <summary>
+        /// возвращает id по типу (строка)
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static int GetId(string type) => items[type].id;
+
         public static string GetType(int id)
         {
-            var myFilteredCollection = items.Where(x => x.Value.id == id);
-
-
-            foreach (var x in myFilteredCollection)
-            {
-                return x.Key;
-            }
-            return null;
+            var item = items.Where(x => x.Value.id == id).First().Key;
+            
+            return item;
         }
     }
-    public class NameItems
+    class NameItems
     {
         public const string DefaultIcon = "DefaultIcon";
         public const string Axe = "Axe";

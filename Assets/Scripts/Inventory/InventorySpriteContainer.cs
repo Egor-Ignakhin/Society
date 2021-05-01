@@ -16,9 +16,7 @@ namespace Inventory
             { NameItems.Pistol1, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol1") },
             { NameItems.Pistol2, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol2") } };
         }
-        public static Sprite GetSprite(string type)
-        {
-            return sprites[type];
-        }
+        public static Sprite GetSprite(string type) => sprites[type];
+
     }
 }
