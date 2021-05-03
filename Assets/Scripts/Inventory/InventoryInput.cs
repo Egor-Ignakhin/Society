@@ -12,11 +12,12 @@ sealed class InventoryInput : Singleton<InventoryInput>
     public static event InputHandler InputKeyEvent;
 
     private const KeyCode changeActiveKeyCode = KeyCode.E;
+    private bool isEnabled;
     private void Update()
     {
         if (Input.GetKeyDown(changeActiveKeyCode) && InputManager.IsEnableInput == 0)
         {
-            ChangeActive(false);
+            ChangeActive(isEnabled = !isEnabled);
         }
         if (Input.anyKeyDown)
         {
@@ -26,13 +27,19 @@ sealed class InventoryInput : Singleton<InventoryInput>
     /// <summary>
     /// включение видимости инвентаря
     /// </summary>
-    private void ChangeActive(bool isSimular) => ChangeActiveEvent?.Invoke(isSimular);
+    private void ChangeActive(bool value) => ChangeActiveEvent?.Invoke(value);
     /// <summary>
     /// насильное выключение инвентаря
     /// </summary>
     public void DisableInventory()
     {
+        ChangeActive(false);
+        isEnabled = false;
+    }
+    public void EnableInventory()
+    {
         ChangeActive(true);
+        isEnabled = true;
     }
 
     /// <summary>

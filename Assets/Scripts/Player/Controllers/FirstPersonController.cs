@@ -442,7 +442,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         }
     }
     public State CurrentState { get; set; } = State.unlocked;
-    public async void SetState(State s)
+    public void SetState(State s)
     {
         if (s == State.locked)
             InputManager.LockInput();
@@ -457,7 +457,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
                 _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
                 _fpsRigidbody.useGravity = true;
-                await System.Threading.Tasks.Task.Delay(1);
+                Input.ResetInputAxes();
                 CanJump = true;
                 break;
 

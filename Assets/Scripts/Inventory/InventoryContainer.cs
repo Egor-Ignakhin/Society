@@ -16,9 +16,13 @@ namespace Inventory
         public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         private InventoryEffects inventoryEffects;
         private InventorySaver inventorySaver = new InventorySaver();
+
+        [SerializeField] private Transform freeCellsContainer;
+        [SerializeField] private Transform busyCellsContainer;
+        [SerializeField] private GameObject cellPrefab;
         private void OnEnable()
         {
-            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>());
+            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer);
             eventReceiver.OnEnable();
             inventoryEffects = new InventoryEffects(gameObject);
         }
@@ -41,6 +45,12 @@ namespace Inventory
                 c.Init();
             }
             inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря
+
+            //загрузка слотов для сундуков
+            for (int i = 0; i < ItemsContainer.maxCells; i++)
+            {
+                Instantiate(cellPrefab, freeCellsContainer);
+            }
         }
         /// <summary>
         /// добавление поднятого предмета в очередь

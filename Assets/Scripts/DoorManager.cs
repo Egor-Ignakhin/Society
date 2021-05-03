@@ -9,6 +9,7 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     private bool canInteract { get; set; } = true;// возможность взаимодействия
 
     [SerializeField] private Vector3 openState = new Vector3(0, -90, 0);// открытое состояние
+
     [SerializeField] private Vector3 lockState = new Vector3(0, 0, 0);// закрытое состояние
 
     private float lerpRate { get; set; } = 1;// скорость обычного движения двери
@@ -17,6 +18,10 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
 
     private bool isExtrimSituation;
 
+    private void Awake()
+    {
+        //  ExtrimRotate(openState);
+    }
     public void Interact(DoorMesh doorMesh)
     {
         if (!canInteract)

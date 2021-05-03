@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class EatingObjectsPool
 {
-    private static List<EatingObject> eatingObjects = new List<EatingObject>();// свободные объекты
-    public enum type { milk};
+    private static readonly List<EatingObject> eatingObjects = new List<EatingObject>();// свободные объекты
+    public enum type { milk, CannedFood};
     public static void ToPool(EatingObject eatingObject)
     {
         eatingObjects.Add(eatingObject);// добавление в список свободных об.

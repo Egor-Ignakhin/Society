@@ -65,7 +65,7 @@ namespace Maps
         private void OnDisable()
         {
             mapManager = null;
-            MapManager.AddPointEvent -= this.AddPoint;
+            MapManager.AddPointEvent -= this.AddPoint;            
         }
     }
 }

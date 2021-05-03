@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 namespace Inventory
 {
     /// <summary>
@@ -6,15 +8,60 @@ namespace Inventory
     /// </summary>
     public sealed class InventoryEventReceiver
     {
-        public InventoryEventReceiver(Transform mp, FirstPersonController fps)
+        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer)
         {
             mainParent = mp;
             Instance = this;
             this.fps = fps;
+            this.freeCellsContainer = freeCellsContainer;
+            this.busyCellsContainer = busyCellsContainer;
         }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
+        private readonly Transform busyCellsContainer;
+        private readonly Transform freeCellsContainer;
+
+        private ItemsContainer lastItemContainer;
+        public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
+        {
+            for (int i = 0; i < countSlots; i++)
+            {
+                var child = freeCellsContainer.GetChild(0);
+                child.SetParent(busyCellsContainer);
+
+                if (content != null)
+                    child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
+
+            }
+            InventoryInput.Instance.EnableInventory();
+            lastItemContainer = it;
+
+
+        }
+        public void CloseContainer()
+        {
+            List<Transform> childs = new List<Transform>();
+            for (int i = 0; i < busyCellsContainer.childCount; i++)
+            {
+                childs.Add(busyCellsContainer.GetChild(i));
+            }
+            foreach (var c in childs)
+            {
+                c.SetParent(freeCellsContainer);
+            }
+
+            var cells = new List<(int id, int count)>();
+
+            for (int i = 0; i < childs.Count; i++)
+            {
+                var item = childs[i].GetComponent<InventoryCell>().MItemContainer;
+                cells.Add((item.Id, item.Count));
+            }
+            lastItemContainer.Close(cells);            
+            lastItemContainer = null;
+        }
+
         private Transform candidateForReplaceItem;// кандидат для смены местами в инветаре(предмет)
         private InventoryCell candidateForReplaceCell;// кандидат для смены местами в инветаре(ячейка)
         private InventoryCell draggedCell;// удерживаемая ячейка
@@ -30,19 +77,17 @@ namespace Inventory
             InventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
             InventoryInput.InputKeyEvent -= SelectCell;
         }
-        private void ChangeActiveEvent(bool isSimular) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(isSimular));
+        private void ChangeActiveEvent(bool value) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(value));
 
-        private void SetPause(bool mfEnabled)
+        private void SetPause(bool enabled)
         {
-            // пауза при открытии инвентаря
-            bool enabled = mfEnabled && !Shoots.GunAnimator.Instance.IsAiming;// открытие инвентаря возможно при нажатии на клавишу и не при прицеливании
-
-
             Cursor.visible = enabled;
             if (!enabled)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 fps.SetState(State.unlocked);
+                if (lastItemContainer != null)
+                    CloseContainer();
             }
             else
             {

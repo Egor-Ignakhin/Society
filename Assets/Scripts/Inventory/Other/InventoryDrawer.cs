@@ -17,22 +17,16 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     private void Start()
     {
         EffectsManager.Instance.Init();
-        SetActiveMainField();
-    }
-    /// <summary>
-    /// включение видимости инвентаря
-    /// </summary>
-    private void SetActiveMainField()
-    {
         mainField.SetActive(MainFieldEnabled);
     }
+
     /// <summary>
     /// смена активности инвентаря
     /// </summary>
-    public bool ChangeActiveMainField(bool isSimular)
+    public bool ChangeActiveMainField(bool value)
     {
-        MainFieldEnabled = !Shoots.GunAnimator.Instance.IsAiming && !MainFieldEnabled && !isSimular;
-        SetActiveMainField();
+        MainFieldEnabled = !Shoots.GunAnimator.Instance.IsAiming && value;
+        mainField.SetActive(MainFieldEnabled);
         SetActiveDOF(MainFieldEnabled);
         return MainFieldEnabled;
     }

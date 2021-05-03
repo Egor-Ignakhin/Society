@@ -102,6 +102,8 @@ namespace PlayerClasses
         public event HealthHandler RadiationChangeValue;// событие голодания   
 
         private DeadLine deadLine;
+
+        private float DamageFromRadiation = 1;
         private void Start()
         {
             Health = defaultHealth;
@@ -110,6 +112,7 @@ namespace PlayerClasses
             Radiation = defaultRadiation;
 
             deadLine = new DeadLine();
+            gameObject.AddComponent<PlayerCollisionChecked>().OnInit(this);
         }
 
         private void OnEnable()
@@ -134,9 +137,11 @@ namespace PlayerClasses
         }
         public void RemoveRadiation()
         {
-            if (Radiation > MinRadiation && !isInsadeRadiationZone)
+            if (Radiation > MinRadiation)
             {
-                Radiation -= radiationDifference;
+                if (!isInsadeRadiationZone)// радиация снимается в безопасной зоне
+                    Radiation -= radiationDifference;
+                InjurePerson(DamageFromRadiation);
             }
         }
 
@@ -205,5 +210,40 @@ namespace PlayerClasses
         }
 
         #endregion
+
+        /// <summary>
+        /// класс отвечающий за столкновения с объектами
+        /// </summary>
+        class PlayerCollisionChecked : MonoBehaviour
+        {
+            private float minValue = 100;// минимальная инерция для счёта урона игроку
+            private BasicNeeds bn;
+            public void OnInit(BasicNeeds bn)
+            {
+                this.bn = bn;
+            }
+            private void OnCollisionEnter(Collision collision)
+            {
+                float force = 0;
+                float mass = 1;
+                if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
+                {
+                    mass = rb.mass;
+                }
+
+                for (int i = 0; i < collision.contacts.Length; i++)// итерация по всем точкам соприкосновения
+                {
+                    float len = Vector3.Project(collision.relativeVelocity,
+                                                    collision.contacts[i].normal).magnitude;
+                    if (force < len) force = len;
+                }
+
+                force = mass * force * force;
+                if (force > minValue)// если силв больше минимальной для нанесения урона
+                {
+                    bn.InjurePerson(force / 10);
+                }
+            }
+        }
     }
 }

@@ -34,8 +34,13 @@ namespace Inventory
             }
         }
 
+        private void Awake()
+        {
+            if (additionalSettins == null)
+                Init();
+        }
         public void Init()
-        {            
+        {
             additionalSettins = new AdditionalSettins(background);
         }
         /// <summary>
@@ -47,7 +52,7 @@ namespace Inventory
         public void SetItem(int id, int count)
         {
             MItemContainer.SetItem(ItemStates.GetType(id), count);
-            ChangeSprite(MItemContainer.Type);            
+            ChangeSprite(MItemContainer.Type);
         }
         /// <summary>
         /// вызывается для изначальной записи предмета в ячейку
@@ -56,7 +61,7 @@ namespace Inventory
         public void SetItem(InventoryItem item)
         {
             MItemContainer.SetItem(item.GetObjectType(), item.GetCount());
-            ChangeSprite(MItemContainer.Type);            
+            ChangeSprite(MItemContainer.Type);
         }
         /// <summary>
         /// вызывается для смены предмета другим предметом
@@ -69,7 +74,7 @@ namespace Inventory
             mItem = copyPaste.mItem;// присвоение новых транс-ов
             mImage = copyPaste.mImage;// и новых image                        
             mText = copyPaste.mText;
-            ChangeSprite(MItemContainer.Type);            
+            ChangeSprite(MItemContainer.Type);
             return outRangeCount;
         }
         private void UpdateText()
@@ -94,7 +99,7 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnPointerEnter(PointerEventData eventData)
         {
-            InventoryEventReceiver.Instance.InsideCursorCell(this);            
+            InventoryEventReceiver.Instance.InsideCursorCell(this);
             StartCoroutine(nameof(BackgroundAnimate));
         }
 
@@ -164,7 +169,7 @@ namespace Inventory
             while (true)
             {
                 var rt = background.GetComponent<RectTransform>();
-                Vector3 nextState = wasAnimated? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
+                Vector3 nextState = wasAnimated ? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
                 rt.localScale = Vector3.MoveTowards(rt.localScale, nextState, 0.5f);
                 if (rt.localScale == additionalSettins.AnimatedScale)
                 {
@@ -188,7 +193,7 @@ namespace Inventory
         {
             background.color = v ? additionalSettins.FocusedColor : additionalSettins.UnfocusedColor;
         }
-        
+
         public class Item
         {
             public bool IsFilled { get => Count > MaxCount - 1; }
@@ -211,6 +216,10 @@ namespace Inventory
 
                 Type = ntype;
                 return outRange;
+            }
+            public Item()
+            {
+
             }
         }
         /// <summary>
