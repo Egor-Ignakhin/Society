@@ -6,6 +6,6 @@ public abstract class Mission : MonoBehaviour
     public abstract void Report();
     public abstract int GetMissionNumber();
     public abstract void ContinueMission(int skipLength);
-    public abstract void FinishMission();  
-    
+    public abstract void FinishMission();
+
 }

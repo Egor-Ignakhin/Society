@@ -11,7 +11,7 @@ public class PlayerValueDrawer : MonoBehaviour
     [SerializeField] private bool isSprite;
     [SerializeField] private bool isLine;
 
-    private enum state {health, thirst, food, radiation };
+    private enum state { health, thirst, food, radiation };
     [SerializeField] private state mState;
 
     private TextMeshProUGUI mText;
@@ -28,7 +28,7 @@ public class PlayerValueDrawer : MonoBehaviour
         else
             mText = GetComponent<TextMeshProUGUI>();
 
-        if(valueClass == null)
+        if (valueClass == null)
         {
             valueClass = FindObjectOfType<BasicNeeds>();
         }
@@ -53,7 +53,7 @@ public class PlayerValueDrawer : MonoBehaviour
     {
         if (mState == state.health)
             valueClass.HealthChangeValue -= OnValueChange;
-       else if (mState == state.thirst)
+        else if (mState == state.thirst)
             valueClass.ThirstChangeValue -= OnValueChange;
         else if (mState == state.food)
             valueClass.FoodChangeValue -= OnValueChange;
@@ -67,13 +67,13 @@ public class PlayerValueDrawer : MonoBehaviour
     {
         if (mState == state.health || mState == state.thirst || mState == state.food)
         {
-            if(isLine)
+            if (isLine)
             {
                 float max = 0;
                 switch (mState)
                 {
                     case state.health:
-                        max = valueClass.MaximumHealth;                      
+                        max = valueClass.MaximumHealth;
                         break;
                     case state.thirst:
                         max = valueClass.MaximumThirst;
@@ -85,7 +85,7 @@ public class PlayerValueDrawer : MonoBehaviour
                 max = 100 / max;
                 transform.localPosition = new Vector3(max * value * 0.5f - 50, 0);
                 mtRtr.sizeDelta = new Vector2(value * max, 100);
-            }   
+            }
             else
                 mText.SetText(value.ToString());
         }
@@ -100,5 +100,5 @@ public class PlayerValueDrawer : MonoBehaviour
                 mText.SetText(Mathf.Round(value).ToString());
             }
         }
-    }  
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public sealed class MissionsManager : MonoBehaviour
 {
     private BasicNeeds playerBasicNeeds;
-    private EffectsCanvas effectsCanvas;    
+    private EffectsCanvas effectsCanvas;
     public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
     public static string StateFile { get; private set; } = "\\State.json";// сохранение
     private State currentState;
@@ -15,16 +15,16 @@ public sealed class MissionsManager : MonoBehaviour
     {
         none,
         narrative,
-        additional    
+        additional
     }
     private void OnEnable()
-    {        
+    {
         effectsCanvas = FindObjectOfType<EffectsCanvas>();
         playerBasicNeeds = BasicNeeds.Instance;
         LoadState();
         StartOrContinueMission(currentState.currentMission);
     }
-    
+
     /// <summary>
     /// загрузка состояния миссий
     /// </summary>
@@ -74,7 +74,7 @@ public sealed class MissionsManager : MonoBehaviour
         {
             case 0:
                 FindObjectOfType<FirstMission>().ContinueMission(currentState.currentTask);
-                ChangeMissionType(MissionType.narrative);                
+                ChangeMissionType(MissionType.narrative);
                 break;
         }
     }
@@ -113,7 +113,7 @@ public sealed class MissionsManager : MonoBehaviour
     {
         currentState.missionType = type;
 
-        if(type == MissionType.none)// если миссия закончилась и новая не началась
+        if (type == MissionType.none)// если миссия закончилась и новая не началась
         {
             TaskDrawer.Instance.DrawNewTask(nextMission);
         }

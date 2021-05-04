@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class SupportFirstMission : MonoBehaviour
 {
@@ -15,7 +13,7 @@ public sealed class SupportFirstMission : MonoBehaviour
     }
     private void ReportKillingDog(float healthDog)
     {
-        if(healthDog <= Enemy.UniqueVariables.MinHealth)
+        if (healthDog <= Enemy.UniqueVariables.MinHealth)
         {
             mMission.KillTheDogs();
         }
@@ -24,5 +22,5 @@ public sealed class SupportFirstMission : MonoBehaviour
     {
         if (itskillingDog)
             GetComponent<DogEnemy>().UVariables.ChangeHealthEvent -= ReportKillingDog;
-    }    
+    }
 }

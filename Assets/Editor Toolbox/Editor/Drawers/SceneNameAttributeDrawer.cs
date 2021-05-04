@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -47,8 +47,8 @@ namespace Toolbox.Editor.Drawers
             if (!SceneExists(property.stringValue))
             {
                 //set rect for the warning message vox
-                var helpBoxRect = new Rect(position.x, 
-                                           position.y, 
+                var helpBoxRect = new Rect(position.x,
+                                           position.y,
                                            position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, warningMessage, MessageType.Warning);
 

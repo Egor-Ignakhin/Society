@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 sealed class PlayerDamageZone : MonoBehaviour
 {
@@ -24,7 +23,7 @@ sealed class PlayerDamageZone : MonoBehaviour
     {
         if (other.transform.TryGetComponent<PlayerClasses.BasicNeeds>(out var bn))
         {
-            currentWFND = 0; 
+            currentWFND = 0;
             basicNeeds = bn;
         }
     }

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public sealed class SecondMission : Mission
+﻿public sealed class SecondMission : Mission
 {
     public override void ContinueMission(int skipLength)
     {

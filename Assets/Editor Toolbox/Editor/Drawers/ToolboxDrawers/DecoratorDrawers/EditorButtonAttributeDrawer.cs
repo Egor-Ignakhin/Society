@@ -50,7 +50,7 @@ namespace Toolbox.Editor.Drawers
                             : attribute.ExtraLabel;
                 var tooltip = attribute.Tooltip;
                 var content = new GUIContent(label, tooltip);
-                
+
                 if (GUILayout.Button(content, Style.buttonStyle))
                 {
                     var targetType = targetObjects[0].GetType();

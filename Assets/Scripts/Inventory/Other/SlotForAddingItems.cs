@@ -13,7 +13,7 @@ public sealed class SlotForAddingItems : MonoBehaviour
     private Vector3 defaultPosition;
 
     public string textOfType { get; private set; }
-    public int textOfCount { get; private set; }    
+    public int textOfCount { get; private set; }
     public void Awake()
     {
         defaultPosition = transform.localPosition;
@@ -33,11 +33,11 @@ public sealed class SlotForAddingItems : MonoBehaviour
 
     internal void Translate(int i, float shift)
     {
-        transform.localPosition = defaultPosition + new Vector3(0, shift * i, 0);        
+        transform.localPosition = defaultPosition + new Vector3(0, shift * i, 0);
     }
     public void SetDefaultPosition()
     {
-        transform.localPosition = defaultPosition;        
+        transform.localPosition = defaultPosition;
     }
     public float GetAlphaColor()
     {
@@ -48,7 +48,7 @@ public sealed class SlotForAddingItems : MonoBehaviour
     {
         typeText.color = startColorTextType;
         countText.color = startColorTextCount;
-        backgroundImage.color = startColorBackground;        
+        backgroundImage.color = startColorBackground;
     }
     public void DifferenceColor(Color c)
     {

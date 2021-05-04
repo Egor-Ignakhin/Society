@@ -47,6 +47,8 @@ namespace Shoots
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
+            if (ScreensManager.GetScreen() != null)
+                return false;
             bool canShooting = ammoCount > 0 && currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0 && !IsReload;
             if (canShooting)
             {
@@ -54,13 +56,13 @@ namespace Shoots
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
-                mAudioSource.PlayOneShot(fireClip);                
+                mAudioSource.PlayOneShot(fireClip);
             }
             else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())// если пуль нет, то происходит щелчок пустого затвора
             {
                 currentCartridgeDispenser = 0;
                 mAudioSource.PlayOneShot(nullBulletsClip);
-                isAutomatic = true;                
+                isAutomatic = true;
             }
             return canShooting;
         }
@@ -83,7 +85,7 @@ namespace Shoots
             if (Input.GetKeyDown(KeyCode.R))
             {
                 IsReload = true;
-            }            
+            }
         }
         private void CartridgeDispens()
         {
@@ -148,13 +150,13 @@ namespace Shoots
         protected abstract void DropUsedBullet();
         protected abstract void PlayFlashEffect();
         protected void CreateBullet()
-        {            
+        {
             Ray ray = GunAnimator.Instance.IsAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
             Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
             BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
 
             if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
-            {              
+            {
                 bv.SetValues(hit.distance, Vector3.Reflect(transform.forward, hit.normal), Math.Abs(90 - Vector3.Angle(ray.direction, hit.normal)));
 
                 bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Maps
 {
@@ -13,12 +11,12 @@ namespace Maps
         private float currentMultiply = 1;
         public Vector3 defaultScale { get; private set; }
 
-        [SerializeField][Range(0,5)] private float Speed = 0.25f;
+        [SerializeField] [Range(0, 5)] private float Speed = 0.25f;
 
         private Transform mTransformIn3d;
         private void Awake()
         {
-            if(itsGameObject)
+            if (itsGameObject)
                 mTransformIn3d = transform;
         }
         private void Start()
@@ -31,7 +29,7 @@ namespace Maps
             {
                 defaultScale = transform.localScale;
                 return;
-            }            
+            }
             MapManager.Add3DObject(transform);
         }
         private void FixedUpdate()

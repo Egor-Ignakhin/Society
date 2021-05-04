@@ -100,7 +100,7 @@ public static class Localization
     {
         try
         {
-            return hintContents[interactiveObject.GetObjectType()];
+            return hintContents[interactiveObject.Type];
         }
         catch
         {

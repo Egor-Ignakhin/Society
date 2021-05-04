@@ -27,7 +27,7 @@ sealed class InventoryInput : Singleton<InventoryInput>
     /// <summary>
     /// включение видимости инвентаря
     /// </summary>
-    private void ChangeActive(bool value) => ChangeActiveEvent?.Invoke(value);
+    private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
     /// <summary>
     /// насильное выключение инвентаря
     /// </summary>

@@ -1,8 +1,8 @@
-﻿using TMPro;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace MenuScripts
 {
@@ -84,7 +84,7 @@ namespace MenuScripts
                     btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
                 }
                 DisableAllTriggers();
-                commandContainer.SetEnableMenu(false, menuUI, fps);// выключение  меню
+                commandContainer.SetEnableMenu(false, menuUI, fps);// выключение  меню                    
             }
 
             public void Update()
@@ -197,8 +197,7 @@ namespace MenuScripts
             public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps)
             {
                 menu.SetActive(v);
-                // пауза при открытии инвентаря
-
+                // пауза при открытии инвентаря                
                 Cursor.visible = v;
                 InventoryInput.Instance.DisableInventory();
                 if (!v)

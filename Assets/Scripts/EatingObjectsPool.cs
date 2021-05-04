@@ -4,7 +4,7 @@ using UnityEngine;
 public sealed class EatingObjectsPool
 {
     private static readonly List<EatingObject> eatingObjects = new List<EatingObject>();// свободные объекты
-    public enum type { milk, CannedFood};
+    public enum type { milk, CannedFood };
     public static void ToPool(EatingObject eatingObject)
     {
         eatingObjects.Add(eatingObject);// добавление в список свободных об.
@@ -13,12 +13,12 @@ public sealed class EatingObjectsPool
         //Debug.Log("add in pool");
     }
     public static GameObject FromPool(type t)
-    {        
+    {
         if (eatingObjects.Count > 0)// если список не пуст
-        {            
-            for (int i = 0; i< eatingObjects.Count; i++)
+        {
+            for (int i = 0; i < eatingObjects.Count; i++)
             {
-                if(eatingObjects[i].type == t)// если нашёлся нужный объект
+                if (eatingObjects[i].type == t)// если нашёлся нужный объект
                 {
                     var retG = eatingObjects[eatingObjects.Count - 1];// ссылка на найденный объект
                     eatingObjects.Remove(retG);// удаление об. из списка
@@ -26,9 +26,9 @@ public sealed class EatingObjectsPool
                     retG.gameObject.SetActive(true);
                     return retG.gameObject;// возвращение об.
                 }
-            }            
+            }
         }
-         return CreateNewObject(t);//иначе создать новый объект
+        return CreateNewObject(t);//иначе создать новый объект
     }
     private static GameObject CreateNewObject(type t)
     {

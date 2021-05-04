@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadScreensManager : Singleton<LoadScreensManager>
+public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
 {
     [SerializeField] private TMPro.TextMeshProUGUI text;
     [SerializeField] private GameObject background;
@@ -27,6 +27,7 @@ public class LoadScreensManager : Singleton<LoadScreensManager>
             pressKeyText.SetActive(true);
             img.sprite = lastLoadLevel.sprite;
             descText.SetText(lastLoadLevel.description);
+            ScreensManager.SetScreen(this);
         }
     }
     public void LoadLevel(int level, int currentLevel)
@@ -34,14 +35,15 @@ public class LoadScreensManager : Singleton<LoadScreensManager>
         var operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentLevel == -1 ? level : currentLevel);
         background.SetActive(true);
         int imgIt = Random.Range(1, 8);
-        
-        using (StreamReader sr = new StreamReader($"{Directory.GetCurrentDirectory()}\\Localization\\LoadScreens\\LoadTexts\\{imgIt}.txt",System.Text.Encoding.GetEncoding(1251)))
-        {
-            string text = sr.ReadToEnd();
-            descText.SetText(text);
-            lastLoadLevel = new LastLoadLevelContainer(operation, img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}"), text);
-        }
 
+        string text = null;
+        using (StreamReader sr = new StreamReader($"{Directory.GetCurrentDirectory()}\\Localization\\LoadScreens\\LoadTexts\\{imgIt}.txt", System.Text.Encoding.GetEncoding(1251)))
+        {
+            text = sr.ReadToEnd();
+        }
+        descText.SetText(text);
+        lastLoadLevel = new LastLoadLevelContainer(operation, img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}"), text);
+        ScreensManager.SetScreen(this);
     }
     private void Update()
     {

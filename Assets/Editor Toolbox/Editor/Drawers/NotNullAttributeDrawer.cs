@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -29,8 +29,8 @@ namespace Toolbox.Editor.Drawers
             {
                 errorColor = Style.backgroundColor;
 
-                var helpBoxRect = new Rect(position.x, 
-                                           position.y, 
+                var helpBoxRect = new Rect(position.x,
+                                           position.y,
                                            position.width, Style.boxHeight);
                 EditorGUI.HelpBox(helpBoxRect, Attribute.Label, MessageType.Error);
                 position.y += Style.boxHeight + Style.spacing * 2;

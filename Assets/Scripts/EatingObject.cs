@@ -16,7 +16,7 @@ public sealed class EatingObject : InteractiveObject
         SetType("Milk");
     }
     public override void Interact(PlayerClasses.PlayerStatements player)
-    {        
+    {
         player.SendMessage(PlayerClasses.PlayerStatements.Message.meal, this);
         //TODO pool of objects
         ReturnToPool();
@@ -27,7 +27,7 @@ public sealed class EatingObject : InteractiveObject
     }
     public int GetFood()
     {
-        return  foodNutrition;
+        return foodNutrition;
     }
     private void ReturnToPool()
     {

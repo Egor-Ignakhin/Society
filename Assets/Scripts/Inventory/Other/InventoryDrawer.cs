@@ -14,24 +14,18 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     public Transform GetSupportContainer() => supportContainer;
 
 
-    private void Start()
-    {
-        EffectsManager.Instance.Init();
-        mainField.SetActive(MainFieldEnabled);
-    }
+    private void Start() => EffectsManager.Instance.Init();
+
 
     /// <summary>
     /// смена активности инвентаря
     /// </summary>
     public bool ChangeActiveMainField(bool value)
     {
-        MainFieldEnabled = !Shoots.GunAnimator.Instance.IsAiming && value;
+        MainFieldEnabled = ScreensManager.GetScreen() == null && value;
         mainField.SetActive(MainFieldEnabled);
-        SetActiveDOF(MainFieldEnabled);
+
+        EffectsManager.Instance.SetEnableDOF(MainFieldEnabled);
         return MainFieldEnabled;
-    }
-    private void SetActiveDOF(bool active)
-    {
-        EffectsManager.Instance.SetEnableDOF(active);
     }
 }

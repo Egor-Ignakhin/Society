@@ -6,7 +6,7 @@ namespace Toolbox.Editor.Drawers
     {
         protected override void OnGuiBeginSafe(SpaceAreaAttribute attribute)
         {
-            GUILayout.Space(attribute.SpaceBefore);         
+            GUILayout.Space(attribute.SpaceBefore);
         }
 
         protected override void OnGuiCloseSafe(SpaceAreaAttribute attribute)

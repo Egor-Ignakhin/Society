@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Times;
+﻿using Times;
+using UnityEngine;
 
 public sealed class BedController : MonoBehaviour, IState
 {

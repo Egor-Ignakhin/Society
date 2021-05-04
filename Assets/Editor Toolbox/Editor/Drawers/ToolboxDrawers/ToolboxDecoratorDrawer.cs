@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Toolbox.Editor.Drawers
 {
     public abstract class ToolboxDecoratorDrawer<T> : ToolboxDecoratorDrawerBase where T : ToolboxDecoratorAttribute
-    {        
+    {
         protected virtual void OnGuiBeginSafe(T attribute)
         { }
 

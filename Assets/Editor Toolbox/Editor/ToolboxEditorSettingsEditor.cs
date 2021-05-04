@@ -68,7 +68,7 @@ namespace Toolbox.Editor
             drawHorizontalLinesProperty = serializedObject.FindProperty("drawHorizontalLines");
             showSelectionsCountProperty = serializedObject.FindProperty("showSelectionsCount");
 #if UNITY_2019_3_OR_NEWER
-			rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
+            rowDataItemsList = CreateClearList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #else
             rowDataItemsList = CreateLinedList(serializedObject.FindProperty("rowDataTypes"), hasHeader: false, elementLabel: "Position");
 #endif
@@ -80,7 +80,7 @@ namespace Toolbox.Editor
             largeIconPaddingProperty = serializedObject.FindProperty("largeIconPadding");
             smallIconPaddingProperty = serializedObject.FindProperty("smallIconPadding");
 #if UNITY_2019_3_OR_NEWER
-			customFoldersList = CreateClearList(serializedObject.FindProperty("customFolders"), hasHeader: false);
+            customFoldersList = CreateClearList(serializedObject.FindProperty("customFolders"), hasHeader: false);
 #else
             customFoldersList = CreateLinedList(serializedObject.FindProperty("customFolders"), hasHeader: false);
 #endif

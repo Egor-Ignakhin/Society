@@ -16,7 +16,7 @@ public sealed class RadiationZone : MonoBehaviour
             float m = Vector3.Distance(transform.position, other.transform.position);
             if (m > 0)
                 m = 1 / m;
-            
+
             basicNeeds.AddRadiation(powerZone * m * Time.deltaTime);
         }
     }

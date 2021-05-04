@@ -3,12 +3,13 @@ namespace Inventory
 {
     namespace InventoryItems
     {
-        public sealed class InventoryAxe : InventoryItem
+        sealed class InventoryAxe : InventoryItem
         {
             protected override void Awake()
             {
                 base.Awake();
-                SetType(NameItems.Axe);
+                SetId(NameItems.Axe);
+                SetType("Axe");
             }
             public override void Interact(PlayerStatements pl)
             {

@@ -7,7 +7,7 @@ public sealed class BedManager : MonoBehaviour
     private Vector3 sleepAngles = new Vector3(-30, 90, 0);// положение во сне
     private Transform lastPlayerParent;
     //координаты игрока до сна
-    private Vector3 lastPlayerLocalEulerAngles;    
+    private Vector3 lastPlayerLocalEulerAngles;
     private Vector3 lastPlayerPosition;
     private void Awake()
     {

@@ -14,7 +14,7 @@ namespace Radio
         }
         public override void Interact(PlayerStatements pl)
         {
-            mManager.SendMessage(action);         
+            mManager.SendMessage(action);
         }
     }
 }

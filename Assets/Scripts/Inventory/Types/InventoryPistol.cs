@@ -1,6 +1,4 @@
 ﻿using PlayerClasses;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace InventoryItems
 {
@@ -8,11 +6,11 @@ namespace InventoryItems
     {
         [SerializeField] private float damage;
 
-        [SerializeField] private string typePistol;
+        [SerializeField] private int idPistol;
         protected override void Awake()
         {
             base.Awake();
-            SetType(typePistol);
+            SetId(idPistol);
         }
         public override void Interact(PlayerStatements pl)
         {

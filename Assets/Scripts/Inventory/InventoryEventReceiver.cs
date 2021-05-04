@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 namespace Inventory
 {
     /// <summary>
     /// класс - обработчик событий инвентаря
     /// </summary>
-    public sealed class InventoryEventReceiver
+    public sealed class InventoryEventReceiver : IGameScreen
     {
-        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer)
+        private readonly InventoryContainer inventoryContainer;
+        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, InventoryContainer ic)
         {
             mainParent = mp;
             Instance = this;
             this.fps = fps;
             this.freeCellsContainer = freeCellsContainer;
             this.busyCellsContainer = busyCellsContainer;
+            inventoryContainer = ic;
         }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
@@ -36,8 +37,6 @@ namespace Inventory
             }
             InventoryInput.Instance.EnableInventory();
             lastItemContainer = it;
-
-
         }
         public void CloseContainer()
         {
@@ -58,7 +57,7 @@ namespace Inventory
                 var item = childs[i].GetComponent<InventoryCell>().MItemContainer;
                 cells.Add((item.Id, item.Count));
             }
-            lastItemContainer.Close(cells);            
+            lastItemContainer.Close(cells);
             lastItemContainer = null;
         }
 
@@ -88,11 +87,13 @@ namespace Inventory
                 fps.SetState(State.unlocked);
                 if (lastItemContainer != null)
                     CloseContainer();
+                ScreensManager.SetScreen(null);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.None;
                 fps.SetState(State.locked);
+                ScreensManager.SetScreen(this);
             }
             EndDrag();
         }
@@ -150,8 +151,9 @@ namespace Inventory
         private void ParentingDraggedObject()
         {
             // смена местами с кандидатом на ячейку или возврат на место
-            if (candidateForReplaceItem != null && candidateForReplaceItem != draggedItem)
+            if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
             {
+
                 var bufferingSelectItemParent = draggedCell.transform;
 
                 draggedItem.SetParent(candidateForReplaceItem.parent);
@@ -162,7 +164,14 @@ namespace Inventory
                 InventoryCell.CopyPasteCell candidateCopy = new InventoryCell.CopyPasteCell(candidateForReplaceCell);
                 InventoryCell.CopyPasteCell draggedCopy = new InventoryCell.CopyPasteCell(draggedCell);
 
-                candidateForReplaceCell.SetItem(draggedCopy);
+                if (candidateCopy.Equals(draggedCopy))
+                {
+                    draggedCopy.count += candidateCopy.count;
+                    candidateCopy.count = candidateForReplaceCell.SetItem(draggedCopy);
+                    Debug.LogWarning(12);
+                }
+                else candidateForReplaceCell.SetItem(draggedCopy);
+
 
                 draggedCell.SetItem(candidateCopy);
                 return;
@@ -188,7 +197,7 @@ namespace Inventory
         /// </summary>
         private void UnfocusAllCells()
         {
-            var cells = InventoryContainer.Instance.Cells;
+            var cells = inventoryContainer.Cells;
             foreach (var cell in cells)
             {
                 cell.SetFocus(false);
@@ -200,8 +209,8 @@ namespace Inventory
         /// <param name="c"></param>
         private void SelectCell(int c)
         {
-            if (c > 0 && c <= InventoryContainer.Instance.HotCells.Count)
-                FocusCell(InventoryContainer.Instance.HotCells[c - 1]);
+            if (c > 0 && c <= inventoryContainer.HotCells.Count)
+                FocusCell(inventoryContainer.HotCells[c - 1]);
         }
     }
 }

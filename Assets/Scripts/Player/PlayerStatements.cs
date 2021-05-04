@@ -24,7 +24,7 @@ namespace PlayerClasses
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape)){ }
+            if (Input.GetKeyDown(KeyCode.Escape)) { }
         }
     }
 }

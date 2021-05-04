@@ -2,38 +2,23 @@
 
 public abstract class InteractiveObject : MonoBehaviour
 {
-    private string typeObject;   
+    public string Type { get; private set; }
     public static class Types
     {
         public const string OpenedDoor = "OpenedDoor";
         public const string ClosedDoor = "ClosedDoor";
-        public const string LockedDoor = "LockedDoor";
+        public const string LockedDoor = "LockedDoor";        
     }
-    protected virtual void Awake()
-    {
-        SetDescription();
-    }
-    public string GetObjectType()
-    {
-        return typeObject;
-    }
+    protected virtual void Awake() => SetDescription();
+
     public abstract void Interact(PlayerClasses.PlayerStatements pl);
-    protected string description;
-    public string GetDescription()
-    {
-        return description;
-    }
-    protected string LoadDescription()
-    {        
-        return Localization.GetHint(this);        
-    }
+    public string Description { get; protected set; }
+
     public void SetType(string t)
     {
-        typeObject = t;
+        Type = t;
         SetDescription();
     }
-    protected void SetDescription()
-    {
-        description = LoadDescription();
-    }   
+    protected void SetDescription() => Description = Localization.GetHint(this);
+
 }

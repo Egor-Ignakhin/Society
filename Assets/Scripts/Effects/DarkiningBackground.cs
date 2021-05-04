@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 /// <summary>
 /// класс имеет фото, которое постепенно темнеет
 /// </summary>
@@ -26,8 +25,8 @@ public sealed class DarkiningBackground : MonoBehaviour, IDelayable
     {
         mImage.color += new Color(0, 0, 0, Time.deltaTime * speed);
         if (mImage.color.a >= 1)
-        {            
-            FinishPart?.Invoke();            
+        {
+            FinishPart?.Invoke();
             enabled = false;
         }
     }

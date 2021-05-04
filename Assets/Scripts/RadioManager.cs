@@ -44,12 +44,12 @@ namespace Radio
                 {
                     ClipTimes[i] = 0;
                 }
-            }            
+            }
         }
         private void Awake()
         {
             mMediaContainer = new MediaContainer(this);
-            mAudioSource = GetComponent<AudioSource>();            
+            mAudioSource = GetComponent<AudioSource>();
         }
 
         public void SendMessage(Action a)
@@ -129,7 +129,7 @@ namespace Radio
             {
                 mAudioSource.clip = mMediaContainer.Clips[it];
                 ReadTime();
-                mAudioSource.Play();              
+                mAudioSource.Play();
             }
         }
         private void StopAudio()// останавливает воспр. звука
@@ -141,13 +141,13 @@ namespace Radio
         }
         private void WriteTime()// чтение времени из дорожки клипа
         {
-            for (int c = 0;c < mMediaContainer.Clips.Count;c++)
+            for (int c = 0; c < mMediaContainer.Clips.Count; c++)
             {
-                if(mMediaContainer.Clips[c] == mAudioSource.clip)
+                if (mMediaContainer.Clips[c] == mAudioSource.clip)
                 {
                     mMediaContainer.ClipTimes[c] = mAudioSource.time;
                 }
-            }            
+            }
         }
         private void ReadTime()// запись времени в дорожку клипа
         {
@@ -157,7 +157,7 @@ namespace Radio
                 {
                     mAudioSource.time = Mathf.Min(mMediaContainer.ClipTimes[c], mAudioSource.clip.length - 0.01f);
                 }
-            }                 
+            }
         }
         private IEnumerator PlayBackInterference()// корутина помех
         {
@@ -174,7 +174,7 @@ namespace Radio
             isActive = !isActive;
             if (isActive)
             {
-                ChangeFrequency(0m);                
+                ChangeFrequency(0m);
                 StartCoroutine(nameof(PlayBackInterference));
                 ReadTime();
             }

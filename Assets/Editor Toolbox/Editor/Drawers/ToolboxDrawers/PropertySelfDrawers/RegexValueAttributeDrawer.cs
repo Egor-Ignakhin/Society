@@ -14,8 +14,8 @@ namespace Toolbox.Editor.Drawers
             {
                 return;
             }
-            EditorGUILayout.HelpBox(string.IsNullOrEmpty(attribute.Message) 
-                ? "String value does not match the pattern!" 
+            EditorGUILayout.HelpBox(string.IsNullOrEmpty(attribute.Message)
+                ? "String value does not match the pattern!"
                 : attribute.Message, MessageType.Error);
         }
 

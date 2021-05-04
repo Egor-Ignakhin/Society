@@ -54,7 +54,7 @@ namespace Toolbox.Editor
             {
                 var fieldInfo = target.GetType().GetField(members[0], propertyBindings);
                 instance = fieldInfo.GetValue(target);
-                
+
                 for (var i = 1; i < members.Length - 1; i++)
                 {
                     fieldInfo = instance.GetType().GetField(members[i], propertyBindings);

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Toolbox.Editor.Drawers
 {
@@ -9,6 +9,6 @@ namespace Toolbox.Editor.Drawers
         {
             //NOTE: this will be always true since the ToolboxPropertyHandler will validate each drawer
             return property.isArray;
-        } 
+        }
     }
 }

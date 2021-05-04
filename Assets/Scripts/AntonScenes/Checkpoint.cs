@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace MouseAnton{
-class Checkpoint : MonoBehaviour
+namespace MouseAnton
 {
+    class Checkpoint : MonoBehaviour
+    {
         private MouseAntonManager manager;
         private Collider mCollider;
         private void Awake()

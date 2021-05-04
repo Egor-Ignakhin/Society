@@ -18,10 +18,6 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
 
     private bool isExtrimSituation;
 
-    private void Awake()
-    {
-        //  ExtrimRotate(openState);
-    }
     public void Interact(DoorMesh doorMesh)
     {
         if (!canInteract)

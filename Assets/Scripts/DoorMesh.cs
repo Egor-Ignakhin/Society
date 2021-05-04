@@ -6,7 +6,7 @@
         base.Awake();
         mManager = transform.parent.GetComponent<DoorManager>();
 
-        mManager.SetType(this);       
+        mManager.SetType(this);
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

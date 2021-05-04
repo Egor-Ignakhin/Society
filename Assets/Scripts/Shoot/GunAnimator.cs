@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Shoots
 {
@@ -77,8 +77,8 @@ namespace Shoots
                 TestChangeGun(scroll);
 
             Animate();
-            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);            
-        }        
+            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);
+        }
         private States GetSlant()
         {
             if (Input.GetKey(KeyCode.Q))
@@ -159,6 +159,8 @@ namespace Shoots
         }
         private void Animate()
         {
+            if (ScreensManager.GetScreen() != null)
+                return;
             var gun = guns[currentI].MGun;
             var tGun = gun.transform;
             var aimPlace = guns[currentI].AimPlace;

@@ -7,16 +7,19 @@ namespace Debugger
     /// <summary>
     /// клас для взятия предметов из дебаггера
     /// </summary>
-     class DebugItems : MonoBehaviour, IDebug
+    class DebugItems : MonoBehaviour, IDebug
     {
         public bool Active { get; set; }
         GameObject IDebug.gameObject => gameObject;
         [SerializeField] private List<InventoryItem> items = new List<InventoryItem>();
+        private InventoryContainer inventoryContainer;
 
-        public void AddItem(int i)// выдача инвентарю предмета
+        private void Awake()
         {
-            InventoryContainer.Instance.AddItem(items[i]);
+            inventoryContainer = FindObjectOfType<InventoryContainer>();
         }
+        // выдача инвентарю предмета
+        public void AddItem(int i) => inventoryContainer.AddItem(items[i]);
 
         public void Activate()
         {

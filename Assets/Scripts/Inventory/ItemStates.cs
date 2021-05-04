@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Inventory
 {
@@ -8,44 +8,31 @@ namespace Inventory
     /// </summary>
     class ItemStates
     {
-        private static readonly Dictionary<string, (int maxCount, int id)> items;
+        private static readonly Dictionary<int, int> items;// id and MaxCount
 
         static ItemStates()
         {
-            items = new Dictionary<string, (int maxCount, int id)>
-            {
-                {NameItems.DefaultIcon, (0,0) },
-                {NameItems.Axe, (10 ,1)},
-                {NameItems.Pistol1, (5,2) },
-                {NameItems.Pistol2, (5,3) }
+            items = new Dictionary<int, int>
+            {   {NameItems.Default, 0 },
+                {NameItems.Axe, 10 },
+                {NameItems.Pistol1, 5 },
+                {NameItems.Pistol2, 5 }
             };
         }
+
+
         /// <summary>
         /// возвращает максимальное число стака предмета в инвентаре
         /// </summary>
-        /// <param type="type"></param>
+        /// <param id="id"></param>
         /// <returns></returns>
-        public static int GetMaxCount(string type) => items[type].maxCount;
-
-        /// <summary>
-        /// возвращает id по типу (строка)
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        internal static int GetId(string type) => items[type].id;
-
-        public static string GetType(int id)
-        {
-            var item = items.Where(x => x.Value.id == id).First().Key;
-            
-            return item;
-        }
+        public static int GetMaxCount(int id) => items[id];
     }
     class NameItems
     {
-        public const string DefaultIcon = "DefaultIcon";
-        public const string Axe = "Axe";
-        public const string Pistol1 = "Pistol1";
-        public const string Pistol2 = "Pistol2";
+        public const int Default = 0;
+        public const int Axe = 1;
+        public const int Pistol1 = 2;
+        public const int Pistol2 = 3;
     }
 }

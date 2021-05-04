@@ -14,7 +14,7 @@ public sealed class LighteningBackground : MonoBehaviour, IDelayable
     public void Init(UnityEngine.UI.Image img, float neededSpeed = 1)
     {
         mImage = img;
-        speed = neededSpeed;       
+        speed = neededSpeed;
     }
     private void Update()
     {
@@ -26,7 +26,7 @@ public sealed class LighteningBackground : MonoBehaviour, IDelayable
         if (mImage.color.a <= 0)
         {
             FinishPart?.Invoke();
-            enabled = false;            
+            enabled = false;
         }
     }
 }

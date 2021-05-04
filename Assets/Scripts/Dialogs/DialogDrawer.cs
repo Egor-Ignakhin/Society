@@ -10,7 +10,7 @@ namespace Dialogs
         {
             delayToDimming = delay;
             text.SetText(d.Content);
-            EnableDialog();
+            SetActive(true);
         }
         private void Update()
         {
@@ -20,17 +20,13 @@ namespace Dialogs
             }
             else
             {
-                DisableDialog();
+                SetActive(false);
             }
         }
 
-        private void EnableDialog()
+        private void SetActive(bool v)
         {
-            backgroundImage.enabled = text.enabled = true;
-        }
-        private void DisableDialog()
-        {
-            backgroundImage.enabled = text.enabled = false;
+            backgroundImage.enabled = text.enabled = v;
         }
     }
     public class Dialog

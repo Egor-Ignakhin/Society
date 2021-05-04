@@ -20,18 +20,19 @@ namespace Toolbox.Editor.Drawers
             if (!textures.TryGetValue(url, out var texture) || texture.IsInvalid)
             {
                 textures[url] = texture = new DownloadedTexture(true);
-               /* EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
-                {
-                    textures[url] = new DownloadedTexture(false, t);
-                    if (b)
-                    {
-                        InspectorUtility.RepaintInspectors();
-                    }
-                    else
-                    {
-                        ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot retrive image from the provided URL - " + url);
-                    }
-                }*/;
+                /* EditorCoroutineUtility.StartCoroutineOwnerless(SendGetImageRequest(url, (b, t) =>
+                 {
+                     textures[url] = new DownloadedTexture(false, t);
+                     if (b)
+                     {
+                         InspectorUtility.RepaintInspectors();
+                     }
+                     else
+                     {
+                         ToolboxEditorLog.AttributeUsageWarning(attribute, "Cannot retrive image from the provided URL - " + url);
+                     }
+                 }*/
+                ;
             }
 
             if (texture.Texture2D != null)

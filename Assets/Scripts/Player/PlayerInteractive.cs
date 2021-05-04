@@ -45,7 +45,7 @@ namespace PlayerClasses
                 int i = 0;
                 foreach (var c in components)
                 {
-                    string getDesc = c.GetDescription();
+                    string getDesc = c.Description;
                     if (!string.IsNullOrEmpty(getDesc))
                         desc = getDesc;
 

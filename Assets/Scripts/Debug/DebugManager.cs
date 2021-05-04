@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Debugger
 {
-    class DebugManager : MonoBehaviour
+    class DebugManager : MonoBehaviour, IGameScreen
     {
         [SerializeField] private Transform background;// фон
         private bool isHidden = true;
@@ -28,9 +28,9 @@ namespace Debugger
             if (isMoving)
                 Move();
             if (Input.GetKeyDown(KeyCode.F1))
-            {                
+            {
                 isHidden = !isHidden;
-                isMoving = true;                
+                isMoving = true;
             }
         }
         /// <summary>
@@ -64,11 +64,13 @@ namespace Debugger
             {
                 InputManager.LockInput();
                 InputManager.DisableInput();
+                ScreensManager.SetScreen(this);
             }
             else
             {
                 InputManager.Unlock();
                 InputManager.EnableInput();
+                ScreensManager.SetScreen(null);
             }
 
             Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
@@ -80,7 +82,7 @@ namespace Debugger
             }
 
 
-            background.gameObject.SetActive(!isHidden);           
+            background.gameObject.SetActive(!isHidden);
             isMoving = false;
             activeDebugger.Activate();
         }

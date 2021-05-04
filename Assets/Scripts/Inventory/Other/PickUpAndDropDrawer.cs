@@ -24,7 +24,7 @@ public sealed class PickUpAndDropDrawer : MonoBehaviour
         {
             GetSlot();
         }
-            
+
         TranslateLabels();
 
         slotsOnScene[movableSlots.Count].SetText(type, count);
@@ -44,7 +44,7 @@ public sealed class PickUpAndDropDrawer : MonoBehaviour
     private void LighteningBackground()
     {
         if (movableSlots.Count == 0)
-            return;               
+            return;
 
         foreach (int m in movableSlots)
         {

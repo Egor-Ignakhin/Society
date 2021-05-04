@@ -35,12 +35,12 @@ namespace Toolbox.Editor
         {
             if (loadedTextures.TryGetValue(path, out var loadedTexture))
             {
-                return loadedTexture;              
+                return loadedTexture;
             }
             else
             {
                 return loadedTextures[path] = EditorGUIUtility.Load(path) as Texture2D;
-            }         
+            }
         }
 
         public static GUIContent GetObjectContent(Object target, Type targetType)
@@ -53,7 +53,7 @@ namespace Toolbox.Editor
             var content = EditorGUIUtility.ObjectContent(target, targetType);
             if (content.image && clearDefaults)
             {
-                content.image = IsDefaultObjectIcon(content.image.name) || 
+                content.image = IsDefaultObjectIcon(content.image.name) ||
                                 IsDefaultPrefabIcon(content.image.name) ? null : content.image;
             }
 

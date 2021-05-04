@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 namespace MenuScripts
@@ -31,7 +29,7 @@ namespace MenuScripts
         private void Update()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Vector3 p = ray.origin + ray.direction * 10.0f;            
+            Vector3 p = ray.origin + ray.direction * 10.0f;
             transform.position = p;
         }
         private void RenderOnPointers(float sec, float min, float hours)

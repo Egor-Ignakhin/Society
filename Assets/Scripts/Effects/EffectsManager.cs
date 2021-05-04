@@ -25,9 +25,9 @@ public sealed class EffectsManager : Singleton<EffectsManager>
     /// set enable depth of field
     /// </summary>
     public void SetEnableDOF(bool active)
-    {           
+    {
         volumeDOF.active = active;
-    }    
+    }
     /// <summary>
     /// set enable bloom
     /// </summary>

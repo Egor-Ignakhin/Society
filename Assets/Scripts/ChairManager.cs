@@ -20,7 +20,7 @@ public sealed class ChairManager : MonoBehaviour
     {
         SeatController.RemoveLastChair();
         GetOutOfChair(c);
-    }   
+    }
 
     /// <summary>
     /// оставить стул

@@ -26,7 +26,7 @@ namespace Toolbox.Editor
     {
         static ToolboxEditorToolbar()
         {
-           // EditorCoroutineUtility.StartCoroutineOwnerless(Initialize());
+            // EditorCoroutineUtility.StartCoroutineOwnerless(Initialize());
         }
 
 

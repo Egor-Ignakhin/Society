@@ -87,7 +87,7 @@ namespace UnityEngine
             {
                 throw new ArgumentOutOfRangeException("capacity");
             }
-            
+
             Initialize(capacity);
 
             this.comparer = (comparer ?? EqualityComparer<TKey>.Default);
@@ -570,7 +570,7 @@ namespace UnityEngine
                 {
                     throw new ArgumentException();
                 }
-                
+
                 for (int i = 0; i < primes.Length; i++)
                 {
                     int prime = primes[i];

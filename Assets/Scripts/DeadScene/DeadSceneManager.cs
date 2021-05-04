@@ -90,7 +90,7 @@ namespace DeadSceneScripts
             {
                 slideWasChanged = true;
             }
-            currentOffset += Time.deltaTime * (!slideWasChanged? -1 : 1) * speedOffset;
+            currentOffset += Time.deltaTime * (!slideWasChanged ? -1 : 1) * speedOffset;
             return c;
         }
         /// <summary>

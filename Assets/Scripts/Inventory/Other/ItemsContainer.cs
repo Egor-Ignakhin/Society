@@ -4,16 +4,15 @@ using UnityEngine;
 
 namespace Inventory
 {
+    /// <summary>
+    /// класс-контейнер (сундук, ящик и тп)
+    /// </summary>
     public class ItemsContainer : InteractiveObject
     {
-        public const int maxCells = 10;
+        public const int maxCells = 40;
         [Range(0, maxCells)] [SerializeField] private int cellsCount;
-        private List<(int id, int count)> container;
+        private List<(int id, int count)> container = null;
         private bool isOpened;
-        protected override void Awake()
-        {
-            container = null;
-        }
         public override void Interact(PlayerStatements pl)
         {
             if (isOpened)

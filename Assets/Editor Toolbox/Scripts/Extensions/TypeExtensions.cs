@@ -54,7 +54,7 @@ namespace Toolbox
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (!isSubclass(type) || !type.IsVisible || (!allowAbstract && type.IsAbstract) || 
+                    if (!isSubclass(type) || !type.IsVisible || (!allowAbstract && type.IsAbstract) ||
                         (ignoreObsolete && Attribute.IsDefined(type, typeof(ObsoleteAttribute))))
                     {
                         continue;

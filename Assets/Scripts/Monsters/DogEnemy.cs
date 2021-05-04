@@ -1,13 +1,11 @@
-﻿using PlayerClasses;
-using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine;
 
 public sealed class DogEnemy : Enemy
 {
     [SerializeField] private Transform head;
     private void OnEnable()
     {
-        base.Init(2, 3, 15, 100);      
+        base.Init(2, 3, 15, 100);
     }
     protected override void LookOnTarget()
     {

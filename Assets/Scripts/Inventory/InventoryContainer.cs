@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using System;
 
 namespace Inventory
 {
-    public sealed class InventoryContainer : Singleton<InventoryContainer>
+    public sealed class InventoryContainer : MonoBehaviour
     {
         private readonly Queue<InventoryItem> queueOfItems = new Queue<InventoryItem>();// очередь предметов на отображение
         [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
@@ -15,14 +13,14 @@ namespace Inventory
         private InventoryEventReceiver eventReceiver;
         public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         private InventoryEffects inventoryEffects;
-        private InventorySaver inventorySaver = new InventorySaver();
+        private readonly InventorySaver inventorySaver = new InventorySaver();
 
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
         private void OnEnable()
         {
-            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer);
+            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this);
             eventReceiver.OnEnable();
             inventoryEffects = new InventoryEffects(gameObject);
         }
@@ -42,7 +40,7 @@ namespace Inventory
             }
             foreach (var c in Cells)
             {
-                c.Init();
+                c.Init(this);
             }
             inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря
 
@@ -62,11 +60,11 @@ namespace Inventory
                 return;
 
             // поиск слота, с предметом того же типа, и не заполненным   
-            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Type.Equals(item.GetObjectType()));
+            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(item.Id));
 
             if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(item);
+            cell.SetItem(item.Id, item.GetCount());
 
             queueOfItems.Enqueue(item);// добавить предмет в очередь
             MessageToPUDD();
@@ -78,7 +76,7 @@ namespace Inventory
         private void MessageToPUDD()
         {
             var peek = queueOfItems.Dequeue();
-            PUDD.DrawNewItem(peek.GetObjectType(), peek.GetCount());
+        //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
         }
 
         private void OnDisable()

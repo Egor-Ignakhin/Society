@@ -128,8 +128,8 @@ namespace Toolbox.Editor.Drawers
                 //adjust position for small icon and draw it in label field
                 var typeIconRect = new Rect(position.xMax - Style.smallFolderWidth,
 #if UNITY_2019_3_OR_NEWER
-                                            position.yMin, 
-                                            Style.smallFolderWidth, 
+                                            position.yMin,
+                                            Style.smallFolderWidth,
                                             Style.smallFolderHeight);
 #else
                                             position.yMin - Style.spacing,
