@@ -83,7 +83,7 @@ public class PlayerValueDrawer : MonoBehaviour
                         break;
                 }
                 max = 100 / max;
-                transform.localPosition = new Vector3(max * value * 0.5f - 50, 0);
+                transform.localPosition = new Vector3(max * value  - 50, 0);
                 mtRtr.sizeDelta = new Vector2(value * max, 100);
             }
             else

@@ -83,7 +83,7 @@ public static class Localization
             case Type.Tasks:
                 return GetTask(missionNumber);
             //case Type.Hints:
-            //    return GetHint(interactiveObject);
+            //   return GetHint(interactiveObject);
             default:
                 return null;
         }

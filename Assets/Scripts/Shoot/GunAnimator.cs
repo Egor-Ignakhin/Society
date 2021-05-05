@@ -62,7 +62,7 @@ namespace Shoots
             }
 
             TestChangeGun(0);
-            advanced = new AdvancedSettings(cameras[0].fieldOfView);
+            advanced = new AdvancedSettings();
             guns[currentI].MGun.RecoilEvent += RecoilReceiver;
             fps = FindObjectOfType<FirstPersonController>();
         }
@@ -149,13 +149,9 @@ namespace Shoots
         /// </summary>
         public class AdvancedSettings
         {
-            public float BaseCamFOV { get; }
+            public float BaseCamFOV { get => Camera.main.fieldOfView; }
             public float FOVKickAmount { get; } = 7.5f;
             public float fovRef;
-            public AdvancedSettings(float bcf)
-            {
-                BaseCamFOV = bcf;
-            }
         }
         private void Animate()
         {

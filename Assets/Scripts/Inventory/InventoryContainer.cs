@@ -18,6 +18,7 @@ namespace Inventory
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
+
         private void OnEnable()
         {
             eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this);
@@ -49,6 +50,11 @@ namespace Inventory
             {
                 Instantiate(cellPrefab, freeCellsContainer);
             }
+
+            itemPrefabs = new List<InventoryItem>
+            {
+            {Resources.Load<InventoryItem>("InventoryItems\\Axe Variant") }
+            };
         }
         /// <summary>
         /// добавление поднятого предмета в очередь
@@ -76,7 +82,7 @@ namespace Inventory
         private void MessageToPUDD()
         {
             var peek = queueOfItems.Dequeue();
-        //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
+            //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
         }
 
         private void OnDisable()
@@ -90,6 +96,11 @@ namespace Inventory
         /// <param name="cells"></param>
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
+        public List<InventoryItem> itemPrefabs;
+        public InventoryItem GetItemPrefab(int id)
+        {
+            return itemPrefabs[id - 1];
+        }
         public class InventoryEffects
         {
             private readonly AudioClip spendOnCellClip;// звук при наведении на слот

@@ -13,6 +13,11 @@ sealed class InventoryInput : Singleton<InventoryInput>
 
     private const KeyCode changeActiveKeyCode = KeyCode.E;
     private bool isEnabled;
+    private FirstPersonController fps;
+    private void Awake()
+    {
+        fps = FindObjectOfType<FirstPersonController>();
+    }
     private void Update()
     {
         if (Input.GetKeyDown(changeActiveKeyCode) && InputManager.IsEnableInput == 0)
@@ -53,5 +58,11 @@ sealed class InventoryInput : Singleton<InventoryInput>
 
         if (int.TryParse(input, out int s))
             InputKeyEvent?.Invoke(s);
+    }
+
+    internal void DropItem(InventoryItem inventoryItem, int count)
+    {
+        var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
+        item.SetCount(count);
     }
 }

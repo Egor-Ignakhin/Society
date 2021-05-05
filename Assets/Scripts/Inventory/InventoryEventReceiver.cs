@@ -17,6 +17,10 @@ namespace Inventory
             this.busyCellsContainer = busyCellsContainer;
             inventoryContainer = ic;
         }
+        public void SetPoints(List<(Vector2 left, Vector2 up)> outPlc)
+        {
+            outPlaces = outPlc;
+        }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
@@ -66,6 +70,8 @@ namespace Inventory
         private InventoryCell draggedCell;// удерживаемая ячейка
         private RectTransform draggedItem;// удерживаемый предмет
         private bool isDragged;// происходит ли удержание
+
+        private List<(Vector2 left, Vector2 up)> outPlaces;// места выхода 
         public void OnEnable()
         {
             InventoryInput.ChangeActiveEvent += ChangeActiveEvent;
@@ -123,7 +129,7 @@ namespace Inventory
         public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
         {
             //удержание предмета
-            draggedItem.position = eventData.position;
+            draggedItem.position = eventData.position;            
         }
 
         public void BeginDrag(InventoryCell cell)
@@ -179,6 +185,12 @@ namespace Inventory
             if (!draggedCell)
                 return;
 
+            //если игрок хочет выкинуть предмет
+            if (!IsIntersected(draggedItem.position))
+            {
+                DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);                
+            }
+
             draggedItem.SetParent(draggedCell.transform);
             draggedItem.localPosition = Vector3.zero;
         }
@@ -211,6 +223,21 @@ namespace Inventory
         {
             if (c > 0 && c <= inventoryContainer.HotCells.Count)
                 FocusCell(inventoryContainer.HotCells[c - 1]);
+        }
+
+        public void DropItem(int id, int count)
+        {
+            InventoryInput.Instance.DropItem(inventoryContainer.GetItemPrefab(id), count);
+        }
+        private bool IsIntersected(Vector2 obj)
+        {
+            foreach (var c in inventoryContainer.Cells)
+            {
+                Debug.Log(Vector2.Distance(obj, c.GetComponent<RectTransform>().position));
+                if (Vector2.Distance(obj, c.GetComponent<RectTransform>().position) < 100)
+                    return true;
+            }
+            return false;
         }
     }
 }

@@ -19,7 +19,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private Camera PlayerCamera;
 
-    private float baseCamFOV;
+    private float baseCamFOV { get => Camera.main.fieldOfView; }
 
     private Vector3 targetAngles;
     private Vector3 followAngles;
@@ -135,8 +135,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     private void Start()
     {
         #region Look Settings - Start
-        VerticalRotationRange = 2 * HeadMaxY + Mathf.Clamp(0, HeadMinY, 0);
-        baseCamFOV = PlayerCamera.fieldOfView;
+        VerticalRotationRange = 2 * HeadMaxY + Mathf.Clamp(0, HeadMinY, 0);        
         #endregion
 
         #region Movement Settings - Start  

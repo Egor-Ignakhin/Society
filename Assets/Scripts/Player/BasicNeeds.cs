@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -113,6 +114,7 @@ namespace PlayerClasses
 
             deadLine = new DeadLine();
             gameObject.AddComponent<PlayerCollisionChecked>().OnInit(this);
+            gameObject.AddComponent<PlayerSoundEffects>().Init(this);
         }
 
         private void OnEnable()
@@ -243,6 +245,61 @@ namespace PlayerClasses
                 {
                     bn.InjurePerson(force / 10);
                 }
+            }
+        }
+    }
+    class PlayerSoundEffects : MonoBehaviour
+    {
+        private const float minHealthForNoise = 20;
+        private BasicNeeds basicNeeds;
+        private AudioClip noiseClip;
+        private AudioSource noiseSource;
+        private bool wasDamaged = false;
+        private bool coroutineStarted = false;
+        public void Init(BasicNeeds bn)
+        {
+            basicNeeds = bn;
+            noiseClip = Resources.Load<AudioClip>("Health\\Shum_Low_Health");
+            noiseSource = bn.gameObject.AddComponent<AudioSource>();
+            noiseSource.loop = true;
+            basicNeeds.HealthChangeValue += ChangeHealth;
+            noiseSource.clip = noiseClip;
+            noiseSource.Play();
+            noiseSource.volume = 0;
+            ChangeHealth(basicNeeds.Health);
+        }
+        private void OnDisable()
+        {
+            basicNeeds.HealthChangeValue -= ChangeHealth;
+        }
+        private void ChangeHealth(float v)
+        {
+            //хп больше минимального выход
+            if (v > minHealthForNoise)
+            {
+                if (wasDamaged && !coroutineStarted)
+                {
+                    StartCoroutine(nameof(ClipSilencer));
+                    coroutineStarted = true;
+                    wasDamaged = false;
+                }
+                return;
+            }
+            noiseSource.volume = minHealthForNoise / (v * 50);
+            wasDamaged = true;
+        }
+        private IEnumerator ClipSilencer()
+        {
+            while (true)
+            {
+                noiseSource.volume = Mathf.Lerp(noiseSource.volume, 0.001f, Time.deltaTime * 0.1f);
+                if (noiseSource.volume < 0.005f)
+                {
+                    StopCoroutine(nameof(ClipSilencer));
+                    coroutineStarted = false;
+                    noiseSource.volume = 0;
+                }                
+                yield return null;
             }
         }
     }
