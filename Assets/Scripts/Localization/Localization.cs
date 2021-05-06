@@ -1,13 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 public static class Localization
 {
-    private static Dictionary<int, string> dialogContents = new Dictionary<int, string>();// пути к диалогам    
-    private static Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
+    private static readonly Dictionary<int, string> dialogContents = new Dictionary<int, string>();// пути к диалогам    
+    private static readonly Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
 
-    private static Dictionary<string, string> hintContents = new Dictionary<string, string>();// массив подсказок
+    private static readonly Dictionary<string, string> hintContents = new Dictionary<string, string>();// массив подсказок
+    private static Dictionary<string, string> upKeysDescriptions;// словаоь для подсказок (нажатия на клавишу)
+
+    internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive)
+    {
+        return $"{upKeysDescriptions[mainType]}({inputInteractive})";
+    }
+
     public enum Type { Dialogs, Tasks, Hints }
+    public static class MainTypes
+    {
+        public const string Default = "Взаимодествовать";
+        public const string Item = "Поднять предмет ";
+    }
 
     static Localization()
     {
@@ -71,6 +84,14 @@ public static class Localization
             string value = hint.Replace(hint.Substring(hint.LastIndexOf(endSeparator)), "");
             hintContents.Add(key, value);
         }
+        #endregion
+
+        #region SetUpLeys
+        upKeysDescriptions = new Dictionary<string, string>
+        {
+            {string.Empty, MainTypes.Default},
+            {MainTypes.Item, MainTypes.Item}
+        };
         #endregion
     }
 

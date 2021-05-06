@@ -1,17 +1,18 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 /// <summary>
 /// класс отрисовывающий описание объектов
 /// </summary>
-public class DescriptionDrawer : Singleton<DescriptionDrawer>
+public sealed class DescriptionDrawer : Singleton<DescriptionDrawer>
 {
     [SerializeField] private TextMeshProUGUI textDesc;
     [SerializeField] private TextMeshProUGUI textTakeKey;
-    public void SetHint(string str)
+    public void SetHint(string str, string mainType)
     {
         textDesc.SetText(str);
-        textTakeKey.SetText(DefaultTakeUpKey);
+        textTakeKey.SetText(Localization.GetUpKeyDescription(mainType, PlayerClasses.PlayerInteractive.InputInteractive));
         gameObject.SetActive(!string.IsNullOrEmpty(str));
-    }
-    private readonly string DefaultTakeUpKey = $"Поднять предмет ({PlayerClasses.PlayerInteractive.InputInteractive})";
+
+    }    
 }

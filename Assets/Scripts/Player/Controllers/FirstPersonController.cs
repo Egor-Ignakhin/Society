@@ -19,7 +19,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
     private Camera PlayerCamera;
 
-    private float baseCamFOV { get => Camera.main.fieldOfView; }
+    private float BaseCamFOV { get => GameSettings.FOV(); }
 
     private Vector3 targetAngles;
     private Vector3 followAngles;
@@ -311,7 +311,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
 
         if (Advanced.FOVKickAmount > 0)
         {
-            if (isSprinting && !isCrouching && PlayerCamera.fieldOfView != (baseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
+            if (isSprinting && !isCrouching && PlayerCamera.fieldOfView != (BaseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
             {
                 /*  if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
                    {

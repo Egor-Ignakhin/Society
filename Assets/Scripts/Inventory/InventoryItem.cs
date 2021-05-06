@@ -1,16 +1,21 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 //объект с возможностью положить в инвентарь
-public abstract class InventoryItem : InteractiveObject
+public class InventoryItem : InteractiveObject
 {
     [SerializeField] protected int count = 1;
     private Inventory.InventoryContainer inventoryContainer;
+    [SerializeField] private int startid;
     public int Id { get; protected set; }
-    private void Start()
+    protected virtual void Start()
     {
         inventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
+        MainDescription = Localization.MainTypes.Item;
+
+        SetId(startid);
+        if (startid == 5)        
+            SetType(nameof(Inventory.NameItems.CannedFood));                    
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

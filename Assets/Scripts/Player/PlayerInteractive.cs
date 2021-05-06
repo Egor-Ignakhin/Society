@@ -39,6 +39,7 @@ namespace PlayerClasses
         {
             Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
             string desc = string.Empty;
+            string mainDesc = string.Empty;
             if (Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer))
             {
                 var components = hit.transform.GetComponents<InteractiveObject>();
@@ -46,8 +47,12 @@ namespace PlayerClasses
                 foreach (var c in components)
                 {
                     string getDesc = c.Description;
+                    string getMainDesc = c.MainDescription;
                     if (!string.IsNullOrEmpty(getDesc))
+                    {
                         desc = getDesc;
+                        mainDesc = getMainDesc;
+                    }
 
                     if (inputedButton)
                     {
@@ -57,7 +62,7 @@ namespace PlayerClasses
                     }
                 }
             }
-            DescriptionDrawer.Instance.SetHint(desc);
+            DescriptionDrawer.Instance.SetHint(desc, mainDesc);
         }
         /*   void OnDrawGizmos()
            {

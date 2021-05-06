@@ -149,7 +149,7 @@ namespace Shoots
         /// </summary>
         public class AdvancedSettings
         {
-            public float BaseCamFOV { get => Camera.main.fieldOfView; }
+            public float BaseCamFOV { get => GameSettings.FOV(); }
             public float FOVKickAmount { get; } = 7.5f;
             public float fovRef;
         }

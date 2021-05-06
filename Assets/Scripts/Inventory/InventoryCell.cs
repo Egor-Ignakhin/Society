@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -182,7 +183,14 @@ namespace Inventory
                 yield return null;
             }
         }
+
+
         #endregion
+        internal void DelItem(int outOfRange)
+        {
+            MItemContainer.DelItem(outOfRange);
+            UpdateText();
+        }
 
         public RectTransform GetItemTransform() => mItem;
         public Image GetImage() => mImage;
@@ -191,11 +199,15 @@ namespace Inventory
 
         public class Item
         {
-            public bool IsFilled { get => Count > MaxCount - 1; }            
-            public int Id { get ; set; }
+            public bool IsFilled { get => Count > MaxCount - 1; }
+            public int Id { get; set; }
             public int Count { get; private set; } = 0;
             public int MaxCount { get => ItemStates.GetMaxCount(Id); }
             public bool IsEmpty { get => Count == 0; }
+            public void DelItem(int count)
+            {
+                Count -= count;
+            }
             public int SetItem(int nid, int ncount, bool isMerge = false)
             {
                 int outRange = 0;
@@ -220,14 +232,14 @@ namespace Inventory
         {
             public TextMeshProUGUI mText;
             public RectTransform mItem;
-            public Image mImage;            
+            public Image mImage;
             public int count;
             public int id;
 
             public CopyPasteCell(InventoryCell c)
             {
                 mItem = c.GetItemTransform();
-                mImage = c.GetImage();                
+                mImage = c.GetImage();
                 count = c.MItemContainer.Count;
                 mText = c.mText;
                 id = c.MItemContainer.Id;
@@ -235,6 +247,14 @@ namespace Inventory
             public bool Equals(CopyPasteCell obj)
             {
                 return obj.id == id && obj.count < ItemStates.GetMaxCount(id) && count < ItemStates.GetMaxCount(id);
+            }
+        }
+
+        public void Activate()
+        {
+            if (MItemContainer.Id == 5)
+            {
+                //TODO поедание еды
             }
         }
     }

@@ -1,20 +1,14 @@
-﻿using PlayerClasses;
-using UnityEngine;
-namespace InventoryItems
+﻿namespace InventoryItems
 {
     public sealed class InventoryPistol : InventoryItem
-    {
-        [SerializeField] private float damage;
-
-        [SerializeField] private int idPistol;
-        protected override void Awake()
+    {        
+        protected override void Start()
         {
-            base.Awake();
-            SetId(idPistol);
-        }
-        public override void Interact(PlayerStatements pl)
-        {
-            base.Interact(pl);
+            base.Start();
+            if (Id == 2)
+                SetType(nameof(Inventory.NameItems.Makarov));
+            else if (Id == 4)
+                SetType(nameof(Inventory.NameItems.Ak_74));
         }
     }
 }

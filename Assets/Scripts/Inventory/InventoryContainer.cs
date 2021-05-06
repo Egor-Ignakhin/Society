@@ -51,9 +51,13 @@ namespace Inventory
                 Instantiate(cellPrefab, freeCellsContainer);
             }
 
-            itemPrefabs = new List<InventoryItem>
+            itemPrefabs = new Dictionary<int, InventoryItem>
             {
-            {Resources.Load<InventoryItem>("InventoryItems\\Axe Variant") }
+                {1, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {2, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
+                {4, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
+                {5, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") }
+
             };
         }
         /// <summary>
@@ -84,7 +88,10 @@ namespace Inventory
             var peek = queueOfItems.Dequeue();
             //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
         }
-
+        public void ActivateItem()
+        {
+            eventReceiver.ActivateItem();
+        }
         private void OnDisable()
         {
             Save(Cells);
@@ -96,10 +103,10 @@ namespace Inventory
         /// <param name="cells"></param>
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
-        public List<InventoryItem> itemPrefabs;
+        public Dictionary<int, InventoryItem> itemPrefabs;
         public InventoryItem GetItemPrefab(int id)
         {
-            return itemPrefabs[id - 1];
+            return itemPrefabs[id];
         }
         public class InventoryEffects
         {

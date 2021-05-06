@@ -17,10 +17,6 @@ namespace Inventory
             this.busyCellsContainer = busyCellsContainer;
             inventoryContainer = ic;
         }
-        public void SetPoints(List<(Vector2 left, Vector2 up)> outPlc)
-        {
-            outPlaces = outPlc;
-        }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
@@ -70,8 +66,8 @@ namespace Inventory
         private InventoryCell draggedCell;// удерживаемая ячейка
         private RectTransform draggedItem;// удерживаемый предмет
         private bool isDragged;// происходит ли удержание
+        private InventoryCell SelectedCell;
 
-        private List<(Vector2 left, Vector2 up)> outPlaces;// места выхода 
         public void OnEnable()
         {
             InventoryInput.ChangeActiveEvent += ChangeActiveEvent;
@@ -129,7 +125,7 @@ namespace Inventory
         public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
         {
             //удержание предмета
-            draggedItem.position = eventData.position;            
+            draggedItem.position = eventData.position;
         }
 
         public void BeginDrag(InventoryCell cell)
@@ -174,9 +170,16 @@ namespace Inventory
                 {
                     draggedCopy.count += candidateCopy.count;
                     candidateCopy.count = candidateForReplaceCell.SetItem(draggedCopy);
-                    Debug.LogWarning(12);
+
+                    if (draggedCopy.count > ItemStates.GetMaxCount(draggedCopy.id))
+                    {
+                        int outOfRange = draggedCopy.count - ItemStates.GetMaxCount(draggedCopy.id);
+                        candidateCopy.count += outOfRange;
+                        candidateForReplaceCell.DelItem(outOfRange);
+                    }
                 }
-                else candidateForReplaceCell.SetItem(draggedCopy);
+                else
+                    candidateForReplaceCell.SetItem(draggedCopy);
 
 
                 draggedCell.SetItem(candidateCopy);
@@ -188,7 +191,8 @@ namespace Inventory
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
-                DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);                
+                DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                draggedCell.SetItem(0, 0);
             }
 
             draggedItem.SetParent(draggedCell.transform);
@@ -203,6 +207,7 @@ namespace Inventory
         {
             UnfocusAllCells();
             ic.SetFocus(true);
+            SelectedCell = ic;
         }
         /// <summary>
         /// снятие выделения со слотов
@@ -225,19 +230,23 @@ namespace Inventory
                 FocusCell(inventoryContainer.HotCells[c - 1]);
         }
 
-        public void DropItem(int id, int count)
+        private void DropItem(int id, int count)
         {
             InventoryInput.Instance.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
-        private bool IsIntersected(Vector2 obj)
+        private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         {
             foreach (var c in inventoryContainer.Cells)
             {
-                Debug.Log(Vector2.Distance(obj, c.GetComponent<RectTransform>().position));
                 if (Vector2.Distance(obj, c.GetComponent<RectTransform>().position) < 100)
                     return true;
             }
             return false;
+        }
+        public void ActivateItem()
+        {
+            if (SelectedCell)
+                SelectedCell.Activate();
         }
     }
 }

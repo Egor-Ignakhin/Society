@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MenuScripts.PauseMenu;
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -21,19 +22,21 @@ namespace MenuScripts
             [SerializeField] private Slider fovSlider;
             [SerializeField] private TextMeshProUGUI fovText;
             private FirstPersonController fps;// контроллёр игрока
-            private GameSettings gameSettings;
+            public static CurrentGameSettings currentGameSettings { get; private set; }
             private string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
             private void Start()
             {
                 fps = FindObjectOfType<FirstPersonController>();
                 eventReceiver = new MenuEventReceiver(MenuUI, mainParent, fps, SettingsObj);
                 LoadData();
-                fovSlider.value = gameSettings.FOV / gameSettings.maxFov;
-                fovText.SetText((Camera.main.fieldOfView = gameSettings.FOV).ToString());                
+
+                fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
+
+                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
             }
             private void Update()
             {
-                eventReceiver.Update();                
+                eventReceiver.Update();
             }
 
             /// <summary>
@@ -50,20 +53,22 @@ namespace MenuScripts
                     isInitialized = true;
                     return;
                 }
-                gameSettings.FOV = gameSettings.minFov + ((gameSettings.maxFov - gameSettings.minFov) * fovSlider.value);
-                gameSettings.FOV = (float)System.Math.Round(gameSettings.FOV, 1);
-                fovText.SetText((Camera.main.fieldOfView = gameSettings.FOV).ToString());
+                currentGameSettings.FOV = currentGameSettings.minFov + ((currentGameSettings.maxFov - currentGameSettings.minFov) * fovSlider.value);
+
+                currentGameSettings.FOV = (float)System.Math.Round(currentGameSettings.FOV, 1);// округление до нормальных значений
+
+                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
             }
             private void LoadData()
             {
                 try
                 {
                     string data = File.ReadAllText(pathForSettings);
-                    gameSettings = JsonUtility.FromJson<GameSettings>(data);
+                    currentGameSettings = JsonUtility.FromJson<CurrentGameSettings>(data);
                 }
                 catch
                 {
-                    gameSettings = new GameSettings();
+                    currentGameSettings = new CurrentGameSettings();
                 }
             }
             private void OnDisable()
@@ -72,7 +77,7 @@ namespace MenuScripts
             }
             private void SaveData()
             {
-                string data = JsonUtility.ToJson(gameSettings, true);
+                string data = JsonUtility.ToJson(currentGameSettings, true);
                 File.WriteAllText(pathForSettings, data);
             }
             class MenuEventReceiver
@@ -250,13 +255,19 @@ namespace MenuScripts
                     }
                 }
             }
-            [System.Serializable]
-            public class GameSettings
-            {
-                public float minFov = 60;
-                public float FOV = 70;
-                public float maxFov = 80;
-            }
+        }
+        [System.Serializable]
+        public class CurrentGameSettings
+        {
+            public float minFov = 60;
+            public float FOV = 70;
+            public float maxFov = 80;
         }
     }
+}
+class GameSettings
+{
+    public static float MinFov() => MenuPauseManager.currentGameSettings.minFov;
+    public static float FOV() => MenuPauseManager.currentGameSettings.FOV;
+    public static float MaxFov() => MenuPauseManager.currentGameSettings.FOV;
 }

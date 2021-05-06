@@ -2,7 +2,7 @@
 
 public abstract class InteractiveObject : MonoBehaviour
 {
-    public string Type { get; private set; }
+    public string Type { get; private set; }    
     public static class Types
     {
         public const string OpenedDoor = "OpenedDoor";
@@ -13,6 +13,7 @@ public abstract class InteractiveObject : MonoBehaviour
 
     public abstract void Interact(PlayerClasses.PlayerStatements pl);
     public string Description { get; protected set; }
+    public string MainDescription { get; protected set; } = string.Empty;
 
     public void SetType(string t)
     {
