@@ -18,12 +18,15 @@ namespace Inventory
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
+        private PlayerClasses.PlayerStatements playerStatements;
+        [SerializeField] private GameObject ItemsLabelDescription;
 
         private void OnEnable()
         {
-            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this);
+            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this, ItemsLabelDescription);
             eventReceiver.OnEnable();
             inventoryEffects = new InventoryEffects(gameObject);
+            playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();
         }
         private void Start()
         {
@@ -53,10 +56,11 @@ namespace Inventory
 
             itemPrefabs = new Dictionary<int, InventoryItem>
             {
-                {1, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
-                {2, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
-                {4, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
-                {5, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") }
+                {NameItems.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {NameItems.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
+                {NameItems.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
+                {NameItems.CannedFood, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
+                {NameItems.Milk, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") }
 
             };
         }
@@ -91,6 +95,10 @@ namespace Inventory
         public void ActivateItem()
         {
             eventReceiver.ActivateItem();
+        }
+        public void MealPlayer(int food, int water)
+        {
+            playerStatements.MealPlayer(food, water);
         }
         private void OnDisable()
         {

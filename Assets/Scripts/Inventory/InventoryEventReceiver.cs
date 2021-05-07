@@ -8,7 +8,7 @@ namespace Inventory
     public sealed class InventoryEventReceiver : IGameScreen
     {
         private readonly InventoryContainer inventoryContainer;
-        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, InventoryContainer ic)
+        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, InventoryContainer ic, GameObject itemsLabelDescription)
         {
             mainParent = mp;
             Instance = this;
@@ -16,14 +16,19 @@ namespace Inventory
             this.freeCellsContainer = freeCellsContainer;
             this.busyCellsContainer = busyCellsContainer;
             inventoryContainer = ic;
+            this.ItemsLabelDescription = itemsLabelDescription;
         }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
         private readonly Transform busyCellsContainer;
         private readonly Transform freeCellsContainer;
-
+        private readonly GameObject ItemsLabelDescription;
         private ItemsContainer lastItemContainer;
+        private int SelectedCellIterator = 1;
+        public delegate void ChangeSelectedCell(int id);
+        public static event ChangeSelectedCell ChangeSelectedCellEvent;
+
         public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
         {
             for (int i = 0; i < countSlots; i++)
@@ -70,13 +75,18 @@ namespace Inventory
 
         public void OnEnable()
         {
-            InventoryInput.ChangeActiveEvent += ChangeActiveEvent;
-            InventoryInput.InputKeyEvent += SelectCell;
+            InventoryInput.Instance.ChangeActiveEvent += ChangeActiveEvent;
+            InventoryInput.Instance.InputKeyEvent += SelectCell;
+            InventoryInput.Instance.DropEvent += DropEventReceiver;
+            InventoryInput.Instance.SpinEvent += SpinReceiver;
+            ItemsLabelDescription.SetActive(false);
         }
         public void OnDisable()
         {
-            InventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
-            InventoryInput.InputKeyEvent -= SelectCell;
+            InventoryInput.Instance.ChangeActiveEvent -= ChangeActiveEvent;
+            InventoryInput.Instance.InputKeyEvent -= SelectCell;
+            InventoryInput.Instance.DropEvent -= DropEventReceiver;
+            InventoryInput.Instance.SpinEvent -= SpinReceiver;
         }
         private void ChangeActiveEvent(bool value) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(value));
 
@@ -192,7 +202,7 @@ namespace Inventory
             if (!IsIntersected(draggedItem.position))
             {
                 DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
-                draggedCell.SetItem(0, 0);
+                draggedCell.Clear();
             }
 
             draggedItem.SetParent(draggedCell.transform);
@@ -208,26 +218,32 @@ namespace Inventory
             UnfocusAllCells();
             ic.SetFocus(true);
             SelectedCell = ic;
+            ItemsLabelDescription.SetActive(true);
         }
         /// <summary>
         /// снятие выделения со слотов
         /// </summary>
-        private void UnfocusAllCells()
+        public void UnfocusAllCells()
         {
             var cells = inventoryContainer.Cells;
             foreach (var cell in cells)
             {
                 cell.SetFocus(false);
             }
+            ItemsLabelDescription.SetActive(false);
+            ChangeSelectedCellEvent?.Invoke(0);
         }
         /// <summary>
         /// выделение по нажатию на клавишу
         /// </summary>
         /// <param name="c"></param>
         private void SelectCell(int c)
-        {
+        {            
             if (c > 0 && c <= inventoryContainer.HotCells.Count)
-                FocusCell(inventoryContainer.HotCells[c - 1]);
+            {                
+                FocusCell(inventoryContainer.HotCells[c-1]);
+                ChangeSelectedCellEvent?.Invoke(inventoryContainer.HotCells[c - 1].MItemContainer.Id);
+            }
         }
 
         private void DropItem(int id, int count)
@@ -243,10 +259,38 @@ namespace Inventory
             }
             return false;
         }
+        private void DropEventReceiver(int _)
+        {
+            if (!SelectedCell)
+                return;
+            if (SelectedCell.MItemContainer.IsEmpty)
+                return;
+            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
+            SelectedCell.Clear();
+        }
         public void ActivateItem()
         {
             if (SelectedCell)
                 SelectedCell.Activate();
+        }
+        private void SpinReceiver(bool forward)
+        {
+            if (!SelectedCell)
+                return;
+           
+
+            if (forward)
+                SelectedCellIterator--;
+            else
+                SelectedCellIterator++;
+
+            if (SelectedCellIterator > inventoryContainer.HotCells.Count)
+                SelectedCellIterator = 1;
+            if (SelectedCellIterator < 1)
+                SelectedCellIterator = inventoryContainer.HotCells.Count;
+
+            SelectCell(SelectedCellIterator);
+            Debug.Log(SelectedCellIterator);
         }
     }
 }

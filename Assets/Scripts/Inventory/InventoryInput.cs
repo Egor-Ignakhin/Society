@@ -6,12 +6,16 @@
 sealed class InventoryInput : Singleton<InventoryInput>
 {
     public delegate void EventHandler(bool value);
-    public static event EventHandler ChangeActiveEvent;
+    public event EventHandler ChangeActiveEvent;
 
-    public delegate void InputHandler(int s);
-    public static event InputHandler InputKeyEvent;
+    public delegate void InputHandler(int s);    
+    public event InputHandler InputKeyEvent;
+
+    public event InputHandler DropEvent;
+    public event EventHandler SpinEvent;
 
     private const KeyCode changeActiveKeyCode = KeyCode.E;
+    private const KeyCode dropCode = KeyCode.Q;
     private bool isEnabled;
     private FirstPersonController fps;
     private void Awake()
@@ -28,11 +32,19 @@ sealed class InventoryInput : Singleton<InventoryInput>
         {
             SelectCell(Input.inputString);
         }
+        if (Input.GetKeyDown(dropCode))
+        {
+            DropEvent?.Invoke(0);
+        }
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
+            SpinCells(scroll > 0);
     }
     /// <summary>
     /// включение видимости инвентаря
     /// </summary>
     private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
+    private void SpinCells(bool v) { SpinEvent?.Invoke(v); }
     /// <summary>
     /// насильное выключение инвентаря
     /// </summary>
@@ -64,5 +76,7 @@ sealed class InventoryInput : Singleton<InventoryInput>
     {
         var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
         item.SetCount(count);
+        var powerForce = 2;
+        item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
     }
 }

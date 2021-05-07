@@ -32,7 +32,7 @@ namespace Shoots
         private AdvancedSettings advanced;
         private enum States { dSlant, LSlant, Rlant };
 
-        private int currentI = 0;
+        private int currentActiveGunI = -1;
 
         private void Awake()
         {
@@ -61,10 +61,12 @@ namespace Shoots
                 guns.Add(new PlayerGun(gun, hangPlace, aimPlace));
             }
 
-            TestChangeGun(0);
+            DisableGuns();
             advanced = new AdvancedSettings();
-            guns[currentI].MGun.RecoilEvent += RecoilReceiver;
+
             fps = FindObjectOfType<FirstPersonController>();
+
+            Inventory.InventoryEventReceiver.ChangeSelectedCellEvent += ChangeGun;
         }
         private void Update()
         {
@@ -72,13 +74,12 @@ namespace Shoots
 
             TiltCamera(GetSlant());
 
-            var scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll != 0)
-                TestChangeGun(scroll);
-
             Animate();
-            guns[currentI].MGun.SetPossibleShooting(isAnimFinish);
+            if (currentActiveGunI != -1)
+                guns[currentActiveGunI].MGun.SetPossibleShooting(isAnimFinish);
+
         }
+
         private States GetSlant()
         {
             if (Input.GetKey(KeyCode.Q))
@@ -108,27 +109,34 @@ namespace Shoots
             }
         }
 
-        public void TestChangeGun(float scroll)
+        public void ChangeGun(int id)
         {
-            guns[currentI].MGun.RecoilEvent -= RecoilReceiver;
-            if (scroll > 0)
-                currentI++;
-            else if (scroll < 0)
-                currentI--;
-            if (currentI < 0)
-                currentI = guns.Count - 1;
-            else if (currentI > guns.Count - 1)
-                currentI = 0;
+            if(currentActiveGunI != -1)
+            guns[currentActiveGunI].MGun.RecoilEvent -= RecoilReceiver;
 
-            guns[currentI].MGun.RecoilEvent += RecoilReceiver;
+            switch (id)
+            {
+                case Inventory.NameItems.Makarov:
+                    currentActiveGunI = 0;
+                    break;
+                case Inventory.NameItems.Ak_74:
+                    currentActiveGunI = 1;
+                    break;
+                default:
+                    currentActiveGunI = -1;
+                    break;
+            }
             DisableGuns();
+            if (currentActiveGunI == -1)
+                return;
+            guns[currentActiveGunI].MGun.RecoilEvent += RecoilReceiver;            
         }
 
         private void DisableGuns()
         {
             for (int i = 0; i < guns.Count; i++)
             {
-                gunsContainers[i].SetActive(i == currentI);
+                gunsContainers[i].SetActive(i == currentActiveGunI);
             }
         }
         private double lastAngle = 0;
@@ -138,7 +146,7 @@ namespace Shoots
         /// </summary>
         private void RecoilReceiver()
         {
-            double value = (lastAngle += 12 / guns[currentI].MGun.GetRecoilPower()) * Math.PI / 180;
+            double value = (lastAngle += 12 / guns[currentActiveGunI].MGun.GetRecoilPower()) * Math.PI / 180;
             float cos = (float)Math.Abs(Math.Sin(value));
             float sin = (float)Math.Cos(value);
 
@@ -157,10 +165,12 @@ namespace Shoots
         {
             if (ScreensManager.GetScreen() != null)
                 return;
-            var gun = guns[currentI].MGun;
+            if (currentActiveGunI == -1)// if item isn't gun
+                return;
+            var gun = guns[currentActiveGunI].MGun;
             var tGun = gun.transform;
-            var aimPlace = guns[currentI].AimPlace;
-            var hangPlace = guns[currentI].HangPlace;
+            var aimPlace = guns[currentActiveGunI].AimPlace;
+            var hangPlace = guns[currentActiveGunI].HangPlace;
 
             Vector3 target = IsAiming && !gun.IsReload ? aimPlace.position : hangPlace.position;// следующая позиция
             tGun.position = Vector3.MoveTowards(gun.transform.position, target, Time.deltaTime / lerpSpeed);

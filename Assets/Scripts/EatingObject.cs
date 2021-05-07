@@ -17,7 +17,7 @@ public sealed class EatingObject : InteractiveObject
     }
     public override void Interact(PlayerClasses.PlayerStatements player)
     {
-        player.SendMessage(PlayerClasses.PlayerStatements.Message.meal, this);
+      //  player.SendMessage(PlayerClasses.PlayerStatements.Message.meal, this);
         //TODO pool of objects
         ReturnToPool();
     }

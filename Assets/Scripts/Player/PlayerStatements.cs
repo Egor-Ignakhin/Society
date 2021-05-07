@@ -11,20 +11,9 @@ namespace PlayerClasses
             mBasicNeeds = GetComponent<BasicNeeds>();
             InputManager.Unlock();
         }
-
-        public enum Message { meal };
-        public void SendMessage(Message m, EatingObject sender)
+        public void MealPlayer(int food, int water)
         {
-            switch (m)
-            {
-                case Message.meal:
-                    mBasicNeeds.AddMeal(sender.GetThirst(), sender.GetFood());
-                    break;
-            }
-        }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape)) { }
+            mBasicNeeds.AddMeal(water, food);
         }
     }
 }

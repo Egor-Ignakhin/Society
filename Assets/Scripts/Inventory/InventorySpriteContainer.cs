@@ -16,7 +16,8 @@ namespace Inventory
             { NameItems.Makarov, Resources.Load<Sprite>("InventoryItems/Makarov_1") },
             { NameItems.Pistol2, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol2") },
             { NameItems.Ak_74, Resources.Load<Sprite>("InventoryItems/AK-74u_1") },
-            { NameItems.CannedFood, Resources.Load<Sprite>("InventoryItems/CannedFood_1") } };
+            { NameItems.CannedFood, Resources.Load<Sprite>("InventoryItems/CannedFood_1") },
+            { NameItems.Milk, Resources.Load<Sprite>("InventoryItems/Milk_1") }};
         }
 
         public static Sprite GetSprite(int id) => sprites[id];

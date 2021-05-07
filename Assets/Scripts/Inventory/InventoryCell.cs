@@ -56,7 +56,7 @@ namespace Inventory
         public void SetItem(int id, int count)
         {
             MItemContainer.SetItem(id, count);
-            ChangeSprite(MItemContainer.Id);
+            ChangeSprite();
         }
         /// <summary>
         /// вызывается для смены предмета другим предметом
@@ -70,22 +70,27 @@ namespace Inventory
             mImage = copyPaste.mImage;// и новых image                        
             mText = copyPaste.mText;
 
-            ChangeSprite(MItemContainer.Id);
+            ChangeSprite();
             mItem.localScale = additionalSettins.DefaultScale;
             return outRangeCount;
         }
         private void UpdateText() => mText.SetText(MItemContainer.Count > 1 ? MItemContainer.Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
 
-
+        public void Clear()
+        {
+            SetItem(0, 0);
+        }
         /// <summary>
         /// смена изображения на картинке (в зависимости от типа предмета)
         /// </summary>
         /// <param name="type"></param>
-        public void ChangeSprite(int id)
+        public void ChangeSprite()
         {
-            mImage.sprite = InventorySpriteContainer.GetSprite(id);
+            mImage.sprite = InventorySpriteContainer.GetSprite(MItemContainer.Id);
             mImage.color = MItemContainer.IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
+            if (MItemContainer.IsEmpty)
+                eventReceiver.UnfocusAllCells();
         }
         #region Events
         /// <summary>
@@ -189,7 +194,7 @@ namespace Inventory
         internal void DelItem(int outOfRange)
         {
             MItemContainer.DelItem(outOfRange);
-            UpdateText();
+            ChangeSprite();
         }
 
         public RectTransform GetItemTransform() => mItem;
@@ -207,6 +212,8 @@ namespace Inventory
             public void DelItem(int count)
             {
                 Count -= count;
+                if (IsEmpty)
+                    Id = NameItems.Default;
             }
             public int SetItem(int nid, int ncount, bool isMerge = false)
             {
@@ -252,9 +259,11 @@ namespace Inventory
 
         public void Activate()
         {
-            if (MItemContainer.Id == 5)
+            if (MItemContainer.Id == 5 || MItemContainer.Id == 6)
             {
-                //TODO поедание еды
+                var meal = ItemStates.GetMeatNutrition(MItemContainer.Id);
+                inventoryContainer.MealPlayer(meal.Item1, meal.Item2);
+                DelItem(1);
             }
         }
     }

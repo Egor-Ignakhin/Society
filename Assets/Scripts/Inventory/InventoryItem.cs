@@ -1,21 +1,28 @@
 ﻿using UnityEngine;
+using Inventory;
 
 
 //объект с возможностью положить в инвентарь
 public class InventoryItem : InteractiveObject
 {
     [SerializeField] protected int count = 1;
-    private Inventory.InventoryContainer inventoryContainer;
+    private InventoryContainer inventoryContainer;
     [SerializeField] private int startid;
     public int Id { get; protected set; }
     protected virtual void Start()
     {
-        inventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
+        inventoryContainer = FindObjectOfType<InventoryContainer>();
         MainDescription = Localization.MainTypes.Item;
 
         SetId(startid);
-        if (startid == 5)        
-            SetType(nameof(Inventory.NameItems.CannedFood));                    
+        if (startid == 5)
+        {
+            SetType(nameof(NameItems.CannedFood));
+        }
+        else if (startid == 6)
+        {
+            SetType(nameof(NameItems.Milk));
+        }
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {
