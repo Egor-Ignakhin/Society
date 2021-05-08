@@ -23,7 +23,7 @@ namespace MenuScripts
             [SerializeField] private TextMeshProUGUI fovText;
             private FirstPersonController fps;// контроллёр игрока
             public static CurrentGameSettings currentGameSettings { get; private set; }
-            private string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
+            private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
             private void Start()
             {
                 fps = FindObjectOfType<FirstPersonController>();
@@ -242,7 +242,7 @@ namespace MenuScripts
                     menu.SetActive(v);
                     // пауза при открытии инвентаря                
                     Cursor.visible = v;
-                    InventoryInput.Instance.DisableInventory();
+                    FindObjectOfType<InventoryInput>().DisableInventory();
                     if (!v)
                     {
                         Cursor.lockState = CursorLockMode.Locked;

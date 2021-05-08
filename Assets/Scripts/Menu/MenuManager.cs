@@ -22,7 +22,7 @@ namespace MenuScripts
 
         public void LoadDemoMouseAnton()
         {
-            FindObjectOfType<ScenesManager>().LoadNextScene(5);
+          LoadScreensManager.Instance.LoadLevel(5, 0);
         }
         public void LoadPolygon()
         {

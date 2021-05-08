@@ -241,7 +241,7 @@ namespace PlayerClasses
                 }
 
                 force = mass * force * force;
-                if (force > minValue)// если силв больше минимальной для нанесения урона
+                if (force > minValue)// если сила больше минимальной для нанесения урона
                 {
                     bn.InjurePerson(force / 10);
                 }
@@ -257,19 +257,21 @@ namespace PlayerClasses
         private bool wasDamaged = false;
         private bool coroutineStarted = false;
         public void Init(BasicNeeds bn)
-        {
+        {            
             basicNeeds = bn;
             noiseClip = Resources.Load<AudioClip>("Health\\Shum_Low_Health");
+
             noiseSource = bn.gameObject.AddComponent<AudioSource>();
-            noiseSource.loop = true;
-            basicNeeds.HealthChangeValue += ChangeHealth;
+            
+            basicNeeds.HealthChangeValue += ChangeHealth;                        
+            noiseSource.volume = 0;
             noiseSource.clip = noiseClip;
             noiseSource.Play();
-            noiseSource.volume = 0;
+            noiseSource.loop = true;
             ChangeHealth(basicNeeds.Health);
         }
         private void OnDisable()
-        {
+        {            
             basicNeeds.HealthChangeValue -= ChangeHealth;
         }
         private void ChangeHealth(float v)

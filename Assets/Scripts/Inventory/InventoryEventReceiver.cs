@@ -8,7 +8,9 @@ namespace Inventory
     public sealed class InventoryEventReceiver : IGameScreen
     {
         private readonly InventoryContainer inventoryContainer;
-        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, InventoryContainer ic, GameObject itemsLabelDescription)
+        private readonly InventoryInput inventoryInput;
+        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, 
+            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input)
         {
             mainParent = mp;
             Instance = this;
@@ -17,6 +19,7 @@ namespace Inventory
             this.busyCellsContainer = busyCellsContainer;
             inventoryContainer = ic;
             this.ItemsLabelDescription = itemsLabelDescription;
+            inventoryInput = input;
         }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
@@ -40,7 +43,7 @@ namespace Inventory
                     child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
 
             }
-            InventoryInput.Instance.EnableInventory();
+            inventoryInput.EnableInventory();
             lastItemContainer = it;
         }
         public void CloseContainer()
@@ -75,18 +78,18 @@ namespace Inventory
 
         public void OnEnable()
         {
-            InventoryInput.Instance.ChangeActiveEvent += ChangeActiveEvent;
-            InventoryInput.Instance.InputKeyEvent += SelectCell;
-            InventoryInput.Instance.DropEvent += DropEventReceiver;
-            InventoryInput.Instance.SpinEvent += SpinReceiver;
+            inventoryInput.ChangeActiveEvent += ChangeActiveEvent;
+            inventoryInput.InputKeyEvent += SelectCell;
+            inventoryInput.DropEvent += DropEventReceiver;
+            inventoryInput.SpinEvent += SpinReceiver;
             ItemsLabelDescription.SetActive(false);
         }
         public void OnDisable()
         {
-            InventoryInput.Instance.ChangeActiveEvent -= ChangeActiveEvent;
-            InventoryInput.Instance.InputKeyEvent -= SelectCell;
-            InventoryInput.Instance.DropEvent -= DropEventReceiver;
-            InventoryInput.Instance.SpinEvent -= SpinReceiver;
+            inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
+            inventoryInput.InputKeyEvent -= SelectCell;
+            inventoryInput.DropEvent -= DropEventReceiver;
+            inventoryInput.SpinEvent -= SpinReceiver;
         }
         private void ChangeActiveEvent(bool value) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(value));
 
@@ -248,7 +251,7 @@ namespace Inventory
 
         private void DropItem(int id, int count)
         {
-            InventoryInput.Instance.DropItem(inventoryContainer.GetItemPrefab(id), count);
+            inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
         private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         {

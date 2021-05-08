@@ -30,6 +30,7 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
             ScreensManager.SetScreen(this);
         }
     }
+
     public void LoadLevel(int level, int currentLevel)
     {
         var operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentLevel == -1 ? level : currentLevel);

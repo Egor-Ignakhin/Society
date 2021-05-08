@@ -3,12 +3,12 @@
 /// <summary>
 /// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
 /// </summary>
-sealed class InventoryInput : Singleton<InventoryInput>
+public sealed class InventoryInput : MonoBehaviour
 {
     public delegate void EventHandler(bool value);
     public event EventHandler ChangeActiveEvent;
 
-    public delegate void InputHandler(int s);    
+    public delegate void InputHandler(int s);
     public event InputHandler InputKeyEvent;
 
     public event InputHandler DropEvent;

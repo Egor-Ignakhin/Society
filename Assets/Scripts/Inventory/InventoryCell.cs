@@ -89,8 +89,9 @@ namespace Inventory
             mImage.sprite = InventorySpriteContainer.GetSprite(MItemContainer.Id);
             mImage.color = MItemContainer.IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
+            ///если контейнер пуст
             if (MItemContainer.IsEmpty)
-                eventReceiver.UnfocusAllCells();
+                eventReceiver.UnfocusAllCells();//снимается фокус со слота
         }
         #region Events
         /// <summary>
@@ -191,6 +192,10 @@ namespace Inventory
 
 
         #endregion
+        /// <summary>
+        /// удаляет указанное кол-во предметов в слоте
+        /// </summary>
+        /// <param name="outOfRange"></param>
         internal void DelItem(int outOfRange)
         {
             MItemContainer.DelItem(outOfRange);
@@ -257,6 +262,9 @@ namespace Inventory
             }
         }
 
+        /// <summary>
+        /// метод "активации предмета (например поедание еды)"
+        /// </summary>
         public void Activate()
         {
             if (MItemContainer.Id == 5 || MItemContainer.Id == 6)

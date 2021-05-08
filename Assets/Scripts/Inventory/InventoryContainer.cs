@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Inventory
 {
+    /// <summary>
+    /// главный контейнер инвентаря
+    /// </summary>
     public sealed class InventoryContainer : MonoBehaviour
     {
         private readonly Queue<InventoryItem> queueOfItems = new Queue<InventoryItem>();// очередь предметов на отображение
@@ -20,10 +23,15 @@ namespace Inventory
         [SerializeField] private GameObject cellPrefab;
         private PlayerClasses.PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
+        private InventoryInput inventoryInput;
 
-        private void OnEnable()
+        private void Awake()
         {
-            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this, ItemsLabelDescription);
+            inventoryInput = gameObject.AddComponent<InventoryInput>();
+        }
+        private void OnEnable()
+        {            
+            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this, ItemsLabelDescription, inventoryInput);
             eventReceiver.OnEnable();
             inventoryEffects = new InventoryEffects(gameObject);
             playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();

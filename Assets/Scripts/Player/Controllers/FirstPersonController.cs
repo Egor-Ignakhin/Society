@@ -5,17 +5,17 @@ using UnityEditor;
 
 [RequireComponent(typeof(CapsuleCollider)), RequireComponent(typeof(Rigidbody)), AddComponentMenu("First Person Controller")]
 
-public sealed class FirstPersonController : MonoBehaviour, IState
+public sealed class FirstPersonController : MonoBehaviour
 {
     #region Variables    
     #region Look Settings
-    public float VerticalRotationRange { get; set; } = 0f;
-    public float HeadMaxY { get; set; } = 90;
-    public float HeadMinY { get; set; } = -90;
-    public float Sensitivity { get; set; } = 2;
+    private float VerticalRotationRange = 0f;
+    private float HeadMaxY = 90;
+    private float HeadMinY = -90;
+    private float Sensitivity { get; set; } = 2;
 
     public float SensivityM { get; set; } = 1;
-    public float CameraSmoothing { get; private set; } = 5f;
+    private float CameraSmoothing = 5f;
 
     private Camera PlayerCamera;
 
@@ -93,9 +93,9 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
     private static CapsuleCollider capsule;
-    public bool IsGrounded { get; private set; }
+    private bool IsGrounded = true;
     private Vector2 inputXY;
-    private bool isCrouching;
+    private bool isCrouching = false;
     private float yVelocity;
     private bool isSprinting = true;
 
@@ -113,15 +113,12 @@ public sealed class FirstPersonController : MonoBehaviour, IState
         PlayerCamera = Camera.main;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
-        IsGrounded = true;
-        isCrouching = false;
         _fpsRigidbody = GetComponent<Rigidbody>();
         _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         _crouchModifiers.colliderHeight = capsule.height;
-
-        targetAngles = transform.localEulerAngles;
-        followAngles = targetAngles;
+        
+        followAngles = targetAngles = transform.localEulerAngles;
         #endregion
     }
 
@@ -367,7 +364,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
 
     private void OnCollisionEnter(Collision CollisionData)
-    {
+    {        
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
             float a = Vector3.Angle(CollisionData.GetContact(i).normal, Vector3.up);
@@ -379,6 +376,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
                     Advanced.stairMiniHop = false;
                     if (didJump && a <= 70)
                         didJump = false;
+                    print(1);
                 }
 
                 if (Advanced.MaxSlopeAngle > 0)
@@ -430,6 +428,7 @@ public sealed class FirstPersonController : MonoBehaviour, IState
     }
     private void OnCollisionExit(Collision CollisionData)
     {
+        
         IsGrounded = false;
         if (Advanced.MaxSlopeAngle > 0)
         {
@@ -439,7 +438,6 @@ public sealed class FirstPersonController : MonoBehaviour, IState
             Advanced.IsTouchingUpright = false;
         }
     }
-    public State CurrentState { get; set; } = State.unlocked;
     public void SetState(State s)
     {
         if (s == State.locked)

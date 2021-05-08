@@ -85,12 +85,12 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 0.5
+  m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
-  m_ShadowRadius: 30
+  m_ShadowRadius: 50
   m_ShadowAngle: 0
 --- !u!1001 &3918687094994329194
 PrefabInstance:
@@ -122,42 +122,42 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30.63
+      value: 11.406
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 3.677
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -15.2
+      value: -4.12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000014603138
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
@@ -167,7 +167,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -6733177361254619370, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
@@ -197,7 +197,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}
       propertyPath: m_Name
-      value: Lamp Variant
+      value: Lamp Variant (4)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: cbe6f87f0e0f9b94bbffbdaf71c47c67,
         type: 3}

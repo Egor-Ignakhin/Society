@@ -31,6 +31,7 @@ namespace Debugger
             {
                 isHidden = !isHidden;
                 isMoving = true;
+                FindObjectOfType<InventoryInput>().DisableInventory();
             }
         }
         /// <summary>
@@ -58,8 +59,7 @@ namespace Debugger
         /// анимация движения
         /// </summary>
         private void Move()
-        {
-            InventoryInput.Instance.DisableInventory();
+        {            
             if (!isHidden)
             {
                 InputManager.LockInput();

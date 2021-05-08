@@ -9,8 +9,8 @@ namespace Shoots
     /// </summary>
     class GunAnimator : Singleton<GunAnimator>
     {
-        private readonly List<GameObject> gunsContainers = new List<GameObject>();
-        private readonly List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
+        private List<GameObject> gunsContainers = new List<GameObject>();
+        private List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
         public class PlayerGun
         {
             public Gun MGun { get; }
@@ -34,7 +34,7 @@ namespace Shoots
 
         private int currentActiveGunI = -1;
 
-        private void Awake()
+        private void OnEnable()
         {
             for (int i = 0; i < transform.childCount; i++)
                 gunsContainers.Add(transform.GetChild(i).gameObject);
@@ -67,6 +67,14 @@ namespace Shoots
             fps = FindObjectOfType<FirstPersonController>();
 
             Inventory.InventoryEventReceiver.ChangeSelectedCellEvent += ChangeGun;
+        }
+        private void OnDisable()
+        {
+            gunsContainers = null;
+            guns = null;
+            advanced = null;
+            fps = null;
+            Inventory.InventoryEventReceiver.ChangeSelectedCellEvent -= ChangeGun;
         }
         private void Update()
         {
