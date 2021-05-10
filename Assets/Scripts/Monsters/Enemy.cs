@@ -9,8 +9,9 @@ using UnityEngine.AI;
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform centerEnemy;
-    [SerializeField] protected float fov = 90;
-    [SerializeField] protected float seeDistance;
+    [SerializeField] protected float fov = 90;// угол обзора монстра
+    [SerializeField] protected float seeDistance;// дальность обзора
+    [SerializeField] protected float health;// здоровье монстра
     public UniqueVariables UVariables { get; private set; }
     public class UniqueVariables
     {
@@ -25,13 +26,12 @@ public abstract class Enemy : MonoBehaviour
         private float health;
         public float Health
         {
-            get { return health; }
+            get => health;
             set
             {
                 if (value <= MinHealth)
-                {
                     value = MinHealth;
-                }
+
                 health = value;
                 ChangeHealthEvent?.Invoke(value);
             }
@@ -50,22 +50,22 @@ public abstract class Enemy : MonoBehaviour
         public const string Bred = "Bred";
         public const string BloodDog = "BloodDog";
     }
-    protected abstract string Type();
-    [SerializeField] protected Transform defenderPoint;//защитная точка бреда
+    protected abstract string Type();// тип монстра
+    [SerializeField] protected Transform defenderPoint;//защитная точка
     protected Transform target;// текущая цель
-    protected Vector3 lastTargetPos;
-    protected Vector3 possibleTargetPos;
+    protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
+    protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
     [SerializeField] protected LayerMask layerMasks;
-    [SerializeField] private List<Transform> eyes = new List<Transform>();
+    [SerializeField] private List<Transform> eyes = new List<Transform>();// глаза монстра
 
     protected BasicNeeds enemy;// текущий противник
 
     public delegate void EnemyEvent();
     public event EnemyEvent DeathEvent;
 
-    private float WaitTarget;
+    private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока
     private bool wasInjured;
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
@@ -97,8 +97,16 @@ public abstract class Enemy : MonoBehaviour
     private void Update()
     {
         RayCastToEnemy();
+#if UNITY_EDITOR
+
         DebugDraw();
+#endif
     }
+    /// <summary>
+    /// тут вычисляется путь до цели (по корнерам карты)
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     private bool CalculateDistance(Vector3 pos)
     {
         NavMeshPath path = new NavMeshPath();
@@ -110,6 +118,11 @@ public abstract class Enemy : MonoBehaviour
         }
         return dist <= UVariables.SeeDistance;
     }
+    /// <summary>
+    /// тут вычисляется угол обзора по отношению к заданной позиции
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     private bool CalculateAngle(Vector3 pos)
     {
         Vector3 targetDir = pos - transform.position;
@@ -118,10 +131,13 @@ public abstract class Enemy : MonoBehaviour
         float borderMax = -Mathf.Sin(fov) * (fov / 90) * Mathf.Rad2Deg;
 
         bool isIntersected = (angle > borderMin && angle < borderMax) || wasInjured;
-        
+
         return isIntersected;
 
     }
+    /// <summary>
+    /// бросок линии и возможная схватка с врагом
+    /// </summary>
     private void RayCastToEnemy()
     {
         Vector3 pos = BasicNeeds.Instance.transform.position;
@@ -147,17 +163,15 @@ public abstract class Enemy : MonoBehaviour
     /// <summary>
     /// функция нанесения урона монстром
     /// </summary>
-    protected void Attack()
-    {
-        enemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
-    }
+    protected void Attack() => enemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
+
     /// <summary>
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
     public virtual void InjureEnemy(float value)
     {
-        wasInjured = true;      
+        wasInjured = true;
         UVariables.Health -= value;
     }
     /// <summary>
@@ -249,11 +263,9 @@ public abstract class Enemy : MonoBehaviour
             mAnim.SetBool(state, value);
     }
 
-    protected void OnDestroy()
-    {
-        UVariables.ChangeHealthEvent -= Death;
-    }
+    protected void OnDestroy() => UVariables.ChangeHealthEvent -= Death;
 
+#if UNITY_EDITOR
     private GameObject gameTarget;
     private void DebugDraw()
     {
@@ -269,4 +281,5 @@ public abstract class Enemy : MonoBehaviour
         gameTarget.GetComponent<MeshRenderer>().material.color = Color.blue;
         gameTarget.transform.localEulerAngles += new Vector3(0, 1, 0) * Time.fixedDeltaTime;
     }
+#endif
 }

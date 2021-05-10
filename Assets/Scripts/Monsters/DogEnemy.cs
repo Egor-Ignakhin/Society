@@ -4,7 +4,7 @@ public sealed class DogEnemy : Enemy
 {    
     private void OnEnable()
     {
-        Init(2, 3, seeDistance, 10000);
+        Init(2, 3, seeDistance, health);
     }
     protected override void LookOnTarget()
     {

@@ -6,7 +6,7 @@ namespace Enemies
     {
         private void OnEnable()
         {
-            Init(2, 10, seeDistance, 250);
+            Init(2, 10, seeDistance, health);            
         }
 
         protected override void LookOnTarget()

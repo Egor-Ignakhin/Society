@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
@@ -7,17 +6,18 @@ namespace PlayerClasses
 {
     public sealed class BasicNeeds : Singleton<BasicNeeds>
     {
-        private float waitForThirst = 2;// частота таймера воды
-        private float waitForHunger = 2;// частота таймера еды
-        private float waitForRadiation = 4;
+        private bool foodWaterMultiply = false;
+        public void EnableFoodAndWaterMultiply(bool v) => foodWaterMultiply = v;
+
+        private readonly float waitForThirst = 5;// частота таймера воды
+        private readonly float waitForHunger = 3.5f;// частота таймера еды
+        private readonly float waitForRadiation = 4;
 
         private float health;
         public float Health
         {
-            get
-            {
-                return health;
-            }
+            get => health;
+
             private set
             {
                 if (value > MaximumHealth)
@@ -26,41 +26,44 @@ namespace PlayerClasses
                 {
                     value = MinimumHealth;
                     Dead();
-                }
-                health = value;
-                HealthChangeValue?.Invoke((float)Math.Round(value, 0));
+                }                
+                HealthChangeValue?.Invoke((float)Math.Round(health = value, 0));
             }
         }
 
         private int thirst;
         public int Thirst// вода
         {
-            get
-            {
-                return thirst;
-            }
+            get => thirst;
+
             private set
             {
                 if (value > MaximumThirst)
                     value = MaximumThirst;
-                thirst = value;
-                ThirstChangeValue?.Invoke(value);
+                if (value < 0 && isInitialized)
+                {
+                    InjurePerson(-value);
+                    value = 0;
+                }
+                ThirstChangeValue?.Invoke(thirst = value);
             }
         }
 
         private int food;
         public int Food// еда
         {
-            get
-            {
-                return food;
-            }
+            get => food;
+
             private set
             {
                 if (value > MaximumFood)
                     value = MaximumFood;
-                food = value;
-                FoodChangeValue?.Invoke(value);
+                if (value < 0 && isInitialized)
+                {
+                    InjurePerson(-value);
+                    value = 0;
+                }                
+                FoodChangeValue?.Invoke(food = value);
             }
         }
 
@@ -76,23 +79,22 @@ namespace PlayerClasses
             }
         }
 
-        private float defaultHealth = 80;// изначальное здоровья
+        private readonly float defaultHealth = 80;// изначальное здоровья
         public float MaximumHealth = 100;// максимальное кол-во здоровья      
+        private readonly float MinimumHealth = 0;// минимальное кол-во здоровья
 
-        private float MinimumHealth = 0;// минимальное кол-во здоровья
-
-        private int defaultThirst = 100;// изначальное кол-во воды
-        private int thirstDifference = 1;// количество воды, которое будет отниматься в таймере
+        private readonly int defaultThirst = 100;// изначальное кол-во воды
+        private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере
         public int MaximumThirst { get; private set; } = 100;// максимум еды
 
-        private int defaultFood = 200;// изначальное кол-во еды
-        private int foodDifference = 1;// количество еды, которое будет отниматься в таймере
+        private readonly int defaultFood = 200;// изначальное кол-во еды
+        private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
         public int MaximumFood { get; private set; } = 200;// максимум еды
 
-        private int defaultRadiation = 0;// изначальное кол-во радиации
-        private int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере
+        private readonly int defaultRadiation = 0;// изначальное кол-во радиации
+        private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере
         public int MinRadiation = 0;
-        private int MaximumRadiation = 3000;// максимум радиации
+        private readonly int MaximumRadiation = 3000;// максимум радиации
         private bool isInsadeRadiationZone;
         private int currentCountOfZones;
 
@@ -102,9 +104,9 @@ namespace PlayerClasses
         public event HealthHandler FoodChangeValue;// событие голодания
         public event HealthHandler RadiationChangeValue;// событие голодания   
 
-        private DeadLine deadLine;
+        private readonly DeadLine deadLine = new DeadLine();
 
-        private float DamageFromRadiation = 1;
+        private readonly float DamageFromRadiation = 1;
         private void Start()
         {
             Health = defaultHealth;
@@ -112,9 +114,9 @@ namespace PlayerClasses
             Food = defaultFood;
             Radiation = defaultRadiation;
 
-            deadLine = new DeadLine();
             gameObject.AddComponent<PlayerCollisionChecked>().OnInit(this);
             gameObject.AddComponent<PlayerSoundEffects>().Init(this);
+            Init();
         }
 
         private void OnEnable()
@@ -123,20 +125,16 @@ namespace PlayerClasses
             StartCoroutine(nameof(HungerTimer));
             StartCoroutine(nameof(RadiationTimer));
         }
-        public void InjurePerson(float value)
-        {
-            Health -= value;
-        }
+        public void InjurePerson(float value) => Health -= value;
+
         public void AddMeal(int thirst, int food)
         {
             Food += food;
             Thirst += thirst;
         }
 
-        public void AddRadiation(float value)
-        {
-            Radiation += value;
-        }
+        public void AddRadiation(float value) => Radiation += value;
+
         public void RemoveRadiation()
         {
             if (Radiation > MinRadiation)
@@ -164,15 +162,13 @@ namespace PlayerClasses
         /// <summary>
         /// функция вызывающая загрузку сцены смерти
         /// </summary>
-        private void Dead()
-        {
-            deadLine.LoadDeadScene();
-        }
+        private void Dead() => deadLine.LoadDeadScene();
+
         private IEnumerator ThirstTimer()
         {
             while (true)
             {
-                Thirst -= thirstDifference;
+                Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
                 yield return new WaitForSeconds(waitForThirst);
             }
         }
@@ -180,7 +176,7 @@ namespace PlayerClasses
         {
             while (true)
             {
-                Food -= foodDifference;
+                Food -= foodDifference * (foodWaterMultiply ? 2 : 1);
                 yield return new WaitForSeconds(waitForHunger);
             }
         }
@@ -218,7 +214,7 @@ namespace PlayerClasses
         /// </summary>
         class PlayerCollisionChecked : MonoBehaviour
         {
-            private float minValue = 100;// минимальная инерция для счёта урона игроку
+            private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
             private BasicNeeds bn;
             public void OnInit(BasicNeeds bn)
             {
@@ -257,13 +253,13 @@ namespace PlayerClasses
         private bool wasDamaged = false;
         private bool coroutineStarted = false;
         public void Init(BasicNeeds bn)
-        {            
+        {
             basicNeeds = bn;
             noiseClip = Resources.Load<AudioClip>("Health\\Shum_Low_Health");
 
             noiseSource = bn.gameObject.AddComponent<AudioSource>();
-            
-            basicNeeds.HealthChangeValue += ChangeHealth;                        
+
+            basicNeeds.HealthChangeValue += ChangeHealth;
             noiseSource.volume = 0;
             noiseSource.clip = noiseClip;
             noiseSource.Play();
@@ -271,7 +267,7 @@ namespace PlayerClasses
             ChangeHealth(basicNeeds.Health);
         }
         private void OnDisable()
-        {            
+        {
             basicNeeds.HealthChangeValue -= ChangeHealth;
         }
         private void ChangeHealth(float v)
@@ -300,7 +296,7 @@ namespace PlayerClasses
                     StopCoroutine(nameof(ClipSilencer));
                     coroutineStarted = false;
                     noiseSource.volume = 0;
-                }                
+                }
                 yield return null;
             }
         }

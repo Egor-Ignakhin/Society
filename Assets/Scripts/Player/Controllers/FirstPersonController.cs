@@ -19,8 +19,6 @@ public sealed class FirstPersonController : MonoBehaviour
 
     private Camera PlayerCamera;
 
-    private float BaseCamFOV { get => GameSettings.FOV(); }
-
     private Vector3 targetAngles;
     private Vector3 followAngles;
     private Vector3 followVelocity;
@@ -192,6 +190,8 @@ public sealed class FirstPersonController : MonoBehaviour
         }
 
         Sprint = Input.GetKey(SprintKey) && CanSprint && InputManager.IsLockeds == 0;
+        PlayerClasses.BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
+
         #endregion
     }
 
@@ -294,21 +294,21 @@ public sealed class FirstPersonController : MonoBehaviour
         _fpsRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
 
 
-       /* if (Advanced.FOVKickAmount > 0)
-        {
-            if (!isCrouching && PlayerCamera.fieldOfView != (BaseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
-            {
-                  if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
-                   {
-                       PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
-                   }
+        /* if (Advanced.FOVKickAmount > 0)
+         {
+             if (!isCrouching && PlayerCamera.fieldOfView != (BaseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
+             {
+                   if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
+                    {
+                        PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
+                    }
 
-                   else if (PlayerCamera.fieldOfView != baseCamFOV)
-                   {
-                       PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
-                   }
-            }
-        }*/
+                    else if (PlayerCamera.fieldOfView != baseCamFOV)
+                    {
+                        PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
+                    }
+             }
+         }*/
 
         if (MCrouchModifiers.useCrouch)
         {
