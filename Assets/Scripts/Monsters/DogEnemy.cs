@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
 
 public sealed class DogEnemy : Enemy
-{
-    [SerializeField] private Transform head;
+{    
     private void OnEnable()
     {
-        base.Init(2, 3, 15, 100);
+        Init(2, 3, seeDistance, 10000);
     }
     protected override void LookOnTarget()
     {
         Vector3 startRot = transform.localEulerAngles;
-        transform.LookAt(currentEnemy ? currentEnemy.transform : currentTarget);
-        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
-        head.transform.LookAt(currentEnemy.transform);
+        transform.LookAt(target);
+        transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);        
     }
 
     protected override string Type()

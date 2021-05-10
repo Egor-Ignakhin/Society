@@ -234,8 +234,7 @@ public class FirstMission : Mission
             mission.dogsForInstance.SetActive(true);
             foreach (var d in mission.dogsFI)
             {
-                d.SetEnemy(mission.missionsManager.GetPlayerBasicNeeds());
-                d.SetCurrentEnemyForewer(true);
+                d.SetEnemy(mission.missionsManager.GetPlayerBasicNeeds());                
             }
         }
         private static void ExtrimCloseDoor()

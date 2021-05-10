@@ -9,7 +9,8 @@ using UnityEngine.AI;
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private Transform centerEnemy;
-    [SerializeField] protected float Fov = 90;
+    [SerializeField] protected float fov = 90;
+    [SerializeField] protected float seeDistance;
     public UniqueVariables UVariables { get; private set; }
     public class UniqueVariables
     {
@@ -51,17 +52,21 @@ public abstract class Enemy : MonoBehaviour
     }
     protected abstract string Type();
     [SerializeField] protected Transform defenderPoint;//защитная точка бреда
-    protected Transform currentTarget;// текущая цель
+    protected Transform target;// текущая цель
     protected Vector3 lastTargetPos;
+    protected Vector3 possibleTargetPos;
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
     [SerializeField] protected LayerMask layerMasks;
     [SerializeField] private List<Transform> eyes = new List<Transform>();
 
-    protected BasicNeeds currentEnemy;// текущий противник
-    protected bool currentEnemyForewer;// при включенной булевой враг монстра никогда не сменит цель
+    protected BasicNeeds enemy;// текущий противник
+
     public delegate void EnemyEvent();
     public event EnemyEvent DeathEvent;
+
+    private float WaitTarget;
+    private bool wasInjured;
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
     {
@@ -79,8 +84,8 @@ public abstract class Enemy : MonoBehaviour
             defenderPoint = dp;
         }
 
-        currentTarget = defenderPoint;
-        lastTargetPos = currentTarget.position;
+        target = defenderPoint;
+        lastTargetPos = target.position;
     }
     protected class AnimationsContainer
     {
@@ -89,52 +94,62 @@ public abstract class Enemy : MonoBehaviour
         public const string Attack = "Attack";
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        RayCastToEnemy(BasicNeeds.Instance.transform.position);
+        RayCastToEnemy();
+        DebugDraw();
     }
-    private bool FindEnemies()
+    private bool CalculateDistance(Vector3 pos)
     {
-        if (currentEnemyForewer)
-            return false;
-
-        Vector3 targetDir = BasicNeeds.Instance.transform.position - transform.position;
+        NavMeshPath path = new NavMeshPath();
+        float dist = 0;
+        if (mAgent.CalculatePath(pos, path))
+        {
+            for (int x = 1; x < path.corners.Length; x++)
+                dist += Vector3.Distance(path.corners[x - 1], path.corners[x]);
+        }
+        return dist <= UVariables.SeeDistance;
+    }
+    private bool CalculateAngle(Vector3 pos)
+    {
+        Vector3 targetDir = pos - transform.position;
         float angle = Vector3.Angle(targetDir, transform.forward);
-        float borderMin = Mathf.Sin(-Fov / 2) * Mathf.Rad2Deg;
-        float borderMax = Mathf.Sin(Fov / 2) * Mathf.Rad2Deg;
+        float borderMin = Mathf.Sin(fov) * (fov / 90) * Mathf.Rad2Deg;
+        float borderMax = -Mathf.Sin(fov) * (fov / 90) * Mathf.Rad2Deg;
 
-        bool isIntersected = angle > borderMin && angle < borderMax;
+        bool isIntersected = (angle > borderMin && angle < borderMax) || wasInjured;
+        
         return isIntersected;
 
     }
-    private void RayCastToEnemy(Vector3 end)
+    private void RayCastToEnemy()
     {
-        Transform target = defenderPoint;
-        BasicNeeds enemy = null;
+        Vector3 pos = BasicNeeds.Instance.transform.position;
         foreach (var e in eyes)
         {
-            if (Physics.Linecast(e.position, end, out RaycastHit hit, layerMasks, QueryTriggerInteraction.Ignore))
+            if (Physics.Linecast(e.position, pos, out RaycastHit hit, layerMasks, QueryTriggerInteraction.Ignore))
             {
-                if (!hit.transform.TryGetComponent<BasicNeeds>(out var bn))
+                if (!CalculateDistance(pos))
                     continue;
-                if (Vector3.Distance(e.position, end) > UVariables.SeeDistance)
-                    continue;
-                if (!FindEnemies())
+                if (!CalculateAngle(pos))
                     continue;
 
-                target = hit.transform;
-                enemy = bn;
+                if (hit.transform.TryGetComponent<BasicNeeds>(out var bn))
+                {
+                    SetEnemy(bn);
+                    return;
+                }
             }
         }
-        SetEnemy(enemy);
-        SetTarget(target);
+        wasInjured = false;
+        SetEnemy(null);
     }
     /// <summary>
     /// функция нанесения урона монстром
     /// </summary>
     protected void Attack()
     {
-        currentEnemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
+        enemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
     }
     /// <summary>
     /// функция получения урона монстром
@@ -142,8 +157,7 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="value"></param>
     public virtual void InjureEnemy(float value)
     {
-        SetEnemy(BasicNeeds.Instance);
-        lastTargetPos = BasicNeeds.Instance.transform.position;
+        wasInjured = true;      
         UVariables.Health -= value;
     }
     /// <summary>
@@ -160,14 +174,6 @@ public abstract class Enemy : MonoBehaviour
         enabled = false;
         DeathEvent.Invoke();
     }
-    /// <summary>
-    /// задаёт несменяемость текущей цели
-    /// </summary>
-    /// <param name="value"></param>
-    public void SetCurrentEnemyForewer(bool value)
-    {
-        currentEnemyForewer = value;
-    }
 
     /// <summary>
     /// функция установки противника
@@ -175,22 +181,39 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="enemy"></param>
     public void SetEnemy(BasicNeeds enemy)
     {
-        currentEnemy = enemy;
+        this.enemy = enemy;
+        SetTarget(enemy ? enemy.transform : defenderPoint);
+        if (enemy)
+            WaitTarget = 5;
     }
     /// <summary>
     /// функция установки цели
     /// </summary>
     /// <param name="target"></param>
-    protected virtual void SetTarget(Transform target)
+    protected virtual void SetTarget(Transform t)
     {
-        currentTarget = target;
-        if (currentEnemy)//враг не потерян
+        this.target = t;
+        if (enemy)//враг не потерян
         {
-            lastTargetPos = currentEnemy.transform.position;// запись в последнюю известную точку                         
+            lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
         }
         else if (Vector3.Distance(centerEnemy.position, lastTargetPos) < mAgent.stoppingDistance)
         {
-            lastTargetPos = defenderPoint.position;
+            if (WaitTarget < 0)
+            {
+                lastTargetPos = defenderPoint.position;
+            }
+            else
+            {
+                WaitTarget -= Time.deltaTime;
+                var direction = (possibleTargetPos - transform.position).normalized;
+                direction.y = 0f;
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
+            }
+        }
+        else if (WaitTarget > 4)
+        {
+            possibleTargetPos = target.position;
         }
         mAgent.SetDestination(lastTargetPos);
 
@@ -198,7 +221,7 @@ public abstract class Enemy : MonoBehaviour
         {
             SetAnimationClip(AnimationsContainer.MoveToPerson);// идти к цели
         }
-        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && currentEnemy)// если дошёл
+        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && enemy)// если дошёл
         {//атаковать
             SetAnimationClip(AnimationsContainer.Attack);
             Attack();
@@ -229,5 +252,21 @@ public abstract class Enemy : MonoBehaviour
     protected void OnDestroy()
     {
         UVariables.ChangeHealthEvent -= Death;
+    }
+
+    private GameObject gameTarget;
+    private void DebugDraw()
+    {
+        if (!gameTarget)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if (transform.GetChild(i).name == "drawer")
+                    gameTarget = transform.GetChild(i).gameObject;
+            }
+        }
+        gameTarget.transform.position = lastTargetPos;
+        gameTarget.GetComponent<MeshRenderer>().material.color = Color.blue;
+        gameTarget.transform.localEulerAngles += new Vector3(0, 1, 0) * Time.fixedDeltaTime;
     }
 }

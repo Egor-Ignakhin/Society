@@ -293,7 +293,6 @@ namespace Inventory
                 SelectedCellIterator = inventoryContainer.HotCells.Count;
 
             SelectCell(SelectedCellIterator);
-            Debug.Log(SelectedCellIterator);
         }
     }
 }
