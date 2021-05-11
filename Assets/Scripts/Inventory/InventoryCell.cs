@@ -21,6 +21,7 @@ namespace Inventory
         private AdditionalSettins additionalSettins;
         private InventoryEventReceiver eventReceiver;
         private InventoryContainer inventoryContainer;
+        public bool CellIsInventorySon { get; private set; } = false;
         public sealed class AdditionalSettins
         {
             public Vector3 DefaultScale { get; } // обычный размер
@@ -44,8 +45,16 @@ namespace Inventory
         public void Init(InventoryContainer ic)
         {
             additionalSettins = new AdditionalSettins(background);
-            inventoryContainer = ic == null ? FindObjectOfType<InventoryContainer>() : ic;
-            eventReceiver = inventoryContainer.EventReceiver;
+            if (!ic)// инициализация проходящая для слотов контейнеров
+            {
+                inventoryContainer = FindObjectOfType<InventoryContainer>();                
+            }
+            else// инициализация проходящая для слотов инвентаря
+            {
+                inventoryContainer = ic;
+                CellIsInventorySon = true;
+            }
+            eventReceiver = inventoryContainer.EventReceiver;           
         }        
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки

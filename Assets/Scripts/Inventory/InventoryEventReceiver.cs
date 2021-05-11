@@ -14,7 +14,6 @@ namespace Inventory
             InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText)
         {
             mainParent = mp;
-            Instance = this;
             fps = controller;
             freeCellsContainer = fCC;
             busyCellsContainer = bCC;
@@ -24,14 +23,13 @@ namespace Inventory
             inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
             inventoryDrawer = iDrawer;
         }
-        public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
         private readonly Transform busyCellsContainer;
         private readonly Transform freeCellsContainer;
         private readonly GameObject ItemsLabelDescription;
         private ItemsContainer lastItemContainer;
-        private int SelectedCellIterator = 1;
+        private int SelectedCellIterator = 0;
         public delegate void ChangeSelectedCell(int id);
         public static event ChangeSelectedCell ChangeSelectedCellEvent;
         private readonly InventoryMassCalculator inventoryMassCalculator;
@@ -170,12 +168,13 @@ namespace Inventory
             candidateForReplaceCell = null;
             candidateForReplaceItem = null;
         }
+        /// <summary>
+        /// смена местами с кандидатом на ячейку или возврат на место
+        /// </summary>
         private void ParentingDraggedObject()
         {
-            // смена местами с кандидатом на ячейку или возврат на место
             if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
             {
-
                 var bufferingSelectItemParent = draggedCell.transform;
 
                 draggedItem.SetParent(candidateForReplaceItem.parent);
@@ -203,6 +202,23 @@ namespace Inventory
 
 
                 draggedCell.SetItem(candidateCopy);
+
+                //проверка для изменения массы инвентаря
+                if (draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объектов только внутри инвентаря
+                    return;
+                if (draggedCell.CellIsInventorySon && !candidateForReplaceCell.CellIsInventorySon)// мерж объекта из инвентаря в контейнер
+                {
+                    inventoryMassCalculator.AddItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
+                    return;
+                }
+                if (!draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объекта из контейнера в инвентарь
+                {
+                    inventoryMassCalculator.AddItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
+                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    return;
+                }
+                
                 return;
             }
             if (!draggedCell)
@@ -212,6 +228,8 @@ namespace Inventory
             if (!IsIntersected(draggedItem.position))
             {
                 DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                if(draggedCell.CellIsInventorySon)
+                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
                 draggedCell.Clear();
             }
 
@@ -253,12 +271,12 @@ namespace Inventory
             {
                 FocusCell(inventoryContainer.HotCells[c - 1]);
                 ChangeSelectedCellEvent?.Invoke(inventoryContainer.HotCells[c - 1].MItemContainer.Id);
+                ActivateItem();
             }
         }
 
         private void DropItem(int id, int count)
-        {
-            inventoryMassCalculator.DeleteItem(id, count);
+        {            
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
         private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
@@ -276,7 +294,9 @@ namespace Inventory
                 return;
             if (SelectedCell.MItemContainer.IsEmpty)
                 return;
-            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);            
+            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
+            if (SelectedCell.CellIsInventorySon)
+                inventoryMassCalculator.DeleteItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
 
             SelectedCell.Clear();
         }
@@ -286,12 +306,12 @@ namespace Inventory
             if (SelectedCell)
                 SelectedCell.Activate();
             inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(SelectedCell.MItemContainer.Id) * SelectedCell.MItemContainer.Count);
-            
+
         }
         private void SpinReceiver(bool forward)
         {
             if (!SelectedCell)
-                return;
+                SelectedCell = inventoryContainer.HotCells[0];
 
 
             if (forward)

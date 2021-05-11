@@ -24,7 +24,9 @@ public sealed class InventoryInput : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(changeActiveKeyCode) && InputManager.IsEnableInput == 0)
+        if (InputManager.IsEnableInput != 0)
+            return;
+        if (Input.GetKeyDown(changeActiveKeyCode))
         {
             ChangeActive(isEnabled = !isEnabled);
         }

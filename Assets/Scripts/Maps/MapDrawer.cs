@@ -11,6 +11,8 @@ namespace Maps
         private Vector3 currentRot = new Vector3(0, 0, 0);
 
         private MapManager mapManager;
+        public delegate void RotateHandler(Vector3 rotate);
+        public event RotateHandler RotateEvent;
 
         [SerializeField] private GameObject PointForInstance;
         private void OnEnable()
@@ -28,6 +30,7 @@ namespace Maps
             {
                 SetPositionPoint(points[i], objects[i]);
             }
+            RotateEvent?.Invoke(currentRot);
         }
         public void SetCurrentRect(float newX, float newY, Vector3 quat)
         {

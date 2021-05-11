@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 namespace Inventory
 {
@@ -48,16 +49,18 @@ namespace Inventory
         private void Start()
         {
             // добавление всех ячеек в список
-            var mc = inventoryDrawer.GetMainContainer().GetComponentsInChildren<InventoryCell>();
-            foreach (var cell in mc)
-            {
-                Cells.Add(cell);                
-            }
+            
             var sc = inventoryDrawer.GetSupportContainer().GetComponentsInChildren<InventoryCell>();
+
             foreach (var cell in sc)
             {
                 Cells.Add(cell);
                 HotCells.Add(cell);                
+            }
+            var mc = inventoryDrawer.GetMainContainer().GetComponentsInChildren<InventoryCell>();
+            foreach (var cell in mc)
+            {
+                Cells.Add(cell);
             }
             foreach (var c in Cells)
             {
