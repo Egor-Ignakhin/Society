@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 namespace Inventory
 {
     /// <summary>
@@ -9,17 +10,19 @@ namespace Inventory
     {
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
-        public InventoryEventReceiver(Transform mp, FirstPersonController fps, Transform freeCellsContainer, Transform busyCellsContainer, 
-            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input)
+        public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
+            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText)
         {
             mainParent = mp;
             Instance = this;
-            this.fps = fps;
-            this.freeCellsContainer = freeCellsContainer;
-            this.busyCellsContainer = busyCellsContainer;
+            fps = controller;
+            freeCellsContainer = fCC;
+            busyCellsContainer = bCC;
             inventoryContainer = ic;
-            this.ItemsLabelDescription = itemsLabelDescription;
+            ItemsLabelDescription = itemsLabelDescription;
             inventoryInput = input;
+            inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
+            inventoryDrawer = iDrawer;
         }
         public static InventoryEventReceiver Instance { get; private set; }
         private readonly Transform mainParent;
@@ -31,6 +34,8 @@ namespace Inventory
         private int SelectedCellIterator = 1;
         public delegate void ChangeSelectedCell(int id);
         public static event ChangeSelectedCell ChangeSelectedCellEvent;
+        private readonly InventoryMassCalculator inventoryMassCalculator;
+        private readonly InventoryDrawer inventoryDrawer;
 
         public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
         {
@@ -83,6 +88,7 @@ namespace Inventory
             inventoryInput.DropEvent += DropEventReceiver;
             inventoryInput.SpinEvent += SpinReceiver;
             ItemsLabelDescription.SetActive(false);
+            inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
         }
         public void OnDisable()
         {
@@ -90,8 +96,9 @@ namespace Inventory
             inventoryInput.InputKeyEvent -= SelectCell;
             inventoryInput.DropEvent -= DropEventReceiver;
             inventoryInput.SpinEvent -= SpinReceiver;
+            inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
         }
-        private void ChangeActiveEvent(bool value) => SetPause(InventoryDrawer.Instance.ChangeActiveMainField(value));
+        private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
 
         private void SetPause(bool enabled)
         {
@@ -228,7 +235,7 @@ namespace Inventory
         /// </summary>
         public void UnfocusAllCells()
         {
-            var cells = inventoryContainer.Cells;
+            var cells = inventoryContainer.GetCells();
             foreach (var cell in cells)
             {
                 cell.SetFocus(false);
@@ -241,21 +248,22 @@ namespace Inventory
         /// </summary>
         /// <param name="c"></param>
         private void SelectCell(int c)
-        {            
+        {
             if (c > 0 && c <= inventoryContainer.HotCells.Count)
-            {                
-                FocusCell(inventoryContainer.HotCells[c-1]);
+            {
+                FocusCell(inventoryContainer.HotCells[c - 1]);
                 ChangeSelectedCellEvent?.Invoke(inventoryContainer.HotCells[c - 1].MItemContainer.Id);
             }
         }
 
         private void DropItem(int id, int count)
         {
+            inventoryMassCalculator.DeleteItem(id, count);
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
         private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         {
-            foreach (var c in inventoryContainer.Cells)
+            foreach (var c in inventoryContainer.GetCells())
             {
                 if (Vector2.Distance(obj, c.GetComponent<RectTransform>().position) < 100)
                     return true;
@@ -268,19 +276,23 @@ namespace Inventory
                 return;
             if (SelectedCell.MItemContainer.IsEmpty)
                 return;
-            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
+            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);            
+
             SelectedCell.Clear();
         }
         public void ActivateItem()
         {
+            float outRangeWeightItem = ItemStates.GetWeightItem(SelectedCell.MItemContainer.Id) * SelectedCell.MItemContainer.Count;
             if (SelectedCell)
                 SelectedCell.Activate();
+            inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(SelectedCell.MItemContainer.Id) * SelectedCell.MItemContainer.Count);
+            
         }
         private void SpinReceiver(bool forward)
         {
             if (!SelectedCell)
                 return;
-           
+
 
             if (forward)
                 SelectedCellIterator--;
@@ -293,6 +305,44 @@ namespace Inventory
                 SelectedCellIterator = inventoryContainer.HotCells.Count;
 
             SelectCell(SelectedCellIterator);
+        }
+        public class InventoryMassCalculator
+        {
+            public float Weight { get; private set; } = 0;
+            public const float MaxWeightForRunningMass = 30;
+            private readonly FirstPersonController fps;
+            private readonly TextMeshProUGUI weightText;
+            public InventoryMassCalculator(FirstPersonController controller, TextMeshProUGUI wT)
+            {
+                fps = controller;
+                weightText = wT;
+            }
+
+            public void AddItem(int id, int count)
+            {
+                Weight += ItemStates.GetWeightItem(id) * count;
+                RecalculatePlayerSpeed();
+            }
+            public void DeleteItem(int id, int count)
+            {
+                Weight -= ItemStates.GetWeightItem(id) * count;
+                RecalculatePlayerSpeed();
+            }
+            public void DeleteItem(float w)
+            {
+                Weight -= w;
+                RecalculatePlayerSpeed();
+            }
+            public void RecalculatePlayerSpeed()
+            {
+                float playerBraking = 1 - (Weight / MaxWeightForRunningMass);
+                if (playerBraking < 0.1f)// становление самой минимальной скорости
+                {
+                    playerBraking = 0.1f;
+                }
+                fps.SetBraking(playerBraking);
+                weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");
+            }
         }
     }
 }

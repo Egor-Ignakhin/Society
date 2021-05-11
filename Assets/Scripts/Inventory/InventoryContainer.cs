@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace Inventory
 {
@@ -12,54 +13,67 @@ namespace Inventory
         [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
-        public List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
-        private InventoryEventReceiver eventReceiver;
+        private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
+        public List<InventoryCell> GetCells() => Cells;
+        public InventoryEventReceiver EventReceiver { get; private set; }
         public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         private InventoryEffects inventoryEffects;
-        private readonly InventorySaver inventorySaver = new InventorySaver();
+        private readonly InventorySaver inventorySaver = new InventorySaver();        
 
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
         private PlayerClasses.PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
+        [SerializeField] private TextMeshProUGUI weightText;
         private InventoryInput inventoryInput;
+        private InventoryDrawer inventoryDrawer;
+        public delegate void TakeItem(int id, int count);
+        public event TakeItem TakeItemEvent;
 
         private void Awake()
         {
             inventoryInput = gameObject.AddComponent<InventoryInput>();
         }
         private void OnEnable()
-        {            
-            eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer, busyCellsContainer, this, ItemsLabelDescription, inventoryInput);
-            eventReceiver.OnEnable();
+        {
             inventoryEffects = new InventoryEffects(gameObject);
             playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();
+            inventoryDrawer = FindObjectOfType<InventoryDrawer>();
+
+            EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
+                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText);
+            EventReceiver.OnEnable();
         }
         private void Start()
         {
             // добавление всех ячеек в список
-            var mc = InventoryDrawer.Instance.GetMainContainer();
-            foreach (var cell in mc.GetComponentsInChildren<InventoryCell>())
+            var mc = inventoryDrawer.GetMainContainer().GetComponentsInChildren<InventoryCell>();
+            foreach (var cell in mc)
             {
-                Cells.Add(cell);
+                Cells.Add(cell);                
             }
-            var sc = InventoryDrawer.Instance.GetSupportContainer();
-            foreach (var cell in sc.GetComponentsInChildren<InventoryCell>())
+            var sc = inventoryDrawer.GetSupportContainer().GetComponentsInChildren<InventoryCell>();
+            foreach (var cell in sc)
             {
                 Cells.Add(cell);
-                HotCells.Add(cell);
+                HotCells.Add(cell);                
             }
             foreach (var c in Cells)
             {
-                c.Init(this);
+                c.Init(this);                
+            }            
+            inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря            
+
+            foreach (var c in Cells)
+            {               
+                 TakeItemEvent?.Invoke(c.MItemContainer.Id, c.MItemContainer.Count);
             }
-            inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря
 
             //загрузка слотов для сундуков
             for (int i = 0; i < ItemsContainer.maxCells; i++)
             {
-                Instantiate(cellPrefab, freeCellsContainer);
+                Instantiate(cellPrefab, freeCellsContainer);                
             }
 
             itemPrefabs = new Dictionary<int, InventoryItem>
@@ -90,6 +104,8 @@ namespace Inventory
 
             queueOfItems.Enqueue(item);// добавить предмет в очередь
             MessageToPUDD();
+
+            TakeItemEvent?.Invoke(item.Id, item.GetCount());
         }
         public void SpendOnCell()
         {
@@ -102,7 +118,7 @@ namespace Inventory
         }
         public void ActivateItem()
         {
-            eventReceiver.ActivateItem();
+            EventReceiver.ActivateItem();
         }
         public void MealPlayer(int food, int water)
         {
@@ -111,7 +127,7 @@ namespace Inventory
         private void OnDisable()
         {
             Save(Cells);
-            eventReceiver.OnDisable();
+            EventReceiver.OnDisable();
         }
         /// <summary>
         /// сохранение инвентаря
@@ -120,10 +136,8 @@ namespace Inventory
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
         public Dictionary<int, InventoryItem> itemPrefabs;
-        public InventoryItem GetItemPrefab(int id)
-        {
-            return itemPrefabs[id];
-        }
+        public InventoryItem GetItemPrefab(int id) => itemPrefabs[id];
+
         public class InventoryEffects
         {
             private readonly AudioClip spendOnCellClip;// звук при наведении на слот
@@ -134,6 +148,6 @@ namespace Inventory
                 inventorySpeaker = main.AddComponent<AudioSource>();
             }
             public void PlaySpendClip() => inventorySpeaker.PlayOneShot(spendOnCellClip);
-        }
+        }      
     }
 }

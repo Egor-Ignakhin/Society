@@ -23,15 +23,6 @@ public sealed class FirstPersonController : MonoBehaviour
     private Vector3 followAngles;
     private Vector3 followVelocity;
 
-    private float ZSlant { get; set; }
-    public void SetZSlant(int n)
-    {
-        ZSlant = n;
-        float rPos = n > 0 ? -0.375f : (n < 0 ? 0.375f : 0);
-
-        PlayerCamera.transform.localPosition = Vector3.MoveTowards(PlayerCamera.transform.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime);
-    }
-
     #endregion
 
     #region Movement Settings
@@ -201,6 +192,7 @@ public sealed class FirstPersonController : MonoBehaviour
 
         Vector3 MoveDirection = Vector3.zero;
         speed = Sprint ? isCrouching ? WalkSpeedInternal : SprintSpeedInternal : WalkSpeedInternal;
+        speed *= additionalBraking;
 
         if (Advanced.MaxSlopeAngle > 0)
         {
@@ -237,9 +229,9 @@ public sealed class FirstPersonController : MonoBehaviour
         }
         #endregion
         float m = InputManager.IsLockeds > 0 ? 0 : 1;
-        float horizontalInput = Input.GetAxis("Horizontal") * m;
-        float verticalInput = Input.GetAxis("Vertical") * m;
-        inputXY = new Vector2(horizontalInput, verticalInput);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        inputXY = new Vector2(horizontalInput, verticalInput) * m * additionalBraking;
         if (inputXY.magnitude > 1)
             inputXY.Normalize();
 
@@ -283,7 +275,7 @@ public sealed class FirstPersonController : MonoBehaviour
 
         if (PlayerCanMove)
         {
-            _fpsRigidbody.velocity = MoveDirection + (Vector3.up * yVelocity);
+            _fpsRigidbody.velocity = MoveDirection + (Vector3.up * yVelocity) * additionalBraking;
 
         }
         else _fpsRigidbody.velocity = Vector3.zero;
@@ -314,14 +306,14 @@ public sealed class FirstPersonController : MonoBehaviour
         {
             if (isCrouching)
             {
-                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight / 1.5f, 5 * Time.deltaTime);
+                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight / 1.5f, 5 * Time.deltaTime * additionalBraking);
                 WalkSpeedInternal = WalkSpeed * MCrouchModifiers.crouchWalkSpeedMultiplier;
                 JumpPowerInternal = JumpPower * MCrouchModifiers.crouchJumpPowerMultiplier;
 
             }
             else
             {
-                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight, 5 * Time.deltaTime);
+                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight, 5 * Time.deltaTime * additionalBraking);
                 WalkSpeedInternal = WalkSpeed;
                 SprintSpeedInternal = SprintSpeed;
                 JumpPowerInternal = JumpPower;
@@ -467,6 +459,18 @@ public sealed class FirstPersonController : MonoBehaviour
         followAngles += v;
         targetAngles += v;
     }
+    private float ZSlant { get; set; }
+    public void SetZSlant(int n)
+    {
+        ZSlant = n;
+        float rPos = n > 0 ? -0.375f : (n < 0 ? 0.375f : 0);
+
+        PlayerCamera.transform.localPosition = Vector3.MoveTowards(PlayerCamera.transform.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime);
+    }
+
+    private float additionalBraking = 1;//добавляемая скорость при перегузе
+    public void SetBraking(float b) => additionalBraking = b;
+
 }
 
 #if UNITY_EDITOR

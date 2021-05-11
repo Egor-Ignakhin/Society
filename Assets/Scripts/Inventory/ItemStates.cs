@@ -7,19 +7,19 @@ namespace Inventory
     /// </summary>
     class ItemStates
     {
-        private static readonly Dictionary<int, int> items;// id and MaxCount
+        private static readonly Dictionary<int, (int maxCount, float weight)> items;// id and (MaxCount and weight)
         private static readonly Dictionary<int, (int food, int water)> meatItems;
 
         static ItemStates()
         {
-            items = new Dictionary<int, int>
-            {   {NameItems.Default, 0 },
-                {NameItems.Axe, 1 },
-                {NameItems.Makarov, 1 },
-                {NameItems.Pistol2, 1 },
-                {NameItems.Ak_74, 1 },
-                {NameItems.CannedFood, 7 },
-                {NameItems.Milk, 5 }
+            items = new Dictionary<int, (int, float)>
+            {   {NameItems.Default, (0,0) },
+                {NameItems.Axe, (1,1.3f) },
+                {NameItems.Makarov, (1,1) },
+                {NameItems.Pistol2, (1,1) },
+                {NameItems.Ak_74, (1,4) },
+                {NameItems.CannedFood,  (7,0.2f)},
+                {NameItems.Milk, (5,0.5f) }
             };
             meatItems = new Dictionary<int, (int food, int water)>
             {
@@ -34,11 +34,10 @@ namespace Inventory
         /// </summary>
         /// <param id="id"></param>
         /// <returns></returns>
-        public static int GetMaxCount(int id) => items[id];
-        public static (int, int) GetMeatNutrition(int id)
-        {
-            return meatItems[id];
-        }
+        public static int GetMaxCount(int id) => items[id].maxCount;
+        public static float GetWeightItem(int id) => items[id].weight;
+        public static (int, int) GetMeatNutrition(int id) => meatItems[id];
+
     }
     class NameItems
     {

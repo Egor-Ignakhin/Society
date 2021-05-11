@@ -52,7 +52,7 @@ namespace Inventory
                     cells[i].SetItem(c.types[i], c.counts[i]);
                 }
             }
-            catch { }
+            catch { Debug.LogError("Load Failed!"); }
         }
     }
 

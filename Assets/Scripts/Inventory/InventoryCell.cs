@@ -44,9 +44,9 @@ namespace Inventory
         public void Init(InventoryContainer ic)
         {
             additionalSettins = new AdditionalSettins(background);
-            eventReceiver = InventoryEventReceiver.Instance;
             inventoryContainer = ic == null ? FindObjectOfType<InventoryContainer>() : ic;
-        }
+            eventReceiver = inventoryContainer.EventReceiver;
+        }        
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки
         /// </summary>

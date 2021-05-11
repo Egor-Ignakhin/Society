@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public sealed class InventoryDrawer : Singleton<InventoryDrawer>
+public sealed class InventoryDrawer : MonoBehaviour
 {
     [SerializeField] private GameObject mainField;
 
@@ -8,7 +8,7 @@ public sealed class InventoryDrawer : Singleton<InventoryDrawer>
     [SerializeField] private Transform mainContainer;
     [SerializeField] private Transform supportContainer;
 
-    private static bool MainFieldEnabled { get; set; } = false;
+    private bool MainFieldEnabled = false;
     public Transform GetMainContainer() => mainContainer;
 
     public Transform GetSupportContainer() => supportContainer;
