@@ -2,24 +2,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AI;
 /// <summary>
 /// класс который отвечает за привлечение тварей к игроку
 /// </summary>
 public class PlayerSoundsCalculator : MonoBehaviour
 {
     [SerializeField] private RectTransform drawingImage;
-    private float Noise = 0;
+    private float additionalNoise = 0;//добавляемый шум от оружия
     private const float NoiseMax = 100;
     private Transform player;
-    private bool mustCall = false;//нужно ли вызывать поиск 
+
+    private float playerSpeed;// шум от ходьбы персонажа
     public void AddNoise(float v)
     {
-        Noise += v;
-        if (Noise > NoiseMax)
-            Noise = NoiseMax;
-        mustCall = true;
+        additionalNoise += v;
+        if (additionalNoise > NoiseMax)
+            additionalNoise = NoiseMax;
     }
+    public void SetPlayerSpeed(float s) => playerSpeed = s * 100;
+
     private IEnumerator Start()
     {
         player = FindObjectOfType<FirstPersonController>().transform;
@@ -34,32 +35,26 @@ public class PlayerSoundsCalculator : MonoBehaviour
 
     private void Calculate()
     {
-        if (Noise > 0)
-            Noise -= 1;
+        if (additionalNoise > 0)
+            additionalNoise -= 0.5f;
     }
-    private void Draw() => drawingImage.sizeDelta = new Vector2(drawingImage.sizeDelta.x, Noise);
+    private void Draw() => drawingImage.sizeDelta = new Vector2(drawingImage.sizeDelta.x, playerSpeed + additionalNoise);
     private IEnumerator CallMonsters()
     {
         while (true)
         {
-            if (mustCall)
-            {
-                FindMonsters();
-            }
+            FindMonsters();
             yield return new WaitForSeconds(1);
         }
     }
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
-    }
+    private void OnDestroy() => StopAllCoroutines();
     private async void FindMonsters()
     {
         var startedCollection = MonstersData.GetCollection();
-        var poses = new List<Vector3>();        
+        var poses = new List<Vector3>();
         foreach (var e in startedCollection)
         {
-            poses.Add(e.transform.position);            
+            poses.Add(e.transform.position);
         }
 
         var calledMonsters = new List<Enemy>();
@@ -70,14 +65,10 @@ public class PlayerSoundsCalculator : MonoBehaviour
         {
             for (int i = 0; i < poses.Count; i++)
             {
-                if (Vector3.Distance(playerPos, poses[i]) < Noise)
-                {
-                    print(1 / Vector3.Distance(playerPos, poses[i]));
-                    if ((Noise / Vector3.Distance(playerPos, poses[i])) > 0.02f)
-                    {
-                        calledMonsters.Add(startedCollection[i]);
-                    }
-                }
+                if (Vector3.Distance(playerPos, poses[i]) > (playerSpeed + additionalNoise))
+                    continue;
+
+                calledMonsters.Add(startedCollection[i]);
             }
         });
 
@@ -85,7 +76,6 @@ public class PlayerSoundsCalculator : MonoBehaviour
         {
             e.SetEnemy(PlayerClasses.BasicNeeds.Instance, true);
         }
-        mustCall = false;
     }
 }
 

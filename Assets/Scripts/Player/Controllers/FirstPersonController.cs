@@ -89,6 +89,7 @@ public sealed class FirstPersonController : MonoBehaviour
 
     private Rigidbody _fpsRigidbody;
     public static CapsuleCollider GetCollider() => capsule;
+    private Vector3 oldPos = Vector3.zero;
 
     #endregion
 
@@ -276,8 +277,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
         if (PlayerCanMove)
         {
-            _fpsRigidbody.velocity = MoveDirection + (Vector3.up * yVelocity) * additionalBraking;
-
+            Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity)) * additionalBraking;
+            _fpsRigidbody.velocity = newVel;
         }
         else _fpsRigidbody.velocity = Vector3.zero;
 
@@ -332,10 +333,9 @@ public sealed class FirstPersonController : MonoBehaviour
             Advanced.IsTouchingUpright = false;
             Advanced.IsTouchingFlat = false;
         }
-        #endregion
-        //MoveDirection.y = 0;
-        var noise = MoveDirection.magnitude *  0.4f;
-        playerSoundsCalculator.AddNoise(noise);
+        #endregion                        
+        playerSoundsCalculator.SetPlayerSpeed(Mathf.Abs(Vector3.Distance(transform.position, oldPos)));
+        oldPos = transform.position;
     }
 
 
