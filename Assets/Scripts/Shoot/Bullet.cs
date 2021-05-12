@@ -70,7 +70,7 @@ namespace Shoots
                     gg.transform.position = hit.point;
                     return;
                 }
-
+                
                 impactEffect.transform.SetPositionAndRotation(target, Quaternion.identity);
                 impactEffect.SetActive(true);
             }

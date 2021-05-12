@@ -23,6 +23,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private Vector3 followAngles;
     private Vector3 followVelocity;
 
+    private PlayerSoundsCalculator playerSoundsCalculator;
     #endregion
 
     #region Movement Settings
@@ -138,6 +139,7 @@ public sealed class FirstPersonController : MonoBehaviour
             frictionCombine = PhysicMaterialCombine.Maximum,
             bounceCombine = PhysicMaterialCombine.Average
         };
+        playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
         #endregion
     }
 
@@ -209,7 +211,6 @@ public sealed class FirstPersonController : MonoBehaviour
 
             else
             {
-
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (_fpsRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
             }
@@ -332,6 +333,9 @@ public sealed class FirstPersonController : MonoBehaviour
             Advanced.IsTouchingFlat = false;
         }
         #endregion
+        //MoveDirection.y = 0;
+        var noise = MoveDirection.magnitude *  0.4f;
+        playerSoundsCalculator.AddNoise(noise);
     }
 
 

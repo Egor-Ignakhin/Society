@@ -41,9 +41,14 @@ namespace Shoots
         protected AudioClip reloadClip;
         protected AudioClip lastReloadClip;
         protected AudioClip nullBulletsClip;
+        private PlayerSoundsCalculator playerSoundsCalculator;
 
         private bool isAutomatic;// автоматическое ли оружие
         protected abstract void Awake();
+        private void Start()
+        {
+            playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
+        }
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
@@ -154,7 +159,7 @@ namespace Shoots
             Ray ray = GunAnimator.Instance.IsAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
             Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
             BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
-
+            playerSoundsCalculator.AddNoise(bv.Caliber * 5);
             if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
             {
                 bv.SetValues(hit.distance, Vector3.Reflect(transform.forward, hit.normal), Math.Abs(90 - Vector3.Angle(ray.direction, hit.normal)));

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Linq;
 
 namespace Inventory
 {
@@ -15,11 +14,13 @@ namespace Inventory
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
         private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
+        public readonly List<RectTransform> CellsRect = new List<RectTransform>();
         public List<InventoryCell> GetCells() => Cells;
         public InventoryEventReceiver EventReceiver { get; private set; }
-        public readonly List<InventoryCell> HotCells = new List<InventoryCell>();
+        private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
+        public List<InventoryCell> GetHotCells() => HotCells;
         private InventoryEffects inventoryEffects;
-        private readonly InventorySaver inventorySaver = new InventorySaver();        
+        private readonly InventorySaver inventorySaver = new InventorySaver();
 
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
@@ -49,13 +50,13 @@ namespace Inventory
         private void Start()
         {
             // добавление всех ячеек в список
-            
+
             var sc = inventoryDrawer.GetSupportContainer().GetComponentsInChildren<InventoryCell>();
 
             foreach (var cell in sc)
             {
                 Cells.Add(cell);
-                HotCells.Add(cell);                
+                HotCells.Add(cell);
             }
             var mc = inventoryDrawer.GetMainContainer().GetComponentsInChildren<InventoryCell>();
             foreach (var cell in mc)
@@ -64,19 +65,20 @@ namespace Inventory
             }
             foreach (var c in Cells)
             {
-                c.Init(this);                
-            }            
+                c.Init(this);
+            }
             inventorySaver.Load(ref Cells);// загрузка сохранённого инвентаря            
 
             foreach (var c in Cells)
-            {               
-                 TakeItemEvent?.Invoke(c.MItemContainer.Id, c.MItemContainer.Count);
+            {
+                CellsRect.Add(c.GetComponent<RectTransform>());
+                TakeItemEvent?.Invoke(c.MItemContainer.Id, c.MItemContainer.Count);
             }
 
             //загрузка слотов для сундуков
             for (int i = 0; i < ItemsContainer.maxCells; i++)
             {
-                Instantiate(cellPrefab, freeCellsContainer);                
+                Instantiate(cellPrefab, freeCellsContainer);
             }
 
             itemPrefabs = new Dictionary<int, InventoryItem>
@@ -119,14 +121,10 @@ namespace Inventory
             var peek = queueOfItems.Dequeue();
             //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
         }
-        public void ActivateItem()
-        {
-            EventReceiver.ActivateItem();
-        }
-        public void MealPlayer(int food, int water)
-        {
-            playerStatements.MealPlayer(food, water);
-        }
+        public void ActivateItem() => EventReceiver.ActivateItem();
+
+        public void MealPlayer(int food, int water) => playerStatements.MealPlayer(food, water);
+
         private void OnDisable()
         {
             Save(Cells);
@@ -151,6 +149,6 @@ namespace Inventory
                 inventorySpeaker = main.AddComponent<AudioSource>();
             }
             public void PlaySpendClip() => inventorySpeaker.PlayOneShot(spendOnCellClip);
-        }      
+        }
     }
 }

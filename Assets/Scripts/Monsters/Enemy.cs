@@ -8,7 +8,6 @@ using UnityEngine.AI;
 /// </summary>
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] private Transform centerEnemy;
     [SerializeField] protected float fov = 90;// угол обзора монстра
     [SerializeField] protected float seeDistance;// дальность обзора
     [SerializeField] protected float health;// здоровье монстра
@@ -65,8 +64,7 @@ public abstract class Enemy : MonoBehaviour
     public delegate void EnemyEvent();
     public event EnemyEvent DeathEvent;
 
-    private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока
-    private bool wasInjured;
+    private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока    
 
     protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
     {
@@ -86,6 +84,7 @@ public abstract class Enemy : MonoBehaviour
 
         target = defenderPoint;
         lastTargetPos = target.position;
+        MonstersData.AddEnemy(this);
     }
     protected class AnimationsContainer
     {
@@ -94,7 +93,7 @@ public abstract class Enemy : MonoBehaviour
         public const string Attack = "Attack";
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         RayCastToEnemy();
 #if UNITY_EDITOR
@@ -130,7 +129,7 @@ public abstract class Enemy : MonoBehaviour
         float borderMin = Mathf.Sin(fov) * (fov / 90) * Mathf.Rad2Deg;
         float borderMax = -Mathf.Sin(fov) * (fov / 90) * Mathf.Rad2Deg;
 
-        bool isIntersected = (angle > borderMin && angle < borderMax) || wasInjured;
+        bool isIntersected = angle > borderMin && angle < borderMax;
 
         return isIntersected;
 
@@ -156,8 +155,7 @@ public abstract class Enemy : MonoBehaviour
                     return;
                 }
             }
-        }
-        wasInjured = false;
+        }        
         SetEnemy(null);
     }
     /// <summary>
@@ -171,7 +169,7 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="value"></param>
     public virtual void InjureEnemy(float value)
     {
-        wasInjured = true;
+        SetEnemy(BasicNeeds.Instance, true);
         UVariables.Health -= value;
     }
     /// <summary>
@@ -187,18 +185,21 @@ public abstract class Enemy : MonoBehaviour
         mAnim.applyRootMotion = true;
         enabled = false;
         DeathEvent.Invoke();
+        MonstersData.RemoveEnemy(this);
     }
 
     /// <summary>
     /// функция установки противника
     /// </summary>
     /// <param name="enemy"></param>
-    public void SetEnemy(BasicNeeds enemy)
+    public void SetEnemy(BasicNeeds e, bool fromNoise = false)
     {
-        this.enemy = enemy;
+        enemy = e;
         SetTarget(enemy ? enemy.transform : defenderPoint);
         if (enemy)
             WaitTarget = 5;
+        if (fromNoise)
+            enemy = null;
     }
     /// <summary>
     /// функция установки цели
@@ -206,14 +207,15 @@ public abstract class Enemy : MonoBehaviour
     /// <param name="target"></param>
     protected virtual void SetTarget(Transform t)
     {
-        this.target = t;
+        target = t;
+        bool possibleMove = CalculateDistance(lastTargetPos);
         if (enemy)//враг не потерян
         {
             lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
         }
-        else if (Vector3.Distance(centerEnemy.position, lastTargetPos) < mAgent.stoppingDistance)
+        else if (mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
         {
-            if (WaitTarget < 0)
+            if (WaitTarget < 0 || !possibleMove)
             {
                 lastTargetPos = defenderPoint.position;
             }

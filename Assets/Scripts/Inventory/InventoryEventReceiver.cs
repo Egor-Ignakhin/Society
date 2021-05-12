@@ -218,7 +218,7 @@ namespace Inventory
                     inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
                     return;
                 }
-                
+
                 return;
             }
             if (!draggedCell)
@@ -228,7 +228,7 @@ namespace Inventory
             if (!IsIntersected(draggedItem.position))
             {
                 DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
-                if(draggedCell.CellIsInventorySon)
+                if (draggedCell.CellIsInventorySon)
                     inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
                 draggedCell.Clear();
             }
@@ -267,23 +267,23 @@ namespace Inventory
         /// <param name="c"></param>
         private void SelectCell(int c)
         {
-            if (c > 0 && c <= inventoryContainer.HotCells.Count)
-            {
-                FocusCell(inventoryContainer.HotCells[c - 1]);
-                ChangeSelectedCellEvent?.Invoke(inventoryContainer.HotCells[c - 1].MItemContainer.Id);
-                ActivateItem();
-            }
+            if (!(c > 0 && c <= inventoryContainer.GetHotCells().Count))
+                return;
+
+            FocusCell(inventoryContainer.GetHotCells()[c - 1]);
+            ChangeSelectedCellEvent?.Invoke(inventoryContainer.GetHotCells()[c - 1].MItemContainer.Id);
+            ActivateItem();
         }
 
         private void DropItem(int id, int count)
-        {            
+        {
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
         private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         {
-            foreach (var c in inventoryContainer.GetCells())
+            foreach (var c in inventoryContainer.CellsRect)
             {
-                if (Vector2.Distance(obj, c.GetComponent<RectTransform>().position) < 100)
+                if (Vector2.Distance(obj, c.position) < 100)
                     return true;
             }
             return false;
@@ -310,19 +310,17 @@ namespace Inventory
         }
         private void SpinReceiver(bool forward)
         {
+            var hotcells = inventoryContainer.GetHotCells();
             if (!SelectedCell)
-                SelectedCell = inventoryContainer.HotCells[0];
+                SelectedCell = hotcells[0];
+
+            SelectedCellIterator += forward ? -1 : 1;
 
 
-            if (forward)
-                SelectedCellIterator--;
-            else
-                SelectedCellIterator++;
-
-            if (SelectedCellIterator > inventoryContainer.HotCells.Count)
+            if (SelectedCellIterator > hotcells.Count)
                 SelectedCellIterator = 1;
             if (SelectedCellIterator < 1)
-                SelectedCellIterator = inventoryContainer.HotCells.Count;
+                SelectedCellIterator = hotcells.Count;
 
             SelectCell(SelectedCellIterator);
         }
