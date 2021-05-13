@@ -12,12 +12,11 @@ namespace Inventory
         public const int maxCells = 40;
         [Range(0, maxCells)] [SerializeField] private int cellsCount;
         private List<(int id, int count)> container = null;
+        public List<(int id, int count)> GetData() => container;
         private bool isOpened;
         private InventoryEventReceiver inventoryEventReceiver;
-        private void Start()
-        {
-            inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
-        }
+        private void Start() => inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
+
         public override void Interact(PlayerStatements pl)
         {
             if (isOpened)

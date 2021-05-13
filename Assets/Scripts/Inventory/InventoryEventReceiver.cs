@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+
 namespace Inventory
 {
     /// <summary>
@@ -11,7 +14,7 @@ namespace Inventory
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
-            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText)
+            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText, Button taB)
         {
             mainParent = mp;
             fps = controller;
@@ -22,6 +25,7 @@ namespace Inventory
             inventoryInput = input;
             inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
             inventoryDrawer = iDrawer;
+            takeAllButton = taB;
         }
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
@@ -30,10 +34,13 @@ namespace Inventory
         private readonly GameObject ItemsLabelDescription;
         private ItemsContainer lastItemContainer;
         private int SelectedCellIterator = 0;
+
         public delegate void ChangeSelectedCell(int id);
         public static event ChangeSelectedCell ChangeSelectedCellEvent;
+
         private readonly InventoryMassCalculator inventoryMassCalculator;
         private readonly InventoryDrawer inventoryDrawer;
+        private readonly Button takeAllButton;
 
         public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
         {
@@ -44,10 +51,14 @@ namespace Inventory
 
                 if (content != null)
                     child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
-
             }
             inventoryInput.EnableInventory();
             lastItemContainer = it;
+
+            GridLayoutGroup gr = busyCellsContainer.GetComponent<GridLayoutGroup>();
+            var rtbtn = takeAllButton.GetComponent<RectTransform>();
+            rtbtn.sizeDelta = new Vector2((gr.cellSize.x + gr.spacing.x) * gr.constraintCount, rtbtn.sizeDelta.y);
+            rtbtn.position = new Vector3(rtbtn.position.x, 110 * (countSlots / gr.constraintCount), 0);
         }
         public void CloseContainer()
         {
@@ -87,6 +98,7 @@ namespace Inventory
             inventoryInput.SpinEvent += SpinReceiver;
             ItemsLabelDescription.SetActive(false);
             inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
+            takeAllButton.onClick.AddListener(TakeAllItemsInContainerReceiver);
         }
         public void OnDisable()
         {
@@ -95,6 +107,7 @@ namespace Inventory
             inventoryInput.DropEvent -= DropEventReceiver;
             inventoryInput.SpinEvent -= SpinReceiver;
             inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
+            takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
         }
         private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
 
@@ -171,6 +184,11 @@ namespace Inventory
         /// </summary>
         private void ParentingDraggedObject()
         {
+            if (!draggedCell)
+                return;
+            if (draggedCell.MItemContainer.IsEmpty)
+                return;
+
             if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
             {
                 var bufferingSelectItemParent = draggedCell.transform;
@@ -216,12 +234,8 @@ namespace Inventory
                     inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
                     return;
                 }
-
                 return;
-            }
-            if (!draggedCell)
-                return;
-
+            }          
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
@@ -274,8 +288,6 @@ namespace Inventory
 
         private void DropItem(int id, int count)
         {
-            if (id == 0)
-                return;
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
 
@@ -302,13 +314,16 @@ namespace Inventory
         }
         public void ActivateItem()
         {
+            if (SelectedCell && SelectedCell.MItemContainer.IsEmpty)
+                return;
+
             int id = SelectedCell.MItemContainer.Id;
             int count = SelectedCell.MItemContainer.Count;
             decimal outRangeWeightItem = ItemStates.GetWeightItem(id) * count;
             if (SelectedCell)
             {
-                inventoryContainer.CallItemEvent(id, 1);
-                SelectedCell.Activate();
+                if (SelectedCell.Activate())
+                    inventoryContainer.CallItemEvent(id, 1);
             }
             inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(id) * count);
         }
@@ -327,6 +342,35 @@ namespace Inventory
                 SelectedCellIterator = hotcells.Count;
 
             SelectCell(SelectedCellIterator);
+        }
+        private void TakeAllItemsInContainerReceiver()
+        {
+            if (!lastItemContainer)
+                return;
+            var list = busyCellsContainer.GetComponentsInChildren<InventoryCell>().ToList();
+            var places = inventoryContainer.GetCells();
+            InventoryCell listPlace = null;
+            while (true)// нашлись свободные слоты
+            {
+                if (list.FindAll(c => !c.MItemContainer.IsEmpty).Count == 0)// если не нашлись занятые слоты 
+                    break;
+
+                listPlace = list.Find(c => !c.MItemContainer.IsEmpty);
+                // поиск слота, с предметом того же типа, и не заполненным   
+                var place = places.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(listPlace.MItemContainer.Id));
+
+                if (place == null)
+                    place = places.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
+                if (place == null)//если и пустых нет в инвентаре то выход
+                    break;
+
+                draggedCell = listPlace;
+                draggedItem = draggedCell.GetItemTransform();
+                candidateForReplaceCell = place;
+                candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+
+                EndDrag();
+            }
         }
         public class InventoryMassCalculator
         {

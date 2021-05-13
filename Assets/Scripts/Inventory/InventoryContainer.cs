@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Inventory
 {
@@ -12,6 +13,7 @@ namespace Inventory
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
         private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
+        public List<InventoryCell> GetCells() => Cells;
         public readonly List<RectTransform> CellsRect = new List<RectTransform>();        
         public InventoryEventReceiver EventReceiver { get; private set; }
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
@@ -25,6 +27,7 @@ namespace Inventory
         private PlayerClasses.PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
         [SerializeField] private TextMeshProUGUI weightText;
+        [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно
         private InventoryInput inventoryInput;
         private InventoryDrawer inventoryDrawer;
         public delegate void TakeItem(int id, int count);
@@ -43,7 +46,7 @@ namespace Inventory
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText);
+                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton);
             EventReceiver.OnEnable();
         }
         private void Start()

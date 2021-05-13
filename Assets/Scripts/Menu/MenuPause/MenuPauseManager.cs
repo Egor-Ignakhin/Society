@@ -70,6 +70,8 @@ namespace MenuScripts
                 {
                     currentGameSettings = new CurrentGameSettings();
                 }
+                if (currentGameSettings == null)
+                    currentGameSettings = new CurrentGameSettings();
             }
             private void OnDisable()
             {

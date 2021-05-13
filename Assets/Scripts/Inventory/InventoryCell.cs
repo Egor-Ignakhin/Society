@@ -274,14 +274,16 @@ namespace Inventory
         /// <summary>
         /// метод "активации предмета (например поедание еды)"
         /// </summary>
-        public void Activate()
+        public bool Activate()
         {
             if (MItemContainer.Id == 5 || MItemContainer.Id == 6)
             {
                 var meal = ItemStates.GetMeatNutrition(MItemContainer.Id);
                 inventoryContainer.MealPlayer(meal.Item1, meal.Item2);
                 DelItem(1);
+                return true;
             }
+            return false;
         }
     }
 }
