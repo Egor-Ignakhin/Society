@@ -17,11 +17,11 @@ public class InventoryItem : InteractiveObject
         SetId(startid);
         if (startid == 5)
         {
-            SetType(nameof(NameItems.CannedFood));
+            SetType(ItemStates.CannedFoodType);
         }
         else if (startid == 6)
         {
-            SetType(nameof(NameItems.Milk));
+            SetType(ItemStates.MilkType);
         }
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)

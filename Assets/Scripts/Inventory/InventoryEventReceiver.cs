@@ -156,8 +156,6 @@ namespace Inventory
         }
         public void EndDrag()
         {
-            if (isDragged)
-                UnfocusAllCells();
             //конец удержания
             isDragged = false;
 
@@ -243,7 +241,7 @@ namespace Inventory
         /// <param name="ic"></param>
         public void FocusCell(InventoryCell ic)
         {
-            UnfocusAllCells();
+            UnfocusSelectedCell();
             ic.SetFocus(true);
             SelectedCell = ic;
             ItemsLabelDescription.SetActive(true);
@@ -251,13 +249,12 @@ namespace Inventory
         /// <summary>
         /// снятие выделения со слотов
         /// </summary>
-        public void UnfocusAllCells()
+        public void UnfocusSelectedCell()
         {
-            var cells = inventoryContainer.GetCells();
-            foreach (var cell in cells)
-            {
-                cell.SetFocus(false);
-            }
+            if (SelectedCell)
+                SelectedCell.SetFocus(false);
+            SelectedCell = null;
+
             ItemsLabelDescription.SetActive(false);
             ChangeSelectedCellEvent?.Invoke(0);
         }
@@ -277,8 +274,11 @@ namespace Inventory
 
         private void DropItem(int id, int count)
         {
+            if (id == 0)
+                return;
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
+
         private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         {
             foreach (var c in inventoryContainer.CellsRect)
@@ -302,11 +302,15 @@ namespace Inventory
         }
         public void ActivateItem()
         {
-            float outRangeWeightItem = ItemStates.GetWeightItem(SelectedCell.MItemContainer.Id) * SelectedCell.MItemContainer.Count;
+            int id = SelectedCell.MItemContainer.Id;
+            int count = SelectedCell.MItemContainer.Count;
+            decimal outRangeWeightItem = ItemStates.GetWeightItem(id) * count;
             if (SelectedCell)
+            {
+                inventoryContainer.CallItemEvent(id, 1);
                 SelectedCell.Activate();
-            inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(SelectedCell.MItemContainer.Id) * SelectedCell.MItemContainer.Count);
-
+            }
+            inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(id) * count);
         }
         private void SpinReceiver(bool forward)
         {
@@ -326,8 +330,8 @@ namespace Inventory
         }
         public class InventoryMassCalculator
         {
-            public float Weight { get; private set; } = 0;
-            public const float MaxWeightForRunningMass = 30;
+            public decimal Weight { get; private set; } = 0;
+            public const decimal MaxWeightForRunningMass = 30;
             private readonly FirstPersonController fps;
             private readonly TextMeshProUGUI weightText;
             public InventoryMassCalculator(FirstPersonController controller, TextMeshProUGUI wT)
@@ -346,19 +350,19 @@ namespace Inventory
                 Weight -= ItemStates.GetWeightItem(id) * count;
                 RecalculatePlayerSpeed();
             }
-            public void DeleteItem(float w)
+            public void DeleteItem(decimal w)
             {
                 Weight -= w;
                 RecalculatePlayerSpeed();
             }
             public void RecalculatePlayerSpeed()
             {
-                float playerBraking = 1 - (Weight / MaxWeightForRunningMass);
-                if (playerBraking < 0.1f)// становление самой минимальной скорости
+                decimal playerBraking = 1 - (Weight / MaxWeightForRunningMass);
+                if (playerBraking < 0.1m)// становление самой минимальной скорости
                 {
-                    playerBraking = 0.1f;
+                    playerBraking = 0.1m;
                 }
-                fps.SetBraking(playerBraking);
+                fps.SetBraking((float)playerBraking);
                 weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");
             }
         }

@@ -8,14 +8,11 @@ namespace Inventory
     /// главный контейнер инвентаря
     /// </summary>
     public sealed class InventoryContainer : MonoBehaviour
-    {
-        private readonly Queue<InventoryItem> queueOfItems = new Queue<InventoryItem>();// очередь предметов на отображение
-        [SerializeField] private PickUpAndDropDrawer PUDD;// отображетль поднятых п-тов
+    {                
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
         private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
-        public readonly List<RectTransform> CellsRect = new List<RectTransform>();
-        public List<InventoryCell> GetCells() => Cells;
+        public readonly List<RectTransform> CellsRect = new List<RectTransform>();        
         public InventoryEventReceiver EventReceiver { get; private set; }
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
@@ -32,6 +29,8 @@ namespace Inventory
         private InventoryDrawer inventoryDrawer;
         public delegate void TakeItem(int id, int count);
         public event TakeItem TakeItemEvent;
+        public event TakeItem ActivateItemEvent;
+        public bool IsInitialized { get; private set; }
 
         private void Awake()
         {
@@ -83,14 +82,16 @@ namespace Inventory
 
             itemPrefabs = new Dictionary<int, InventoryItem>
             {
-                {NameItems.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
-                {NameItems.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
-                {NameItems.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
-                {NameItems.CannedFood, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
-                {NameItems.Milk, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") }
+                {ItemStates.AxeId, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {ItemStates.MakarovId, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
+                {ItemStates.Ak_74Id, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
+                {ItemStates.CannedFoodId, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
+                {ItemStates.MilkId, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") }
 
             };
+            IsInitialized = true;
         }
+
         /// <summary>
         /// добавление поднятого предмета в очередь
         /// </summary>
@@ -105,24 +106,17 @@ namespace Inventory
 
             if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(item.Id, item.GetCount());
-
-            queueOfItems.Enqueue(item);// добавить предмет в очередь
-            MessageToPUDD();
+            cell.SetItem(item.Id, item.GetCount());                        
 
             TakeItemEvent?.Invoke(item.Id, item.GetCount());
         }
         public void SpendOnCell()
         {
             inventoryEffects.PlaySpendClip();
-        }
-        private void MessageToPUDD()
-        {
-            var peek = queueOfItems.Dequeue();
-            //    PUDD.DrawNewItem(peek.GetId(), peek.GetCount());
-        }
+        }        
         public void ActivateItem() => EventReceiver.ActivateItem();
 
+        public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
         public void MealPlayer(int food, int water) => playerStatements.MealPlayer(food, water);
 
         private void OnDisable()
@@ -137,7 +131,7 @@ namespace Inventory
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
         public Dictionary<int, InventoryItem> itemPrefabs;
-        public InventoryItem GetItemPrefab(int id) => itemPrefabs[id];
+        public InventoryItem GetItemPrefab(int id)=> itemPrefabs[id];
 
         public class InventoryEffects
         {

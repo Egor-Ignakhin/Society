@@ -6,7 +6,7 @@
         {
             protected override void Awake()
             {                           
-                SetType(nameof(NameItems.Axe));
+                SetType(ItemStates.AxeType);
             }
         }
     }

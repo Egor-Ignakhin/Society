@@ -67,7 +67,7 @@ public sealed class FirstPersonController : MonoBehaviour
 
         public PhysicMaterial HighFrictionMaterial { get; set; }
 
-        public float MaxSlopeAngle { get; set; } = 55f;
+        public float MaxSlopeAngle { get; set; } = 90f;
         internal bool IsTouchingWalkable { get; set; }
         internal bool IsTouchingUpright { get; set; }
         internal bool IsTouchingFlat { get; set; }

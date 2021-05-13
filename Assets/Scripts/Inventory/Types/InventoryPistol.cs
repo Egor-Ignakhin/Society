@@ -1,4 +1,5 @@
-﻿namespace InventoryItems
+﻿using Inventory;
+namespace InventoryItems
 {
     public sealed class InventoryPistol : InventoryItem
     {        
@@ -6,9 +7,9 @@
         {
             base.Start();
             if (Id == 2)
-                SetType(nameof(Inventory.NameItems.Makarov));
+                SetType(ItemStates.MakarovType);
             else if (Id == 4)
-                SetType(nameof(Inventory.NameItems.Ak_74));
+                SetType(ItemStates.Ak74Type);
         }
     }
 }

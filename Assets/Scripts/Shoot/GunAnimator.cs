@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory;
 
 namespace Shoots
 {
@@ -74,7 +75,7 @@ namespace Shoots
             guns = null;
             advanced = null;
             fps = null;
-            Inventory.InventoryEventReceiver.ChangeSelectedCellEvent -= ChangeGun;
+            InventoryEventReceiver.ChangeSelectedCellEvent -= ChangeGun;
         }
         private void Update()
         {
@@ -124,10 +125,10 @@ namespace Shoots
 
             switch (id)
             {
-                case Inventory.NameItems.Makarov:
+                case ItemStates.MakarovId:
                     currentActiveGunI = 0;
                     break;
-                case Inventory.NameItems.Ak_74:
+                case ItemStates.Ak_74Id:
                     currentActiveGunI = 1;
                     break;
                 default:

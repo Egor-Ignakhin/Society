@@ -100,7 +100,7 @@ namespace Inventory
             UpdateText();
             ///если контейнер пуст
             if (MItemContainer.IsEmpty)
-                eventReceiver.UnfocusAllCells();//снимается фокус со слота
+                eventReceiver.UnfocusSelectedCell();//снимается фокус со слота
         }
         #region Events
         /// <summary>
@@ -227,7 +227,7 @@ namespace Inventory
             {
                 Count -= count;
                 if (IsEmpty)
-                    Id = NameItems.Default;
+                    Id = ItemStates.DefaultId;
             }
             public int SetItem(int nid, int ncount, bool isMerge = false)
             {
@@ -241,7 +241,7 @@ namespace Inventory
                 else// иначе просто замена
                     Count = ncount;
 
-                Id = IsEmpty ? NameItems.Default : nid;
+                Id = IsEmpty ? ItemStates.DefaultId : nid;
 
                 return outRange;
             }
