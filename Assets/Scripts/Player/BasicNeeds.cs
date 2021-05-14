@@ -221,7 +221,7 @@ namespace PlayerClasses
                 this.bn = bn;
             }
             private void OnCollisionEnter(Collision collision)
-            {
+            {                
                 float force = 0;
                 float mass = 1;
                 if (collision.transform.TryGetComponent<Rigidbody>(out var rb))

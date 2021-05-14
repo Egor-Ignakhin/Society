@@ -19,7 +19,7 @@ namespace Debugger
             inventoryContainer = FindObjectOfType<InventoryContainer>();
         }
         // выдача инвентарю предмета
-        public void AddItem(int i) => inventoryContainer.AddItem(items[i]);
+        public void AddItem(InventoryItem item) => inventoryContainer.AddItem(items[item.Id]);
 
         public void Activate()
         {

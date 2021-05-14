@@ -15,14 +15,7 @@ public class InventoryItem : InteractiveObject
         MainDescription = Localization.MainTypes.Item;
 
         SetId(startid);
-        if (startid == 5)
-        {
-            SetType(ItemStates.CannedFoodType);
-        }
-        else if (startid == 6)
-        {
-            SetType(ItemStates.MilkType);
-        }
+        SetType(ItemStates.GetTypeFromId(startid));     
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -80,6 +81,7 @@ public sealed class FirstPersonController : MonoBehaviour
         public float fovRef;
 
     }
+
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
     private static CapsuleCollider capsule;
     private bool IsGrounded = true;
@@ -277,7 +279,9 @@ public sealed class FirstPersonController : MonoBehaviour
 
         if (PlayerCanMove)
         {
-            Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity)) * additionalBraking;
+            Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity));
+            if (newVel.y > 0)
+                newVel *= additionalBraking;
             _fpsRigidbody.velocity = newVel;
         }
         else _fpsRigidbody.velocity = Vector3.zero;
@@ -459,6 +463,11 @@ public sealed class FirstPersonController : MonoBehaviour
     }
 
     public void Recoil(Vector3 v)
+    {
+        followAngles += v;
+        targetAngles += v;
+    }
+    public void SmoothRocking(Vector3 v)
     {
         followAngles += v;
         targetAngles += v;

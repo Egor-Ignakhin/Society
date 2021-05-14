@@ -119,13 +119,8 @@ public static class Localization
     }
     public static string GetHint(InteractiveObject interactiveObject)
     {
-        try
-        {
+        if (interactiveObject.Type != null)
             return hintContents[interactiveObject.Type];
-        }
-        catch
-        {
-            return null;
-        }
+        else return null;
     }
 }

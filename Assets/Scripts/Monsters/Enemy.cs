@@ -96,10 +96,10 @@ public abstract class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         RayCastToEnemy();
-#if UNITY_EDITOR
+        /*#if UNITY_EDITOR
 
-        DebugDraw();
-#endif
+                DebugDraw();
+        #endif*/
     }
     /// <summary>
     /// тут вычисляется путь до цели (по корнерам карты)
@@ -155,7 +155,7 @@ public abstract class Enemy : MonoBehaviour
                     return;
                 }
             }
-        }        
+        }
         SetEnemy(null);
     }
     /// <summary>
@@ -237,7 +237,7 @@ public abstract class Enemy : MonoBehaviour
         {
             SetAnimationClip(AnimationsContainer.MoveToPerson);// идти к цели
         }
-        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && enemy)// если дошёл
+        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && enemy && mAgent.hasPath)// если дошёл
         {//атаковать
             SetAnimationClip(AnimationsContainer.Attack);
             Attack();
@@ -267,21 +267,21 @@ public abstract class Enemy : MonoBehaviour
 
     protected void OnDestroy() => UVariables.ChangeHealthEvent -= Death;
 
-#if UNITY_EDITOR
-    private GameObject gameTarget;
-    private void DebugDraw()
-    {
-        if (!gameTarget)
+    /*#if UNITY_EDITOR
+        private GameObject gameTarget;
+        private void DebugDraw()
         {
-            for (int i = 0; i < transform.childCount; i++)
+            if (!gameTarget)
             {
-                if (transform.GetChild(i).name == "drawer")
-                    gameTarget = transform.GetChild(i).gameObject;
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    if (transform.GetChild(i).name == "drawer")
+                        gameTarget = transform.GetChild(i).gameObject;
+                }
             }
+            gameTarget.transform.position = lastTargetPos;
+            gameTarget.GetComponent<MeshRenderer>().material.color = Color.blue;
+            gameTarget.transform.localEulerAngles += new Vector3(0, 1, 0) * Time.fixedDeltaTime;
         }
-        gameTarget.transform.position = lastTargetPos;
-        gameTarget.GetComponent<MeshRenderer>().material.color = Color.blue;
-        gameTarget.transform.localEulerAngles += new Vector3(0, 1, 0) * Time.fixedDeltaTime;
-    }
-#endif
+    #endif*/
 }

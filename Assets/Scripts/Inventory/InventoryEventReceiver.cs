@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 namespace Inventory
 {
@@ -13,6 +14,7 @@ namespace Inventory
     {
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
+        private static bool ScrollEventLocked = false;
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
             InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText, Button taB)
         {
@@ -27,6 +29,12 @@ namespace Inventory
             inventoryDrawer = iDrawer;
             takeAllButton = taB;
         }
+
+        internal static void LockScrollEvent(bool isActive)
+        {
+            ScrollEventLocked = isActive;
+        }
+
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
         private readonly Transform busyCellsContainer;
@@ -235,7 +243,7 @@ namespace Inventory
                     return;
                 }
                 return;
-            }          
+            }
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
@@ -329,7 +337,9 @@ namespace Inventory
         }
         private void SpinReceiver(bool forward)
         {
-            var hotcells = inventoryContainer.GetHotCells();
+            if (ScrollEventLocked)
+                return;
+               var hotcells = inventoryContainer.GetHotCells();
             if (!SelectedCell)
                 SelectedCell = hotcells[0];
 
@@ -401,13 +411,16 @@ namespace Inventory
             }
             public void RecalculatePlayerSpeed()
             {
-                decimal playerBraking = 1 - (Weight / MaxWeightForRunningMass);
-                if (playerBraking < 0.1m)// становление самой минимальной скорости
+                decimal playerBraking = 1 - (Weight / MaxWeightForRunningMass / 5);
+                if (playerBraking < .8m)// становление самой минимальной скорости
                 {
-                    playerBraking = 0.1m;
+                    playerBraking = .8m;
+                    weightText.color = Color.red;
                 }
+                else weightText.color = Color.white;
+
                 fps.SetBraking((float)playerBraking);
-                weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");
+                weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");                
             }
         }
     }

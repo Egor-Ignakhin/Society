@@ -16,6 +16,30 @@ namespace Inventory
         public const int Ak_74Id = 4;
         public const int CannedFoodId = 5;
         public const int MilkId = 6;
+        public const int BinocularsId = 7;
+
+        internal static string GetTypeFromId(int startid)
+        {
+            switch (startid)
+            {                
+                case 1:
+                    return AxeType;
+                case 2:
+                    return MakarovType;
+                case 3:
+                    return Pistol2Type;
+                case 4:
+                    return Ak74Type;
+                case 5:
+                    return CannedFoodType;
+                case 6:
+                    return MilkType;
+                case 7:
+                    return BinocularsType;
+                default:
+                    throw new ArgumentException(message: "invalid enum value", paramName: nameof(startid));
+            };
+        }
 
         private const string AxeName = "Стальной топор";
         private const string MakarovName = "Пистолет Макарова";
@@ -23,6 +47,7 @@ namespace Inventory
         private const string Ak74Name = "Ак-74";
         private const string CannedFoodName = "Консерва";
         private const string MilkName = "Молоко";
+        private const string BinocularsName = "Бинокль";
 
         public const string AxeType = "Axe";
         public const string MakarovType = "Makarov";
@@ -30,6 +55,7 @@ namespace Inventory
         public const string Ak74Type = "Ak_74";
         public const string CannedFoodType = "CannedFood";
         public const string MilkType = "Milk";
+        public const string BinocularsType = "Binoculars";
 
         #endregion
         private static readonly Dictionary<int, (int maxCount, decimal weight, string title)> items;
@@ -44,7 +70,8 @@ namespace Inventory
                 {Pistol2Id, (1,1,Pistol2Name) },
                 {Ak_74Id, (1,4,Ak74Name) },
                 {CannedFoodId,  (7,0.2m,CannedFoodName)},
-                {MilkId, (5,0.5m, MilkName) }
+                {MilkId, (5,0.5m, MilkName) },
+                {BinocularsId, (1,0.5m, BinocularsName) }
             };
             meatItems = new Dictionary<int, (int food, int water)>
             {

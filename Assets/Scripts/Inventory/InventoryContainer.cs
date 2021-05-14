@@ -9,12 +9,12 @@ namespace Inventory
     /// главный контейнер инвентаря
     /// </summary>
     public sealed class InventoryContainer : MonoBehaviour
-    {                
+    {
         [SerializeField] private Transform mainParent;// родитель для отрисовки поверх всего
 
         private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
         public List<InventoryCell> GetCells() => Cells;
-        public readonly List<RectTransform> CellsRect = new List<RectTransform>();        
+        public readonly List<RectTransform> CellsRect = new List<RectTransform>();
         public InventoryEventReceiver EventReceiver { get; private set; }
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
@@ -89,8 +89,8 @@ namespace Inventory
                 {ItemStates.MakarovId, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
                 {ItemStates.Ak_74Id, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
                 {ItemStates.CannedFoodId, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
-                {ItemStates.MilkId, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") }
-
+                {ItemStates.MilkId, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") },
+                { ItemStates.BinocularsId,Resources.Load<InventoryItem>("InventoryItems\\Binoculars_item_1") }
             };
             IsInitialized = true;
         }
@@ -109,14 +109,14 @@ namespace Inventory
 
             if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(item.Id, item.GetCount());                        
+            cell.SetItem(item.Id, item.GetCount());
 
             TakeItemEvent?.Invoke(item.Id, item.GetCount());
         }
         public void SpendOnCell()
         {
             inventoryEffects.PlaySpendClip();
-        }        
+        }
         public void ActivateItem() => EventReceiver.ActivateItem();
 
         public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
@@ -134,7 +134,7 @@ namespace Inventory
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
         public Dictionary<int, InventoryItem> itemPrefabs;
-        public InventoryItem GetItemPrefab(int id)=> itemPrefabs[id];
+        public InventoryItem GetItemPrefab(int id) => itemPrefabs[id];
 
         public class InventoryEffects
         {
