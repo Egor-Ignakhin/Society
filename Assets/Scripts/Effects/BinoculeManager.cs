@@ -83,7 +83,7 @@ class BinoculeManager : MonoBehaviour
                 camAnglesAdditional = new Vector3(x, y, 0);
                 time = 0;
             }
-            fps.SmoothRocking(camAnglesAdditional * Time.deltaTime);
+            fps.Rocking(camAnglesAdditional * Time.deltaTime);
         }
     }
     private void OnDestroy()

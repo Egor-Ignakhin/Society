@@ -159,7 +159,7 @@ namespace Shoots
             float cos = (float)Math.Abs(Math.Sin(value));
             float sin = (float)Math.Cos(value);
 
-            fps.Recoil(new Vector3(cos, sin, 0));
+            fps.Rocking(new Vector3(cos, sin, 0));
         }
         /// <summary>
         /// настройки анимаций

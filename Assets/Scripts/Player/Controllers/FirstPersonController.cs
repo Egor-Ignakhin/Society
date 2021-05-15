@@ -31,6 +31,7 @@ public sealed class FirstPersonController : MonoBehaviour
     internal bool PlayerCanMove { get; set; } = true;
     internal bool Sprint { get; set; } = false;
     public float WalkSpeed { get; set; } = 4f;
+    private float RecumbentingSpeed;
 
     public KeyCode SprintKey = KeyCode.LeftShift;
     public float SprintSpeed { get; set; } = 8f;
@@ -44,20 +45,25 @@ public sealed class FirstPersonController : MonoBehaviour
     internal float WalkSpeedInternal { get; set; }
     internal float SprintSpeedInternal { get; set; }
     internal float JumpPowerInternal { get; set; }
+    internal float RecumbentingSpeedInternal { get; set; }
 
     [System.Serializable]
     public sealed class CrouchModifiers
     {
-        public bool useCrouch = true;
         public bool toggleCrouch = false;
         public KeyCode crouchKey = KeyCode.LeftControl;
         public float crouchWalkSpeedMultiplier = 0.5f;
         public float crouchJumpPowerMultiplier = 0f;
-        public bool crouchOverride;
-        internal float colliderHeight;
+    }
 
+    public sealed class RecumbentModifiers
+    {
+        public const KeyCode recumbentKey = KeyCode.Z;
+        public float RecumbenthWalkSpeedMultiplier { get; set; } = 0.25f;
+        public float RecumbentJumpPowerMultiplier { get; set; } = 0f;
     }
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
+    public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -80,6 +86,8 @@ public sealed class FirstPersonController : MonoBehaviour
         public float FOVKickAmount { get; set; } = 2.5f;
         public float fovRef;
 
+        public float ColliderRadius { get; set; }
+        public float ColliderHeight { get; set; }
     }
 
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
@@ -87,6 +95,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private bool IsGrounded = true;
     private Vector2 inputXY;
     private bool isCrouching = false;
+    private bool isRecumbenting = false;
     private float yVelocity;
 
     private Rigidbody _fpsRigidbody;
@@ -107,7 +116,6 @@ public sealed class FirstPersonController : MonoBehaviour
         _fpsRigidbody = GetComponent<Rigidbody>();
         _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        MCrouchModifiers.colliderHeight = capsule.height;
 
         followAngles = targetAngles = transform.localEulerAngles;
         #endregion
@@ -117,6 +125,8 @@ public sealed class FirstPersonController : MonoBehaviour
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
+        RecumbentingSpeed = WalkSpeed * 0.25f;
+        RecumbentingSpeedInternal = RecumbentingSpeed;
     }
 
     private void Start()
@@ -127,6 +137,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
         #region Movement Settings - Start  
         capsule.radius = capsule.height / 4;
+        Advanced.ColliderHeight = capsule.height;
+        Advanced.ColliderRadius = capsule.radius;
         Advanced.ZeroFrictionMaterial = new PhysicMaterial("Zero_Friction")
         {
             dynamicFriction = 0,
@@ -177,12 +189,14 @@ public sealed class FirstPersonController : MonoBehaviour
             jumpInput = false;
 
 
-        if (MCrouchModifiers.useCrouch && InputManager.IsLockeds == 0)
+        if (InputManager.IsLockeds == 0)
         {
-            if (!MCrouchModifiers.toggleCrouch)
-                isCrouching = MCrouchModifiers.crouchOverride || Input.GetKey(MCrouchModifiers.crouchKey);
-            else if (Input.GetKeyDown(MCrouchModifiers.crouchKey))
-                isCrouching = !isCrouching || MCrouchModifiers.crouchOverride;
+            isCrouching = Input.GetKey(MCrouchModifiers.crouchKey) && !isRecumbenting;
+
+            if (Input.GetKeyDown(RecumbentModifiers.recumbentKey) && !isCrouching)
+            {
+                isRecumbenting = !isRecumbenting;
+            }
         }
 
         Sprint = Input.GetKey(SprintKey) && CanSprint && InputManager.IsLockeds == 0;
@@ -197,6 +211,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
         Vector3 MoveDirection = Vector3.zero;
         speed = Sprint ? isCrouching ? WalkSpeedInternal : SprintSpeedInternal : WalkSpeedInternal;
+        if (isRecumbenting)
+            speed = RecumbentingSpeedInternal;
         speed *= additionalBraking;
 
         if (Advanced.MaxSlopeAngle > 0)
@@ -308,23 +324,32 @@ public sealed class FirstPersonController : MonoBehaviour
              }
          }*/
 
-        if (MCrouchModifiers.useCrouch)
+        if (isCrouching)
         {
-            if (isCrouching)
-            {
-                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight / 1.5f, 5 * Time.deltaTime * additionalBraking);
-                WalkSpeedInternal = WalkSpeed * MCrouchModifiers.crouchWalkSpeedMultiplier;
-                JumpPowerInternal = JumpPower * MCrouchModifiers.crouchJumpPowerMultiplier;
+            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight / 1.5f, 5 * Time.deltaTime * additionalBraking);
+            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius, 5 * Time.deltaTime * additionalBraking);
 
-            }
-            else
-            {
-                capsule.height = Mathf.MoveTowards(capsule.height, MCrouchModifiers.colliderHeight, 5 * Time.deltaTime * additionalBraking);
-                WalkSpeedInternal = WalkSpeed;
-                SprintSpeedInternal = SprintSpeed;
-                JumpPowerInternal = JumpPower;
-            }
+            WalkSpeedInternal = WalkSpeed * MCrouchModifiers.crouchWalkSpeedMultiplier;
+            JumpPowerInternal = JumpPower * MCrouchModifiers.crouchJumpPowerMultiplier;
         }
+        else if (isRecumbenting)
+        {
+            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight / 5, 5 * Time.deltaTime * additionalBraking);
+            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius / 5, 5 * Time.deltaTime * additionalBraking);
+
+            WalkSpeedInternal = WalkSpeed * MRecumbentModifiers.RecumbenthWalkSpeedMultiplier;
+            JumpPowerInternal = JumpPower * MRecumbentModifiers.RecumbentJumpPowerMultiplier;
+        }
+        else
+        {
+            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight, 5 * Time.deltaTime * additionalBraking);
+            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius, 5 * Time.deltaTime * additionalBraking);
+
+            WalkSpeedInternal = WalkSpeed;
+            SprintSpeedInternal = SprintSpeed;
+            JumpPowerInternal = JumpPower;
+        }
+
         #endregion
         #region  Reset Checks
 
@@ -462,12 +487,7 @@ public sealed class FirstPersonController : MonoBehaviour
         followAngles = targetAngles = point.eulerAngles;
     }
 
-    public void Recoil(Vector3 v)
-    {
-        followAngles += v;
-        targetAngles += v;
-    }
-    public void SmoothRocking(Vector3 v)
+    public void Rocking(Vector3 v)
     {
         followAngles += v;
         targetAngles += v;
@@ -531,13 +551,10 @@ public sealed class FirstPersonController_Editor : Editor
         showCrouchMods = EditorGUILayout.BeginFoldoutHeaderGroup(showCrouchMods, new GUIContent("Crouch Modifiers", "Stat modifiers that will apply when player is crouching."));
         if (showCrouchMods)
         {
-            t.MCrouchModifiers.useCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Enable Coruch", "Determines if the player is allowed to crouch."), t.MCrouchModifiers.useCrouch);
-            GUI.enabled = t.PlayerCanMove && t.MCrouchModifiers.useCrouch;
             t.MCrouchModifiers.crouchKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Crouch Key", "Determines what key needs to be pressed to crouch"), t.MCrouchModifiers.crouchKey);
             t.MCrouchModifiers.toggleCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Toggle Crouch?", "Determines if the crouching behaviour is on a toggle or momentary basis."), t.MCrouchModifiers.toggleCrouch);
             t.MCrouchModifiers.crouchWalkSpeedMultiplier = EditorGUILayout.Slider(new GUIContent("Crouch Movement Speed Multiplier", "Determines how fast the player can move while crouching."), t.MCrouchModifiers.crouchWalkSpeedMultiplier, 0.01f, 1.5f);
             t.MCrouchModifiers.crouchJumpPowerMultiplier = EditorGUILayout.Slider(new GUIContent("Crouching Jump Power Mult.", "Determines how much the player's jumping power is increased or reduced while crouching."), t.MCrouchModifiers.crouchJumpPowerMultiplier, 0, 1.5f);
-            t.MCrouchModifiers.crouchOverride = EditorGUILayout.ToggleLeft(new GUIContent("Force Crouch Override", "A Toggle that will override the crouch key to force player to crouch."), t.MCrouchModifiers.crouchOverride);
         }
         GUI.enabled = t.PlayerCanMove;
         EditorGUILayout.EndFoldoutHeaderGroup();
