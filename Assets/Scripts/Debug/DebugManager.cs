@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Inventory;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Debugger
@@ -63,13 +64,11 @@ namespace Debugger
             if (!isHidden)
             {
                 InputManager.LockInput();
-                InputManager.DisableInput();
                 ScreensManager.SetScreen(this);
             }
             else
             {
                 InputManager.Unlock();
-                InputManager.EnableInput();
                 ScreensManager.SetScreen(null);
             }
 

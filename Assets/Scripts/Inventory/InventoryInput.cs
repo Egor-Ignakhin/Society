@@ -1,84 +1,86 @@
 ﻿using UnityEngine;
-
-/// <summary>
-/// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
-/// </summary>
-public sealed class InventoryInput : MonoBehaviour
+namespace Inventory
 {
-    public delegate void EventHandler(bool value);
-    public event EventHandler ChangeActiveEvent;
-
-    public delegate void InputHandler(int s);
-    public event InputHandler InputKeyEvent;
-
-    public event InputHandler DropEvent;
-    public event EventHandler SpinEvent;
-
-    private const KeyCode changeActiveKeyCode = KeyCode.E;
-    private const KeyCode dropCode = KeyCode.Q;
-    private bool isEnabled;
-    private FirstPersonController fps;
-    private void Awake()
-    {
-        fps = FindObjectOfType<FirstPersonController>();
-    }
-    private void Update()
-    {
-        if (InputManager.IsEnableInput != 0)
-            return;
-        if (Input.GetKeyDown(changeActiveKeyCode))
-        {
-            ChangeActive(isEnabled = !isEnabled);
-        }
-        if (Input.anyKeyDown)
-        {
-            SelectCell(Input.inputString);
-        }
-        if (Input.GetKeyDown(dropCode))
-        {
-            DropEvent?.Invoke(0);
-        }
-        var scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
-            SpinCells(scroll > 0);
-    }
     /// <summary>
-    /// включение видимости инвентаря
+    /// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
     /// </summary>
-    private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
-    private void SpinCells(bool v) { SpinEvent?.Invoke(v); }
-    /// <summary>
-    /// насильное выключение инвентаря
-    /// </summary>
-    public void DisableInventory()
+    public sealed class InventoryInput : MonoBehaviour
     {
-        ChangeActive(false);
-        isEnabled = false;
-    }
-    public void EnableInventory()
-    {
-        ChangeActive(true);
-        isEnabled = true;
-    }
+        public delegate void EventHandler(bool value);
+        public event EventHandler ChangeActiveEvent;
 
-    /// <summary>
-    /// выделение слотов при нажатии клавиш
-    /// </summary>
-    /// <param name="input"></param>
-    private void SelectCell(string input)
-    {
-        if (input == string.Empty)
-            return;
+        public delegate void InputHandler(int s);
+        public event InputHandler InputKeyEvent;
 
-        if (int.TryParse(input, out int s))
-            InputKeyEvent?.Invoke(s);
-    }
+        public event InputHandler DropEvent;
+        public event EventHandler SpinEvent;
 
-    internal void DropItem(InventoryItem inventoryItem, int count)
-    {
-        var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
-        item.SetCount(count);
-        var powerForce = 2;
-        item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
+        private const KeyCode changeActiveKeyCode = KeyCode.E;
+        private const KeyCode dropCode = KeyCode.Q;
+        private bool isEnabled;
+        private FirstPersonController fps;
+        private void Awake()
+        {
+            fps = FindObjectOfType<FirstPersonController>();
+        }
+        private void Update()
+        {
+            if (InputManager.IsLockeds != 0 && !isEnabled)
+                return;
+            if (Input.GetKeyDown(changeActiveKeyCode))
+            {
+                ChangeActive(isEnabled = !isEnabled);
+            }
+            if (Input.anyKeyDown)
+            {
+                SelectCell(Input.inputString);
+            }
+            if (Input.GetKeyDown(dropCode))
+            {
+                DropEvent?.Invoke(0);
+            }
+            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0)
+                SpinCells(scroll > 0);
+        }
+        /// <summary>
+        /// включение видимости инвентаря
+        /// </summary>
+        private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
+        private void SpinCells(bool v) { SpinEvent?.Invoke(v); }
+        /// <summary>
+        /// насильное выключение инвентаря
+        /// </summary>
+        public void DisableInventory()
+        {
+            ChangeActive(false);
+            isEnabled = false;
+        }
+        public void EnableInventory()
+        {
+            ChangeActive(true);
+            isEnabled = true;
+        }
+
+        /// <summary>
+        /// выделение слотов при нажатии клавиш
+        /// </summary>
+        /// <param name="input"></param>
+        private void SelectCell(string input)
+        {
+            if (input == string.Empty)
+                return;
+
+            if (int.TryParse(input, out int s))
+                InputKeyEvent?.Invoke(s);
+        }
+
+        internal void DropItem(InventoryItem inventoryItem, int count)
+        {
+            var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
+            item.SetCount(count);
+            var powerForce = 2;
+            item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
+        }
     }
 }

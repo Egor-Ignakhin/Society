@@ -1,4 +1,5 @@
-﻿using MenuScripts.PauseMenu;
+﻿using Inventory;
+using MenuScripts.PauseMenu;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;

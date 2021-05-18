@@ -1,4 +1,6 @@
-﻿using UnityEngine.Rendering;
+﻿using System.Linq;
+using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
@@ -12,13 +14,12 @@ public sealed class EffectsManager : Singleton<EffectsManager>
 
     public override void Init()
     {
-        globalVolume = FindObjectOfType<Volume>();
+        globalVolume = FindObjectsOfType<Volume>().Where(v => v.GetComponent<BoxCollider>() == null).First();
         if (!globalVolume)
             return;
         globalVolume.profile.TryGet(out volumeDOF);
         globalVolume.profile.TryGet(out volumeBloom);
-
-        SetEnableDOF(false);
+        
         base.Init();
     }
     /// <summary>

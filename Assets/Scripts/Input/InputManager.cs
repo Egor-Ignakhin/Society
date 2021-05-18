@@ -5,7 +5,6 @@
 public sealed class InputManager
 {
     public static int IsLockeds { get; private set; } = 0;
-    public static int IsEnableInput { get; private set; }
     public static void LockInput()
     {
         IsLockeds++;
@@ -21,14 +20,5 @@ public sealed class InputManager
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-    }
-    public static void DisableInput()
-    {
-        IsEnableInput++;
-    }
-    public static void EnableInput()
-    {
-        if (IsEnableInput > 0)
-            IsEnableInput--;
     }
 }
