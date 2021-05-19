@@ -18,6 +18,8 @@ public class SMGMain : Singleton<SMGMain>
     [SerializeField]
     private Transform GunsCellsData;
     private SMGEventReceiver eventReceiver;
+    [SerializeField]
+    private GameObject modifiersAnswer;
 
     private void Awake()
     {
@@ -25,7 +27,7 @@ public class SMGMain : Singleton<SMGMain>
         MSMGCamera = MSMG.GetComponent<Camera>();
         mCanvas = GetComponent<Canvas>();
 
-        eventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData);
+        eventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer);
     }
     public void SetEnableMaps(bool v)
     {
@@ -71,6 +73,8 @@ public class SMGMain : Singleton<SMGMain>
     }
     private void Update()
     {
+        eventReceiver.Update();
+
         if (!isActive)
             return;
 

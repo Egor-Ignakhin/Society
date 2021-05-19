@@ -62,10 +62,11 @@ namespace Debugger
                 {nameof(SETTIME), SETTIME},
                 {nameof(GAMEMODE), GAMEMODE},
                 {nameof(SETHEALTH), SETHEALTH},
-                {nameof(SETFOOD), SETFOOD },
-                {nameof(SETWATER), SETWATER },
+                {nameof(SETFOOD), SETFOOD},
+                {nameof(SETWATER), SETWATER},
                 {nameof(SETRADIATION), SETRADIATION},
-                {nameof(HEAL), HEAL}
+                {nameof(HEAL), HEAL},
+                {nameof(SETPOS), SETPOS}
             };
         }
         /// <summary>
@@ -142,6 +143,22 @@ namespace Debugger
             SETFOOD(input);
             SETWATER(input);
             SETRADIATION("0");
+        }
+        /// <summary>
+        /// установка координат игрока
+        /// </summary>
+        /// <param name="pos"></param>
+        private static void SETPOS(string posStr)// (50,60,70.1)
+        {
+            posStr = System.Text.RegularExpressions.Regex.Replace(posStr, @"[()]", "");
+
+            var ss = posStr.Split(',');
+            int.TryParse(ss[0], out int x);
+            int.TryParse(ss[1], out int y);
+            int.TryParse(ss[2], out int z);            
+            UnityEngine.Vector3 pos = new UnityEngine.Vector3(x, y, z);
+            
+            PlayerClasses.BasicNeeds.Instance.transform.position = pos;
         }
     }
 }

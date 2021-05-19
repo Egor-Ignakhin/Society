@@ -10,16 +10,15 @@ namespace Debugger
     class DebugItems : MonoBehaviour, IDebug
     {
         public bool Active { get; set; }
-        GameObject IDebug.gameObject => gameObject;
-        [SerializeField] private List<InventoryItem> items = new List<InventoryItem>();
+        GameObject IDebug.gameObject => gameObject;        
         private InventoryContainer inventoryContainer;
 
         private void Awake()
         {
-            inventoryContainer = FindObjectOfType<InventoryContainer>();
+            inventoryContainer = FindObjectOfType<InventoryContainer>();            
         }
         // выдача инвентарю предмета
-        public void AddItem(InventoryItem item) => inventoryContainer.AddItem(items[item.Id]);
+        public void AddItem(InventoryItem item) => inventoryContainer.AddItem(item.Id, item.GetCount());
 
         public void Activate()
         {

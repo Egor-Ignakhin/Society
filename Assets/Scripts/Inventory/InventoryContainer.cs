@@ -99,19 +99,19 @@ namespace Inventory
         /// добавление поднятого предмета в очередь
         /// </summary>
         /// <param name="item"></param>    
-        public void AddItem(InventoryItem item)
+        public void AddItem(int id, int count)
         {
             if (Cells.FindAll(c => c.MItemContainer.IsEmpty).Count == 0)// если не нашлись свободные слоты
                 return;
 
             // поиск слота, с предметом того же типа, и не заполненным   
-            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(item.Id));
+            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(id));
 
             if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(item.Id, item.GetCount());
+            cell.SetItem(id, count);
 
-            TakeItemEvent?.Invoke(item.Id, item.GetCount());
+            TakeItemEvent?.Invoke(id, count);
         }
         public void SpendOnCell()
         {

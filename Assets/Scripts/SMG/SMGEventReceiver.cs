@@ -7,7 +7,9 @@ public class SMGEventReceiver
 {
     private readonly List<SMGModifiersCell> ModifiersCells = new List<SMGModifiersCell>();
     private readonly List<SMGGunsCell> gunsCells = new List<SMGGunsCell>();
-    public SMGEventReceiver(Transform mcData, Transform gsData)
+    private readonly GameObject modifiersAnswer;
+    private SMGModifiersCell currentModCell;
+    public SMGEventReceiver(Transform mcData, Transform gsData, GameObject ma)
     {
         for (int i = 0; i < mcData.childCount; i++)
             ModifiersCells.Add(mcData.GetChild(i).GetComponent<SMGModifiersCell>());
@@ -20,6 +22,15 @@ public class SMGEventReceiver
 
         foreach (var c in gunsCells)
             c.OnInit(this);
+
+        modifiersAnswer = ma;
+
+        modifiersAnswer.SetActive(false);
+    }
+
+    internal void ActivateCurrentModifierCell(SMGModifiersCell sMGModifiersCell)
+    {
+        throw new NotImplementedException();
     }
 
     internal void SelectGunsCell(SMGGunsCell sMGGunsCell)
@@ -33,6 +44,18 @@ public class SMGEventReceiver
     /// <param name="cell"></param>
     public void SelectModifiersCell(SMGModifiersCell cell)
     {
-        Debug.Log(cell.name);
+        currentModCell = cell;
+    }
+    public void Update()
+    {
+        modifiersAnswer.SetActive(currentModCell);
+        if (modifiersAnswer.activeInHierarchy)
+        {
+            modifiersAnswer.transform.localPosition = Input.mousePosition;
+        }
+    }
+    public void DeselectModifiersCell(SMGModifiersCell cell)
+    {
+        currentModCell = null;
     }
 }

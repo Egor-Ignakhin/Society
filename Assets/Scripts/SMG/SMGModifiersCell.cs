@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler
+public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
 {
     private SMGEventReceiver eventReceiver;
 
@@ -13,6 +13,11 @@ public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler
         eventReceiver = ev;
     }
 
-    public void OnPointerClick(PointerEventData eventData) => eventReceiver.SelectModifiersCell(this);
+    public void OnPointerClick(PointerEventData eventData) => eventReceiver.ActivateCurrentModifierCell(this);
 
+    public void OnPointerEnter(PointerEventData eventData) => eventReceiver.SelectModifiersCell(this);
+
+
+
+    public void OnPointerExit(PointerEventData eventData) => eventReceiver.DeselectModifiersCell(this);
 }

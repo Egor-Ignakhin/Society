@@ -19,7 +19,7 @@ public class InventoryItem : InteractiveObject
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {
-        inventoryContainer.AddItem(this);
+        inventoryContainer.AddItem(Id, GetCount());
         Destroy(gameObject);
     }
     public int GetCount() => count;
