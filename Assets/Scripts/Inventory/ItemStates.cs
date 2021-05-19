@@ -21,7 +21,7 @@ namespace Inventory
         internal static string GetTypeFromId(int startid)
         {
             switch (startid)
-            {                
+            {
                 case 1:
                     return AxeType;
                 case 2:
@@ -78,6 +78,16 @@ namespace Inventory
                 {CannedFoodId,(15,1) },
                 {MilkId,(5,19) }
             };
+        }
+
+        /// <summary>
+        /// возвращает правду если предмет является оружием
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        internal static bool ItsGun(int id)
+        {
+            return id == 2 || id == 3 || id == 4;
         }
 
         internal static string GetTitle(int id) => items[id].title;

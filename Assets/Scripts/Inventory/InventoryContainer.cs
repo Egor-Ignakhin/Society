@@ -74,7 +74,7 @@ namespace Inventory
             foreach (var c in Cells)
             {
                 CellsRect.Add(c.GetComponent<RectTransform>());
-                TakeItemEvent?.Invoke(c.MItemContainer.Id, c.MItemContainer.Count);
+                TakeItemEvent?.Invoke(c.Id, c.Count);
             }
 
             //загрузка слотов для сундуков
@@ -105,7 +105,7 @@ namespace Inventory
                 return;
 
             // поиск слота, с предметом того же типа, и не заполненным   
-            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(id));
+            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.Id.Equals(id));
 
             if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 

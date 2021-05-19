@@ -232,14 +232,14 @@ namespace Inventory
                     return;
                 if (draggedCell.CellIsInventorySon && !candidateForReplaceCell.CellIsInventorySon)// мерж объекта из инвентаря в контейнер
                 {
-                    inventoryMassCalculator.AddItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
-                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
+                    inventoryMassCalculator.AddItem(draggedCell.Id, draggedCell.Count);
+                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
                     return;
                 }
                 if (!draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объекта из контейнера в инвентарь
                 {
-                    inventoryMassCalculator.AddItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
-                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    inventoryMassCalculator.AddItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
+                    inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
                     return;
                 }
                 return;
@@ -247,9 +247,9 @@ namespace Inventory
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
-                DropItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                DropItem(draggedCell.Id, draggedCell.Count);
                 if (draggedCell.CellIsInventorySon)
-                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
                 draggedCell.Clear();
             }
 
@@ -290,7 +290,7 @@ namespace Inventory
                 return;
 
             FocusCell(inventoryContainer.GetHotCells()[c - 1]);
-            ChangeSelectedCellEvent?.Invoke(inventoryContainer.GetHotCells()[c - 1].MItemContainer.Id);
+            ChangeSelectedCellEvent?.Invoke(inventoryContainer.GetHotCells()[c - 1].Id);
             ActivateItem();
         }
 
@@ -314,9 +314,9 @@ namespace Inventory
                 return;
             if (SelectedCell.MItemContainer.IsEmpty)
                 return;
-            DropItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
+            DropItem(SelectedCell.Id, SelectedCell.Count);
             if (SelectedCell.CellIsInventorySon)
-                inventoryMassCalculator.DeleteItem(SelectedCell.MItemContainer.Id, SelectedCell.MItemContainer.Count);
+                inventoryMassCalculator.DeleteItem(SelectedCell.Id, SelectedCell.Count);
 
             SelectedCell.Clear();
         }
@@ -325,8 +325,8 @@ namespace Inventory
             if (SelectedCell && SelectedCell.MItemContainer.IsEmpty)
                 return;
 
-            int id = SelectedCell.MItemContainer.Id;
-            int count = SelectedCell.MItemContainer.Count;
+            int id = SelectedCell.Id;
+            int count = SelectedCell.Count;
             decimal outRangeWeightItem = ItemStates.GetWeightItem(id) * count;
             if (SelectedCell)
             {
@@ -367,7 +367,7 @@ namespace Inventory
 
                 listPlace = list.Find(c => !c.MItemContainer.IsEmpty);
                 // поиск слота, с предметом того же типа, и не заполненным   
-                var place = places.Find(c => !c.MItemContainer.IsFilled && c.MItemContainer.Id.Equals(listPlace.MItemContainer.Id));
+                var place = places.Find(c => !c.MItemContainer.IsFilled && c.Id.Equals(listPlace.Id));
 
                 if (place == null)
                     place = places.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот

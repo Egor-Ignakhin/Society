@@ -32,8 +32,8 @@ namespace Inventory
         {
             for (cellsCount = 0; cellsCount < cells.Count; cellsCount++)
             {
-                types.Add(cells[cellsCount].MItemContainer.Id);// запись ID предмета
-                counts.Add(cells[cellsCount].MItemContainer.Count);// запись кол-ва предмета                                
+                types.Add(cells[cellsCount].Id);// запись ID предмета
+                counts.Add(cells[cellsCount].Count);// запись кол-ва предмета                                
             }
         }
         /// <summary>

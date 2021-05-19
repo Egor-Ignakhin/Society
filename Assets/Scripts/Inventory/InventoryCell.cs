@@ -22,6 +22,8 @@ namespace Inventory
         private InventoryEventReceiver eventReceiver;
         private InventoryContainer inventoryContainer;
         public bool CellIsInventorySon { get; private set; } = false;
+        public int Id => MItemContainer.Id;
+        public int Count => MItemContainer.Count;
         public sealed class AdditionalSettins
         {
             public Vector3 DefaultScale { get; } // обычный размер
@@ -83,7 +85,7 @@ namespace Inventory
             mItem.localScale = additionalSettins.DefaultScale;
             return outRangeCount;
         }
-        private void UpdateText() => mText.SetText(MItemContainer.Count > 1 ? MItemContainer.Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
+        private void UpdateText() => mText.SetText(Count > 1 ? Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
 
         public void Clear()
         {
@@ -95,7 +97,7 @@ namespace Inventory
         /// <param name="type"></param>
         public void ChangeSprite()
         {
-            mImage.sprite = InventorySpriteContainer.GetSprite(MItemContainer.Id);
+            mImage.sprite = InventorySpriteContainer.GetSprite(Id);
             mImage.color = MItemContainer.IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст
@@ -261,9 +263,9 @@ namespace Inventory
             {
                 mItem = c.GetItemTransform();
                 mImage = c.GetImage();
-                count = c.MItemContainer.Count;
+                count = c.Count;
                 mText = c.mText;
-                id = c.MItemContainer.Id;
+                id = c.Id;
             }
             public bool Equals(CopyPasteCell obj)
             {
@@ -276,9 +278,9 @@ namespace Inventory
         /// </summary>
         public bool Activate()
         {
-            if (MItemContainer.Id == 5 || MItemContainer.Id == 6)
+            if (Id == 5 || Id == 6)
             {
-                var meal = ItemStates.GetMeatNutrition(MItemContainer.Id);
+                var meal = ItemStates.GetMeatNutrition(Id);
                 inventoryContainer.MealPlayer(meal.Item1, meal.Item2);
                 DelItem(1);
                 return true;

@@ -11,7 +11,7 @@ namespace Inventory
         static InventorySpriteContainer()
         {
             sprites = new Dictionary<int, Sprite> {
-            { ItemStates.DefaultId, Resources.Load<Sprite>("InventoryItems/Test_Item_DefaultIcon") },
+            { ItemStates.DefaultId, null},
             { ItemStates.AxeId, Resources.Load<Sprite>("InventoryItems/Axe_1") },
             { ItemStates.MakarovId, Resources.Load<Sprite>("InventoryItems/Makarov_1") },
             { ItemStates.Pistol2Id, Resources.Load<Sprite>("InventoryItems/Test_Item_Pistol2") },

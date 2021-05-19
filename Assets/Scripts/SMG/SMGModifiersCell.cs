@@ -1,23 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
+namespace SMG
 {
-    private SMGEventReceiver eventReceiver;
-
-    public void OnInit(SMGEventReceiver ev)
+    public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
     {
-        eventReceiver = ev;
+        private SMGEventReceiver eventReceiver;
+
+        public void OnInit(SMGEventReceiver ev)
+        {
+            eventReceiver = ev;
+        }
+
+        public void OnPointerClick(PointerEventData eventData) => eventReceiver.OnActivateCurrentModifierCell(this);
+
+        public void OnPointerEnter(PointerEventData eventData) => eventReceiver.OnSelectModifiersCell(this);
+
+
+
+        public void OnPointerExit(PointerEventData eventData) => eventReceiver.OnDeselectModifiersCell();
     }
-
-    public void OnPointerClick(PointerEventData eventData) => eventReceiver.ActivateCurrentModifierCell(this);
-
-    public void OnPointerEnter(PointerEventData eventData) => eventReceiver.SelectModifiersCell(this);
-
-
-
-    public void OnPointerExit(PointerEventData eventData) => eventReceiver.DeselectModifiersCell(this);
 }

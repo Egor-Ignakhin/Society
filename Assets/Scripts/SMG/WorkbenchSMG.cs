@@ -1,20 +1,20 @@
 ﻿using PlayerClasses;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-/// <summary>
-/// класс отвечающий за верстак
-/// </summary>
-public class WorkbenchSMG : InteractiveObject, IGameScreen
+namespace SMG
 {
-    private SMGMain main;
-    private void Start()
+    /// <summary>
+    /// класс отвечающий за верстак
+    /// </summary>
+    public class WorkbenchSMG : InteractiveObject, IGameScreen
     {
-        main = SMGMain.Instance;
+        private SMGMain main;
+        private void Start()
+        {
+            main = FindObjectOfType<SMGMain>();
+        }
+        public override void Interact(PlayerStatements pl)
+        {
+            main.SetEnableMaps(true);
+        }
     }
-    public override void Interact(PlayerStatements pl)
-    {
-        main.SetEnableMaps(true);      
-    }  
 }
