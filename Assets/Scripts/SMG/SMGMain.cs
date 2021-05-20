@@ -71,8 +71,6 @@ namespace SMG
             foreach (var c in cams)
                 c.enabled = !v;
 
-
-
             MSMG.gameObject.SetActive(v);
             MSMGCamera.enabled = v;
 

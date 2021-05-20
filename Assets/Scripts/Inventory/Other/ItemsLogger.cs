@@ -50,7 +50,7 @@ namespace Inventory
             if (!inventoryContainer.IsInitialized)
                 return;
 
-            AddNewLogger().SetText($"Добавлено: {ItemStates.GetTitle(id)}  x{count}");
+            AddNewLogger().SetText($"Добавлено: {Localization.GetHint(id)}  x{count}");           
         }
         private TextMeshProUGUI AddNewLogger()
         {
@@ -78,8 +78,8 @@ namespace Inventory
         {
             if (!inventoryContainer.IsInitialized)
                 return;
-
-            AddNewLogger().SetText($"Использовано: {ItemStates.GetTitle(id)} x{count}");                
+            
+            AddNewLogger().SetText($"Использовано: {Localization.GetHint(id)}  x{count}");
         }
         private void OnDisable()
         {

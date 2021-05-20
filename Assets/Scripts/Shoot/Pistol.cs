@@ -14,7 +14,7 @@ namespace Shoots
         }
         protected override void Awake()
         {
-            dispenser = new Dispenser(8, 8);
+            dispenser = new Dispenser(0, 8);
             LoadAssets();
         }
         public override float CartridgeDispenser()

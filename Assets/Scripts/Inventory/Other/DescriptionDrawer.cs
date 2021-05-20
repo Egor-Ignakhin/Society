@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 /// <summary>
 /// класс отрисовывающий описание объектов
@@ -8,9 +7,10 @@ public sealed class DescriptionDrawer : Singleton<DescriptionDrawer>
 {
     [SerializeField] private TextMeshProUGUI textDesc;
     [SerializeField] private TextMeshProUGUI textTakeKey;
-    public void SetHint(string str, string mainType)
+    public void SetHint(string str, string mainType, int count)
     {
-        textDesc.SetText(str);
+        string countStr = count > 1 ? $" x{count}" : string.Empty;
+        textDesc.SetText(str + countStr);        
         textTakeKey.SetText(Localization.GetUpKeyDescription(mainType, PlayerClasses.PlayerInteractive.InputInteractive));
         gameObject.SetActive(!string.IsNullOrEmpty(str));
 

@@ -6,16 +6,16 @@ using Inventory;
 public class InventoryItem : InteractiveObject
 {
     [SerializeField] protected int count = 1;
-    private InventoryContainer inventoryContainer;
-    [SerializeField] private int startid;
+    private InventoryContainer inventoryContainer;    
+    [SerializeField] private ItemStates.ItemsID startItem;
     public int Id { get; protected set; }
     protected virtual void Start()
-    {
+    {        
         inventoryContainer = FindObjectOfType<InventoryContainer>();
         MainDescription = Localization.MainTypes.Item;
 
-        SetId(startid);
-        SetType(ItemStates.GetTypeFromId(startid));     
+        SetId((int)startItem);
+        SetType(startItem.ToString());     
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

@@ -40,6 +40,7 @@ namespace PlayerClasses
             Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
             string desc = string.Empty;
             string mainDesc = string.Empty;
+            int count = 1;
             if (Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer))
             {
                 var components = hit.transform.GetComponents<InteractiveObject>();
@@ -48,10 +49,13 @@ namespace PlayerClasses
                 {
                     string getDesc = c.Description;
                     string getMainDesc = c.MainDescription;
+
+                    int getCount = c is InventoryItem? (c as InventoryItem).GetCount() : 1;
                     if (!string.IsNullOrEmpty(getDesc))
                     {
                         desc = getDesc;
                         mainDesc = getMainDesc;
+                        count = getCount;
                     }
 
                     if (inputedButton)
@@ -62,7 +66,7 @@ namespace PlayerClasses
                     }
                 }
             }
-            DescriptionDrawer.Instance.SetHint(desc, mainDesc);
+            DescriptionDrawer.Instance.SetHint(desc, mainDesc, count);
         }
         /*   void OnDrawGizmos()
            {

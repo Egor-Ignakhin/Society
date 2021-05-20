@@ -64,10 +64,11 @@ namespace Inventory
         /// <param name="id"></param>
         /// <param name="count"></param>
         /// <param name="pos"></param>
-        public void SetItem(int id, int count)
-        {
-            MItemContainer.SetItem(id, count);
+        public int SetItem(int id, int count)
+        {            
+            int outOfRange = MItemContainer.SetItem(id, count + Count);
             ChangeSprite();
+            return outOfRange;
         }
         /// <summary>
         /// вызывается для смены предмета другим предметом
@@ -75,7 +76,7 @@ namespace Inventory
         /// <param name="cell"></param>
         public int SetItem(CopyPasteCell copyPaste)
         {
-            int outRangeCount = MItemContainer.SetItem(copyPaste.id, copyPaste.count, true);//запись в свободную ячейку кол-во и возвращение излишка
+            int outRangeCount = MItemContainer.SetItem(copyPaste.id, copyPaste.count);//запись в свободную ячейку кол-во и возвращение излишка
 
             mItem = copyPaste.mItem;// присвоение новых транс-ов
             mImage = copyPaste.mImage;// и новых image                        
@@ -89,7 +90,8 @@ namespace Inventory
 
         public void Clear()
         {
-            SetItem(0, 0);
+            MItemContainer.DelItem(Count);
+            ChangeSprite();
         }
         /// <summary>
         /// смена изображения на картинке (в зависимости от типа предмета)
@@ -97,12 +99,12 @@ namespace Inventory
         /// <param name="type"></param>
         public void ChangeSprite()
         {
-            mImage.sprite = InventorySpriteContainer.GetSprite(Id);
+            mImage.sprite = InventorySpriteData.GetSprite(Id);
             mImage.color = MItemContainer.IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст
             if (MItemContainer.IsEmpty)
-                eventReceiver.UnfocusSelectedCell();//снимается фокус со слота
+                eventReceiver.UnfocusSelectedCell(this);//снимается фокус со слота
         }
         #region Events
         /// <summary>
@@ -229,12 +231,12 @@ namespace Inventory
             {
                 Count -= count;
                 if (IsEmpty)
-                    Id = ItemStates.DefaultId;
+                    Id = (int)ItemStates.ItemsID.Default;
             }
-            public int SetItem(int nid, int ncount, bool isMerge = false)
+            public int SetItem(int nid, int ncount)
             {
                 int outRange = 0;
-                if (Id == nid && !isMerge)// если тип предмета тот же, что и был в слоте
+                if (Id == nid)// если тип предмета тот же, что и был в слоте
                 {
                     outRange = MaxCount - (Count += ncount);// получаем выход за границу
                     if (Count > MaxCount)
@@ -243,7 +245,7 @@ namespace Inventory
                 else// иначе просто замена
                     Count = ncount;
 
-                Id = IsEmpty ? ItemStates.DefaultId : nid;
+                Id = IsEmpty ? (int)ItemStates.ItemsID.Default : nid;
 
                 return outRange;
             }

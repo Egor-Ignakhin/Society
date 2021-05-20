@@ -109,18 +109,11 @@ public static class Localization
                 return null;
         }
     }
-    private static string GetDialog(int missionNumber, int dialog = 0)
-    {
-        return dialogContents[missionNumber];
-    }
-    private static string GetTask(int missionNumber)
-    {
-        return taskContents[missionNumber];
-    }
-    public static string GetHint(InteractiveObject interactiveObject)
-    {
-        if (interactiveObject.Type != null)
-            return hintContents[interactiveObject.Type];
-        else return null;
-    }
+    private static string GetDialog(int missionNumber) => dialogContents[missionNumber];
+
+    private static string GetTask(int missionNumber) => taskContents[missionNumber];
+
+    public static string GetHint(InteractiveObject interactiveObject) => interactiveObject.Type != null ? hintContents[interactiveObject.Type] : null;
+    public static string GetHint(int id) => id != 0 ? hintContents[((Inventory.ItemStates.ItemsID)id).ToString()] : null;
+
 }

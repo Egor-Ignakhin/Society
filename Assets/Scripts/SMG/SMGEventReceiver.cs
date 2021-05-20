@@ -55,7 +55,8 @@ namespace SMG
         internal void OnEnable()
         {
             FillGunCells();
-            gunCharsDrawer.OnChangeSelectedGun(gunsCells[0].Id);
+            if (gunsCells[0].Id != 0)
+                gunCharsDrawer.OnChangeSelectedGun(gunsCells[0].Id);
         }
 
         public void OnUpdate()

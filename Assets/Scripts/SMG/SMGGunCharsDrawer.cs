@@ -7,6 +7,9 @@ namespace SMG
 {
     public class SMGGunCharsDrawer : MonoBehaviour
     {
+        [SerializeField] private TextMeshProUGUI titleTextDrawing;
+        [SerializeField] private TextMeshProUGUI titleTextPreview;
+
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private TextMeshProUGUI maxFlyDistText;
         [SerializeField] private TextMeshProUGUI optFlyDistText;
@@ -15,6 +18,8 @@ namespace SMG
         public void OnChangeSelectedGun(int id)
         {
             var chars = GunCharacteristics.GetGunCharacteristics(id);
+            titleTextDrawing.text = chars.title;
+            titleTextPreview.text = chars.title;
             damageText.text = $"Урон: {chars.damage}";
             maxFlyDistText.text = $"Максимальная дистанция поражения: {chars.maxFlyD}";
             optFlyDistText.text = $"Оптимальная дистанция поражения: {chars.OptFlyD}";

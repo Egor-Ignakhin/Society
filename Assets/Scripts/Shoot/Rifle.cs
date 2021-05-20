@@ -6,7 +6,7 @@ namespace Shoots
     {
         protected override void Awake()
         {
-            dispenser = new Dispenser(30, 30);
+            dispenser = new Dispenser(0, 30);
             LoadAssets();
         }
         protected override void LoadAssets()

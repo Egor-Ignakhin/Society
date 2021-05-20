@@ -35,10 +35,8 @@ namespace Inventory
         public event TakeItem ActivateItemEvent;
         public bool IsInitialized { get; private set; }
 
-        private void Awake()
-        {
-            inventoryInput = gameObject.AddComponent<InventoryInput>();
-        }
+        private void Awake() => inventoryInput = gameObject.AddComponent<InventoryInput>();
+
         private void OnEnable()
         {
             inventoryEffects = new InventoryEffects(gameObject);
@@ -85,12 +83,15 @@ namespace Inventory
 
             itemPrefabs = new Dictionary<int, InventoryItem>
             {
-                {ItemStates.AxeId, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
-                {ItemStates.MakarovId, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
-                {ItemStates.Ak_74Id, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
-                {ItemStates.CannedFoodId, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
-                {ItemStates.MilkId, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") },
-                { ItemStates.BinocularsId,Resources.Load<InventoryItem>("InventoryItems\\Binoculars_item_1") }
+                {(int)ItemStates.ItemsID.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {(int)ItemStates.ItemsID.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
+                {(int)ItemStates.ItemsID.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
+                {(int)ItemStates.ItemsID.CannedFood, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
+                {(int)ItemStates.ItemsID.Milk, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") },
+                {(int)ItemStates.ItemsID.Binoculars,Resources.Load<InventoryItem>("InventoryItems\\Binoculars_item_1") },
+                {(int)ItemStates.ItemsID.Knife_1,Resources.Load<InventoryItem>("InventoryItems\\Knife_Item_1") },
+                {(int)ItemStates.ItemsID.Bullet_7_62,Resources.Load<InventoryItem>("InventoryItems\\7.62 bullet_Item_1") },
+                {(int)ItemStates.ItemsID.Bullet_9_27,Resources.Load<InventoryItem>("InventoryItems\\9.27 bullet_Item_1") }
             };
             IsInitialized = true;
         }
@@ -99,7 +100,7 @@ namespace Inventory
         /// добавление поднятого предмета в очередь
         /// </summary>
         /// <param name="item"></param>    
-        public void AddItem(int id, int count)
+        public void AddItem(int id, int count, bool isRecursion = false)
         {
             if (Cells.FindAll(c => c.MItemContainer.IsEmpty).Count == 0)// если не нашлись свободные слоты
                 return;
@@ -107,16 +108,23 @@ namespace Inventory
             // поиск слота, с предметом того же типа, и не заполненным   
             var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.Id.Equals(id));
 
-            if (cell == null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
+            if (cell is null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
             cell.SetItem(id, count);
 
-            TakeItemEvent?.Invoke(id, count);
+            int outOfRange = cell.Count - ItemStates.GetMaxCount(cell.Id);
+            if (outOfRange > 0)
+            {
+                print(outOfRange);
+                cell.DelItem(outOfRange);
+                AddItem(id, outOfRange, true);
+            }
+
+            if (!isRecursion)
+                TakeItemEvent?.Invoke(id, count);
         }
-        public void SpendOnCell()
-        {
-            inventoryEffects.PlaySpendClip();
-        }
+        public void SpendOnCell() => inventoryEffects.PlaySpendClip();
+
         public void ActivateItem() => EventReceiver.ActivateItem();
 
         public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
@@ -142,8 +150,9 @@ namespace Inventory
             private readonly AudioSource inventorySpeaker;
             public InventoryEffects(GameObject main)
             {
-                spendOnCellClip = Resources.Load<AudioClip>("Inventory\\tic");
+                spendOnCellClip = Resources.Load<AudioClip>("Inventory\\tic_2");
                 inventorySpeaker = main.AddComponent<AudioSource>();
+                inventorySpeaker.volume = 0.2f;
             }
             public void PlaySpendClip() => inventorySpeaker.PlayOneShot(spendOnCellClip);
         }

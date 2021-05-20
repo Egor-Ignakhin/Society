@@ -11,7 +11,7 @@ namespace SMG
 
         public void ChangeItem(int id)
         {
-            MImage.sprite = Inventory.InventorySpriteContainer.GetSprite(id);
+            MImage.sprite = Inventory.InventorySpriteData.GetSprite(id);
             MImage.color = MImage.sprite ? Color.white : new Color(1, 1, 1, 0.1f);
             Id = id;
         }

@@ -10,8 +10,7 @@ namespace Shoots
     public abstract class Gun : MonoBehaviour
     {
         public delegate void RecoilHandler();
-        public event RecoilHandler RecoilEvent;// событие перезарядки
-        [SerializeField] protected int ammoCount;// количество патрон
+        public event RecoilHandler RecoilEvent;// событие перезарядки        
         [SerializeField] protected float caliber = 10;// калибр снаряда    
         protected bool possibleShoot = true;// возможность стрелять
         public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
@@ -34,6 +33,7 @@ namespace Shoots
         [SerializeField] protected LayerMask layerMask;
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
         [SerializeField] protected AudioSource mAudioSource;
+        [SerializeField] protected Inventory.ItemStates.ItemsID bulletId;
 
 
         protected AudioClip fireClip;
@@ -44,20 +44,22 @@ namespace Shoots
         private PlayerSoundsCalculator playerSoundsCalculator;
 
         private bool isAutomatic;// автоматическое ли оружие
+        private Inventory.InventoryEventReceiver inventoryEv;
+
         protected abstract void Awake();
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
+            inventoryEv = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
         }
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
             if (ScreensManager.GetScreen() != null)
                 return false;
-            bool canShooting = ammoCount > 0 && currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0 && !IsReload;
+            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0 && !IsReload;
             if (canShooting)
             {
-                ammoCount--;
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
@@ -101,7 +103,13 @@ namespace Shoots
         {
             if (dispenser.IsFull)
                 IsReload = false;
+
             if (!IsReload)
+                return;
+
+            int remainingBullets = inventoryEv.Containts(bulletId);            
+
+            if (remainingBullets <= 0)
                 return;
 
             IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime();
@@ -109,7 +117,13 @@ namespace Shoots
 
             if (!IsReload)
             {
-                dispenser.Reload();
+                var outOfRange = remainingBullets - dispenser.maxBullets;
+                if(outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
+                {
+                    remainingBullets -= outOfRange;
+                }
+                inventoryEv.DelItem(bulletId, remainingBullets);
+                dispenser.Reload(remainingBullets);
                 currentReloadTime = 0;
             }
         }
@@ -186,25 +200,21 @@ namespace Shoots
         protected class Dispenser
         {
             public int CountBullets { get; private set; }
-            private readonly int maxBullets;
+            public readonly int maxBullets;
             public Dispenser(int cb, int maxB)
             {
                 CountBullets = cb;
                 maxBullets = maxB;
-                if (CountBullets == maxBullets)
-                    IsFull = true;
             }
             public void Dispens()
             {
                 CountBullets--;
-                IsFull = false;
             }
-            public void Reload()
+            public void Reload(int bulletsCount)
             {
-                CountBullets = maxBullets;
-                IsFull = true;
+                CountBullets = bulletsCount;
             }
-            public bool IsFull { get; private set; }// полна ли обойма
+            public bool IsFull => CountBullets == maxBullets;// полна ли обойма
         }
 
         public static class ImpactsContainer

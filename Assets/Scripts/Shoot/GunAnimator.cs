@@ -125,10 +125,10 @@ namespace Shoots
 
             switch (id)
             {
-                case ItemStates.MakarovId:
+                case (int)ItemStates.ItemsID.Makarov:
                     currentActiveGunI = 0;
                     break;
-                case ItemStates.Ak_74Id:
+                case (int)ItemStates.ItemsID.Ak_74:
                     currentActiveGunI = 1;
                     break;
                 default:

@@ -30,10 +30,8 @@ namespace Inventory
             takeAllButton = taB;
         }
 
-        internal static void LockScrollEvent(bool isActive)
-        {
-            ScrollEventLocked = isActive;
-        }
+        internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
+
 
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
@@ -68,6 +66,35 @@ namespace Inventory
             rtbtn.sizeDelta = new Vector2((gr.cellSize.x + gr.spacing.x) * gr.constraintCount, rtbtn.sizeDelta.y);
             rtbtn.position = new Vector3(rtbtn.position.x, 110 * (countSlots / gr.constraintCount), 0);
         }
+
+        internal void DelItem(ItemStates.ItemsID bulletId, int count)
+        {
+            var foundedCell = inventoryContainer.GetCells().Find(c => c.Id == (int)bulletId);
+
+            if (foundedCell)
+            {
+                if (foundedCell.Count >= count)
+                {
+                    foundedCell.DelItem(count);
+                    count = 0;
+                }
+                else
+                {
+                    foundedCell.DelItem(foundedCell.Count);
+                    count -= foundedCell.Count;
+                    DelItem(bulletId, count);
+                }
+            }
+        }
+
+        internal int Containts(ItemStates.ItemsID bulletId)
+        {
+            int count = 0;
+
+            inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId && (count += c.Count) > -1);
+            return count;
+        }
+
         public void CloseContainer()
         {
             List<Transform> childs = new List<Transform>();
@@ -263,7 +290,7 @@ namespace Inventory
         /// <param name="ic"></param>
         public void FocusCell(InventoryCell ic)
         {
-            UnfocusSelectedCell();
+            UnfocusSelectedCell(SelectedCell);
             ic.SetFocus(true);
             SelectedCell = ic;
             ItemsLabelDescription.SetActive(true);
@@ -271,14 +298,15 @@ namespace Inventory
         /// <summary>
         /// снятие выделения со слотов
         /// </summary>
-        public void UnfocusSelectedCell()
+        public void UnfocusSelectedCell(InventoryCell cell)
         {
-            if (SelectedCell)
+            if (SelectedCell && cell == SelectedCell)
+            {
                 SelectedCell.SetFocus(false);
-            SelectedCell = null;
-
-            ItemsLabelDescription.SetActive(false);
-            ChangeSelectedCellEvent?.Invoke(0);
+                SelectedCell = null;
+                ItemsLabelDescription.SetActive(false);
+                ChangeSelectedCellEvent?.Invoke(0);
+            }
         }
         /// <summary>
         /// выделение по нажатию на клавишу
@@ -339,7 +367,7 @@ namespace Inventory
         {
             if (ScrollEventLocked)
                 return;
-               var hotcells = inventoryContainer.GetHotCells();
+            var hotcells = inventoryContainer.GetHotCells();
             if (!SelectedCell)
                 SelectedCell = hotcells[0];
 
@@ -420,7 +448,7 @@ namespace Inventory
                 else weightText.color = Color.white;
 
                 fps.SetBraking((float)playerBraking);
-                weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");                
+                weightText.SetText($"Вес: {Weight}/{MaxWeightForRunningMass}");
             }
         }
     }
