@@ -49,24 +49,24 @@ namespace Inventory
             additionalSettins = new AdditionalSettins(background);
             if (!ic)// инициализация проходящая для слотов контейнеров
             {
-                inventoryContainer = FindObjectOfType<InventoryContainer>();                
+                inventoryContainer = FindObjectOfType<InventoryContainer>();
             }
             else// инициализация проходящая для слотов инвентаря
             {
                 inventoryContainer = ic;
                 CellIsInventorySon = true;
             }
-            eventReceiver = inventoryContainer.EventReceiver;           
-        }        
+            eventReceiver = inventoryContainer.EventReceiver;
+        }
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки
         /// </summary>
         /// <param name="id"></param>
         /// <param name="count"></param>
         /// <param name="pos"></param>
-        public int SetItem(int id, int count)
-        {            
-            int outOfRange = MItemContainer.SetItem(id, count + Count);
+        public int SetItem(int id, int count, bool isMerge = true)
+        {
+            int outOfRange = MItemContainer.SetItem(id, count + Count, isMerge);
             ChangeSprite();
             return outOfRange;
         }
@@ -74,9 +74,9 @@ namespace Inventory
         /// вызывается для смены предмета другим предметом
         /// </summary>
         /// <param name="cell"></param>
-        public int SetItem(CopyPasteCell copyPaste)
+        public int SetItem(CopyPasteCell copyPaste, bool isMerge = true)
         {
-            int outRangeCount = MItemContainer.SetItem(copyPaste.id, copyPaste.count);//запись в свободную ячейку кол-во и возвращение излишка
+            int outRangeCount = MItemContainer.SetItem(copyPaste.id, copyPaste.count, isMerge);//запись в свободную ячейку кол-во и возвращение излишка
 
             mItem = copyPaste.mItem;// присвоение новых транс-ов
             mImage = copyPaste.mImage;// и новых image                        
@@ -233,10 +233,10 @@ namespace Inventory
                 if (IsEmpty)
                     Id = (int)ItemStates.ItemsID.Default;
             }
-            public int SetItem(int nid, int ncount)
+            public int SetItem(int nid, int ncount, bool isMerge = true)
             {
                 int outRange = 0;
-                if (Id == nid)// если тип предмета тот же, что и был в слоте
+                if (Id == nid && isMerge)// если тип предмета тот же, что и был в слоте
                 {
                     outRange = MaxCount - (Count += ncount);// получаем выход за границу
                     if (Count > MaxCount)
@@ -255,11 +255,11 @@ namespace Inventory
         /// </summary>
         public struct CopyPasteCell
         {
-            public TextMeshProUGUI mText;
-            public RectTransform mItem;
-            public Image mImage;
-            public int count;
-            public int id;
+            public TextMeshProUGUI mText { get; set; }
+            public RectTransform mItem { get; set; }
+            public Image mImage { get; set; }
+            public int count { get; set; }
+            public int id { get; set; }
 
             public CopyPasteCell(InventoryCell c)
             {
@@ -269,10 +269,8 @@ namespace Inventory
                 mText = c.mText;
                 id = c.Id;
             }
-            public bool Equals(CopyPasteCell obj)
-            {
-                return obj.id == id && obj.count < ItemStates.GetMaxCount(id) && count < ItemStates.GetMaxCount(id);
-            }
+            public bool Equals(CopyPasteCell obj) => obj.id == id && obj.count < ItemStates.GetMaxCount(id) && count < ItemStates.GetMaxCount(id);
+
         }
 
         /// <summary>

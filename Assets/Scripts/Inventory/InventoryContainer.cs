@@ -110,14 +110,14 @@ namespace Inventory
 
             if (cell is null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(id, count);
+            cell.SetItem(id, count, false);
 
+            
             int outOfRange = cell.Count - ItemStates.GetMaxCount(cell.Id);
             if (outOfRange > 0)
             {
-                print(outOfRange);
                 cell.DelItem(outOfRange);
-                AddItem(id, outOfRange, true);
+                AddItem(id, outOfRange, true);                
             }
 
             if (!isRecursion)

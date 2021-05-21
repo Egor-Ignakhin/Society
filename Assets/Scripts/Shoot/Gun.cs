@@ -122,7 +122,7 @@ namespace Shoots
                 {
                     remainingBullets -= outOfRange;
                 }
-                inventoryEv.DelItem(bulletId, remainingBullets);
+                inventoryEv.DelItem(bulletId, remainingBullets);                
                 dispenser.Reload(remainingBullets);
                 currentReloadTime = 0;
             }

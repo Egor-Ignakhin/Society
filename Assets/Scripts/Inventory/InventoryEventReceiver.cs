@@ -80,8 +80,8 @@ namespace Inventory
                 }
                 else
                 {
-                    foundedCell.DelItem(foundedCell.Count);
                     count -= foundedCell.Count;
+                    foundedCell.DelItem(foundedCell.Count);
                     DelItem(bulletId, count);
                 }
             }
@@ -219,9 +219,7 @@ namespace Inventory
         /// </summary>
         private void ParentingDraggedObject()
         {
-            if (!draggedCell)
-                return;
-            if (draggedCell.MItemContainer.IsEmpty)
+            if (!draggedCell || draggedCell.MItemContainer.IsEmpty)
                 return;
 
             if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
@@ -236,8 +234,8 @@ namespace Inventory
                 InventoryCell.CopyPasteCell candidateCopy = new InventoryCell.CopyPasteCell(candidateForReplaceCell);
                 InventoryCell.CopyPasteCell draggedCopy = new InventoryCell.CopyPasteCell(draggedCell);
 
-                if (candidateCopy.Equals(draggedCopy))
-                {
+                if (draggedCopy.Equals(candidateCopy))
+                {                    
                     draggedCopy.count += candidateCopy.count;
                     candidateCopy.count = candidateForReplaceCell.SetItem(draggedCopy);
 
@@ -248,25 +246,26 @@ namespace Inventory
                         candidateForReplaceCell.DelItem(outOfRange);
                     }
                 }
-                else
-                    candidateForReplaceCell.SetItem(draggedCopy);
+                else                
+                    candidateForReplaceCell.SetItem(draggedCopy, false);
+                
 
 
-                draggedCell.SetItem(candidateCopy);
+                draggedCell.SetItem(candidateCopy, false);
 
                 //проверка для изменения массы инвентаря
                 if (draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объектов только внутри инвентаря
                     return;
                 if (draggedCell.CellIsInventorySon && !candidateForReplaceCell.CellIsInventorySon)// мерж объекта из инвентаря в контейнер
                 {
-                    inventoryMassCalculator.AddItem(draggedCell.Id, draggedCell.Count);
-                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
+                    inventoryMassCalculator.AddItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
                     return;
                 }
                 if (!draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объекта из контейнера в инвентарь
                 {
-                    inventoryMassCalculator.AddItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
-                    inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
+                    inventoryMassCalculator.AddItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
+                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
                     return;
                 }
                 return;
