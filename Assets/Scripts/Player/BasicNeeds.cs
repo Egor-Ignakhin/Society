@@ -20,15 +20,18 @@ namespace PlayerClasses
 
             private set
             {
-                if (value > MaximumHealth)
-                    value = MaximumHealth;
-                if (value <= MinimumHealth)
-                {
-                    value = MinimumHealth;
+                value = Mathf.Clamp(value, MinimumHealth, MaximumHealth);
+                if (value == 0)
                     Dead();
-                }                
+
                 HealthChangeValue?.Invoke((float)Math.Round(health = value, 0));
             }
+        }
+
+        internal void Heal(float h, float r)
+        {
+            Health += h;
+            radiation -= r;
         }
 
         private int thirst;
@@ -62,7 +65,7 @@ namespace PlayerClasses
                 {
                     InjurePerson(-value);
                     value = 0;
-                }                
+                }
                 FoodChangeValue?.Invoke(food = value);
             }
         }
@@ -73,8 +76,7 @@ namespace PlayerClasses
             get => radiation;
             private set
             {
-                if (value > MaximumRadiation) value = MaximumRadiation;
-                radiation = value;
+                radiation = Mathf.Clamp(value, MinRadiation, MaximumRadiation);
                 RadiationChangeValue?.Invoke(value);
             }
         }
@@ -221,7 +223,7 @@ namespace PlayerClasses
                 this.bn = bn;
             }
             private void OnCollisionEnter(Collision collision)
-            {                
+            {
                 float force = 0;
                 float mass = 1;
                 if (collision.transform.TryGetComponent<Rigidbody>(out var rb))

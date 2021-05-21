@@ -2,13 +2,10 @@
 
 public abstract class InteractiveObject : MonoBehaviour
 {
-    public string Type { get; private set; }    
-    public static class Types
-    {
-        public const string OpenedDoor = "OpenedDoor";
-        public const string ClosedDoor = "ClosedDoor";
-        public const string LockedDoor = "LockedDoor";        
-    }
+    public string Type { get; private set; }
+    
+    public enum Types { OpenedDoor, ClosedDoor, LockedDoor, Container_1 };
+
     protected virtual void Awake() => SetDescription();
 
     public abstract void Interact(PlayerClasses.PlayerStatements pl);

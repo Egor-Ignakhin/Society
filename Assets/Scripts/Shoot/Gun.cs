@@ -107,10 +107,13 @@ namespace Shoots
             if (!IsReload)
                 return;
 
-            int remainingBullets = inventoryEv.Containts(bulletId);            
+            int remainingBullets = inventoryEv.Containts(bulletId);
 
             if (remainingBullets <= 0)
+            {
+                IsReload = false;
                 return;
+            }
 
             IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime();
             mAnimator.SetBool("Reload", IsReload);

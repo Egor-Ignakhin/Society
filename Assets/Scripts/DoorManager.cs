@@ -77,15 +77,15 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
         string output;
         if (currentState == State.locked)
         {
-            output = InteractiveObject.Types.LockedDoor;
+            output = nameof(InteractiveObject.Types.LockedDoor);
         }
         else if (IsOpen)
         {
-            output = InteractiveObject.Types.OpenedDoor;
+            output = nameof(InteractiveObject.Types.OpenedDoor);
         }
         else
         {
-            output = InteractiveObject.Types.ClosedDoor;
+            output = nameof(InteractiveObject.Types.ClosedDoor);
         }
         lastDoorMesh.SetType(output);
         ChangeState();

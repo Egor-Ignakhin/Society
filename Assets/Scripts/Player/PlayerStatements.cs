@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace PlayerClasses
 {
@@ -14,6 +15,11 @@ namespace PlayerClasses
         public void MealPlayer(int food, int water)
         {
             mBasicNeeds.AddMeal(water, food);
+        }
+
+        internal void HealPlayer(float health, float radiation)
+        {
+            mBasicNeeds.Heal(health, radiation);
         }
     }
 }

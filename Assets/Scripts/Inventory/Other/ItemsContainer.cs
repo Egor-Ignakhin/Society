@@ -10,12 +10,17 @@ namespace Inventory
     public class ItemsContainer : InteractiveObject
     {
         public const int maxCells = 40;
+        [SerializeField] private Types startedType;
         [Range(0, maxCells)] [SerializeField] private int cellsCount;
         private List<(int id, int count)> container = null;
         public List<(int id, int count)> GetData() => container;
         private bool isOpened;
         private InventoryEventReceiver inventoryEventReceiver;
-        private void Start() => inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
+        private void Start()
+        {
+            inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;            
+            SetType(startedType.ToString());
+        }
 
         public override void Interact(PlayerStatements pl)
         {

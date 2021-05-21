@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
 
 namespace Inventory
 {
@@ -15,23 +14,6 @@ namespace Inventory
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
         private static bool ScrollEventLocked = false;
-        public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
-            InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText, Button taB)
-        {
-            mainParent = mp;
-            fps = controller;
-            freeCellsContainer = fCC;
-            busyCellsContainer = bCC;
-            inventoryContainer = ic;
-            ItemsLabelDescription = itemsLabelDescription;
-            inventoryInput = input;
-            inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
-            inventoryDrawer = iDrawer;
-            takeAllButton = taB;
-        }
-
-        internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
-
 
         private readonly Transform mainParent;
         private readonly FirstPersonController fps;
@@ -48,76 +30,6 @@ namespace Inventory
         private readonly InventoryDrawer inventoryDrawer;
         private readonly Button takeAllButton;
 
-        public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
-        {
-            for (int i = 0; i < countSlots; i++)
-            {
-                var child = freeCellsContainer.GetChild(0);
-                child.SetParent(busyCellsContainer);
-
-                if (content != null)
-                    child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
-            }
-            inventoryInput.EnableInventory();
-            lastItemContainer = it;
-
-            GridLayoutGroup gr = busyCellsContainer.GetComponent<GridLayoutGroup>();
-            var rtbtn = takeAllButton.GetComponent<RectTransform>();
-            rtbtn.sizeDelta = new Vector2((gr.cellSize.x + gr.spacing.x) * gr.constraintCount, rtbtn.sizeDelta.y);
-            rtbtn.position = new Vector3(rtbtn.position.x, 110 * (countSlots / gr.constraintCount), 0);
-        }
-
-        internal void DelItem(ItemStates.ItemsID bulletId, int count)
-        {
-            var foundedCell = inventoryContainer.GetCells().Find(c => c.Id == (int)bulletId);
-
-            if (foundedCell)
-            {
-                if (foundedCell.Count >= count)
-                {
-                    foundedCell.DelItem(count);
-                    count = 0;
-                }
-                else
-                {
-                    count -= foundedCell.Count;
-                    foundedCell.DelItem(foundedCell.Count);
-                    DelItem(bulletId, count);
-                }
-            }
-        }
-
-        internal int Containts(ItemStates.ItemsID bulletId)
-        {
-            int count = 0;
-
-            inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId && (count += c.Count) > -1);
-            return count;
-        }
-
-        public void CloseContainer()
-        {
-            List<Transform> childs = new List<Transform>();
-            for (int i = 0; i < busyCellsContainer.childCount; i++)
-            {
-                childs.Add(busyCellsContainer.GetChild(i));
-            }
-            foreach (var c in childs)
-            {
-                c.SetParent(freeCellsContainer);
-            }
-
-            var cells = new List<(int id, int count)>();
-
-            for (int i = 0; i < childs.Count; i++)
-            {
-                var item = childs[i].GetComponent<InventoryCell>().MItemContainer;
-                cells.Add((item.Id, item.Count));
-            }
-            lastItemContainer.Close(cells);
-            lastItemContainer = null;
-        }
-
         private Transform candidateForReplaceItem;// кандидат для смены местами в инветаре(предмет)
         private InventoryCell candidateForReplaceCell;// кандидат для смены местами в инветаре(ячейка)
         private InventoryCell draggedCell;// удерживаемая ячейка
@@ -125,6 +37,20 @@ namespace Inventory
         private bool isDragged;// происходит ли удержание
         private InventoryCell SelectedCell;
 
+        public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
+         InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText, Button taB)
+        {
+            mainParent = mp;
+            fps = controller;
+            freeCellsContainer = fCC;
+            busyCellsContainer = bCC;
+            inventoryContainer = ic;
+            ItemsLabelDescription = itemsLabelDescription;
+            inventoryInput = input;
+            inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
+            inventoryDrawer = iDrawer;
+            takeAllButton = taB;
+        }
         public void OnEnable()
         {
             inventoryInput.ChangeActiveEvent += ChangeActiveEvent;
@@ -134,16 +60,9 @@ namespace Inventory
             ItemsLabelDescription.SetActive(false);
             inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
             takeAllButton.onClick.AddListener(TakeAllItemsInContainerReceiver);
+            takeAllButton.gameObject.SetActive(false);
         }
-        public void OnDisable()
-        {
-            inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
-            inventoryInput.InputKeyEvent -= SelectCell;
-            inventoryInput.DropEvent -= DropEventReceiver;
-            inventoryInput.SpinEvent -= SpinReceiver;
-            inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
-            takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
-        }
+        internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
         private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
 
         private void SetPause(bool enabled)
@@ -188,11 +107,6 @@ namespace Inventory
             draggedCell = null;
             draggedItem = null;
         }
-        public void DragCell(UnityEngine.EventSystems.PointerEventData eventData)
-        {
-            //удержание предмета
-            draggedItem.position = eventData.position;
-        }
 
         public void BeginDrag(InventoryCell cell)
         {
@@ -202,6 +116,12 @@ namespace Inventory
             draggedItem = cell.GetItemTransform();
             draggedItem.SetParent(mainParent);
         }
+        public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            //удержание предмета
+            draggedItem.position = eventData.position;
+        }
+
         public void EndDrag()
         {
             //конец удержания
@@ -219,7 +139,7 @@ namespace Inventory
         /// </summary>
         private void ParentingDraggedObject()
         {
-            if (!draggedCell || draggedCell.MItemContainer.IsEmpty)
+            if (!draggedCell || draggedCell.IsEmpty)
                 return;
 
             if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
@@ -235,20 +155,20 @@ namespace Inventory
                 InventoryCell.CopyPasteCell draggedCopy = new InventoryCell.CopyPasteCell(draggedCell);
 
                 if (draggedCopy.Equals(candidateCopy))
-                {                    
-                    draggedCopy.count += candidateCopy.count;
-                    candidateCopy.count = candidateForReplaceCell.SetItem(draggedCopy);
+                {
+                    draggedCopy.Count += candidateCopy.Count;
+                    candidateCopy.Count = candidateForReplaceCell.SetItem(draggedCopy);
 
-                    if (draggedCopy.count > ItemStates.GetMaxCount(draggedCopy.id))
+                    int outOfRange = draggedCopy.Count - ItemStates.GetMaxCount(draggedCopy.Id);
+                    if (outOfRange > 0)
                     {
-                        int outOfRange = draggedCopy.count - ItemStates.GetMaxCount(draggedCopy.id);
-                        candidateCopy.count += outOfRange;
+                        candidateCopy.Count += outOfRange;
                         candidateForReplaceCell.DelItem(outOfRange);
                     }
                 }
-                else                
+                else
                     candidateForReplaceCell.SetItem(draggedCopy, false);
-                
+
 
 
                 draggedCell.SetItem(candidateCopy, false);
@@ -258,14 +178,14 @@ namespace Inventory
                     return;
                 if (draggedCell.CellIsInventorySon && !candidateForReplaceCell.CellIsInventorySon)// мерж объекта из инвентаря в контейнер
                 {
-                    inventoryMassCalculator.AddItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
-                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
+                    inventoryMassCalculator.AddItem(draggedCell.Id, draggedCell.Count);
+                    inventoryMassCalculator.DeleteItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
                     return;
                 }
                 if (!draggedCell.CellIsInventorySon && candidateForReplaceCell.CellIsInventorySon)// мерж объекта из контейнера в инвентарь
                 {
-                    inventoryMassCalculator.AddItem(candidateForReplaceCell.MItemContainer.Id, candidateForReplaceCell.MItemContainer.Count);
-                    inventoryMassCalculator.DeleteItem(draggedCell.MItemContainer.Id, draggedCell.MItemContainer.Count);
+                    inventoryMassCalculator.AddItem(candidateForReplaceCell.Id, candidateForReplaceCell.Count);
+                    inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
                     return;
                 }
                 return;
@@ -326,21 +246,14 @@ namespace Inventory
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
         }
 
-        private bool IsIntersected(Vector2 obj)// переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
-        {
-            foreach (var c in inventoryContainer.CellsRect)
-            {
-                if (Vector2.Distance(obj, c.position) < 100)
-                    return true;
-            }
-            return false;
-        }
+        // переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
+        private bool IsIntersected(Vector2 obj) => inventoryContainer.CellsRect.Find(c => Vector2.Distance(obj, c.position) < 100);
+
         private void DropEventReceiver(int _)
-        {
-            if (!SelectedCell)
+        {            
+            if (!SelectedCell || SelectedCell.IsEmpty)
                 return;
-            if (SelectedCell.MItemContainer.IsEmpty)
-                return;
+
             DropItem(SelectedCell.Id, SelectedCell.Count);
             if (SelectedCell.CellIsInventorySon)
                 inventoryMassCalculator.DeleteItem(SelectedCell.Id, SelectedCell.Count);
@@ -349,7 +262,7 @@ namespace Inventory
         }
         public void ActivateItem()
         {
-            if (SelectedCell && SelectedCell.MItemContainer.IsEmpty)
+            if (SelectedCell && SelectedCell.IsEmpty)
                 return;
 
             int id = SelectedCell.Id;
@@ -389,15 +302,15 @@ namespace Inventory
             InventoryCell listPlace = null;
             while (true)// нашлись свободные слоты
             {
-                if (list.FindAll(c => !c.MItemContainer.IsEmpty).Count == 0)// если не нашлись занятые слоты 
+                if (list.FindAll(c => !c.IsEmpty).Count == 0)// если не нашлись занятые слоты 
                     break;
 
-                listPlace = list.Find(c => !c.MItemContainer.IsEmpty);
+                listPlace = list.Find(c => !c.IsEmpty);
                 // поиск слота, с предметом того же типа, и не заполненным   
-                var place = places.Find(c => !c.MItemContainer.IsFilled && c.Id.Equals(listPlace.Id));
+                var place = places.Find(c => !c.IsFilled && c.Id.Equals(listPlace.Id));
 
                 if (place == null)
-                    place = places.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
+                    place = places.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
                 if (place == null)//если и пустых нет в инвентаре то выход
                     break;
 
@@ -408,6 +321,88 @@ namespace Inventory
 
                 EndDrag();
             }
+        }
+
+        public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
+        {
+            for (int i = 0; i < countSlots; i++)
+            {
+                var child = freeCellsContainer.GetChild(0);
+                child.SetParent(busyCellsContainer);
+
+                if (content != null)
+                    child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
+            }
+            inventoryInput.EnableInventory();
+            lastItemContainer = it;
+
+            GridLayoutGroup gr = busyCellsContainer.GetComponent<GridLayoutGroup>();
+            var rtbtn = takeAllButton.GetComponent<RectTransform>();
+            rtbtn.sizeDelta = new Vector2((gr.cellSize.x + gr.spacing.x) * gr.constraintCount, rtbtn.sizeDelta.y);
+            rtbtn.position = new Vector3(rtbtn.position.x, gr.transform.position.y + (gr.cellSize.y * countSlots / gr.constraintCount), 0);
+            takeAllButton.gameObject.SetActive(true);
+        }
+
+        internal void DelItem(ItemStates.ItemsID bulletId, int count)
+        {
+            var foundedCell = inventoryContainer.GetCells().Find(c => c.Id == (int)bulletId);
+
+            if (foundedCell)
+            {
+                if (foundedCell.Count >= count)
+                {
+                    foundedCell.DelItem(count);
+                    count = 0;
+                }
+                else
+                {
+                    count -= foundedCell.Count;
+                    foundedCell.DelItem(foundedCell.Count);
+                    DelItem(bulletId, count);
+                }
+            }
+        }
+
+        internal int Containts(ItemStates.ItemsID bulletId)
+        {
+            int count = 0;
+
+            inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId && (count += c.Count) > -1);
+            return count;
+        }
+
+        public void CloseContainer()
+        {
+            List<Transform> childs = new List<Transform>();
+            for (int i = 0; i < busyCellsContainer.childCount; i++)
+            {
+                childs.Add(busyCellsContainer.GetChild(i));
+            }
+            foreach (var c in childs)
+            {
+                c.SetParent(freeCellsContainer);
+            }
+
+            var cells = new List<(int id, int count)>();
+
+            for (int i = 0; i < childs.Count; i++)
+            {
+                var item = childs[i].GetComponent<InventoryCell>();
+                cells.Add((item.Id, item.Count));
+            }
+            lastItemContainer.Close(cells);
+            lastItemContainer = null;
+            takeAllButton.gameObject.SetActive(false);
+        }
+
+        public void OnDisable()
+        {
+            inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
+            inventoryInput.InputKeyEvent -= SelectCell;
+            inventoryInput.DropEvent -= DropEventReceiver;
+            inventoryInput.SpinEvent -= SpinReceiver;
+            inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
+            takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
         }
         public class InventoryMassCalculator
         {

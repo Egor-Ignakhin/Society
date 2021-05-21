@@ -2,6 +2,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 namespace Inventory
 {
@@ -27,7 +28,7 @@ namespace Inventory
         private PlayerClasses.PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
         [SerializeField] private TextMeshProUGUI weightText;
-        [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно
+        [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
         private InventoryInput inventoryInput;
         private InventoryDrawer inventoryDrawer;
         public delegate void TakeItem(int id, int count);
@@ -91,7 +92,8 @@ namespace Inventory
                 {(int)ItemStates.ItemsID.Binoculars,Resources.Load<InventoryItem>("InventoryItems\\Binoculars_item_1") },
                 {(int)ItemStates.ItemsID.Knife_1,Resources.Load<InventoryItem>("InventoryItems\\Knife_Item_1") },
                 {(int)ItemStates.ItemsID.Bullet_7_62,Resources.Load<InventoryItem>("InventoryItems\\7.62 bullet_Item_1") },
-                {(int)ItemStates.ItemsID.Bullet_9_27,Resources.Load<InventoryItem>("InventoryItems\\9.27 bullet_Item_1") }
+                {(int)ItemStates.ItemsID.Bullet_9_27,Resources.Load<InventoryItem>("InventoryItems\\9.27 bullet_Item_1") },
+                {(int)ItemStates.ItemsID.Tablets_1,Resources.Load<InventoryItem>("InventoryItems\\Tablets_Item_1") }
             };
             IsInitialized = true;
         }
@@ -102,22 +104,22 @@ namespace Inventory
         /// <param name="item"></param>    
         public void AddItem(int id, int count, bool isRecursion = false)
         {
-            if (Cells.FindAll(c => c.MItemContainer.IsEmpty).Count == 0)// если не нашлись свободные слоты
+            if (Cells.FindAll(c => c.IsEmpty).Count == 0)// если не нашлись свободные слоты
                 return;
 
             // поиск слота, с предметом того же типа, и не заполненным   
-            var cell = Cells.Find(c => !c.MItemContainer.IsFilled && c.Id.Equals(id));
+            var cell = Cells.Find(c => !c.IsFilled && c.Id.Equals(id));
 
-            if (cell is null) cell = Cells.Find(c => c.MItemContainer.IsEmpty);// если слот не нашёлся то запись в пустой слот
+            if (cell is null) cell = Cells.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
             cell.SetItem(id, count, false);
 
-            
+
             int outOfRange = cell.Count - ItemStates.GetMaxCount(cell.Id);
             if (outOfRange > 0)
             {
                 cell.DelItem(outOfRange);
-                AddItem(id, outOfRange, true);                
+                AddItem(id, outOfRange, true);
             }
 
             if (!isRecursion)
@@ -129,6 +131,11 @@ namespace Inventory
 
         public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
         public void MealPlayer(int food, int water) => playerStatements.MealPlayer(food, water);
+        internal void Heal((float health, float radiation) medical) => playerStatements.HealPlayer(medical.health, medical.radiation);
+
+
+
+
 
         private void OnDisable()
         {

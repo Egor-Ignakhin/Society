@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,19 +16,21 @@ namespace Inventory
 
         [SerializeField] private RectTransform mItem;// трансформация предмета
         [SerializeField] private TextMeshProUGUI mText;// счётчик предметов
-        public Item MItemContainer { get; private set; } = new Item();
+        private Item MItemContainer { get; set; } = new Item();
         private AdditionalSettins additionalSettins;
         private InventoryEventReceiver eventReceiver;
         private InventoryContainer inventoryContainer;
         public bool CellIsInventorySon { get; private set; } = false;
         public int Id => MItemContainer.Id;
         public int Count => MItemContainer.Count;
+        public bool IsEmpty => MItemContainer.IsEmpty;
+        public bool IsFilled => MItemContainer.IsFilled;
         public sealed class AdditionalSettins
         {
-            public Vector3 DefaultScale { get; } // обычный размер
-            public Vector3 AnimatedScale { get; } // анимированный размер
-            public Color FocusedColor { get; }// цвет при выделении
-            public Color UnfocusedColor { get; }// обычный цвет
+            public readonly Vector3 DefaultScale; // обычный размер
+            public readonly Vector3 AnimatedScale;// анимированный размер
+            public readonly Color FocusedColor;// цвет при выделении
+            public readonly Color UnfocusedColor;// обычный цвет
             public AdditionalSettins(Image bg)
             {
                 DefaultScale = bg.GetComponent<RectTransform>().localScale;
@@ -76,11 +77,11 @@ namespace Inventory
         /// <param name="cell"></param>
         public int SetItem(CopyPasteCell copyPaste, bool isMerge = true)
         {
-            int outRangeCount = MItemContainer.SetItem(copyPaste.id, copyPaste.count, isMerge);//запись в свободную ячейку кол-во и возвращение излишка
+            int outRangeCount = MItemContainer.SetItem(copyPaste.Id, copyPaste.Count, isMerge);//запись в свободную ячейку кол-во и возвращение излишка
 
-            mItem = copyPaste.mItem;// присвоение новых транс-ов
-            mImage = copyPaste.mImage;// и новых image                        
-            mText = copyPaste.mText;
+            mItem = copyPaste.MItem;// присвоение новых транс-ов
+            mImage = copyPaste.MImage;// и новых image                        
+            mText = copyPaste.MText;
 
             ChangeSprite();
             mItem.localScale = additionalSettins.DefaultScale;
@@ -100,10 +101,10 @@ namespace Inventory
         public void ChangeSprite()
         {
             mImage.sprite = InventorySpriteData.GetSprite(Id);
-            mImage.color = MItemContainer.IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
+            mImage.color = IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст
-            if (MItemContainer.IsEmpty)
+            if (IsEmpty)
                 eventReceiver.UnfocusSelectedCell(this);//снимается фокус со слота
         }
         #region Events
@@ -121,10 +122,8 @@ namespace Inventory
         /// вызывается при выходе курсора из пространства ячейки
         /// </summary>
         /// <param name="eventData"></param>
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            eventReceiver.OutsideCursorCell();
-        }
+        public void OnPointerExit(PointerEventData eventData) => eventReceiver.OutsideCursorCell();
+
 
 
         /// <summary>
@@ -135,7 +134,8 @@ namespace Inventory
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-            if (MItemContainer.IsEmpty)
+
+            if (IsEmpty)
                 return;
 
             eventReceiver.BeginDrag(this);
@@ -150,12 +150,11 @@ namespace Inventory
         {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
-            //кнопка для удержания обязательно должна быть левой
 
-            if (MItemContainer.IsEmpty)
+            if (IsEmpty)
                 return;
 
-            eventReceiver.DragCell(eventData);
+            eventReceiver.OnDrag(eventData);
         }
 
         /// <summary>
@@ -167,7 +166,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (MItemContainer.IsEmpty)
+            if (IsEmpty)
                 return;
 
             eventReceiver.EndDrag();
@@ -238,9 +237,8 @@ namespace Inventory
                 int outRange = 0;
                 if (Id == nid && isMerge)// если тип предмета тот же, что и был в слоте
                 {
-                    outRange = MaxCount - (Count += ncount);// получаем выход за границу
-                    if (Count > MaxCount)
-                        Count = MaxCount;
+                    outRange = MaxCount - (Count += ncount);// получаем выход за границу                    
+                    Count = Mathf.Clamp(Count, 0, MaxCount);
                 }
                 else// иначе просто замена
                     Count = ncount;
@@ -255,21 +253,21 @@ namespace Inventory
         /// </summary>
         public struct CopyPasteCell
         {
-            public TextMeshProUGUI mText { get; set; }
-            public RectTransform mItem { get; set; }
-            public Image mImage { get; set; }
-            public int count { get; set; }
-            public int id { get; set; }
+            public TextMeshProUGUI MText { get; set; }
+            public RectTransform MItem { get; set; }
+            public Image MImage { get; set; }
+            public int Count { get; set; }
+            public int Id { get; set; }
 
             public CopyPasteCell(InventoryCell c)
             {
-                mItem = c.GetItemTransform();
-                mImage = c.GetImage();
-                count = c.Count;
-                mText = c.mText;
-                id = c.Id;
+                MItem = c.GetItemTransform();
+                MImage = c.GetImage();
+                Count = c.Count;
+                MText = c.mText;
+                Id = c.Id;
             }
-            public bool Equals(CopyPasteCell obj) => obj.id == id && obj.count < ItemStates.GetMaxCount(id) && count < ItemStates.GetMaxCount(id);
+            public bool Equals(CopyPasteCell obj) => obj.Id == Id && obj.Count < ItemStates.GetMaxCount(Id) && Count < ItemStates.GetMaxCount(Id);
 
         }
 
@@ -278,10 +276,17 @@ namespace Inventory
         /// </summary>
         public bool Activate()
         {
-            if (Id == 5 || Id == 6)
+            if (ItemStates.ItsMeal(Id))
             {
                 var meal = ItemStates.GetMeatNutrition(Id);
                 inventoryContainer.MealPlayer(meal.Item1, meal.Item2);
+                DelItem(1);
+                return true;
+            }
+            else if (ItemStates.ItsMedical(Id))
+            {
+                var medical = ItemStates.GetMedicalPower(Id);
+                inventoryContainer.Heal(medical);
                 DelItem(1);
                 return true;
             }
