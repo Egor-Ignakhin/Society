@@ -128,6 +128,11 @@ namespace PlayerClasses
             StartCoroutine(nameof(RadiationTimer));
         }
         public void InjurePerson(float value) => Health -= value;
+        public void InjurePerson(float h, float r)
+        {
+            Health -= h;
+            Radiation += r;
+        }
 
         public void AddMeal(int thirst, int food)
         {
