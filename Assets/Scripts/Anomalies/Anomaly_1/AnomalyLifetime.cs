@@ -3,27 +3,29 @@ using UnityEngine;
 
 namespace Anomaly_1
 {
-    class AnomalyLifetime : MonoBehaviour
+    class AnomalyLifetime : ObjectPool
     {
         [SerializeField] private float timeForDestroyInSeconds;
         private AnomalyPulsation anomalyPulsation;
 
-        private void Start()
+        public void OnInit(PoolableObject instance)
         {
             anomalyPulsation = GetComponent<AnomalyPulsation>();
+            prefabAsset = instance;
         }
 
-        public void MakePulsation(GameObject anomaly, Vector3 spawnPosition)
+        public void MakePulsation(Vector3 spawnPosition)
         {
-            var instantiatedAnomaly = Instantiate(anomaly, spawnPosition, Quaternion.identity);
+            var instantiatedAnomaly = GetObjectFromPool();
+            instantiatedAnomaly.transform.position = spawnPosition;
             anomalyPulsation.Pulsate(spawnPosition);
             StartCoroutine(DestroyAnomaly(instantiatedAnomaly));
         }
 
-        private IEnumerator DestroyAnomaly(GameObject instantiatedAnomaly)
+        private IEnumerator DestroyAnomaly(PoolableObject instantiatedAnomaly)
         {
             yield return new WaitForSeconds(timeForDestroyInSeconds);
-            Destroy(instantiatedAnomaly);
+            ReturnToPool(instantiatedAnomaly);
         }
     }
 }

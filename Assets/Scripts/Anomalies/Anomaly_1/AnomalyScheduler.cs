@@ -7,7 +7,7 @@ namespace Anomaly_1
     {
         [SerializeField] private float lowerTimeLimitInSeconds; // Минимальное время до появление аномалии
         [SerializeField] private float upperTimeLimitInSeconds;
-        [SerializeField] private GameObject anomaly;
+        [SerializeField] private PoolableObject anomaly;
         private SpawnPositionFinder spawnPositionFinder;
         private AnomalyLifetime anomalyLifetime;
 
@@ -17,13 +17,15 @@ namespace Anomaly_1
             anomalyLifetime = GetComponent<AnomalyLifetime>();
             var transform = GetComponent<Transform>();
             var collider = GetComponent<Collider>();
+
+            anomalyLifetime.OnInit(anomaly);
             StartCoroutine(SetSpawn(CalculateWaitTime(lowerTimeLimitInSeconds, upperTimeLimitInSeconds), transform, collider));
         }
 
         private IEnumerator SetSpawn(float waitTimeInSeconds, Transform transform, Collider collider)
         {
             yield return new WaitForSeconds(waitTimeInSeconds);
-            anomalyLifetime.MakePulsation(anomaly, spawnPositionFinder.CalculateSpawnPosition(transform, collider));
+            anomalyLifetime.MakePulsation(spawnPositionFinder.CalculateSpawnPosition(transform, collider));
             StartCoroutine(SetSpawn(CalculateWaitTime(lowerTimeLimitInSeconds, upperTimeLimitInSeconds), transform, collider));
         }
 
