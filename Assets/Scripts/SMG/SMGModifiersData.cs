@@ -6,13 +6,24 @@ namespace SMG
 {
     public class SMGModifiersData : MonoBehaviour
     {
-        private static readonly List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)> data =
-            new List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)>();
+        private List<SMGTitleTypeIndex> data = new List<SMGTitleTypeIndex>();
 
-        public List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)> GetModifiersData() => data;
-        internal void AddModifier(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)
+        private SMGSaver saver;
+        private readonly string savingPath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\SMGSave.json";
+        private void OnEnable()
         {
-            data.Add((modifiableGun, type, index));            
+            saver = new SMGSaver();
+            saver.Load(ref data, savingPath);
+        }
+
+        public List<SMGTitleTypeIndex> GetModifiersData() => data;
+        internal void AddModifier(SMGTitleTypeIndex tti)
+        {
+            data.Add(tti);
+        }
+        private void OnDisable()
+        {
+            saver.Save(data, savingPath);
         }
     }
 }

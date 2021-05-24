@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 namespace Inventory
 {
@@ -36,9 +37,12 @@ namespace Inventory
         private RectTransform draggedItem;// удерживаемый предмет
         private bool isDragged;// происходит ли удержание
         private InventoryCell SelectedCell;
-
+        private GameObject modifiersPage;
+        private Button modPageButton;
+        private  SMG.SMGModifiersData modifiersData;
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
-         InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer, TextMeshProUGUI weightText, Button taB)
+         InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
+         TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage)
         {
             mainParent = mp;
             fps = controller;
@@ -50,6 +54,8 @@ namespace Inventory
             inventoryMassCalculator = new InventoryMassCalculator(fps, weightText);
             inventoryDrawer = iDrawer;
             takeAllButton = taB;
+            modPageButton = modbtn;
+            modifiersPage = modPage;            
         }
         public void OnEnable()
         {
@@ -61,6 +67,11 @@ namespace Inventory
             inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
             takeAllButton.onClick.AddListener(TakeAllItemsInContainerReceiver);
             takeAllButton.gameObject.SetActive(false);
+            modifiersPage.SetActive(false);
+            modPageButton.onClick.AddListener(ModifiersPageChangeActive);
+
+            foreach (var m in modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>())
+                m.OnInit();
         }
         internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
         private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
@@ -81,6 +92,7 @@ namespace Inventory
                 Cursor.lockState = CursorLockMode.None;
                 fps.SetState(State.locked);
                 ScreensManager.SetScreen(this);
+                RewriteSMGCells();
             }
             EndDrag();
         }
@@ -116,6 +128,12 @@ namespace Inventory
             draggedItem = cell.GetItemTransform();
             draggedItem.SetParent(mainParent);
         }
+
+        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData)
+        {
+            modifiersData = sMGModifiersData;
+        }
+
         public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
         {
             //удержание предмета
@@ -394,7 +412,17 @@ namespace Inventory
             lastItemContainer = null;
             takeAllButton.gameObject.SetActive(false);
         }
-
+        private void RewriteSMGCells()
+        {
+            var smgCells = modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>();
+            var modData = modifiersData.GetModifiersData();
+            foreach (var c in smgCells)
+                c.Clear();
+            for(int i = 0; i < modData.Count; i++)
+            {
+                smgCells[i].RewriteSprite(modData[i]);
+            }
+        }
         public void OnDisable()
         {
             inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
@@ -403,6 +431,11 @@ namespace Inventory
             inventoryInput.SpinEvent -= SpinReceiver;
             inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
             takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
+            modPageButton.onClick.RemoveListener(ModifiersPageChangeActive);
+        }
+        public void ModifiersPageChangeActive()
+        {
+            modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
         }
         public class InventoryMassCalculator
         {

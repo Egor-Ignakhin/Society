@@ -28,6 +28,8 @@ namespace Inventory
         private PlayerClasses.PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
         [SerializeField] private TextMeshProUGUI weightText;
+        [SerializeField] private Button ModifiersActivator;
+        [SerializeField] private GameObject modifiersPage;
         [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
         private InventoryInput inventoryInput;
         private InventoryDrawer inventoryDrawer;
@@ -45,7 +47,8 @@ namespace Inventory
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton);
+                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
+                ModifiersActivator, modifiersPage);
             EventReceiver.OnEnable();
         }
         private void Start()
@@ -97,6 +100,8 @@ namespace Inventory
                 {(int)ItemStates.ItemsID.Tablets_1,Resources.Load<InventoryItem>("InventoryItems\\Tablets_Item_1") }
             };
             IsInitialized = true;
+
+            EventReceiver.SetSMGData(FindObjectOfType<SMG.SMGModifiersData>());
         }
 
         /// <summary>
@@ -133,10 +138,6 @@ namespace Inventory
         public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
         public void MealPlayer(int food, int water) => playerStatements.MealPlayer(food, water);
         internal void Heal((float health, float radiation) medical) => playerStatements.HealPlayer(medical.health, medical.radiation);
-
-
-
-
 
         private void OnDisable()
         {

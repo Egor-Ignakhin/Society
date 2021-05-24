@@ -15,7 +15,7 @@ namespace SMG
             eventReceiver = ev;
             mImage = GetComponent<Image>();
         }
-        public void ChangeItem((GunTitles modifiableGun, ModifierTypes type, ModifierIndex index) modState)
+        public void ChangeItem(SMGTitleTypeIndex modState)
         {
             mImage.sprite = GetSprite(modState);
         }
