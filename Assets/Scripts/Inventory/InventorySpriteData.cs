@@ -14,7 +14,7 @@ namespace Inventory
             { (int)ItemStates.ItemsID.Default, null},
             { (int)ItemStates.ItemsID.Axe, Resources.Load<Sprite>("InventoryItems\\Axe_1") },
             { (int)ItemStates.ItemsID.Makarov, Resources.Load<Sprite>("InventoryItems\\Makarov_1") },
-            { (int)ItemStates.ItemsID.TTPistol, Resources.Load<Sprite>("InventoryItems\\Test_Item_Pistol2") },
+            { (int)ItemStates.ItemsID.TTPistol, Resources.Load<Sprite>("InventoryItems\\TT_1") },
             { (int)ItemStates.ItemsID.Ak_74, Resources.Load<Sprite>("InventoryItems\\AK-74u_1") },
             { (int)ItemStates.ItemsID.CannedFood, Resources.Load<Sprite>("InventoryItems\\CannedFood_1") },
             { (int)ItemStates.ItemsID.Milk, Resources.Load<Sprite>("InventoryItems\\Milk_1") },

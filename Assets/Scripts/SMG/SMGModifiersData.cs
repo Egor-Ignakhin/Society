@@ -1,15 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using static SMG.SMGModifierCharacteristics;
 
 namespace SMG
 {
-    static class SMGModifiersData
+    public class SMGModifiersData : MonoBehaviour
     {
-        private static readonly Dictionary<int, GameObject> modifiers = new Dictionary<int, GameObject>();
-        static SMGModifiersData()
-        {
+        private static readonly List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)> data =
+            new List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)>();
 
+        public List<(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)> GetModifiersData() => data;
+        internal void AddModifier(GunTitles modifiableGun, ModifierTypes type, ModifierIndex index)
+        {
+            data.Add((modifiableGun, type, index));            
         }
     }
 }

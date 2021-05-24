@@ -85,6 +85,7 @@ namespace Inventory
             itemPrefabs = new Dictionary<int, InventoryItem>
             {
                 {(int)ItemStates.ItemsID.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {(int)ItemStates.ItemsID.TTPistol, Resources.Load<InventoryItem>("InventoryItems\\TT_item_1") },
                 {(int)ItemStates.ItemsID.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
                 {(int)ItemStates.ItemsID.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
                 {(int)ItemStates.ItemsID.CannedFood, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },

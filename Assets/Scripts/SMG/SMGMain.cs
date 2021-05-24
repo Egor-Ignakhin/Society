@@ -28,12 +28,13 @@ namespace SMG
         private SMGGunCharsDrawer gunCharsDrawer;
 
         private void Start()
-        {
+        {            
             SetEnableMaps(false);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
 
-            eventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer, FindObjectOfType<Inventory.InventoryContainer>(),gunCharsDrawer);
+            eventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
+                FindObjectOfType<Inventory.InventoryContainer>(),gunCharsDrawer, MSMG, FindObjectOfType<SMGModifiersData>());
         }
         public void SetEnableMaps(bool v)
         {

@@ -30,9 +30,8 @@ namespace Shoots
 
         [SerializeField] protected ParticleSystem flashEffect;// эффект выстрела
         [SerializeField] protected Transform droppingPlace;// затвор
-        [SerializeField] protected LayerMask layerMask;
+        protected LayerMask layerMask;
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
-        [SerializeField] protected AudioSource mAudioSource;
         [SerializeField] protected Inventory.ItemStates.ItemsID bulletId;
 
 
@@ -46,11 +45,17 @@ namespace Shoots
         private bool isAutomatic;// автоматическое ли оружие
         private Inventory.InventoryEventReceiver inventoryEv;
 
+        private GunAnimator gunAnimator;
         protected abstract void Awake();
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             inventoryEv = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
+        }
+        internal void OnInit(LayerMask interactableLayers, GunAnimator gAnim)
+        {
+            layerMask = interactableLayers;
+            gunAnimator = gAnim;
         }
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
@@ -63,12 +68,12 @@ namespace Shoots
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
-                mAudioSource.PlayOneShot(fireClip);
+                gunAnimator.PlayArmorySound(fireClip);
             }
             else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())// если пуль нет, то происходит щелчок пустого затвора
             {
                 currentCartridgeDispenser = 0;
-                mAudioSource.PlayOneShot(nullBulletsClip);
+                gunAnimator.PlayArmorySound(nullBulletsClip);
                 isAutomatic = true;
             }
             return canShooting;
@@ -103,9 +108,9 @@ namespace Shoots
         {
             if (dispenser.IsFull)
                 IsReload = false;
-
+            
             if (!IsReload)
-                return;
+                return;            
 
             int remainingBullets = inventoryEv.Containts(bulletId);
 
@@ -121,11 +126,11 @@ namespace Shoots
             if (!IsReload)
             {
                 var outOfRange = remainingBullets - dispenser.maxBullets;
-                if(outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
+                if (outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
                 {
                     remainingBullets -= outOfRange;
                 }
-                inventoryEv.DelItem(bulletId, remainingBullets);                
+                inventoryEv.DelItem(bulletId, remainingBullets);
                 dispenser.Reload(remainingBullets);
                 currentReloadTime = 0;
             }
@@ -153,15 +158,15 @@ namespace Shoots
         }
         public void PlayStartReloadClip()
         {
-            mAudioSource.PlayOneShot(startReloadClip);
+            gunAnimator.PlayArmorySound(startReloadClip);
         }
         public void PlayReloadSound()
         {
-            mAudioSource.PlayOneShot(reloadClip);
+            gunAnimator.PlayArmorySound(reloadClip);
         }
         public void PlayLastReloadSound()
         {
-            mAudioSource.PlayOneShot(lastReloadClip);
+            gunAnimator.PlayArmorySound(lastReloadClip);
         }
 
 

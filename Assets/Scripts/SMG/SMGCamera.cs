@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Shoots;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace SMG
 {
@@ -7,9 +9,11 @@ namespace SMG
         /// <summary>
         /// шаг камеры при приближении-отдалении
         /// </summary>
+
+        [SerializeField] private List<Transform> guns = new List<Transform>(3);
+
         private const int cameraScrollStep = 5;
         private float defCamFov;
-        [SerializeField]
         private Transform activeGun;
         private Vector3 oldPos;
 
@@ -19,8 +23,28 @@ namespace SMG
         private Camera mCamera;
         private void Awake()
         {
+            activeGun = guns[0];
             activeGunDefRot = activeGun.rotation;
             defCamFov = mCamera.fieldOfView;
+            foreach (var g in guns)
+                g.gameObject.SetActive(false);
+        }
+        public void SetActiveGun(int id)
+        {
+            activeGun.gameObject.SetActive(false);
+            switch (id)
+            {
+                case 2:
+                    activeGun = guns[0];
+                    break;
+                case 3:
+                    activeGun = guns[1];
+                    break;
+                case 4:
+                    activeGun = guns[2];
+                    break;
+            }
+            activeGun.gameObject.SetActive(true);
         }
         private void OnEnable()
         {

@@ -22,7 +22,7 @@ namespace Shoots
                 MGun = g;
                 HangPlace = hp;
                 AimPlace = ap;
-            }
+            }           
         }
 
         private FirstPersonController fps;
@@ -34,6 +34,9 @@ namespace Shoots
         private enum States { dSlant, LSlant, Rlant };
 
         private int currentActiveGunI = -1;
+
+        [SerializeField] private LayerMask interactableLayers;
+        private AudioSource unitAudioSource;
 
         private void OnEnable()
         {
@@ -66,8 +69,14 @@ namespace Shoots
             advanced = new AdvancedSettings();
 
             fps = FindObjectOfType<FirstPersonController>();
+            unitAudioSource = GetComponent<AudioSource>();
 
-            Inventory.InventoryEventReceiver.ChangeSelectedCellEvent += ChangeGun;
+            InventoryEventReceiver.ChangeSelectedCellEvent += ChangeGun;
+
+            foreach(var g in guns)
+            {
+                g.MGun.OnInit(interactableLayers, this);
+            }
         }
         private void OnDisable()
         {
@@ -128,8 +137,11 @@ namespace Shoots
                 case (int)ItemStates.ItemsID.Makarov:
                     currentActiveGunI = 0;
                     break;
-                case (int)ItemStates.ItemsID.Ak_74:
+                case (int)ItemStates.ItemsID.TTPistol:
                     currentActiveGunI = 1;
+                    break;
+                case (int)ItemStates.ItemsID.Ak_74:
+                    currentActiveGunI = 2;
                     break;
                 default:
                     currentActiveGunI = -1;
@@ -197,6 +209,10 @@ namespace Shoots
                 return;
             Quaternion q = IsAiming && !gun.IsReload ? aimPlace.rotation : hangPlace.rotation;// следующая позиция
             tGun.rotation = Quaternion.RotateTowards(gun.transform.rotation, q, 1);
+        }
+        public void PlayArmorySound(AudioClip clip)
+        {
+            unitAudioSource.PlayOneShot(clip);                
         }
     }
 }

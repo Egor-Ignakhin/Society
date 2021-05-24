@@ -17,6 +17,8 @@ namespace SMG
         [SerializeField] private TextMeshProUGUI dispVolText;
         public void OnChangeSelectedGun(int id)
         {
+            if (!Inventory.ItemStates.ItsGun(id))
+                return;
             var chars = GunCharacteristics.GetGunCharacteristics(id);
             titleTextDrawing.text = chars.title;
             titleTextPreview.text = chars.title;
