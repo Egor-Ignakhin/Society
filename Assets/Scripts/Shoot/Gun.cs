@@ -151,8 +151,8 @@ namespace Shoots
             //mass * speed * area * shape coefficient
             float damage = 0.178f * G * V * F * S;
 
-            if (distance != 0)
-                damage /= (distance * 10 / maxDistance);
+            if (distance > maxDistance)
+                damage = 0;                
             // Debug.Log(damage);
             return damage;
         }

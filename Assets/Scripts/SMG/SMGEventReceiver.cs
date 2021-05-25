@@ -8,15 +8,20 @@ namespace SMG
 
     public class SMGEventReceiver
     {
-        private readonly List<SMGModifiersCell> ModifiersCells = new List<SMGModifiersCell>();
-        private readonly List<SMGGunsCell> gunsCells = new List<SMGGunsCell>();
-        private readonly GameObject modifiersAnswer;
-        private SMGModifiersCell currentModCell;
-        private readonly Inventory.InventoryContainer inventoryContainer;
-        private readonly SMGGunCharsDrawer gunCharsDrawer;
-        private readonly SMGCamera MSMGCamera;
-        private readonly SMGModifiersData modifiersData;
-        public SMGEventReceiver(Transform mcData, Transform gsData, GameObject ma, Inventory.InventoryContainer ic, SMGGunCharsDrawer gCD, SMGCamera cam, SMGModifiersData mD)
+        private readonly List<SMGModifiersCell> ModifiersCells = new List<SMGModifiersCell>();//слоты с модификаторами
+        private readonly List<SMGGunsCell> gunsCells = new List<SMGGunsCell>();// слоты с оружием
+        private readonly GameObject modifiersAnswer;// подсказка о модификаторе
+        private readonly RectTransform modifiersAnswerTrans;// подсказка о модификаторе
+        private SMGModifiersCell currentModCell;//активный слот под модификации
+        private readonly Inventory.InventoryContainer inventoryContainer;// главный обработчик инвентаря
+        private readonly SMGGunCharsDrawer gunCharsDrawer;// отрисовщик выделенного оружия
+        private readonly SMGCamera MSMGCamera;// камера для отрисовки окна предпросмотра
+        private readonly SMGModifiersData modifiersData;// контейнер под модификации
+        private readonly SMGModifiersCellDescription modifiersCellDescription;// динамичное описание для модификаций
+        public delegate void ChangeCellHandler(SMGModifiersCell t);
+        public event ChangeCellHandler ChangeModfierCell;// событие смены активного модификатора
+        public SMGEventReceiver(Transform mcData, Transform gsData, GameObject ma, Inventory.InventoryContainer ic,
+            SMGGunCharsDrawer gCD, SMGCamera cam, SMGModifiersData mD, SMGModifiersCellDescription mcd)
         {
             ModifiersCells = mcData.GetComponentsInChildren<SMGModifiersCell>().ToList();
 
@@ -29,17 +34,20 @@ namespace SMG
                 c.OnInit(this);
 
             modifiersAnswer = ma;
-
+            modifiersAnswerTrans = modifiersAnswer.GetComponent<RectTransform>();
             modifiersAnswer.SetActive(false);
 
             inventoryContainer = ic;
             gunCharsDrawer = gCD;
             MSMGCamera = cam;
             modifiersData = mD;
+            modifiersCellDescription = mcd;
         }
-        internal void OnActivateCurrentModifierCell(SMGModifiersCell sMGModifiersCell)
+        internal void OnActivateCurrentModifierCell(SMGModifiersCell modifiersCell)
         {
-            throw new NotImplementedException();
+            if (modifiersCell.IsEmpty)//если слот пуст
+                return;
+            ChangeModfierCell?.Invoke(modifiersCell);
         }
 
         internal void OnSelectGunsCell(SMGGunsCell sMGGunsCell)
@@ -55,6 +63,7 @@ namespace SMG
         public void OnSelectModifiersCell(SMGModifiersCell cell)
         {
             currentModCell = cell;
+            modifiersCellDescription.ChangeModifier(currentModCell.mTTI);
         }
 
         internal void OnEnable()
@@ -65,7 +74,7 @@ namespace SMG
             {
                 gunCharsDrawer.OnChangeSelectedGun(gunsCells[0].Id);
                 MSMGCamera.SetActiveGun(gunsCells[0].Id);
-            }
+            }            
         }
 
         public void OnUpdate()
@@ -73,8 +82,8 @@ namespace SMG
             modifiersAnswer.SetActive(currentModCell);
             if (modifiersAnswer.activeInHierarchy)
             {
-                modifiersAnswer.transform.localPosition = Input.mousePosition;
-            }
+                modifiersAnswerTrans.localPosition = Input.mousePosition;
+            }            
         }
         public void OnDeselectModifiersCell()
         {
@@ -100,8 +109,7 @@ namespace SMG
             for (int i = 0; i < ModifiersCells.Count; i++)
                 ModifiersCells[i].Clear();
 
-            //затем заполнение имеющимися модами
-            Debug.Log(modifirs.Count);
+            //затем заполнение имеющимися модами            
             for (int i = 0; i < modifirs.Count; i++)
                 ModifiersCells[i].ChangeItem(modifirs[i]);
         }

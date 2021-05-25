@@ -59,7 +59,7 @@
         }
         public void SetSpeed()
         {
-            Speed = MaxDistance / CoveredDistance;
+            //Speed = MaxDistance / CoveredDistance;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Shoots;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SMG
 {
@@ -17,17 +19,26 @@ namespace SMG
         private Transform activeGun;
         private Vector3 oldPos;
 
-        private Quaternion activeGunDefRot;
+        private Dictionary<Transform, Quaternion> DefGunsDefRot = new Dictionary<Transform, Quaternion>();
 
         [SerializeField]
         private Camera mCamera;
+        [SerializeField] Volume volume;
+        [SerializeField] private Transform gunsContainer;
+
+        public bool IsActive { get; private set; }
+
         private void Awake()
         {
+            print(1);
             activeGun = guns[0];
-            activeGunDefRot = activeGun.rotation;
+            foreach (var g in guns)
+                DefGunsDefRot.Add(g, g.rotation);
             defCamFov = mCamera.fieldOfView;
             foreach (var g in guns)
                 g.gameObject.SetActive(false);
+
+            Disable();
         }
         public void SetActiveGun(int id)
         {
@@ -46,10 +57,6 @@ namespace SMG
             }
             activeGun.gameObject.SetActive(true);
         }
-        private void OnEnable()
-        {
-            ResetGunRotation();
-        }
         public void RotateAroundMouse()
         {
             if (Input.GetMouseButton(0))
@@ -62,7 +69,7 @@ namespace SMG
                     x /= 5;
 
                     activeGun.Rotate(0, x, 0);
-                    activeGun.parent.Rotate(-y, 0, 0);
+                    gunsContainer.Rotate(-y, 0, 0);
                 }
             }
             oldPos = Input.mousePosition;
@@ -71,6 +78,19 @@ namespace SMG
                 CameraMove(false);
             else if (Input.mouseScrollDelta.y < 0)
                 CameraMove(true);
+        }
+
+        internal void Enable()
+        {
+            ResetGunRotation();
+            IsActive = true;
+            volume.gameObject.SetActive(true);
+        }
+        internal void Disable()
+        {
+            ResetGunRotation();
+            IsActive = false;
+            volume.gameObject.SetActive(true);
         }
 
         private void CameraMove(bool fw)
@@ -85,7 +105,9 @@ namespace SMG
         /// </summary>
         private void ResetGunRotation()
         {
-            activeGun.rotation = activeGunDefRot;
+            foreach (var g in guns)
+                g.localRotation = DefGunsDefRot[g];
+            gunsContainer.rotation = Quaternion.identity;
             mCamera.fieldOfView = defCamFov;
         }
     }

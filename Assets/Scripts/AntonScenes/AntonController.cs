@@ -5,8 +5,6 @@ public class AntonController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        FindObjectOfType<FirstPersonController>().CanSprint = false;
-        FindObjectOfType<FirstPersonController>().WalkSpeedInternal = 1;
+        Cursor.visible = false;               
     }
 }

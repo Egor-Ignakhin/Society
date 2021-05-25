@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,12 +12,13 @@ public sealed class FirstPersonController : MonoBehaviour
     private float VerticalRotationRange = 0f;
     private readonly float HeadMaxY = 90;
     private readonly float HeadMinY = -90;
-    private float Sensitivity { get; set; } = 2;
+    private const float Sensitivity = 2;
 
     public float SensivityM { get; set; } = 1;
     private float CameraSmoothing = 5f;
 
     private Camera PlayerCamera;
+    private Transform PlayerCameraTr;
 
     private Vector3 targetAngles;
     private Vector3 followAngles;
@@ -28,24 +28,24 @@ public sealed class FirstPersonController : MonoBehaviour
     #endregion
 
     #region Movement Settings
-    internal bool PlayerCanMove { get; set; } = true;
-    internal bool Sprint { get; set; } = false;
-    public float WalkSpeed { get; set; } = 4f;
+    private bool PlayerCanMove = true;
+    private bool Sprint = false;
+    private float WalkSpeed = 4f;
     private float RecumbentingSpeed;
 
-    public KeyCode SprintKey = KeyCode.LeftShift;
-    public float SprintSpeed { get; set; } = 8f;
-    public float JumpPower { get; set; } = 5f;
-    public bool CanSprint { get; set; } = true;
-    public bool CanJump { get; set; } = true;
+    private const KeyCode SprintKey = KeyCode.LeftShift;
+    private float SprintSpeed = 8f;
+    private float JumpPower = 5f;
+    private bool CanSprint = true;
+    private bool CanJump = true;
     private bool jumpInput;
     private bool didJump;
 
     private float speed;
-    internal float WalkSpeedInternal { get; set; }
-    internal float SprintSpeedInternal { get; set; }
-    internal float JumpPowerInternal { get; set; }
-    internal float RecumbentingSpeedInternal { get; set; }
+    private float WalkSpeedInternal;
+    private float SprintSpeedInternal;
+    private float JumpPowerInternal;
+    private float RecumbentingSpeedInternal;
 
     [System.Serializable]
     public sealed class CrouchModifiers
@@ -111,6 +111,7 @@ public sealed class FirstPersonController : MonoBehaviour
         #region Movement Settings - Awake
 
         PlayerCamera = Camera.main;
+        PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
         _fpsRigidbody = GetComponent<Rigidbody>();
@@ -177,7 +178,7 @@ public sealed class FirstPersonController : MonoBehaviour
             targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
             followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, CameraSmoothing / 100);
 
-            PlayerCamera.transform.localRotation = Quaternion.Euler(-followAngles.x, 0, ZSlant);
+            PlayerCameraTr.localRotation = Quaternion.Euler(-followAngles.x, 0, ZSlant);
             transform.localRotation = Quaternion.Euler(0, followAngles.y, 0);
         }
         #endregion
@@ -324,32 +325,33 @@ public sealed class FirstPersonController : MonoBehaviour
              }
          }*/
 
+        float capsuleHeightFollowing, capsuleRadiusFollowing;
         if (isCrouching)
         {
-            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight / 1.5f, 5 * Time.deltaTime * additionalBraking);
-            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius, 5 * Time.deltaTime * additionalBraking);
+            capsuleHeightFollowing = Advanced.ColliderHeight / 1.5f;
+            capsuleRadiusFollowing = Advanced.ColliderRadius;            
 
             WalkSpeedInternal = WalkSpeed * MCrouchModifiers.crouchWalkSpeedMultiplier;
             JumpPowerInternal = JumpPower * MCrouchModifiers.crouchJumpPowerMultiplier;
         }
         else if (isRecumbenting)
         {
-            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight / 5, 5 * Time.deltaTime * additionalBraking);
-            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius / 5, 5 * Time.deltaTime * additionalBraking);
-
+            capsuleHeightFollowing = Advanced.ColliderHeight / 5;                        
+            capsuleRadiusFollowing = Advanced.ColliderRadius / 5;
             WalkSpeedInternal = WalkSpeed * MRecumbentModifiers.RecumbenthWalkSpeedMultiplier;
             JumpPowerInternal = JumpPower * MRecumbentModifiers.RecumbentJumpPowerMultiplier;
         }
         else
         {
-            capsule.height = Mathf.MoveTowards(capsule.height, Advanced.ColliderHeight, 5 * Time.deltaTime * additionalBraking);
-            capsule.radius = Mathf.MoveTowards(capsule.radius, Advanced.ColliderRadius, 5 * Time.deltaTime * additionalBraking);
+            capsuleHeightFollowing = Advanced.ColliderHeight;            
+            capsuleRadiusFollowing = Advanced.ColliderRadius;            
 
             WalkSpeedInternal = WalkSpeed;
             SprintSpeedInternal = SprintSpeed;
             JumpPowerInternal = JumpPower;
         }
-
+        capsule.height = Mathf.MoveTowards(capsule.height, capsuleHeightFollowing, 5 * Time.deltaTime * additionalBraking);
+        capsule.radius = Mathf.MoveTowards(capsule.radius, capsuleRadiusFollowing, 5 * Time.deltaTime * additionalBraking);
         #endregion
         #region  Reset Checks
 
@@ -529,24 +531,8 @@ public sealed class FirstPersonController_Editor : Editor
         SerT.Update();
         EditorGUILayout.Space();
 
-        GUILayout.Label("First Person Controller", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 16 });
-        EditorGUILayout.Space();
 
-
-        #region Movement Setup
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        GUILayout.Label("Movement Setup", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 13 }, GUILayout.ExpandWidth(true));
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
-        t.PlayerCanMove = EditorGUILayout.ToggleLeft(new GUIContent("Enable Player Movement", "Determines if the player is allowed to move."), t.PlayerCanMove);
-        GUI.enabled = t.PlayerCanMove;
-        t.Sprint = EditorGUILayout.ToggleLeft(new GUIContent("Sprint", "Determines if the default mode of movement is 'Walk' or 'Srpint'."), t.Sprint);
-        t.SprintKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Sprint Key", "Determines what key needs to be pressed to enter a sprint"), t.SprintKey);
-        t.CanJump = EditorGUILayout.ToggleLeft(new GUIContent("Can Player Jump?", "Determines if the player is allowed to jump."), t.CanJump);
-        GUI.enabled = t.PlayerCanMove && t.CanJump; EditorGUI.indentLevel++;
-        t.JumpPower = EditorGUILayout.Slider(new GUIContent("Jump Power", "Determines how high the player can jump."), t.JumpPower, 0.1f, 15);
-        EditorGUI.indentLevel--; GUI.enabled = t.PlayerCanMove;
-        EditorGUILayout.Space();
+        #region Movement Setup                
         EditorGUILayout.Space();
         showCrouchMods = EditorGUILayout.BeginFoldoutHeaderGroup(showCrouchMods, new GUIContent("Crouch Modifiers", "Stat modifiers that will apply when player is crouching."));
         if (showCrouchMods)
@@ -556,10 +542,8 @@ public sealed class FirstPersonController_Editor : Editor
             t.MCrouchModifiers.crouchWalkSpeedMultiplier = EditorGUILayout.Slider(new GUIContent("Crouch Movement Speed Multiplier", "Determines how fast the player can move while crouching."), t.MCrouchModifiers.crouchWalkSpeedMultiplier, 0.01f, 1.5f);
             t.MCrouchModifiers.crouchJumpPowerMultiplier = EditorGUILayout.Slider(new GUIContent("Crouching Jump Power Mult.", "Determines how much the player's jumping power is increased or reduced while crouching."), t.MCrouchModifiers.crouchJumpPowerMultiplier, 0, 1.5f);
         }
-        GUI.enabled = t.PlayerCanMove;
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
-        GUI.enabled = t.PlayerCanMove;
         EditorGUILayout.EndFoldoutHeaderGroup();
         EditorGUILayout.Space();
 

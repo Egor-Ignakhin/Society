@@ -9,6 +9,8 @@ namespace SMG
     {
         private SMGEventReceiver eventReceiver;
         private Image mImage;
+        public SMGTitleTypeIndex mTTI { get; private set; }
+        public bool IsEmpty => mTTI.Title == GunTitles.None;
 
         public void OnInit(SMGEventReceiver ev)
         {
@@ -17,7 +19,7 @@ namespace SMG
         }
         public void ChangeItem(SMGTitleTypeIndex modState)
         {
-            mImage.sprite = GetSprite(modState);
+            mImage.sprite = GetSprite(mTTI = modState);
         }
         public void Clear() => mImage.sprite = null;
 
