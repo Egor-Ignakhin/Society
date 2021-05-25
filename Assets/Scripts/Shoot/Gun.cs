@@ -45,12 +45,12 @@ namespace Shoots
         private bool isAutomatic;// автоматическое ли оружие
         private Inventory.InventoryEventReceiver inventoryEv;
 
-        private GunAnimator gunAnimator;
+        private GunAnimator gunAnimator;        
         protected abstract void Awake();
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
-            inventoryEv = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
+            inventoryEv = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;            
         }
         internal void OnInit(LayerMask interactableLayers, GunAnimator gAnim)
         {

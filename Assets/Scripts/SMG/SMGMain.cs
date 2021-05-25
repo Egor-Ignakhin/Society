@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -21,6 +22,13 @@ namespace SMG
         [SerializeField]
         private Transform GunsCellsData;
         public SMGEventReceiver EventReceiver { get; private set; }
+
+        internal void UnequipGunElement()
+        {            
+            EventReceiver.UnequipMagOnSelGun();
+            DeselectGunElement();
+        }
+
         [SerializeField]
         private GameObject modifiersAnswer;
 

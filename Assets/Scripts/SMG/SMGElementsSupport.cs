@@ -22,8 +22,7 @@ namespace SMG
         public void Unequip()
         {
             background.SetActive(false);
-            main.DeselectGunElement();
-            //TODO: Unequip
+            main.UnequipGunElement();            
         }
         public void Cancel()
         {

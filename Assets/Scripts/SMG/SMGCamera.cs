@@ -30,7 +30,6 @@ namespace SMG
 
         private void Awake()
         {
-            print(1);
             activeGun = guns[0];
             foreach (var g in guns)
                 DefGunsDefRot.Add(g, g.rotation);

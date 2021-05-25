@@ -25,6 +25,7 @@ namespace Inventory
         public int Count => MItemContainer.Count;
         public bool IsEmpty => MItemContainer.IsEmpty;
         public bool IsFilled => MItemContainer.IsFilled;
+        public SMGGunAk_74 mSMGGun { get; private set; } = new SMGGunAk_74();
         public sealed class AdditionalSettins
         {
             public readonly Vector3 DefaultScale; // обычный размер
@@ -57,7 +58,7 @@ namespace Inventory
                 inventoryContainer = ic;
                 CellIsInventorySon = true;
             }
-            eventReceiver = inventoryContainer.EventReceiver;
+            eventReceiver = inventoryContainer.EventReceiver;            
         }
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки

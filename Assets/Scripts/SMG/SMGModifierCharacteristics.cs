@@ -8,7 +8,7 @@ namespace SMG
     {
         public enum GunTitles { None, Makarov, TT_Pistol, Ak_74 }
         public enum ModifierTypes { None, Silencer, Mag }
-        public enum ModifierIndex { _1, _2, _3 }
+        public enum ModifierIndex { None, _1, _2, _3 }
 
         private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions;// словарь содержащий инфу о модификаторе
 

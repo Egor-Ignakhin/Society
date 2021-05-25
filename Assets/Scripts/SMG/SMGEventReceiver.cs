@@ -13,8 +13,15 @@ namespace SMG
         private readonly GameObject modifiersAnswer;// подсказка о модификаторе
         private readonly RectTransform modifiersAnswerTrans;// подсказка о модификаторе
         private SMGModifiersCell currentModCell;//активный слот под модификации
+        private SMGGunsCell currentGunCell;
         private readonly Inventory.InventoryContainer inventoryContainer;// главный обработчик инвентаря
         private readonly SMGGunCharsDrawer gunCharsDrawer;// отрисовщик выделенного оружия
+
+        internal void UnequipMagOnSelGun()
+        {
+            currentGunCell.SetMag(SMGModifierCharacteristics.ModifierIndex.None);
+        }
+
         private readonly SMGCamera MSMGCamera;// камера для отрисовки окна предпросмотра
         private readonly SMGModifiersData modifiersData;// контейнер под модификации
         private readonly SMGModifiersCellDescription modifiersCellDescription;// динамичное описание для модификаций
@@ -47,13 +54,17 @@ namespace SMG
         {
             if (modifiersCell.IsEmpty)//если слот пуст
                 return;
+        
+                currentGunCell.SetMag(modifiersCell.mTTI.Index);
+
             ChangeModfierCell?.Invoke(modifiersCell);
         }
 
         internal void OnSelectGunsCell(SMGGunsCell sMGGunsCell)
         {
-            gunCharsDrawer.OnChangeSelectedGun(sMGGunsCell.Id);
-            MSMGCamera.SetActiveGun(sMGGunsCell.Id);
+            currentGunCell = sMGGunsCell;
+            gunCharsDrawer.OnChangeSelectedGun(currentGunCell.Id);
+            MSMGCamera.SetActiveGun(currentGunCell.Id);
         }
 
         /// <summary>
@@ -73,8 +84,8 @@ namespace SMG
             if (gunsCells[0].Id != 0)
             {
                 gunCharsDrawer.OnChangeSelectedGun(gunsCells[0].Id);
-                MSMGCamera.SetActiveGun(gunsCells[0].Id);
-            }            
+                MSMGCamera.SetActiveGun(gunsCells[0].Id);                
+            }
         }
 
         public void OnUpdate()
@@ -83,7 +94,7 @@ namespace SMG
             if (modifiersAnswer.activeInHierarchy)
             {
                 modifiersAnswerTrans.localPosition = Input.mousePosition;
-            }            
+            }
         }
         public void OnDeselectModifiersCell()
         {
@@ -91,15 +102,16 @@ namespace SMG
         }
         private void FillGunCells()
         {
-            List<Inventory.InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Inventory.ItemStates.ItsGun(c.Id));
-
+            List<Inventory.InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Inventory.ItemStates.ItsGun(c.Id));            
             //сначала очистка всех слотов
             for (int i = 0; i < gunsCells.Count; i++)
-                gunsCells[i].ChangeItem(0);
+                gunsCells[i].ChangeItem(0, null);
 
             //затем заполнение имеющимся оружием
             for (int i = 0; i < cellsContGun.Count; i++)
-                gunsCells[i].ChangeItem(cellsContGun[i].Id);
+                gunsCells[i].ChangeItem(cellsContGun[i].Id, cellsContGun[i]);
+
+            currentGunCell = gunsCells[0];
         }
         private void FillModifiersCells()
         {

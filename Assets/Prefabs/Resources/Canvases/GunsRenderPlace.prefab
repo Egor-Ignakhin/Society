@@ -1539,18 +1539,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &9103392253375204350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3735891083588187323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d45da190cf27024ca5a7c442dc4cd00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &8535057544879847502
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1565,6 +1553,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 4021ae645c4844a41ae19c303a8ad695, type: 3}
+--- !u!114 &9103392253375204350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3735891083588187323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d45da190cf27024ca5a7c442dc4cd00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!64 &8375449206307714085
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2293,7 +2293,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.60214293, g: 0.6037736, b: 0.33321467, a: 0}
+  m_BackGroundColor: {r: 0.33333334, g: 0.51073277, b: 0.6039216, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

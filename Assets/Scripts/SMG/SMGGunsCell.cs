@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SMG
@@ -8,9 +9,11 @@ namespace SMG
         private SMGEventReceiver eventReceiver;
         public UnityEngine.UI.Image MImage { get; private set; }
         public int Id { get; private set; }
+        private Inventory.InventoryCell gunCell;
 
-        public void ChangeItem(int id)
+        public void ChangeItem(int id, Inventory.InventoryCell gc)
         {
+            gunCell = gc;
             MImage.sprite = Inventory.InventorySpriteData.GetSprite(id);
             MImage.color = MImage.sprite ? Color.white : new Color(1, 1, 1, 0.1f);
             Id = id;
@@ -24,5 +27,10 @@ namespace SMG
         }
 
         public void OnPointerClick(PointerEventData eventData) => eventReceiver.OnSelectGunsCell(this);
+
+        internal void SetMag(SMGModifierCharacteristics.ModifierIndex index)
+        {
+            gunCell.mSMGGun.SetMag(index);
+        }
     }
 }
