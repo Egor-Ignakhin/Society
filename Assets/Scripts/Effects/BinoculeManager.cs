@@ -31,7 +31,7 @@ class BinoculeManager : MonoBehaviour
         {
             bin.SetActive(isActive = false);
             mainCam.fieldOfView = GameSettings.FOV();
-            iterator = 1;            
+            iterator = 1;
         }
         time = 0;
         camAnglesAdditional = Vector3.zero;
@@ -53,7 +53,7 @@ class BinoculeManager : MonoBehaviour
         if (Input.mousePosition != oldMousePos)
         {
             time = 0;
-            camAnglesAdditional = Vector3.zero;            
+            camAnglesAdditional = Vector3.zero;
         }
         oldMousePos = Input.mousePosition;
     }

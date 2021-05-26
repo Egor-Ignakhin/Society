@@ -131,6 +131,12 @@ namespace Inventory
             if (!isRecursion)
                 TakeItemEvent?.Invoke(id, count);
         }
+
+        internal void AddItem(object id, int v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SpendOnCell() => inventoryEffects.PlaySpendClip();
 
         public void ActivateItem() => EventReceiver.ActivateItem();

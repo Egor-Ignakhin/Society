@@ -32,7 +32,10 @@ namespace SMG
         {
             return modsDescrtiptions[tti];
         }
-
+        internal static int GetAmmoCountFromDispenser(int title, int dispenserLevel)
+        {
+            return modifiersCharacteristics[new SMGTitleTypeIndex((GunTitles)title, ModifierTypes.Mag, (ModifierIndex)dispenserLevel)].ammoCount;
+        }
         internal static Sprite GetSprite(SMGTitleTypeIndex modState)
         {
             return modifiersCharacteristics[modState].sprite;

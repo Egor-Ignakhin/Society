@@ -9,8 +9,10 @@ namespace Shoots
     /// </summary>
     public abstract class Gun : MonoBehaviour
     {
-        public delegate void RecoilHandler();
-        public event RecoilHandler RecoilEvent;// событие перезарядки        
+        public delegate void ShootHandler();
+        public event ShootHandler ShootEvent;// событие перезарядки    
+        public delegate void DispensetHandler(int remBullets);
+        public event DispensetHandler ChangeAmmoCountEvent;
         [SerializeField] protected float caliber = 10;// калибр снаряда    
         protected bool possibleShoot = true;// возможность стрелять
         public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
@@ -44,13 +46,17 @@ namespace Shoots
 
         private bool isAutomatic;// автоматическое ли оружие
         private Inventory.InventoryEventReceiver inventoryEv;
+        private Inventory.InventoryContainer InventoryContainer;
 
-        private GunAnimator gunAnimator;        
+        private GunAnimator gunAnimator;
+        private EffectsManager effectsManager;
         protected abstract void Awake();
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
-            inventoryEv = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;            
+            InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
+            inventoryEv = InventoryContainer.EventReceiver;
+            effectsManager = EffectsManager.Instance;
         }
         internal void OnInit(LayerMask interactableLayers, GunAnimator gAnim)
         {
@@ -62,9 +68,10 @@ namespace Shoots
         {
             if (ScreensManager.GetScreen() != null)
                 return false;
-            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && dispenser.CountBullets > 0 && !IsReload;
+            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && inventoryEv.GetSelectedCell().mSMGGun.AmmoCount > 0 && !IsReload;
             if (canShooting)
             {
+                FastReload(inventoryEv.GetSelectedCell().mSMGGun.AmmoCount);
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
@@ -83,7 +90,8 @@ namespace Shoots
 
         protected void CallRecoilEvent()
         {
-            RecoilEvent?.Invoke();
+            ShootEvent?.Invoke();
+            ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
         }
         protected virtual void Update()
         {
@@ -108,10 +116,11 @@ namespace Shoots
         {
             if (dispenser.IsFull)
                 IsReload = false;
-            
-            if (!IsReload)
-                return;            
 
+            effectsManager.SetActiveBlur(false);
+            if (!IsReload)
+                return;
+            effectsManager.SetActiveBlur(true);
             int remainingBullets = inventoryEv.Containts(bulletId);
 
             if (remainingBullets <= 0)
@@ -125,16 +134,30 @@ namespace Shoots
 
             if (!IsReload)
             {
-                var outOfRange = remainingBullets - dispenser.maxBullets;
+                var outOfRange = remainingBullets - dispenser.MaxBullets;
                 if (outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
                 {
                     remainingBullets -= outOfRange;
                 }
                 inventoryEv.DelItem(bulletId, remainingBullets);
-                dispenser.Reload(remainingBullets);
+                dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().mSMGGun.AmmoCount);
+                if (dispenser.CountBullets > dispenser.MaxBullets)
+                {
+                    InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets);
+                    dispenser.Reload(dispenser.MaxBullets);
+                }
                 currentReloadTime = 0;
+                ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
             }
         }
+        /// <summary>
+        /// выполняется при загрузке сохранения
+        /// </summary>
+        public void FastReload(int remBullets)
+        {
+            dispenser.Reload(remBullets);
+        }
+
         /// <summary>
         /// возвращает оптимальный урон по противнику
         /// </summary>
@@ -152,7 +175,7 @@ namespace Shoots
             float damage = 0.178f * G * V * F * S;
 
             if (distance > maxDistance)
-                damage = 0;                
+                damage = 0;
             // Debug.Log(damage);
             return damage;
         }
@@ -208,11 +231,11 @@ namespace Shoots
         protected class Dispenser
         {
             public int CountBullets { get; private set; }
-            public readonly int maxBullets;
+            public int MaxBullets;
             public Dispenser(int cb, int maxB)
             {
                 CountBullets = cb;
-                maxBullets = maxB;
+                MaxBullets = maxB;
             }
             public void Dispens()
             {
@@ -222,7 +245,8 @@ namespace Shoots
             {
                 CountBullets = bulletsCount;
             }
-            public bool IsFull => CountBullets == maxBullets;// полна ли обойма
+            public bool IsFull => CountBullets == MaxBullets;// полна ли обойма
+            public bool IsEmpty => CountBullets <= 0;
         }
 
         public static class ImpactsContainer

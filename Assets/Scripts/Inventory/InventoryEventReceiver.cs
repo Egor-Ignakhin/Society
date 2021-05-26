@@ -37,9 +37,10 @@ namespace Inventory
         private RectTransform draggedItem;// удерживаемый предмет
         private bool isDragged;// происходит ли удержание
         private InventoryCell SelectedCell;
+        private InventoryCell lastSelectedCell;
         private GameObject modifiersPage;
         private Button modPageButton;
-        private  SMG.SMGModifiersData modifiersData;
+        private SMG.SMGModifiersData modifiersData;
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
          TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage)
@@ -55,7 +56,7 @@ namespace Inventory
             inventoryDrawer = iDrawer;
             takeAllButton = taB;
             modPageButton = modbtn;
-            modifiersPage = modPage;            
+            modifiersPage = modPage;
         }
         public void OnEnable()
         {
@@ -107,6 +108,8 @@ namespace Inventory
             draggedCell = cell;
             draggedItem = cell.GetItemTransform();
         }
+        public InventoryCell GetSelectedCell() => SelectedCell;
+        public InventoryCell GetLastSelectedCell() => lastSelectedCell;
 
         public void OutsideCursorCell()
         {
@@ -227,6 +230,7 @@ namespace Inventory
         /// <param name="ic"></param>
         public void FocusCell(InventoryCell ic)
         {
+            lastSelectedCell = SelectedCell;
             UnfocusSelectedCell(SelectedCell);
             ic.SetFocus(true);
             SelectedCell = ic;
@@ -268,7 +272,7 @@ namespace Inventory
         private bool IsIntersected(Vector2 obj) => inventoryContainer.CellsRect.Find(c => Vector2.Distance(obj, c.position) < 100);
 
         private void DropEventReceiver(int _)
-        {            
+        {
             if (!SelectedCell || SelectedCell.IsEmpty)
                 return;
 
@@ -418,7 +422,7 @@ namespace Inventory
             var modData = modifiersData.GetModifiersData();
             foreach (var c in smgCells)
                 c.Clear();
-            for(int i = 0; i < modData.Count; i++)
+            for (int i = 0; i < modData.Count; i++)
             {
                 smgCells[i].RewriteSprite(modData[i]);
             }

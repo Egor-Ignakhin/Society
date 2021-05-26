@@ -16,6 +16,9 @@ namespace Shoots
         [SerializeField] private float kf = 1;
 
         BulletValues mBv;
+
+        public Inventory.ItemStates.ItemsID Id;
+
         public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e)
         {
             mBv = bv;

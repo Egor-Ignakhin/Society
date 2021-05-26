@@ -57,9 +57,17 @@ namespace Inventory
             {
                 inventoryContainer = ic;
                 CellIsInventorySon = true;
+                SetAmmoCount(mSMGGun.AmmoCount);                
             }
-            eventReceiver = inventoryContainer.EventReceiver;            
+            eventReceiver = inventoryContainer.EventReceiver;
         }
+
+        internal void ReloadGun(SMGGunAk_74 gun)
+        {
+            mSMGGun.Reload(gun);
+            UpdateText();
+        }
+
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки
         /// </summary>
@@ -88,7 +96,13 @@ namespace Inventory
             mItem.localScale = additionalSettins.DefaultScale;
             return outRangeCount;
         }
-        private void UpdateText() => mText.SetText(Count > 1 ? Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
+        private void UpdateText()
+        {
+            if (!ItemStates.ItsGun(Id))
+                mText.SetText(Count > 1 ? Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
+            else
+                mText.SetText(mSMGGun.AmmoCount.ToString());
+        }
 
         public void Clear()
         {
@@ -107,6 +121,12 @@ namespace Inventory
             ///если контейнер пуст
             if (IsEmpty)
                 eventReceiver.UnfocusSelectedCell(this);//снимается фокус со слота
+        }
+
+        internal void SetAmmoCount(int remBullets)
+        {
+            mSMGGun.SetAmmoCount(remBullets);
+            UpdateText();
         }
         #region Events
         /// <summary>

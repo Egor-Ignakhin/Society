@@ -63,7 +63,7 @@ namespace Inventory
                 }
                 for (int i = 0; i < c.gunCellIndexes.Count; i++)
                 {
-                    cells[c.gunCellIndexes[i]].mSMGGun.Reload(c.guncells1[i]);
+                    cells[c.gunCellIndexes[i]].ReloadGun(c.guncells1[i]);
                 }                
             }
             catch { Debug.LogError("Load Failed!"); }

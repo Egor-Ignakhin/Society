@@ -22,7 +22,7 @@ namespace Shoots
                 MGun = g;
                 HangPlace = hp;
                 AimPlace = ap;
-            }           
+            }
         }
 
         private FirstPersonController fps;
@@ -37,6 +37,7 @@ namespace Shoots
 
         [SerializeField] private LayerMask interactableLayers;
         private AudioSource unitAudioSource;
+        private InventoryEventReceiver InventoryEventReceiver;
 
         private void OnEnable()
         {
@@ -73,10 +74,11 @@ namespace Shoots
 
             InventoryEventReceiver.ChangeSelectedCellEvent += ChangeGun;
 
-            foreach(var g in guns)
+            foreach (var g in guns)
             {
                 g.MGun.OnInit(interactableLayers, this);
             }
+            InventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
         }
         private void OnDisable()
         {
@@ -129,8 +131,11 @@ namespace Shoots
 
         public void ChangeGun(int id)
         {
-            if(currentActiveGunI != -1)
-            guns[currentActiveGunI].MGun.RecoilEvent -= RecoilReceiver;
+            if (currentActiveGunI != -1)
+            {
+                guns[currentActiveGunI].MGun.ShootEvent -= RecoilReceiver;                 
+                guns[currentActiveGunI].MGun.ChangeAmmoCountEvent -= InventoryEventReceiver.GetLastSelectedCell().SetAmmoCount;                
+            }
 
             switch (id)
             {
@@ -150,7 +155,8 @@ namespace Shoots
             DisableGuns();
             if (currentActiveGunI == -1)
                 return;
-            guns[currentActiveGunI].MGun.RecoilEvent += RecoilReceiver;            
+            guns[currentActiveGunI].MGun.ShootEvent += RecoilReceiver;
+            guns[currentActiveGunI].MGun.ChangeAmmoCountEvent += InventoryEventReceiver.GetSelectedCell().SetAmmoCount;
         }
 
         private void DisableGuns()
@@ -212,7 +218,7 @@ namespace Shoots
         }
         public void PlayArmorySound(AudioClip clip)
         {
-            unitAudioSource.PlayOneShot(clip);                
+            unitAudioSource.PlayOneShot(clip);
         }
     }
 }
