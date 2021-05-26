@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Inventory;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static SMG.SMGModifierCharacteristics;
@@ -10,7 +11,7 @@ namespace SMG
         private SMGEventReceiver eventReceiver;
         private Image mImage;
         public SMGTitleTypeIndex mTTI { get; private set; }
-        public bool IsEmpty => mTTI.Title == GunTitles.None;
+        public bool IsEmpty => mTTI.Title == GunTitles.None;        
 
         public void OnInit(SMGEventReceiver ev)
         {
@@ -18,7 +19,7 @@ namespace SMG
             mImage = GetComponent<Image>();
         }
         public void ChangeItem(SMGTitleTypeIndex modState)
-        {
+        {            
             mImage.sprite = GetSprite(mTTI = modState);
         }
         public void Clear() => mImage.sprite = null;

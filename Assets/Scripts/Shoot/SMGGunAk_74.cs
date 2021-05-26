@@ -5,7 +5,7 @@ public class SMGGunAk_74
 {
     public int Dispenser = 1;
     public int Silencer = -1;
-    public int Title = -1;
+    public int Title = 0;
 
     public int AmmoCount = 30;    
     internal void SetMag(ModifierIndex index)

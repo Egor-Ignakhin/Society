@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SMG
 {
-    public class SMGModifiersCellManager : MonoBehaviour
+    class SMGModifiersCellManager : MonoBehaviour
     {
         [SerializeField] private RectTransform selectedModifier;
         [SerializeField] private SMGMain main;
@@ -12,14 +12,14 @@ namespace SMG
         private void OnEnable()
         {
             eventReceiver = main.EventReceiver;
-            if(eventReceiver != null)
             eventReceiver.ChangeModfierCell += OnChangeModfierCell;
         }
         private void OnChangeModfierCell(SMGModifiersCell cell)
         {
+            cell.transform.SetAsFirstSibling();
             selectedModifier.SetParent(cell.transform);
             selectedModifier.localPosition = Vector3.zero;
-            selectedModifier.localPosition += new Vector3(-24, 24, 0);
+            selectedModifier.localPosition += new Vector3(-cell.GetComponent<RectTransform>().sizeDelta.x/4, cell.GetComponent<RectTransform>().sizeDelta.y / 4, 0);
         }
         private void OnDisable()
         {

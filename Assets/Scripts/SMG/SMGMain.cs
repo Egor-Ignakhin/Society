@@ -30,10 +30,7 @@ namespace SMG
         }
 
         [SerializeField]
-        private GameObject modifiersAnswer;
-
-        [SerializeField]
-        private SMGGunCharsDrawer gunCharsDrawer;
+        private GameObject modifiersAnswer;        
 
         [SerializeField]
         private SMGModifiersCellDescription modifiersCellDescription;
@@ -48,14 +45,16 @@ namespace SMG
 
         [SerializeField]
         private SMGElementsSupport elementsSupport;
+        private void Awake()
+        {
+            EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
+                FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
+        }
         private void Start()
         {
             SetEnableMaps(false);            
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
-
-            EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), gunCharsDrawer, MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
         }
         public void SetEnableMaps(bool v)
         {

@@ -4,11 +4,6 @@ namespace Shoots
 {
     class Rifle : Gun
     {
-        protected override void Awake()
-        {
-            dispenser = new Dispenser(0, 30);
-            LoadAssets();
-        }
         protected override void LoadAssets()
         {
             bullet = Resources.Load<Bullet>("Guns\\NotNormal\\7.62 bullet");

@@ -45,18 +45,20 @@ namespace Shoots
         private PlayerSoundsCalculator playerSoundsCalculator;
 
         private bool isAutomatic;// автоматическое ли оружие
-        private Inventory.InventoryEventReceiver inventoryEv;
+        protected Inventory.InventoryEventReceiver inventoryEv;
         private Inventory.InventoryContainer InventoryContainer;
 
         private GunAnimator gunAnimator;
         private EffectsManager effectsManager;
-        protected abstract void Awake();
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
             effectsManager = EffectsManager.Instance;
+
+            dispenser = new Dispenser(inventoryEv);
+            LoadAssets();
         }
         internal void OnInit(LayerMask interactableLayers, GunAnimator gAnim)
         {
@@ -230,12 +232,12 @@ namespace Shoots
         /// </summary>
         protected class Dispenser
         {
-            public int CountBullets { get; private set; }
-            public int MaxBullets;
-            public Dispenser(int cb, int maxB)
+            public int CountBullets { get; private set; } = 0;
+            private readonly Inventory.InventoryEventReceiver inventoryEv;
+            public int MaxBullets => SMG.SMGModifierCharacteristics.GetAmmoCountFromDispenser(inventoryEv.GetSelectedCell().mSMGGun.Title, inventoryEv.GetSelectedCell().mSMGGun.Dispenser);
+            public Dispenser(Inventory.InventoryEventReceiver iEv)
             {
-                CountBullets = cb;
-                MaxBullets = maxB;
+                inventoryEv = iEv;
             }
             public void Dispens()
             {

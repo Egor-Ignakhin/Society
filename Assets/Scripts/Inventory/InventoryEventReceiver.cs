@@ -178,14 +178,7 @@ namespace Inventory
                 if (draggedCopy.Equals(candidateCopy))
                 {
                     draggedCopy.Count += candidateCopy.Count;
-                    candidateCopy.Count = candidateForReplaceCell.SetItem(draggedCopy);
-
-                    int outOfRange = draggedCopy.Count - ItemStates.GetMaxCount(draggedCopy.Id);
-                    if (outOfRange > 0)
-                    {
-                        candidateCopy.Count += outOfRange;
-                        candidateForReplaceCell.DelItem(outOfRange);
-                    }
+                    candidateCopy.Count = Math.Abs(candidateCopy.Count + candidateForReplaceCell.SetItem(draggedCopy));                    
                 }
                 else
                     candidateForReplaceCell.SetItem(draggedCopy, false);

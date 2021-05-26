@@ -4,16 +4,16 @@ using UnityEngine.EventSystems;
 
 namespace SMG
 {
-    public class SMGGunsCell : MonoBehaviour, IPointerClickHandler
+    public class SMGGunsCell : MonoBehaviour, IPointerClickHandler, ISMGCell
     {
         private SMGEventReceiver eventReceiver;
         public UnityEngine.UI.Image MImage { get; private set; }
-        public int Id { get; private set; }
-        private Inventory.InventoryCell gunCell;
+        public int Id { get; private set; }        
+        public Inventory.InventoryCell Ic { get; set; }
 
         public void ChangeItem(int id, Inventory.InventoryCell gc)
         {
-            gunCell = gc;
+            Ic = gc;
             MImage.sprite = Inventory.InventorySpriteData.GetSprite(id);
             MImage.color = MImage.sprite ? Color.white : new Color(1, 1, 1, 0.1f);
             Id = id;
@@ -30,7 +30,7 @@ namespace SMG
 
         internal void SetMag(SMGModifierCharacteristics.ModifierIndex index)
         {
-            gunCell.mSMGGun.SetMag(index);
+            Ic.mSMGGun.SetMag(index);
         }
     }
 }
