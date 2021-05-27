@@ -21,7 +21,7 @@ namespace SMG
         {
             eventReceiver = FindObjectOfType<SMGMain>().EventReceiver;
 
-            eventReceiver.ChangeGunModsEvent+= OnChangeSelectedGun;            
+            eventReceiver.ChangeSelectedGunEvent+= OnChangeSelectedGun;            
         }
         public void OnChangeSelectedGun(Inventory.InventoryCell cell)
         {            
@@ -41,7 +41,7 @@ namespace SMG
         {
             if (eventReceiver != null)
             {
-                eventReceiver.ChangeGunModsEvent -= OnChangeSelectedGun;                
+                eventReceiver.ChangeSelectedGunEvent -= OnChangeSelectedGun;                
             }
         }
     }

@@ -99,6 +99,11 @@ namespace SMG
             mCamera.fieldOfView = Mathf.Clamp(mCamera.fieldOfView, 30, 80);
         }
 
+        internal Transform GetActiveGun()
+        {
+            return activeGun;
+        }
+
         /// <summary>
         /// очищает ротацию оружия
         /// </summary>

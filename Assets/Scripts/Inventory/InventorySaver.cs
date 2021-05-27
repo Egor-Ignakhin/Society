@@ -29,7 +29,6 @@ namespace Inventory
         public List<int> counts = new List<int>();// кол-во предметов в слотах
         public int cellsCount;// кол-во слотов
 
-        public List<int> gunCellIndexes = new List<int>();//индексы слотов с оружием
         public List<SMGGunAk_74> guncells = new List<SMGGunAk_74>();
         public SaverContainer(List<InventoryCell> cells)
         {

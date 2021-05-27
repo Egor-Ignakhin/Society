@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerClasses
@@ -109,6 +110,7 @@ namespace PlayerClasses
         private readonly DeadLine deadLine = new DeadLine();
 
         private readonly float DamageFromRadiation = 1;
+        private PlayerCollisionChecked playerCollisionChecked;
         private void Start()
         {
             Health = defaultHealth;
@@ -116,8 +118,9 @@ namespace PlayerClasses
             Food = defaultFood;
             Radiation = defaultRadiation;
 
-            gameObject.AddComponent<PlayerCollisionChecked>().OnInit(this);
-            gameObject.AddComponent<PlayerSoundEffects>().Init(this);
+            playerCollisionChecked = gameObject.AddComponent<PlayerCollisionChecked>();
+            playerCollisionChecked.OnInit(this);
+            gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);
             Init();
         }
 
@@ -215,67 +218,101 @@ namespace PlayerClasses
         }
 
         #endregion
-
-        /// <summary>
-        /// класс отвечающий за столкновения с объектами
-        /// </summary>
-        class PlayerCollisionChecked : MonoBehaviour
+    }
+    /// <summary>
+    /// класс отвечающий за столкновения с объектами
+    /// </summary>
+    class PlayerCollisionChecked : MonoBehaviour
+    {
+        private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
+        private BasicNeeds bn;
+        public delegate void CollisionContactHandler();
+        public event CollisionContactHandler playerTakingDamageEvent;
+        public void OnInit(BasicNeeds bn)
         {
-            private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
-            private BasicNeeds bn;
-            public void OnInit(BasicNeeds bn)
+            this.bn = bn;
+        }
+        private void OnCollisionEnter(Collision collision)
+        {
+            float force = 0;
+            float mass = 1;
+            if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
             {
-                this.bn = bn;
+                mass = rb.mass;
             }
-            private void OnCollisionEnter(Collision collision)
+
+            for (int i = 0; i < collision.contacts.Length; i++)// итерация по всем точкам соприкосновения
             {
-                float force = 0;
-                float mass = 1;
-                if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
-                {
-                    mass = rb.mass;
-                }
+                float len = Vector3.Project(collision.relativeVelocity,
+                                                collision.contacts[i].normal).magnitude;
+                if (force < len) force = len;
+            }
 
-                for (int i = 0; i < collision.contacts.Length; i++)// итерация по всем точкам соприкосновения
-                {
-                    float len = Vector3.Project(collision.relativeVelocity,
-                                                    collision.contacts[i].normal).magnitude;
-                    if (force < len) force = len;
-                }
-
-                force = mass * force * force;
-                if (force > minValue)// если сила больше минимальной для нанесения урона
-                {
-                    bn.InjurePerson(force / 10);
-                }
+            force = mass * force * force;
+            if (force > minValue)// если сила больше минимальной для нанесения урона
+            {
+                bn.InjurePerson(force / 10);
+                playerTakingDamageEvent?.Invoke();
             }
         }
     }
+
     class PlayerSoundEffects : MonoBehaviour
     {
         private const float minHealthForNoise = 20;
         private BasicNeeds basicNeeds;
         private AudioClip noiseClip;
         private AudioSource noiseSource;
+        private AudioSource playerSong;
         private bool wasDamaged = false;
         private bool coroutineStarted = false;
-        public void Init(BasicNeeds bn)
+        private PlayerCollisionChecked playerCollisionChecked;
+        private List<AudioClip> vulnerableCollisionClips = new List<AudioClip>();
+        public void Init(BasicNeeds bn, PlayerCollisionChecked pcc)
         {
             basicNeeds = bn;
             noiseClip = Resources.Load<AudioClip>("Health\\Shum_Low_Health");
 
             noiseSource = bn.gameObject.AddComponent<AudioSource>();
+            playerSong = bn.gameObject.AddComponent<AudioSource>();
+            playerSong.priority = 127;
 
             basicNeeds.HealthChangeValue += ChangeHealth;
-            noiseSource.volume = 0;
             noiseSource.clip = noiseClip;
-            noiseSource.Play();
+            noiseSource.volume = 0;
             noiseSource.loop = true;
             ChangeHealth(basicNeeds.Health);
+            noiseSource.Play();
+
+            playerCollisionChecked = pcc;
+            playerCollisionChecked.playerTakingDamageEvent += OnPlayerVulnerableCollision;
+            vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\ablat"));
+            vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\bolnovnoge"));
+            vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\shivi_shive"));
+            vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\hma_hma"));
         }
         private void OnDisable()
         {
             basicNeeds.HealthChangeValue -= ChangeHealth;
+            playerCollisionChecked.playerTakingDamageEvent -= OnPlayerVulnerableCollision;
+        }
+        /// <summary>
+        /// вызов при столкневии, падении игрока (с игроком)
+        /// </summary>
+        private void OnPlayerVulnerableCollision()
+        {
+            AudioClip CalculateAudio()
+            {
+                //цикл выполняется покуда не найдёт трек, который не является текущим
+                int index;
+                do
+                {
+                    index = UnityEngine.Random.Range(0, vulnerableCollisionClips.Count);
+                }
+                while (vulnerableCollisionClips[index] == playerSong.clip);
+                return vulnerableCollisionClips[index];
+            }
+            playerSong.PlayOneShot(CalculateAudio());
         }
         private void ChangeHealth(float v)
         {
@@ -308,4 +345,5 @@ namespace PlayerClasses
             }
         }
     }
+
 }

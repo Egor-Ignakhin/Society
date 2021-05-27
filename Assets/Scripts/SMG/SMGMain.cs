@@ -21,16 +21,10 @@ namespace SMG
         private Transform ModifiersCellsData;
         [SerializeField]
         private Transform GunsCellsData;
-        public SMGEventReceiver EventReceiver { get; private set; }
-
-        internal void UnequipGunElement()
-        {            
-            EventReceiver.UnequipMagOnSelGun();
-            DeselectGunElement();
-        }
+        public SMGEventReceiver EventReceiver { get; private set; }       
 
         [SerializeField]
-        private GameObject modifiersAnswer;        
+        private GameObject modifiersAnswer;
 
         [SerializeField]
         private SMGModifiersCellDescription modifiersCellDescription;
@@ -52,7 +46,7 @@ namespace SMG
         }
         private void Start()
         {
-            SetEnableMaps(false);            
+            SetEnableMaps(false);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
         }
@@ -107,7 +101,6 @@ namespace SMG
         }
         private void Update()
         {
-            EventReceiver.OnUpdate();
             if (Input.GetMouseButtonDown(0))
             {
                 if (lastSelectedObj && !elementsSupport.IsActive)
@@ -123,7 +116,7 @@ namespace SMG
         private void FixedUpdate()
         {
             if (MSMG.IsActive)
-            {                
+            {
                 return;
             }
             if (!isActive)
@@ -134,7 +127,7 @@ namespace SMG
                 MeshRenderer currentMesh = hit.transform.GetComponent<MeshRenderer>();
                 if (lastSelectedObj && currentMesh != lastSelectedObj)
                     lastSelectedObj.material.SetColor("_EmissionColor", defColor);
-                
+
                 if (currentMesh != lastSelectedObj)
                     currentMesh.material.SetColor("_EmissionColor", selectableColor);
                 lastSelectedObj = currentMesh;
@@ -151,6 +144,17 @@ namespace SMG
         {
             lastSelectedObj.material.SetColor("_EmissionColor", defColor);
             lastSelectedObj = null;
+        }
+        internal void UnequipGunElement()
+        {
+            GunModifiersActiveManager gmam = lastSelectedObj.transform.GetComponentInParent<GunModifiersActiveManager>();
+            gmam.SetMag(ModifierCharacteristics.ModifierIndex.None);
+            EventReceiver.UnequipMagOnSelGun();
+            DeselectGunElement();
+        }        
+        private void OnDisable()
+        {
+            EventReceiver.OnDisable();
         }
     }
 }

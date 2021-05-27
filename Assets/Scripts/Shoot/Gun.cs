@@ -152,6 +152,12 @@ namespace Shoots
                 ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
             }
         }
+
+        internal void UpdateModifiers()
+        {
+            GetComponent<SMG.GunModifiersActiveManager>().UpdateModifiers();
+        }
+
         /// <summary>
         /// выполняется при загрузке сохранения
         /// </summary>

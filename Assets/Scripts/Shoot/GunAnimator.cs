@@ -158,6 +158,7 @@ namespace Shoots
                 return;
             guns[currentActiveGunI].MGun.ShootEvent += RecoilReceiver;
             guns[currentActiveGunI].MGun.ChangeAmmoCountEvent += InventoryEventReceiver.GetSelectedCell().SetAmmoCount;
+            guns[currentActiveGunI].MGun.UpdateModifiers();
         }
 
         private void DisableGuns()
