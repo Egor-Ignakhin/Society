@@ -223,14 +223,14 @@ namespace Inventory
         /// выделение слота по нажатию на слот
         /// </summary>
         /// <param name="ic"></param>
-        public void FocusCell(InventoryCell ic)
+        public void FocusCell(InventoryCell ic, bool isScroll = false)
         {
             if (canFastMoveSelCell)
             {
                 if (ic.IsEmpty)
                     return;
                 InventoryCell emptyCell;
-                if (emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty))// если нашлись пустые слоты
+                if ((emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty)) && !isScroll)// если нашлись пустые слоты
                 {
                     draggedCell = ic;
                     draggedItem = draggedCell.GetItemTransform();
@@ -272,7 +272,7 @@ namespace Inventory
         /// <param name="c"></param>
         private void SelectCell(int c, bool isScroll = false)
         {
-            FocusCell(inventoryContainer.GetHotCells()[c - 1]);
+            FocusCell(inventoryContainer.GetHotCells()[c - 1], isScroll);
             ChangeSelectedCellEvent?.Invoke(inventoryContainer.GetHotCells()[c - 1].Id);
             if (!isScroll)
                 ActivateItem();

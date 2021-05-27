@@ -228,7 +228,8 @@ public abstract class Enemy : MonoBehaviour
         {
             possibleTargetPos = target.position;
         }
-        mAgent.SetDestination(lastTargetPos);
+        if (mAgent.isOnNavMesh)
+            mAgent.SetDestination(lastTargetPos);
 
         if (mAgent.remainingDistance > mAgent.stoppingDistance)// если до цели не дошёл агент
         {
