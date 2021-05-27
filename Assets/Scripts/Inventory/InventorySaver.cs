@@ -30,20 +30,14 @@ namespace Inventory
         public int cellsCount;// кол-во слотов
 
         public List<int> gunCellIndexes = new List<int>();//индексы слотов с оружием
-        public List<SMGGunAk_74> guncells1 = new List<SMGGunAk_74>();
+        public List<SMGGunAk_74> guncells = new List<SMGGunAk_74>();
         public SaverContainer(List<InventoryCell> cells)
         {
             for (cellsCount = 0; cellsCount < cells.Count; cellsCount++)
             {
                 types.Add(cells[cellsCount].Id);// запись ID предмета
                 counts.Add(cells[cellsCount].Count);// запись кол-ва предмета        
-
-                if (ItemStates.ItsGun(cells[cellsCount].Id))
-                {
-
-                    gunCellIndexes.Add(cellsCount);
-                    guncells1.Add(cells[cellsCount].mSMGGun);
-                }
+                guncells.Add(cells[cellsCount].mSMGGun);
             }
         }
         /// <summary>
@@ -59,12 +53,8 @@ namespace Inventory
                 SaverContainer c = JsonUtility.FromJson<SaverContainer>(data);
                 for (int i = 0; i < c.cellsCount; i++)
                 {
-                    cells[i].SetItem(c.types[i], c.counts[i]);
+                    cells[i].SetItem(c.types[i], c.counts[i], c.guncells[i]);
                 }
-                for (int i = 0; i < c.gunCellIndexes.Count; i++)
-                {
-                    cells[c.gunCellIndexes[i]].ReloadGun(c.guncells1[i]);
-                }                
             }
             catch { Debug.LogError("Load Failed!"); }
         }

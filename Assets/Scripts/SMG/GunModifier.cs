@@ -8,9 +8,9 @@ namespace SMG
 {
     class GunModifier : InteractiveObject
     {
-        [SerializeField] private SMGModifierCharacteristics.GunTitles modifiableGun;
-        [HideIf(nameof(modifiableGun), 0)] [SerializeField] private SMGModifierCharacteristics.ModifierTypes type;
-        [HideIf(nameof(type), 0)] [SerializeField] private SMGModifierCharacteristics.ModifierIndex index;
+        [SerializeField] private ModifierCharacteristics.GunTitles modifiableGun;
+        [HideIf(nameof(modifiableGun), 0)] [SerializeField] private ModifierCharacteristics.ModifierTypes type;
+        [HideIf(nameof(type), 0)] [SerializeField] private ModifierCharacteristics.ModifierIndex index;
 
         private SMGModifiersData data;
         private void Start()
@@ -20,7 +20,7 @@ namespace SMG
         }
         public override void Interact(PlayerStatements pl)
         {
-            data.AddModifier(new SMGModifierCharacteristics.SMGTitleTypeIndex(modifiableGun, type, index));
+            data.AddModifier(new ModifierCharacteristics.SMGTitleTypeIndex(modifiableGun, type, index));
             Destroy(gameObject);
         }
     }

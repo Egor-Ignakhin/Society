@@ -28,7 +28,7 @@ namespace SMG
 
         public void OnPointerClick(PointerEventData eventData) => eventReceiver.OnSelectGunsCell(this);
 
-        internal void SetMag(SMGModifierCharacteristics.ModifierIndex index)
+        internal void SetMag(ModifierCharacteristics.ModifierIndex index)
         {
             Ic.mSMGGun.SetMag(index);
         }

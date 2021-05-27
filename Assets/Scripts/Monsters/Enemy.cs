@@ -96,10 +96,6 @@ public abstract class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         RayCastToEnemy();
-        /*#if UNITY_EDITOR
-
-                DebugDraw();
-        #endif*/
     }
     /// <summary>
     /// тут вычисляется путь до цели (по корнерам карты)
@@ -109,9 +105,10 @@ public abstract class Enemy : MonoBehaviour
     private bool CalculateDistance(Vector3 pos)
     {
         NavMeshPath path = new NavMeshPath();
-        float dist = 0;
-        if (mAgent.CalculatePath(pos, path))
+        float dist = float.PositiveInfinity;
+        if (mAgent.isOnNavMesh && mAgent.CalculatePath(pos, path))
         {
+            dist = 0;
             for (int x = 1; x < path.corners.Length; x++)
                 dist += Vector3.Distance(path.corners[x - 1], path.corners[x]);
         }
@@ -266,22 +263,4 @@ public abstract class Enemy : MonoBehaviour
     }
 
     protected void OnDestroy() => UVariables.ChangeHealthEvent -= Death;
-
-    /*#if UNITY_EDITOR
-        private GameObject gameTarget;
-        private void DebugDraw()
-        {
-            if (!gameTarget)
-            {
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    if (transform.GetChild(i).name == "drawer")
-                        gameTarget = transform.GetChild(i).gameObject;
-                }
-            }
-            gameTarget.transform.position = lastTargetPos;
-            gameTarget.GetComponent<MeshRenderer>().material.color = Color.blue;
-            gameTarget.transform.localEulerAngles += new Vector3(0, 1, 0) * Time.fixedDeltaTime;
-        }
-    #endif*/
 }

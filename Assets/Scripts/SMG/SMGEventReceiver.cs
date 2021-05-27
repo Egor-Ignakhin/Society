@@ -17,7 +17,7 @@ namespace SMG
 
         internal void UnequipMagOnSelGun()
         {
-            currentGunCell.SetMag(SMGModifierCharacteristics.ModifierIndex.None);
+            currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
             ChangeGunModsEvent?.Invoke(currentGunCell.Ic);
         }
 

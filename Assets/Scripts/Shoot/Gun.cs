@@ -145,7 +145,7 @@ namespace Shoots
                 dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().mSMGGun.AmmoCount);
                 if (dispenser.CountBullets > dispenser.MaxBullets)
                 {
-                    InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets);
+                    InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets, null);
                     dispenser.Reload(dispenser.MaxBullets);
                 }
                 currentReloadTime = 0;
@@ -234,7 +234,17 @@ namespace Shoots
         {
             public int CountBullets { get; private set; } = 0;
             private readonly Inventory.InventoryEventReceiver inventoryEv;
-            public int MaxBullets => SMG.SMGModifierCharacteristics.GetAmmoCountFromDispenser(inventoryEv.GetSelectedCell().mSMGGun.Title, inventoryEv.GetSelectedCell().mSMGGun.Dispenser);
+            public int MaxBullets
+            {
+                get
+                {
+                    var sc = inventoryEv.GetSelectedCell();
+                    if (sc && Inventory.ItemStates.ItsGun(sc.Id))
+                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.mSMGGun.Title, sc.mSMGGun.Dispenser);
+                    else return 0;
+                }
+            }
+
             public Dispenser(Inventory.InventoryEventReceiver iEv)
             {
                 inventoryEv = iEv;

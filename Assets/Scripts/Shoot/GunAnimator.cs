@@ -133,8 +133,9 @@ namespace Shoots
         {
             if (currentActiveGunI != -1)
             {
-                guns[currentActiveGunI].MGun.ShootEvent -= RecoilReceiver;                 
-                guns[currentActiveGunI].MGun.ChangeAmmoCountEvent -= InventoryEventReceiver.GetLastSelectedCell().SetAmmoCount;                
+                guns[currentActiveGunI].MGun.ShootEvent -= RecoilReceiver;
+                if (InventoryEventReceiver.GetLastSelectedCell())
+                    guns[currentActiveGunI].MGun.ChangeAmmoCountEvent -= InventoryEventReceiver.GetLastSelectedCell().SetAmmoCount;
             }
 
             switch (id)

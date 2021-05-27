@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SMG.SMGModifierCharacteristics;
+using static SMG.ModifierCharacteristics;
 
 namespace SMG
 {

@@ -27,7 +27,7 @@ namespace SMG
         {            
             int id = cell.Id;
             if (!Inventory.ItemStates.ItsGun(id))
-                return;
+                return;            
             var chars = GunCharacteristics.GetGunCharacteristics(id);
             titleTextDrawing.text = chars.title;
             titleTextPreview.text = chars.title;
@@ -35,7 +35,7 @@ namespace SMG
             maxFlyDistText.text = $"Максимальная дистанция поражения: {chars.maxFlyD}";
             optFlyDistText.text = $"Оптимальная дистанция поражения: {chars.OptFlyD}";
             caliberText.text = $"Калибр: {chars.Caliber}";
-            dispVolText.text = $"Объём магазина: {SMGModifierCharacteristics.GetAmmoCountFromDispenser(cell.mSMGGun.Title, cell.mSMGGun.Dispenser)}";
+            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.mSMGGun.Title, cell.mSMGGun.Dispenser)}";
         }
         private void OnDisable()
         {

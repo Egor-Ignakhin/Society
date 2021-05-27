@@ -108,7 +108,7 @@ namespace Inventory
         /// добавление поднятого предмета в очередь
         /// </summary>
         /// <param name="item"></param>    
-        public void AddItem(int id, int count, bool isRecursion = false)
+        public void AddItem(int id, int count, SMGGunAk_74 gun, bool isRecursion = false)
         {
             if (Cells.FindAll(c => c.IsEmpty).Count == 0)// если не нашлись свободные слоты
                 return;
@@ -118,25 +118,19 @@ namespace Inventory
 
             if (cell is null) cell = Cells.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
-            cell.SetItem(id, count, false);
+            cell.SetItem(id, count, gun, false);
 
 
             int outOfRange = cell.Count - ItemStates.GetMaxCount(cell.Id);
             if (outOfRange > 0)
             {
                 cell.DelItem(outOfRange);
-                AddItem(id, outOfRange, true);
+                AddItem(id, outOfRange, gun, true);
             }
 
             if (!isRecursion)
                 TakeItemEvent?.Invoke(id, count);
         }
-
-        internal void AddItem(object id, int v)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SpendOnCell() => inventoryEffects.PlaySpendClip();
 
         public void ActivateItem() => EventReceiver.ActivateItem();

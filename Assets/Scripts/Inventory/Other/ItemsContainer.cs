@@ -12,8 +12,8 @@ namespace Inventory
         public const int maxCells = 40;
         [SerializeField] private Types startedType;
         [Range(0, maxCells)] [SerializeField] private int cellsCount;
-        private List<(int id, int count)> container = null;
-        public List<(int id, int count)> GetData() => container;
+        private List<(int id, int count, SMGGunAk_74 gun)> container = null;
+        public List<(int id, int count, SMGGunAk_74 gun)> GetData() => container;
         private bool isOpened;
         private InventoryEventReceiver inventoryEventReceiver;
         private void Start()
@@ -32,7 +32,7 @@ namespace Inventory
         /// <summary>
         /// метод закрывает сохраняет ячейки в памяти
         /// </summary>
-        public void Close(List<(int id, int count)> lst)
+        public void Close(List<(int id, int count, SMGGunAk_74 gun)> lst)
         {
             container = lst;
             isOpened = false;

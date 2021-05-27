@@ -41,6 +41,7 @@ namespace Inventory
         private GameObject modifiersPage;
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
+        private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
          TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage)
@@ -61,11 +62,12 @@ namespace Inventory
         public void OnEnable()
         {
             inventoryInput.ChangeActiveEvent += ChangeActiveEvent;
-            inventoryInput.InputKeyEvent += SelectCell;
-            inventoryInput.DropEvent += DropEventReceiver;
-            inventoryInput.SpinEvent += SpinReceiver;
+            inventoryInput.InputKeyEvent += OnInputCellsNums;
+            inventoryInput.DropEvent += OnDropEvent;
+            inventoryInput.ScrollEvent += OnScrollEvent;
             ItemsLabelDescription.SetActive(false);
             inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
+            inventoryInput.FastMoveCellEvent += OnInputFastMoveCell;
             takeAllButton.onClick.AddListener(TakeAllItemsInContainerReceiver);
             takeAllButton.gameObject.SetActive(false);
             modifiersPage.SetActive(false);
@@ -178,7 +180,7 @@ namespace Inventory
                 if (draggedCopy.Equals(candidateCopy))
                 {
                     draggedCopy.Count += candidateCopy.Count;
-                    candidateCopy.Count = Math.Abs(candidateCopy.Count + candidateForReplaceCell.SetItem(draggedCopy));                    
+                    candidateCopy.Count = Math.Abs(candidateCopy.Count + candidateForReplaceCell.SetItem(draggedCopy));
                 }
                 else
                     candidateForReplaceCell.SetItem(draggedCopy, false);
@@ -207,7 +209,7 @@ namespace Inventory
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
-                DropItem(draggedCell.Id, draggedCell.Count);
+                DropItem(draggedCell.Id, draggedCell.Count, draggedCell.mSMGGun);
                 if (draggedCell.CellIsInventorySon)
                     inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
                 draggedCell.Clear();
@@ -223,6 +225,22 @@ namespace Inventory
         /// <param name="ic"></param>
         public void FocusCell(InventoryCell ic)
         {
+            if (canFastMoveSelCell)
+            {
+                if (ic.IsEmpty)
+                    return;
+                InventoryCell emptyCell;
+                if (emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty))// если нашлись пустые слоты
+                {
+                    draggedCell = ic;
+                    draggedItem = draggedCell.GetItemTransform();
+                    candidateForReplaceCell = emptyCell;
+                    candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+
+                    EndDrag();
+                    return;
+                }
+            }
             lastSelectedCell = SelectedCell;
             UnfocusSelectedCell(SelectedCell);
             ic.SetFocus(true);
@@ -242,34 +260,38 @@ namespace Inventory
                 ChangeSelectedCellEvent?.Invoke(0);
             }
         }
+        private void OnInputCellsNums(int c)
+        {
+            if (!(c > 0 && c <= inventoryContainer.GetHotCells().Count))
+                return;
+            SelectCell(c);
+        }
         /// <summary>
         /// выделение по нажатию на клавишу
         /// </summary>
         /// <param name="c"></param>
-        private void SelectCell(int c)
+        private void SelectCell(int c, bool isScroll = false)
         {
-            if (!(c > 0 && c <= inventoryContainer.GetHotCells().Count))
-                return;
-
             FocusCell(inventoryContainer.GetHotCells()[c - 1]);
             ChangeSelectedCellEvent?.Invoke(inventoryContainer.GetHotCells()[c - 1].Id);
-            ActivateItem();
+            if (!isScroll)
+                ActivateItem();
         }
 
-        private void DropItem(int id, int count)
+        private void DropItem(int id, int count, SMGGunAk_74 gun)
         {
-            inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count);
+            inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count, gun);
         }
 
         // переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         private bool IsIntersected(Vector2 obj) => inventoryContainer.CellsRect.Find(c => Vector2.Distance(obj, c.position) < 100);
 
-        private void DropEventReceiver(int _)
+        private void OnDropEvent(int _)
         {
             if (!SelectedCell || SelectedCell.IsEmpty)
                 return;
 
-            DropItem(SelectedCell.Id, SelectedCell.Count);
+            DropItem(SelectedCell.Id, SelectedCell.Count, SelectedCell.mSMGGun);
             if (SelectedCell.CellIsInventorySon)
                 inventoryMassCalculator.DeleteItem(SelectedCell.Id, SelectedCell.Count);
 
@@ -290,7 +312,7 @@ namespace Inventory
             }
             inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(id) * count);
         }
-        private void SpinReceiver(bool forward)
+        private void OnScrollEvent(bool forward)
         {
             if (ScrollEventLocked)
                 return;
@@ -306,7 +328,7 @@ namespace Inventory
             if (SelectedCellIterator < 1)
                 SelectedCellIterator = hotcells.Count;
 
-            SelectCell(SelectedCellIterator);
+            SelectCell(SelectedCellIterator, true);
         }
         private void TakeAllItemsInContainerReceiver()
         {
@@ -338,7 +360,7 @@ namespace Inventory
             }
         }
 
-        public void OpenContainer(List<(int id, int count)> content, int countSlots, ItemsContainer it)
+        public void OpenContainer(List<(int id, int count, SMGGunAk_74 gun)> content, int countSlots, ItemsContainer it)
         {
             for (int i = 0; i < countSlots; i++)
             {
@@ -346,7 +368,7 @@ namespace Inventory
                 child.SetParent(busyCellsContainer);
 
                 if (content != null)
-                    child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count);
+                    child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count, content[i].gun);
             }
             inventoryInput.EnableInventory();
             lastItemContainer = it;
@@ -360,7 +382,9 @@ namespace Inventory
 
         internal void DelItem(ItemStates.ItemsID bulletId, int count)
         {
-            var foundedCell = inventoryContainer.GetCells().Find(c => c.Id == (int)bulletId);
+            var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId);
+            var foundedCell = cells.OrderBy(c => c.Count).First();
+            //var foundedCell = cells.Find(c => c.Id == (int)bulletId/* && c.Count == minCount*/);
 
             if (foundedCell)
             {
@@ -398,12 +422,12 @@ namespace Inventory
                 c.SetParent(freeCellsContainer);
             }
 
-            var cells = new List<(int id, int count)>();
+            var cells = new List<(int id, int count, SMGGunAk_74 gun)>();
 
             for (int i = 0; i < childs.Count; i++)
             {
                 var item = childs[i].GetComponent<InventoryCell>();
-                cells.Add((item.Id, item.Count));
+                cells.Add((item.Id, item.Count, item.mSMGGun));
             }
             lastItemContainer.Close(cells);
             lastItemContainer = null;
@@ -423,9 +447,10 @@ namespace Inventory
         public void OnDisable()
         {
             inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
-            inventoryInput.InputKeyEvent -= SelectCell;
-            inventoryInput.DropEvent -= DropEventReceiver;
-            inventoryInput.SpinEvent -= SpinReceiver;
+            inventoryInput.InputKeyEvent -= OnInputCellsNums;
+            inventoryInput.DropEvent -= OnDropEvent;
+            inventoryInput.ScrollEvent -= OnScrollEvent;
+            inventoryInput.FastMoveCellEvent -= OnInputFastMoveCell;
             inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
             takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
             modPageButton.onClick.RemoveListener(ModifiersPageChangeActive);
@@ -433,6 +458,10 @@ namespace Inventory
         public void ModifiersPageChangeActive()
         {
             modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
+        }
+        private void OnInputFastMoveCell(bool v)
+        {
+            canFastMoveSelCell = v;
         }
         public class InventoryMassCalculator
         {

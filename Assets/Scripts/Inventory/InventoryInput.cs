@@ -8,12 +8,13 @@ namespace Inventory
     {
         public delegate void EventHandler(bool value);
         public event EventHandler ChangeActiveEvent;
+        public event EventHandler FastMoveCellEvent;
 
         public delegate void InputHandler(int s);
         public event InputHandler InputKeyEvent;
 
         public event InputHandler DropEvent;
-        public event EventHandler SpinEvent;
+        public event EventHandler ScrollEvent;
 
         private const KeyCode changeActiveKeyCode = KeyCode.E;
         private const KeyCode dropCode = KeyCode.Q;
@@ -39,6 +40,9 @@ namespace Inventory
             {
                 DropEvent?.Invoke(0);
             }
+
+            FastMoveCellEvent?.Invoke(Input.GetKey(KeyCode.LeftShift));
+
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0)
                 SpinCells(scroll > 0);
@@ -47,7 +51,7 @@ namespace Inventory
         /// включение видимости инвентаря
         /// </summary>
         private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
-        private void SpinCells(bool v) { SpinEvent?.Invoke(v); }
+        private void SpinCells(bool v) { ScrollEvent?.Invoke(v); }
         /// <summary>
         /// насильное выключение инвентаря
         /// </summary>
@@ -75,10 +79,11 @@ namespace Inventory
                 InputKeyEvent?.Invoke(s);
         }
 
-        internal void DropItem(InventoryItem inventoryItem, int count)
+        internal void DropItem(InventoryItem inventoryItem, int count, SMGGunAk_74 gun)
         {
             var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
             item.SetCount(count);
+            item.SetGun(gun);
             var powerForce = 2;
             item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
         }

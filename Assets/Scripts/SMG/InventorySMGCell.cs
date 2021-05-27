@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static SMG.SMGModifierCharacteristics;
+using static SMG.ModifierCharacteristics;
 
 namespace SMG {
     public class InventorySMGCell : MonoBehaviour

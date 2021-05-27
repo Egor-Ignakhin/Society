@@ -8,12 +8,12 @@ namespace SMG
         [SerializeField] private TextMeshProUGUI textDesc;
         [SerializeField] private UnityEngine.UI.Image mImage;
 
-        public void ChangeModifier(SMGModifierCharacteristics.SMGTitleTypeIndex tti)
+        public void ChangeModifier(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             (string title, string description, Sprite sprite) = ("", "", null);
-            if (tti.Title != SMGModifierCharacteristics.GunTitles.None)
+            if (tti.Title != ModifierCharacteristics.GunTitles.None)
             {
-                (title, description, sprite) = SMGModifierCharacteristics.GetTitleDescSprite(tti);
+                (title, description, sprite) = ModifierCharacteristics.GetTitleDescSprite(tti);
             }
             textTitle.text = title;
             textDesc.text = description;

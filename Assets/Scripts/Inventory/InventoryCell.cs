@@ -57,7 +57,7 @@ namespace Inventory
             {
                 inventoryContainer = ic;
                 CellIsInventorySon = true;
-                SetAmmoCount(mSMGGun.AmmoCount);                
+                SetAmmoCount(mSMGGun.AmmoCount);
             }
             eventReceiver = inventoryContainer.EventReceiver;
         }
@@ -74,10 +74,12 @@ namespace Inventory
         /// <param name="id"></param>
         /// <param name="count"></param>
         /// <param name="pos"></param>
-        public int SetItem(int id, int count, bool isMerge = true)
+        public int SetItem(int id, int count, SMGGunAk_74 gun, bool isMerge = true)
         {
             int outOfRange = MItemContainer.SetItem(id, count + Count, isMerge);
-            ChangeSprite();
+            ReloadGun(gun);
+            ChangeSprite();            
+
             return outOfRange;
         }
         /// <summary>
@@ -92,8 +94,9 @@ namespace Inventory
             mImage = copyPaste.MImage;// и новых image                        
             mText = copyPaste.MText;
 
+
             ChangeSprite();
-            mItem.localScale = additionalSettins.DefaultScale;
+            ReloadGun(copyPaste.posGun);
             return outRangeCount;
         }
         private void UpdateText()
@@ -279,6 +282,7 @@ namespace Inventory
             public Image MImage { get; set; }
             public int Count { get; set; }
             public int Id { get; set; }
+            public SMGGunAk_74 posGun { get; set; }
 
             public CopyPasteCell(InventoryCell c)
             {
@@ -287,6 +291,7 @@ namespace Inventory
                 Count = c.Count;
                 MText = c.mText;
                 Id = c.Id;
+                posGun = c.mSMGGun;
             }
             public bool Equals(CopyPasteCell obj) => obj.Id == Id && obj.Count < ItemStates.GetMaxCount(Id) && Count < ItemStates.GetMaxCount(Id);
 
