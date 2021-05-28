@@ -73,7 +73,7 @@ namespace Shoots
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
-            if (ScreensManager.GetScreen() != null)
+            if (ScreensManager.HasActiveScreen())
                 return false;
 
             if (!possibleShoot)
@@ -160,17 +160,15 @@ namespace Shoots
                 currentReloadTime = 0;
                 ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
             }
-        }        
+        }
 
         public void UpdateModifiers(int index) => gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)index);
 
         /// <summary>
         /// выполняется при загрузке сохранения
         /// </summary>
-        public void FastReload(int remBullets)
-        {
-            dispenser.Reload(remBullets);
-        }
+        public void FastReload(int remBullets) => dispenser.Reload(remBullets);
+
 
         /// <summary>
         /// возвращает оптимальный урон по противнику
@@ -193,18 +191,12 @@ namespace Shoots
             // Debug.Log(damage);
             return damage;
         }
-        public void PlayStartReloadClip()
-        {
-            gunAnimator.PlayArmorySound(startReloadClip);
-        }
-        public void PlayReloadSound()
-        {
-            gunAnimator.PlayArmorySound(reloadClip);
-        }
-        public void PlayLastReloadSound()
-        {
-            gunAnimator.PlayArmorySound(lastReloadClip);
-        }
+        public void PlayStartReloadClip() => gunAnimator.PlayArmorySound(startReloadClip);
+
+        public void PlayReloadSound() => gunAnimator.PlayArmorySound(reloadClip);
+
+        public void PlayLastReloadSound() => gunAnimator.PlayArmorySound(lastReloadClip);
+
 
 
         public void SetPossibleShooting(bool isAnimFinish) => possibleShoot = isAnimFinish;

@@ -17,16 +17,18 @@ namespace Inventory
         public event EventHandler ScrollEvent;
 
         private const KeyCode changeActiveKeyCode = KeyCode.E;
-        private const KeyCode dropCode = KeyCode.Q;
+        private const KeyCode dropCode = KeyCode.BackQuote;
         private bool isEnabled;
         private FirstPersonController fps;
+        private Shoots.GunAnimator gunAnimator;
         private void Awake()
         {
             fps = FindObjectOfType<FirstPersonController>();
+            gunAnimator = FindObjectOfType<Shoots.GunAnimator>();
         }
         private void Update()
         {
-            if (InputManager.IsLockeds != 0 && !isEnabled)
+            if (ScreensManager.HasActiveScreen() && !isEnabled || gunAnimator.IsAiming)
                 return;
             if (Input.GetKeyDown(changeActiveKeyCode))
             {

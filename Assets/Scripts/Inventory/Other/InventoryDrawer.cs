@@ -22,7 +22,7 @@ public sealed class InventoryDrawer : MonoBehaviour
     /// </summary>
     public bool ChangeActiveMainField(bool value)
     {
-        MainFieldEnabled = ScreensManager.GetScreen() == null && value;
+        MainFieldEnabled = !ScreensManager.HasActiveScreen() && value;
         mainField.SetActive(MainFieldEnabled);
 
         EffectsManager.Instance.SetEnableDOF(MainFieldEnabled);

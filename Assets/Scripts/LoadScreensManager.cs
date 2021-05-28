@@ -21,12 +21,16 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
             OnClose();
             return;
         }
-        pressKeyText.SetActive(false);
+        if (pressKeyText)
+            pressKeyText.SetActive(false);
         if (lastLoadLevel != null)
         {
-            pressKeyText.SetActive(true);
-            img.sprite = lastLoadLevel.sprite;
-            descText.SetText(lastLoadLevel.description);
+            if (pressKeyText)
+                pressKeyText.SetActive(true);
+            if (img)
+                img.sprite = lastLoadLevel.sprite;
+            if (descText)
+                descText.SetText(lastLoadLevel.description);
             ScreensManager.SetScreen(this);
         }
     }
@@ -34,7 +38,8 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
     public void LoadLevel(int level, int currentLevel)
     {
         var operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentLevel == -1 ? level : currentLevel);
-        background.SetActive(true);
+        if (background)
+            background.SetActive(true);
         int imgIt = Random.Range(1, 8);
 
         string text = null;
@@ -42,15 +47,17 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
         {
             text = sr.ReadToEnd();
         }
-        descText.SetText(text);
-        lastLoadLevel = new LastLoadLevelContainer(operation, img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}"), text);
+        if (descText)
+            descText.SetText(text);
+        lastLoadLevel = new LastLoadLevelContainer(operation, img ? img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}") : null, text);
         ScreensManager.SetScreen(this);
     }
     private void Update()
     {
         if (lastLoadLevel != null)
         {
-            text.SetText($"{lastLoadLevel.GetProggres()}/100%");
+            if (text)
+                text.SetText($"{lastLoadLevel.GetProggres()}/100%");
             if (Input.anyKeyDown)
             {
                 OnClose();
@@ -59,10 +66,12 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
     }
     private void OnClose()
     {
-        background.SetActive(false);
+        if (background)
+            background.SetActive(false);
         lastLoadLevel = null;
         Input.ResetInputAxes();
-        img.sprite = null;
+        if (img)
+            img.sprite = null;
     }
 
     public class LastLoadLevelContainer

@@ -60,17 +60,8 @@ namespace Debugger
         /// анимация движения
         /// </summary>
         private void Move()
-        {            
-            if (!isHidden)
-            {
-                InputManager.LockInput();
-                ScreensManager.SetScreen(this);
-            }
-            else
-            {
-                InputManager.Unlock();
-                ScreensManager.SetScreen(null);
-            }
+        {
+            ScreensManager.SetScreen(isHidden ? null : this);
 
             Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
 

@@ -22,19 +22,12 @@ namespace PlayerClasses
         private void Update()
         {
             if (Input.GetKeyDown(InputInteractive))
-            {
                 inputedButton = true;
-            }
-            else
-            if (Input.GetKeyUp(InputInteractive))
-            {
+            else if (Input.GetKeyUp(InputInteractive))
                 inputedButton = false;
-            }
         }
-        private void FixedUpdate()
-        {
-            RayThrow();
-        }
+        private void FixedUpdate() => RayThrow();
+
         private void RayThrow()
         {
             Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
@@ -50,7 +43,7 @@ namespace PlayerClasses
                     string getDesc = c.Description;
                     string getMainDesc = c.MainDescription;
 
-                    int getCount = c is InventoryItem? (c as InventoryItem).GetCount() : 1;
+                    int getCount = c is InventoryItem ? (c as InventoryItem).GetCount() : 1;
                     if (!string.IsNullOrEmpty(getDesc))
                     {
                         desc = getDesc;

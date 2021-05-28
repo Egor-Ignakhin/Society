@@ -81,22 +81,16 @@ namespace Inventory
 
         private void SetPause(bool enabled)
         {
-            Cursor.visible = enabled;
             if (!enabled)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                fps.SetState(State.unlocked);
-                if (lastItemContainer != null)
+                if (lastItemContainer)
                     CloseContainer();
-                ScreensManager.SetScreen(null);
             }
             else
-            {
-                Cursor.lockState = CursorLockMode.None;
-                fps.SetState(State.locked);
-                ScreensManager.SetScreen(this);
                 RewriteSMGCells();
-            }
+
+            fps.SetState(enabled ? State.locked : State.unlocked);
+            ScreensManager.SetScreen(enabled ? this : null);
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)

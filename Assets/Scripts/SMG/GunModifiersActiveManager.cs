@@ -18,7 +18,6 @@ namespace SMG
         {
             magIndex = nMagix;
             UpdateModifiers();
-            Debug.Log(1 + transform.root.name);
         }
     }
 }

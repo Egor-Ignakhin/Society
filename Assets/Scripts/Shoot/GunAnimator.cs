@@ -81,7 +81,7 @@ namespace Shoots
             {
                 g.MGun.OnInit(interactableLayers, this);
             }
-            inventoryContainer = FindObjectOfType<InventoryContainer>();
+            inventoryContainer = FindObjectOfType<InventoryContainer>();            
             InventoryEventReceiver = inventoryContainer.EventReceiver;
             SMGMain = FindObjectOfType<SMG.SMGMain>();
             SMGEventReceiver = SMGMain.EventReceiver;
@@ -109,31 +109,23 @@ namespace Shoots
         private States GetSlant()
         {
             if (Input.GetKey(KeyCode.Q))
-            {
                 return States.LSlant;
-            }
             else if (Input.GetKey(KeyCode.E))
-            {
                 return States.Rlant;
-            }
 
             return States.dSlant;
         }
         private void TiltCamera(States s)
         {
             if (s == States.LSlant && IsAiming)
-            {
-                fps.SetZSlant(15);
-            }
+                fps.SetZSlant(10);
+
             else if (s == States.Rlant && IsAiming)
-            {
-                fps.SetZSlant(-15);
-            }
+                fps.SetZSlant(-10);
+
             else
-            {
                 fps.SetZSlant(0);
-            }
-        }
+        }        
 
         public void ChangeGun(int id)
         {
@@ -209,7 +201,7 @@ namespace Shoots
         }
         private void Animate()
         {
-            if (ScreensManager.GetScreen() != null)
+            if (ScreensManager.HasActiveScreen())
                 return;
             if (currentActiveGunI == -1)// if item isn't gun
                 return;

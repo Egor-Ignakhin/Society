@@ -14,7 +14,7 @@ public sealed class EffectsManager : Singleton<EffectsManager>
     private Bloom volumeBloom;
     private MotionBlur motionBlur;
     private bool IsRechargeable = false;//перезаряжается ли оружие
-    private EffectsSettings effectsSettings = new EffectsSettings();    
+    private EffectsSettings effectsSettings = new EffectsSettings();
     public class EffectsSettings
     {
         public float rechargeableBlurIntensity = 0.5f;
@@ -33,37 +33,31 @@ public sealed class EffectsManager : Singleton<EffectsManager>
     /// <summary>
     /// set enable depth of field
     /// </summary>
-    public void SetEnableDOF(bool active)
-    {
-        volumeDOF.active = active;
-    }
+    public void SetEnableDOF(bool active) => volumeDOF.active = active;
+
     /// <summary>
     /// set enable bloom
     /// </summary>
     /// <param name="v"></param>
-    public void SetEnableBloom(bool v)
-    {
-        volumeBloom.active = v;
-    }
+    public void SetEnableBloom(bool v) => volumeBloom.active = v;
 
-    private void Update()
-    {
-        AnimateMotionBlur();
-    }
+
+    private void Update() => AnimateMotionBlur();
+
     /// <summary>
     /// анимируется при перезарядке любого оружия
     /// </summary>
     private void AnimateMotionBlur()
-    {        
-    //    motionBlur.active = true;
-       // if (IsRechargeable)
-         //   motionBlur.intensity = new ClampedFloatParameter(effectsSettings.rechargeableBlurIntensity, 0, 1,true);
-    //    else
-      //      motionBlur.intensity = new ClampedFloatParameter(0, 0, 1);
+    {
+        //    motionBlur.active = true;
+        // if (IsRechargeable)
+        //   motionBlur.intensity = new ClampedFloatParameter(effectsSettings.rechargeableBlurIntensity, 0, 1,true);
+        //    else
+        //      motionBlur.intensity = new ClampedFloatParameter(0, 0, 1);
     }
 
     internal void SetActiveBlur(bool IRe)
     {
-     //   IsRechargeable = IRe;
+        //   IsRechargeable = IRe;
     }
 }

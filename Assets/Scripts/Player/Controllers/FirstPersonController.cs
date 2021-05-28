@@ -163,7 +163,7 @@ public sealed class FirstPersonController : MonoBehaviour
     {
         #region Look Settings - Update
 
-        if (InputManager.IsLockeds == 0)
+        if (!ScreensManager.HasActiveScreen())
         {
             float mouseYInput = Input.GetAxis("Mouse Y");
             float mouseXInput = Input.GetAxis("Mouse X");
@@ -184,13 +184,13 @@ public sealed class FirstPersonController : MonoBehaviour
         #endregion
 
         #region Input Settings - Update
-        if (Input.GetButtonDown("Jump") && CanJump && InputManager.IsLockeds == 0)
+        if (Input.GetButtonDown("Jump") && CanJump && !ScreensManager.HasActiveScreen())
             jumpInput = true;
         else if (Input.GetButtonUp("Jump"))
             jumpInput = false;
 
 
-        if (InputManager.IsLockeds == 0)
+        if (!ScreensManager.HasActiveScreen())
         {
             isCrouching = Input.GetKey(MCrouchModifiers.crouchKey) && !isRecumbenting;
 
@@ -200,7 +200,7 @@ public sealed class FirstPersonController : MonoBehaviour
             }
         }
 
-        Sprint = Input.GetKey(SprintKey) && CanSprint && InputManager.IsLockeds == 0;
+        Sprint = Input.GetKey(SprintKey) && CanSprint && !ScreensManager.HasActiveScreen();
         PlayerClasses.BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
         #endregion
@@ -249,7 +249,7 @@ public sealed class FirstPersonController : MonoBehaviour
             }
         }
         #endregion
-        float m = InputManager.IsLockeds > 0 ? 0 : 1;
+        float m = ScreensManager.HasActiveScreen() ? 0 : 1;
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         inputXY = new Vector2(horizontalInput, verticalInput) * m * additionalBraking;
@@ -456,30 +456,20 @@ public sealed class FirstPersonController : MonoBehaviour
     }
     public void SetState(State s)
     {
-        if (s == State.locked)
-            InputManager.LockInput();
-        else if (s == State.unlocked && InputManager.IsLockeds > 0)
-            InputManager.Unlock();// удаление ограничителя
-
+        bool isLocked = (s == State.locked);
         switch (s)
         {
             case State.unlocked:
-                if (InputManager.IsLockeds > 0)
-                    return;
-
-                _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-                _fpsRigidbody.useGravity = true;
-                Input.ResetInputAxes();
-                CanJump = true;
+                _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;                
                 break;
 
             case State.locked:
                 _fpsRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                _fpsRigidbody.useGravity = false;
                 _fpsRigidbody.velocity = Vector3.zero;
-                CanJump = false;
                 break;
         }
+        CanJump = !isLocked;
+        _fpsRigidbody.useGravity = !isLocked;
     }
     public void SetPosAndRot(Transform point)
     {
@@ -498,9 +488,9 @@ public sealed class FirstPersonController : MonoBehaviour
     public void SetZSlant(int n)
     {
         ZSlant = n;
-        float rPos = n > 0 ? -0.375f : (n < 0 ? 0.375f : 0);
+        float rPos = ZSlant > 0 ? -0.375f : (ZSlant < 0 ? 0.375f : 0);
 
-        PlayerCamera.transform.localPosition = Vector3.MoveTowards(PlayerCamera.transform.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime);
+        PlayerCameraTr.localPosition = Vector3.MoveTowards(PlayerCameraTr.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime * 2);
     }
 
     private float additionalBraking = 1;//добавляемая скорость при перегузе

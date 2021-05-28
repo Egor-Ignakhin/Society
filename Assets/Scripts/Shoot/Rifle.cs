@@ -34,9 +34,8 @@ namespace Shoots
         {
             if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
             {
-                float m = Random.Range(1, 2);
-                rb.AddForce(droppingPlace.right * m, ForceMode.Impulse);
-                rb.AddForce(-droppingPlace.forward * m, ForceMode.Impulse);
+                rb.AddForce(droppingPlace.right * 4, ForceMode.Impulse);
+                rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
             }
         }
 

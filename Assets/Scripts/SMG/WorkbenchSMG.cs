@@ -5,7 +5,7 @@ namespace SMG
     /// <summary>
     /// класс отвечающий за верстак
     /// </summary>
-    class WorkbenchSMG : InteractiveObject, IGameScreen
+    class WorkbenchSMG : InteractiveObject
     {
         private SMGMain main;
         private void Start()
@@ -15,7 +15,8 @@ namespace SMG
         }
         public override void Interact(PlayerStatements pl)
         {
-            main.SetEnableMaps(true);
+            if (!ScreensManager.HasActiveScreen())
+                main.SetEnableMaps(true);
         }
     }
 }

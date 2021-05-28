@@ -9,8 +9,7 @@ namespace PlayerClasses
 
         private void Awake()
         {
-            mBasicNeeds = GetComponent<BasicNeeds>();
-            InputManager.Unlock();
+            mBasicNeeds = GetComponent<BasicNeeds>();            
         }
         public void MealPlayer(int food, int water)
         {

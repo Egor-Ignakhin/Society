@@ -14,31 +14,30 @@ namespace MenuScripts
         /// <summary>
         /// класс - управлящий меню паузой
         /// </summary>
-        sealed class MenuPauseManager : MonoBehaviour
+        sealed class MenuPauseManager : MonoBehaviour, IGameScreen
         {
-            private MenuEventReceiver eventReceiver;// обработчик событий меню-паузы
+            private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
             [SerializeField] private Transform mainParent;// контейнер сод. кнопки
             [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
             [SerializeField] private GameObject SettingsObj;// меню настроек     
             [SerializeField] private Slider fovSlider;
             [SerializeField] private TextMeshProUGUI fovText;
-            private FirstPersonController fps;// контроллёр игрока
-            public static CurrentGameSettings currentGameSettings { get; private set; }
+            private FirstPersonController fpc;// контроллёр игрока
+            private static CurrentGameSettings currentGameSettings;
+            public static CurrentGameSettings GetCurrentGameSettings() => currentGameSettings;
             private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
             private void Start()
             {
-                fps = FindObjectOfType<FirstPersonController>();
-                eventReceiver = new MenuEventReceiver(MenuUI, mainParent, fps, SettingsObj);
+                fpc = FindObjectOfType<FirstPersonController>();
+                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, fpc, SettingsObj, this);
                 LoadData();
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
 
                 fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
             }
-            private void Update()
-            {
-                eventReceiver.Update();
-            }
+            private void Update() => menuEventReceiver.OnUpdate();
+
 
             /// <summary>
             /// смена активности bloom'а
@@ -74,10 +73,8 @@ namespace MenuScripts
                 if (currentGameSettings == null)
                     currentGameSettings = new CurrentGameSettings();
             }
-            private void OnDisable()
-            {
-                SaveData();
-            }
+            private void OnDisable() => SaveData();
+
             private void SaveData()
             {
                 string data = JsonUtility.ToJson(currentGameSettings, true);
@@ -91,13 +88,14 @@ namespace MenuScripts
                 private readonly CommandContainer commandContainer = new CommandContainer();
                 private readonly AdvancedSettings advanced = new AdvancedSettings();
                 private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
+                private readonly MenuPauseManager menuPauseManager;
                 public class AdvancedSettings
                 {
                     public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
                     public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
                     public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
                 }
-                public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn)
+                public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn, MenuPauseManager mpm)
                 {
                     menuUI = menu;
                     this.fps = fps;
@@ -130,15 +128,14 @@ namespace MenuScripts
                         btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
                     }
                     DisableAllTriggers();
-                    commandContainer.SetEnableMenu(false, menuUI, fps);// выключение  меню                    
+                    menuPauseManager = mpm;
+                    commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager);// выключение  меню                    
                 }
 
-                public void Update()
+                public void OnUpdate()
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
-                    {
-                        commandContainer.SetEnableMenu(!menuUI.activeInHierarchy, menuUI, fps);
-                    }
+                        commandContainer.SetEnableMenu(!menuUI.activeInHierarchy && !ScreensManager.HasActiveScreen(), menuUI, fps, menuPauseManager);
                 }
 
                 /// <summary>
@@ -205,7 +202,7 @@ namespace MenuScripts
                             commandContainer.ExitToMainMenu();
                             break;
                         case 7:
-                            commandContainer.SetEnableMenu(false, menuUI, fps);
+                            commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager);
                             break;
                     }
                 }
@@ -240,22 +237,22 @@ namespace MenuScripts
                 {
                     UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
                 }
-                public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps)
+                public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps, MenuPauseManager mpm)
                 {
                     menu.SetActive(v);
-                    // пауза при открытии инвентаря                
-                    Cursor.visible = v;
+                    // пауза при открытии инвентаря                                    
                     FindObjectOfType<InventoryInput>().DisableInventory();
                     if (!v)
                     {
-                        Cursor.lockState = CursorLockMode.Locked;
+                        ScreensManager.SetScreen(null);
                         fps.SetState(State.unlocked);
                     }
                     else
                     {
-                        Cursor.lockState = CursorLockMode.None;
+                        ScreensManager.SetScreen(mpm);
                         fps.SetState(State.locked);
                     }
+                    EffectsManager.Instance.SetEnableDOF(v);
                 }
             }
         }
@@ -270,7 +267,7 @@ namespace MenuScripts
 }
 class GameSettings
 {
-    public static float MinFov() => MenuPauseManager.currentGameSettings.minFov;
-    public static float FOV() => MenuPauseManager.currentGameSettings.FOV;
-    public static float MaxFov() => MenuPauseManager.currentGameSettings.FOV;
+    public static float MinFov() => MenuPauseManager.GetCurrentGameSettings().minFov;
+    public static float FOV() => MenuPauseManager.GetCurrentGameSettings().FOV;
+    public static float MaxFov() => MenuPauseManager.GetCurrentGameSettings().FOV;
 }

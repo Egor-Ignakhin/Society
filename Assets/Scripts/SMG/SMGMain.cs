@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SMG
 {
-    public class SMGMain : MonoBehaviour
+    public class SMGMain : MonoBehaviour, IGameScreen
     {
         [SerializeField] private LayerMask myLayerMask;
         [SerializeField] private GameObject renderObjects;
@@ -52,20 +52,17 @@ namespace SMG
         }
         public void SetEnableMaps(bool v)
         {
-            GunMaps.SetActive(IsActive = v);
-            Cursor.visible = IsActive;
+            GunMaps.SetActive(IsActive = v);            
             if (IsActive)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                InputManager.LockInput();
+            {             
+                ScreensManager.SetScreen(this);
                 EventReceiver.OnEnable();
                 SetEnableCanvasesAndCameras();
                 MSMG.gameObject.SetActive(IsActive);
             }
             else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                InputManager.Unlock();
+            {                
+                ScreensManager.SetScreen(null);
                 MSMG.gameObject.SetActive(IsActive);
                 SetEnableCanvasesAndCameras();
             }
