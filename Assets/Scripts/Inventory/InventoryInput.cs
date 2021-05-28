@@ -79,7 +79,7 @@ namespace Inventory
                 InputKeyEvent?.Invoke(s);
         }
 
-        internal void DropItem(InventoryItem inventoryItem, int count, SMGGunAk_74 gun)
+        internal void DropItem(InventoryItem inventoryItem, int count, SMGInventoryCellGun gun)
         {
             var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
             item.SetCount(count);

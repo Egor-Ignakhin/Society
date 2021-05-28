@@ -108,7 +108,7 @@ namespace Inventory
         /// добавление поднятого предмета в очередь
         /// </summary>
         /// <param name="item"></param>    
-        public void AddItem(int id, int count, SMGGunAk_74 gun, bool isRecursion = false)
+        public void AddItem(int id, int count, SMGInventoryCellGun gun, bool isRecursion = false)
         {
             if (Cells.FindAll(c => c.IsEmpty).Count == 0)// если не нашлись свободные слоты
                 return;

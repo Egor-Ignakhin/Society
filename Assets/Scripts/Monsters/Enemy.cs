@@ -231,11 +231,11 @@ public abstract class Enemy : MonoBehaviour
         if (mAgent.isOnNavMesh)
             mAgent.SetDestination(lastTargetPos);
 
-        if (mAgent.remainingDistance > mAgent.stoppingDistance)// если до цели не дошёл агент
+        if (mAgent.isOnNavMesh && mAgent.remainingDistance > mAgent.stoppingDistance)// если до цели не дошёл агент
         {
             SetAnimationClip(AnimationsContainer.MoveToPerson);// идти к цели
         }
-        else if (mAgent.remainingDistance <= mAgent.stoppingDistance && enemy && mAgent.hasPath)// если дошёл
+        else if (mAgent.hasPath && mAgent.remainingDistance <= mAgent.stoppingDistance && enemy)// если дошёл
         {//атаковать
             SetAnimationClip(AnimationsContainer.Attack);
             Attack();

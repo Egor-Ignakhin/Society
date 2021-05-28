@@ -26,7 +26,7 @@ namespace SMG
 
         public void OnPointerClick(PointerEventData eventData) => eventReceiver.OnActivateCurrentModifierCell(this);
 
-        public void OnPointerEnter(PointerEventData eventData) => eventReceiver.OnSelectModifiersCell(this);
+        public void OnPointerEnter(PointerEventData eventData) => eventReceiver.OnEnterModifiersCell(this);
 
         public void OnPointerExit(PointerEventData eventData) => eventReceiver.OnDeselectModifiersCell();
     }

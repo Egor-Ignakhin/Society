@@ -29,14 +29,14 @@ namespace Inventory
         public List<int> counts = new List<int>();// кол-во предметов в слотах
         public int cellsCount;// кол-во слотов
 
-        public List<SMGGunAk_74> guncells = new List<SMGGunAk_74>();
+        public List<SMGInventoryCellGun> guncells = new List<SMGInventoryCellGun>();
         public SaverContainer(List<InventoryCell> cells)
         {
             for (cellsCount = 0; cellsCount < cells.Count; cellsCount++)
             {
                 types.Add(cells[cellsCount].Id);// запись ID предмета
                 counts.Add(cells[cellsCount].Count);// запись кол-ва предмета        
-                guncells.Add(cells[cellsCount].mSMGGun);
+                guncells.Add(cells[cellsCount].MGun);
             }
         }
         /// <summary>

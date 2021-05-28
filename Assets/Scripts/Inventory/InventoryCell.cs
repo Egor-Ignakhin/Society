@@ -25,7 +25,7 @@ namespace Inventory
         public int Count => MItemContainer.Count;
         public bool IsEmpty => MItemContainer.IsEmpty;
         public bool IsFilled => MItemContainer.IsFilled;
-        public SMGGunAk_74 mSMGGun { get; private set; } = new SMGGunAk_74();
+        public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();
         public sealed class AdditionalSettins
         {
             public readonly Vector3 DefaultScale; // обычный размер
@@ -57,24 +57,23 @@ namespace Inventory
             {
                 inventoryContainer = ic;
                 CellIsInventorySon = true;
-                SetAmmoCount(mSMGGun.AmmoCount);
+                SetAmmoCount(MGun.AmmoCount);
             }
             eventReceiver = inventoryContainer.EventReceiver;
         }
 
-        internal void ReloadGun(SMGGunAk_74 gun)
+        internal void ReloadGun(SMGInventoryCellGun gun)
         {
-            mSMGGun.Reload(gun);
+            MGun.Reload(gun);
             UpdateText();
         }
-
         /// <summary>
         /// вызывается для записи предмета в ячейку после загрузки
         /// </summary>
         /// <param name="id"></param>
         /// <param name="count"></param>
         /// <param name="pos"></param>
-        public int SetItem(int id, int count, SMGGunAk_74 gun, bool isMerge = true)
+        public int SetItem(int id, int count, SMGInventoryCellGun gun, bool isMerge = true)
         {
             int outOfRange = MItemContainer.SetItem(id, count + Count, isMerge);
             ReloadGun(gun);
@@ -104,7 +103,7 @@ namespace Inventory
             if (!ItemStates.ItsGun(Id))
                 mText.SetText(Count > 1 ? Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
             else
-                mText.SetText(mSMGGun.AmmoCount.ToString());
+                mText.SetText(MGun.AmmoCount.ToString());
         }
 
         public void Clear()
@@ -128,7 +127,7 @@ namespace Inventory
 
         internal void SetAmmoCount(int remBullets)
         {
-            mSMGGun.SetAmmoCount(remBullets);
+            MGun.SetAmmoCount(remBullets);
             UpdateText();
         }
         #region Events
@@ -282,7 +281,7 @@ namespace Inventory
             public Image MImage { get; set; }
             public int Count { get; set; }
             public int Id { get; set; }
-            public SMGGunAk_74 posGun { get; set; }
+            public SMGInventoryCellGun posGun { get; set; }
 
             public CopyPasteCell(InventoryCell c)
             {
@@ -291,7 +290,7 @@ namespace Inventory
                 Count = c.Count;
                 MText = c.mText;
                 Id = c.Id;
-                posGun = c.mSMGGun;
+                posGun = c.MGun;
             }
             public bool Equals(CopyPasteCell obj) => obj.Id == Id && obj.Count < ItemStates.GetMaxCount(Id) && Count < ItemStates.GetMaxCount(Id);
 

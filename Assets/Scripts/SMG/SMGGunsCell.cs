@@ -30,7 +30,7 @@ namespace SMG
 
         internal void SetMag(ModifierCharacteristics.ModifierIndex index)
         {
-            Ic.mSMGGun.SetMag(index);
+            Ic.MGun.SetMag(index);
         }
     }
 }

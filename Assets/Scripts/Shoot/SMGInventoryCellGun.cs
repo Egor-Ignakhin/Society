@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using static SMG.ModifierCharacteristics;
+﻿using static SMG.ModifierCharacteristics;
 [System.Serializable]
-public class SMGGunAk_74
+public class SMGInventoryCellGun
 {
     public int Dispenser = 1;
     public int Silencer = -1;
@@ -23,7 +22,7 @@ public class SMGGunAk_74
         Silencer = silencer;
         AmmoCount = ammocount;
     }
-    internal void Reload(SMGGunAk_74 GunAk_74)
+    internal void Reload(SMGInventoryCellGun GunAk_74)
     {
         if (GunAk_74 is null)
         {

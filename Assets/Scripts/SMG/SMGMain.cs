@@ -11,7 +11,7 @@ namespace SMG
         [SerializeField] private GameObject renderObjects;
         [SerializeField] private GameObject GunMaps;
 
-        private bool isActive;
+        public bool IsActive { get; private set; }
         [SerializeField]
         private SMGCamera MSMG;
         private Camera MSMGCamera;
@@ -52,21 +52,21 @@ namespace SMG
         }
         public void SetEnableMaps(bool v)
         {
-            GunMaps.SetActive(isActive = v);
-            Cursor.visible = isActive;
-            if (isActive)
+            GunMaps.SetActive(IsActive = v);
+            Cursor.visible = IsActive;
+            if (IsActive)
             {
                 Cursor.lockState = CursorLockMode.None;
                 InputManager.LockInput();
                 EventReceiver.OnEnable();
                 SetEnableCanvasesAndCameras();
-                MSMG.gameObject.SetActive(isActive);
+                MSMG.gameObject.SetActive(IsActive);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 InputManager.Unlock();
-                MSMG.gameObject.SetActive(isActive);
+                MSMG.gameObject.SetActive(IsActive);
                 SetEnableCanvasesAndCameras();
             }
         }
@@ -86,16 +86,16 @@ namespace SMG
 
             var canvases = FindObjectsOfType<Canvas>();
             foreach (var c in canvases)
-                c.enabled = !isActive;
+                c.enabled = !IsActive;
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
-                c.enabled = !isActive;
+                c.enabled = !IsActive;
             var volumes = FindObjectsOfType<UnityEngine.Rendering.Volume>().ToList();
             foreach (var vol in volumes)
-                vol.gameObject.SetActive(!isActive);
+                vol.gameObject.SetActive(!IsActive);
 
-            MSMG.gameObject.SetActive(isActive);
-            MSMGCamera.enabled = isActive;
+            MSMG.gameObject.SetActive(IsActive);
+            MSMGCamera.enabled = IsActive;
 
             mCanvas.enabled = true;
         }
@@ -119,7 +119,7 @@ namespace SMG
             {
                 return;
             }
-            if (!isActive)
+            if (!IsActive)
                 return;
             Ray ray = MSMGCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))

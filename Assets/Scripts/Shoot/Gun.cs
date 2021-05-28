@@ -36,7 +36,6 @@ namespace Shoots
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
         [SerializeField] protected Inventory.ItemStates.ItemsID bulletId;
 
-
         protected AudioClip fireClip;
         protected AudioClip startReloadClip;
         protected AudioClip reloadClip;
@@ -50,6 +49,11 @@ namespace Shoots
 
         private GunAnimator gunAnimator;
         private EffectsManager effectsManager;
+        private SMG.GunModifiersActiveManager gunModifiersActiveManager;
+        private void Awake()
+        {
+            gunModifiersActiveManager = GetComponent<SMG.GunModifiersActiveManager>();
+        }
         private void Start()
         {
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
@@ -65,15 +69,20 @@ namespace Shoots
             layerMask = interactableLayers;
             gunAnimator = gAnim;
         }
+        public Inventory.ItemStates.ItemsID GetBulletId() => bulletId;
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
             if (ScreensManager.GetScreen() != null)
                 return false;
-            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && inventoryEv.GetSelectedCell().mSMGGun.AmmoCount > 0 && !IsReload;
+
+            if (!possibleShoot)
+                return false;
+
+            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && inventoryEv.GetSelectedCell().MGun.AmmoCount > 0 && !IsReload;
             if (canShooting)
             {
-                FastReload(inventoryEv.GetSelectedCell().mSMGGun.AmmoCount);
+                FastReload(inventoryEv.GetSelectedCell().MGun.AmmoCount);
                 currentCartridgeDispenser = 0;
                 dispenser.Dispens();
                 mAnimator.SetTrigger("Fire");
@@ -142,7 +151,7 @@ namespace Shoots
                     remainingBullets -= outOfRange;
                 }
                 inventoryEv.DelItem(bulletId, remainingBullets);
-                dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().mSMGGun.AmmoCount);
+                dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().MGun.AmmoCount);
                 if (dispenser.CountBullets > dispenser.MaxBullets)
                 {
                     InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets, null);
@@ -151,12 +160,9 @@ namespace Shoots
                 currentReloadTime = 0;
                 ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
             }
-        }
+        }        
 
-        internal void UpdateModifiers()
-        {
-            GetComponent<SMG.GunModifiersActiveManager>().UpdateModifiers();
-        }
+        public void UpdateModifiers(int index) => gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)index);
 
         /// <summary>
         /// выполняется при загрузке сохранения
@@ -201,10 +207,8 @@ namespace Shoots
         }
 
 
-        public void SetPossibleShooting(bool isAnimFinish)
-        {
-            possibleShoot = isAnimFinish;
-        }
+        public void SetPossibleShooting(bool isAnimFinish) => possibleShoot = isAnimFinish;
+
         protected abstract void DropUsedBullet();
         protected abstract void PlayFlashEffect();
         protected void CreateBullet()
@@ -246,7 +250,7 @@ namespace Shoots
                 {
                     var sc = inventoryEv.GetSelectedCell();
                     if (sc && Inventory.ItemStates.ItsGun(sc.Id))
-                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.mSMGGun.Title, sc.mSMGGun.Dispenser);
+                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Dispenser);
                     else return 0;
                 }
             }

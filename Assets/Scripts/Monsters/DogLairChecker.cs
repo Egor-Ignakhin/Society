@@ -6,7 +6,7 @@ public class DogLairChecker : MonoBehaviour
     private CapsuleCollider playerCollider;
     private void Start()
     {
-        playerCollider = FirstPersonController.GetCollider();
+        playerCollider = FindObjectOfType<FirstPersonController>().GetCollider();
     }
     private void OnTriggerEnter(Collider other)
     {

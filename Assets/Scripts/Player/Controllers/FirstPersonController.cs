@@ -91,7 +91,7 @@ public sealed class FirstPersonController : MonoBehaviour
     }
 
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
-    private static CapsuleCollider capsule;
+    private CapsuleCollider capsule;
     private bool IsGrounded = true;
     private Vector2 inputXY;
     private bool isCrouching = false;
@@ -99,7 +99,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private float yVelocity;
 
     private Rigidbody _fpsRigidbody;
-    public static CapsuleCollider GetCollider() => capsule;
+    public CapsuleCollider GetCollider() => capsule;
     private Vector3 oldPos = Vector3.zero;
 
     #endregion

@@ -209,7 +209,7 @@ namespace Inventory
             //если игрок хочет выкинуть предмет
             if (!IsIntersected(draggedItem.position))
             {
-                DropItem(draggedCell.Id, draggedCell.Count, draggedCell.mSMGGun);
+                DropItem(draggedCell.Id, draggedCell.Count, draggedCell.MGun);
                 if (draggedCell.CellIsInventorySon)
                     inventoryMassCalculator.DeleteItem(draggedCell.Id, draggedCell.Count);
                 draggedCell.Clear();
@@ -278,7 +278,7 @@ namespace Inventory
                 ActivateItem();
         }
 
-        private void DropItem(int id, int count, SMGGunAk_74 gun)
+        private void DropItem(int id, int count, SMGInventoryCellGun gun)
         {
             inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count, gun);
         }
@@ -291,7 +291,7 @@ namespace Inventory
             if (!SelectedCell || SelectedCell.IsEmpty)
                 return;
 
-            DropItem(SelectedCell.Id, SelectedCell.Count, SelectedCell.mSMGGun);
+            DropItem(SelectedCell.Id, SelectedCell.Count, SelectedCell.MGun);
             if (SelectedCell.CellIsInventorySon)
                 inventoryMassCalculator.DeleteItem(SelectedCell.Id, SelectedCell.Count);
 
@@ -360,7 +360,7 @@ namespace Inventory
             }
         }
 
-        public void OpenContainer(List<(int id, int count, SMGGunAk_74 gun)> content, int countSlots, ItemsContainer it)
+        public void OpenContainer(List<(int id, int count, SMGInventoryCellGun gun)> content, int countSlots, ItemsContainer it)
         {
             for (int i = 0; i < countSlots; i++)
             {
@@ -422,12 +422,12 @@ namespace Inventory
                 c.SetParent(freeCellsContainer);
             }
 
-            var cells = new List<(int id, int count, SMGGunAk_74 gun)>();
+            var cells = new List<(int id, int count, SMGInventoryCellGun gun)>();
 
             for (int i = 0; i < childs.Count; i++)
             {
                 var item = childs[i].GetComponent<InventoryCell>();
-                cells.Add((item.Id, item.Count, item.mSMGGun));
+                cells.Add((item.Id, item.Count, item.MGun));
             }
             lastItemContainer.Close(cells);
             lastItemContainer = null;

@@ -8,7 +8,7 @@ namespace BarrelCampScripts
         private CapsuleCollider playerCollider;// коллизия игрока
         private void Start()
         {
-            playerCollider = FirstPersonController.GetCollider();
+            playerCollider = FindObjectOfType<FirstPersonController>().GetCollider();
         }
         private void OnTriggerEnter(Collider other)
         {

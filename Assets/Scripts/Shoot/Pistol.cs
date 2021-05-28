@@ -24,7 +24,7 @@ namespace Shoots
         }
         protected override bool Shoot()
         {
-            bool canShoot = base.Shoot() && possibleShoot;
+            bool canShoot = base.Shoot();
             if (!canShoot)
                 return canShoot;
             CreateBullet();

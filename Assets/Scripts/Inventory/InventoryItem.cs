@@ -11,7 +11,7 @@ public sealed class InventoryItem : InteractiveObject
     public int Id { get; private set; }
     [SerializeField] private bool itsGun;
 
-    private SMGGunAk_74 possibleGun = new SMGGunAk_74();
+    private SMGInventoryCellGun possibleGun = new SMGInventoryCellGun();
     [ShowIf(nameof(itsGun), true)] [SerializeField] private SMG.ModifierCharacteristics.GunTitles titleGun = SMG.ModifierCharacteristics.GunTitles.None;
     [ShowIf(nameof(itsGun), true)] [SerializeField] private SMG.ModifierCharacteristics.ModifierIndex magIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
     [ShowIf(nameof(itsGun), true)] [SerializeField] private SMG.ModifierCharacteristics.ModifierIndex silencerIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
@@ -27,7 +27,7 @@ public sealed class InventoryItem : InteractiveObject
         if (!isDroppedGun)
             possibleGun.Reload((int)titleGun, (int)magIndex, (int)silencerIndex, ammoCount);
     }
-    public void SetGun(SMGGunAk_74 g)
+    public void SetGun(SMGInventoryCellGun g)
     {
         if (g.Title != 0)
             isDroppedGun = true;        
@@ -39,7 +39,7 @@ public sealed class InventoryItem : InteractiveObject
         Destroy(gameObject);
     }
     public int GetCount() => count;
-    public SMGGunAk_74 GetPossibleGun() => possibleGun;
+    public SMGInventoryCellGun GetPossibleGun() => possibleGun;
     public void SetId(int id)
     {
         this.Id = id;

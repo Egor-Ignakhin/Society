@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 namespace SMG
 {/// <summary>
 /// класс отвечающий за отображение установленных модификаций
@@ -9,7 +7,7 @@ namespace SMG
     {
         [SerializeField] private GameObject mag_1;
         private ModifierCharacteristics.ModifierIndex magIndex;
-        public void UpdateModifiers()
+        private void UpdateModifiers()
         {
             if (magIndex != ModifierCharacteristics.ModifierIndex.None)
                 mag_1.SetActive(true);
@@ -20,6 +18,7 @@ namespace SMG
         {
             magIndex = nMagix;
             UpdateModifiers();
+            Debug.Log(1 + transform.root.name);
         }
     }
 }
