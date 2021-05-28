@@ -120,7 +120,7 @@ namespace PlayerClasses
 
             playerCollisionChecked = gameObject.AddComponent<PlayerCollisionChecked>();
             playerCollisionChecked.OnInit(this);
-            gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);
+            gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);            
             Init();
         }
 
