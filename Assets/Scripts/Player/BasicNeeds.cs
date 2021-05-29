@@ -15,6 +15,7 @@ namespace PlayerClasses
         private readonly float waitForRadiation = 4;
 
         private float health;
+        private bool BnInitFlag = false;
         public float Health
         {
             get => health;
@@ -22,7 +23,7 @@ namespace PlayerClasses
             private set
             {
                 value = Mathf.Clamp(value, MinimumHealth, MaximumHealth);
-                if (value == 0)
+                if (value == 0 && BnInitFlag)
                     Dead();
 
                 HealthChangeValue?.Invoke((float)Math.Round(health = value, 0));
@@ -122,6 +123,7 @@ namespace PlayerClasses
             playerCollisionChecked.OnInit(this);
             gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);            
             Init();
+            BnInitFlag = true;
         }
 
         private void OnEnable()

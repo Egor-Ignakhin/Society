@@ -16,7 +16,7 @@ namespace PlayerClasses
         [SerializeField] LayerMask interactionLayer;
         public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private PlayerStatements playerStatements;
-        private Vector3 rayStartPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        private Vector3 rayStartPos;
         private bool inputedButton = false;
 
         private void Update()
@@ -30,7 +30,7 @@ namespace PlayerClasses
 
         private void RayThrow()
         {
-            Ray ray = mainCamera.ScreenPointToRay(rayStartPos);
+            Ray ray = mainCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
             string desc = string.Empty;
             string mainDesc = string.Empty;
             int count = 1;

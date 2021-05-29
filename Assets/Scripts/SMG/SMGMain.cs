@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace SMG
@@ -87,12 +85,9 @@ namespace SMG
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
                 c.enabled = !IsActive;
-            var volumes = FindObjectsOfType<UnityEngine.Rendering.Volume>().ToList();
-            foreach (var vol in volumes)
-                vol.gameObject.SetActive(!IsActive);
+            EffectsManager.Instance.SetEnableAllEffects(!IsActive);            
 
-            MSMG.gameObject.SetActive(IsActive);
-            MSMGCamera.enabled = IsActive;
+            MSMG.gameObject.SetActive(IsActive);            
 
             mCanvas.enabled = true;
         }

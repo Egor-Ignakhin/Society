@@ -28,7 +28,7 @@ public sealed class EffectsManager : Singleton<EffectsManager>
         globalVolume.profile.TryGet(out volumeBloom);
         globalVolume.profile.TryGet(out motionBlur);
 
-        base.Init();
+        base.Init();        
     }
     /// <summary>
     /// set enable depth of field
@@ -59,5 +59,10 @@ public sealed class EffectsManager : Singleton<EffectsManager>
     internal void SetActiveBlur(bool IRe)
     {
         //   IsRechargeable = IRe;
+    }
+
+    internal void SetEnableAllEffects(bool v)
+    {
+        globalVolume.enabled = v;
     }
 }
