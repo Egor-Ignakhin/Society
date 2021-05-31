@@ -10,38 +10,36 @@ namespace Maps
 
         private Vector3 currentRot = new Vector3(0, 0, 0);
 
-        private MapManager mapManager;
+        public MapManager MMapManager;
         public delegate void RotateHandler(Vector3 rotate);
         public event RotateHandler RotateEvent;
 
         [SerializeField] private GameObject PointForInstance;
+        private Transform playerT;
         private void OnEnable()
         {
-            mapManager = new MapManager();
+            MMapManager = new MapManager();
             MapManager.AddPointEvent += this.AddPoint;
+            playerT = FindObjectOfType<FirstPersonController>().transform;
+        }    
+        private void FixedUpdate() => SetCurrentRect();
+
+        public void SetCurrentRect()
+        {
+            currentPos = playerT.position;
+            currentRot.z = playerT.localEulerAngles.y - 180;
+            DrawMap();
         }
         private void DrawMap()
         {
             mapRect.localPosition = currentPos;
             transform.localRotation = Quaternion.Euler(currentRot);
-            var points = mapManager.GetPoints();
-            var objects = mapManager.GetObjects();
-            for (int i = 0; i < points.Count; i++)
-            {
-                SetPositionPoint(points[i], objects[i]);
-            }
+            MMapManager.SetPositionsPoint();          
             RotateEvent?.Invoke(currentRot);
-        }
-        public void SetCurrentRect(float newX, float newY, Vector3 quat)
-        {
-            currentPos = new Vector2(newX, newY);
-
-            currentRot.z = quat.y - 180;
-            DrawMap();
         }
         private void AddPoint()
         {
-            Transform point = mapManager.GetLastPoint();
+            Transform point = MMapManager.GetLastPoint();
             CreatePoint(point);
         }
         private void CreatePoint(Transform point)
@@ -58,16 +56,12 @@ namespace Maps
             receiverPm.SetMy3dTransform(sourcePm.GetMy3dTransform());
             Destroy(sourcePm);
             receiverPm.SetState(false);
-            MapManager.AddInsedPoint(receiverPm);
+            MMapManager.AddInsedPoint(receiverPm);
         }
-        private void SetPositionPoint(PointOnMap insedPoint, Transform point)
-        {
-            Vector3 position = new Vector3(point.position.x, point.position.z, 0);
-            insedPoint.transform.localPosition = -position * insedPoint.defaultScale.x;
-        }
+
         private void OnDisable()
         {
-            mapManager = null;
+            MMapManager = null;
             MapManager.AddPointEvent -= this.AddPoint;
         }
     }

@@ -61,8 +61,8 @@ public class FirstMission : Mission
     private void PutOnAChair()
     {
         var player = FindObjectOfType<PlayerClasses.PlayerStatements>();
-        player.transform.position = startStayPlace.position;
-        startChair.Interact(player);
+     //   player.transform.position = startStayPlace.position;
+       // startChair.Interact(player);
     }
     /// <summary>
     /// на специальном холсте для
@@ -118,7 +118,7 @@ public class FirstMission : Mission
         //TODO: сделать анимацию записывания записки
 
         //В будущем заменить
-        Instantiate(farewallNote, fNTransform.position, fNTransform.rotation);
+
         //В будущем заменить
     }
     /// <summary>
@@ -219,6 +219,7 @@ public class FirstMission : Mission
         }
         private static void StartMission()
         {
+            return;
             mission.CreateBackground(true);
             mission.PutOnAChair();
             mission.ListenMessage();
@@ -248,7 +249,7 @@ public class FirstMission : Mission
         }
         private static void RemoveTracker()
         {
-            Destroy(Maps.MapManager.GetTracker(mission.deadMan));
+          //  Destroy(Maps.MapManager.GetTracker(mission.deadMan));
         }
         private static void TranslatePlayerToMainDoor()
         {

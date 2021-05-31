@@ -43,18 +43,17 @@ namespace SMG
             MSMGCamera = cam;
             modifiersData = mD;
             modifiersCellDescription = mcd;
-            ChangeSelectedGunEvent += OnChangeCurrentGunCell;
         }
         internal void OnActivateCurrentModifierCell(SMGModifiersCell modifiersCell)
         {
             if (modifiersCell.IsEmpty)//если слот пуст
                 return;
 
-            currentGunCell.SetMag(modifiersCell.mTTI.Index);
+            currentGunCell.SetMag(modifiersCell.TTI.Index);
 
             ChangeModfierCell?.Invoke(modifiersCell);
             ChangeSelectedGunEvent?.Invoke(currentGunCell.Ic);
-            MSMGCamera.GetActiveGun().GetComponentInChildren<GunModifiersActiveManager>().SetMag((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
+            MSMGCamera.SetMagToActiveGun((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
             UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
         }
 
@@ -67,7 +66,7 @@ namespace SMG
         }
         public void UpdateGunCellMods()
         {
-            MSMGCamera.GetActiveGun().GetComponentInChildren<GunModifiersActiveManager>().SetMag((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
+            MSMGCamera.SetMagToActiveGun((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
             UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
         }
 
@@ -78,27 +77,27 @@ namespace SMG
         public void OnEnterModifiersCell(SMGModifiersCell cell)
         {
             currentModCell = cell;
-            modifiersCellDescription.ChangeModifier(currentModCell.mTTI);
+            modifiersCellDescription.ChangeModifier(currentModCell.TTI);
             ChangeSelectedGunEvent?.Invoke(currentGunCell.Ic);
             modifiersAnswer.SetActive(currentModCell);
         }
 
         internal void OnEnable()
         {
+            ChangeSelectedGunEvent += OnChangeCurrentGunCell;
             FillGunCells();
             if (gunsCells[0].Id != 0)
             {
                 currentGunCell = gunsCells[0];
                 MSMGCamera.SetActiveGun(currentGunCell.Id);
                 ChangeSelectedGunEvent?.Invoke(currentGunCell.Ic);
-                MSMGCamera.GetActiveGun().GetComponentInChildren<GunModifiersActiveManager>().SetMag((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
+                MSMGCamera.SetMagToActiveGun((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
+
                 UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
             }
         }
-        public void OnDisable()
-        {
-            ChangeSelectedGunEvent -= OnChangeCurrentGunCell;
-        }
+        public void OnDisable() => ChangeSelectedGunEvent -= OnChangeCurrentGunCell;
+
         public void OnDeselectModifiersCell()
         {
             modifiersAnswer.SetActive(false);
@@ -109,7 +108,7 @@ namespace SMG
             List<Inventory.InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Inventory.ItemStates.ItsGun(c.Id));
             //сначала очистка всех слотов
             for (int i = 0; i < gunsCells.Count; i++)
-                gunsCells[i].ChangeItem(0, null);
+                gunsCells[i].Clear();
 
             //затем заполнение имеющимся оружием
             for (int i = 0; i < cellsContGun.Count; i++)
@@ -128,7 +127,7 @@ namespace SMG
             //затем заполнение имеющимися модами            
             for (int i = 0; i < modifirs.Count; i++)
             {
-                ModifiersCells[i].ChangeItem(modifirs[i]);
+                ModifiersCells[i].ChangeModifier(modifirs[i]);
             }
         }
         internal void UnequipMagOnSelGun()
@@ -137,10 +136,7 @@ namespace SMG
             ChangeSelectedGunEvent?.Invoke(currentGunCell.Ic);
             UpdateGunCellMods();
         }
-        private void OnChangeCurrentGunCell(Inventory.InventoryCell ic)
-        {
-            FillModifiersCells((ModifierCharacteristics.GunTitles)ic.MGun.Title);
-        }
-
+        private void OnChangeCurrentGunCell(Inventory.InventoryCell ic) =>
+            FillModifiersCells(ic ? (ModifierCharacteristics.GunTitles)ic.MGun.Title : ModifierCharacteristics.GunTitles.None);
     }
 }

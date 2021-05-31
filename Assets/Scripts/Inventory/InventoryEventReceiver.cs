@@ -97,12 +97,12 @@ namespace Inventory
         {
             // событие входа курсора в сектор ячейки
             candidateForReplaceCell = cell;
-            candidateForReplaceItem = cell.GetItemTransform();
+            candidateForReplaceItem = cell.MItem;
 
             if (isDragged)
                 return;
             draggedCell = cell;
-            draggedItem = cell.GetItemTransform();
+            draggedItem = cell.MItem;
         }
         public InventoryCell GetSelectedCell() => SelectedCell;
         public InventoryCell GetLastSelectedCell() => lastSelectedCell;
@@ -124,7 +124,7 @@ namespace Inventory
             //начало удержания
             isDragged = true;
             draggedCell = cell;
-            draggedItem = cell.GetItemTransform();
+            draggedItem = cell.MItem;
             draggedItem.SetParent(mainParent);
         }
 
@@ -227,9 +227,9 @@ namespace Inventory
                 if ((emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty)) && !isScroll)// если нашлись пустые слоты
                 {
                     draggedCell = ic;
-                    draggedItem = draggedCell.GetItemTransform();
+                    draggedItem = draggedCell.MItem;
                     candidateForReplaceCell = emptyCell;
-                    candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+                    candidateForReplaceItem = candidateForReplaceCell.MItem;
 
                     EndDrag();
                     return;
@@ -346,9 +346,9 @@ namespace Inventory
                     break;
 
                 draggedCell = listPlace;
-                draggedItem = draggedCell.GetItemTransform();
+                draggedItem = draggedCell.MItem;
                 candidateForReplaceCell = place;
-                candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+                candidateForReplaceItem = candidateForReplaceCell.MItem;
 
                 EndDrag();
             }

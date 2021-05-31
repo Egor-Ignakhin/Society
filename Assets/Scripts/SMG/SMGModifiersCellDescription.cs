@@ -19,9 +19,7 @@ namespace SMG
             textDesc.text = description;
             mImage.sprite = sprite;
         }
-        private void Update()
-        {
-            transform.localPosition = Input.mousePosition;
-        }
+        private void Update() => transform.localPosition = Input.mousePosition + new Vector3(20, 20);
+
     }
 }

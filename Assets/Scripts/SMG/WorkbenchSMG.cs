@@ -16,7 +16,7 @@ namespace SMG
         public override void Interact(PlayerStatements pl)
         {
             if (!ScreensManager.HasActiveScreen())
-                main.SetEnableMaps(true);
+                main.SetEnable(true);
         }
     }
 }

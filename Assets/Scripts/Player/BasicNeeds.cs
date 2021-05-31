@@ -33,7 +33,7 @@ namespace PlayerClasses
         internal void Heal(float h, float r)
         {
             Health += h;
-            radiation -= r;
+            Radiation -= r;
         }
 
         private int thirst;
@@ -121,7 +121,7 @@ namespace PlayerClasses
 
             playerCollisionChecked = gameObject.AddComponent<PlayerCollisionChecked>();
             playerCollisionChecked.OnInit(this);
-            gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);            
+            gameObject.AddComponent<PlayerSoundEffects>().Init(this, playerCollisionChecked);
             Init();
             BnInitFlag = true;
         }
@@ -176,11 +176,21 @@ namespace PlayerClasses
         /// </summary>
         private void Dead() => deadLine.LoadDeadScene();
 
+        private void Regeneration()
+        {
+            if (Thirst > MaximumThirst / 2 && Food > MaximumFood / 2)
+            {
+                Heal(1, 0);
+                Thirst--;
+                Food--;
+            }
+        }
         private IEnumerator ThirstTimer()
         {
             while (true)
             {
                 Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
+                Regeneration();
                 yield return new WaitForSeconds(waitForThirst);
             }
         }

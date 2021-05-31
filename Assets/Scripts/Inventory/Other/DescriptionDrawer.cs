@@ -10,9 +10,10 @@ public sealed class DescriptionDrawer : Singleton<DescriptionDrawer>
     public void SetHint(string str, string mainType, int count)
     {
         string countStr = count > 1 ? $" x{count}" : string.Empty;
-        textDesc.SetText(str + countStr);        
-        textTakeKey.SetText(Localization.GetUpKeyDescription(mainType, PlayerClasses.PlayerInteractive.InputInteractive));
         gameObject.SetActive(!string.IsNullOrEmpty(str));
-
-    }    
+        if (!gameObject.activeSelf)
+            return;
+        textDesc.SetText(str + countStr);
+        textTakeKey.SetText(Localization.GetUpKeyDescription(mainType, PlayerClasses.PlayerInteractive.InputInteractive));
+    }
 }

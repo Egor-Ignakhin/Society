@@ -2,7 +2,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
 
 namespace Inventory
 {
@@ -21,7 +20,6 @@ namespace Inventory
         public List<InventoryCell> GetHotCells() => HotCells;
         private InventoryEffects inventoryEffects;
         private readonly InventorySaver inventorySaver = new InventorySaver();
-
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
@@ -33,12 +31,19 @@ namespace Inventory
         [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
         private InventoryInput inventoryInput;
         private InventoryDrawer inventoryDrawer;
-        public delegate void TakeItem(int id, int count);
-        public event TakeItem TakeItemEvent;
-        public event TakeItem ActivateItemEvent;
+        public delegate void InteractiveHandler(int id, int count);
+        public event InteractiveHandler TakeItemEvent;
+        public event InteractiveHandler ActivateItemEvent;
         public bool IsInitialized { get; private set; }
+        private PrefabsData prefabsData;
+        public delegate void AnimationHandler();
+        public event AnimationHandler CellAnimationEvent;
 
-        private void Awake() => inventoryInput = gameObject.AddComponent<InventoryInput>();
+        private void Awake()
+        {
+            inventoryInput = gameObject.AddComponent<InventoryInput>();
+            prefabsData = new PrefabsData();
+        }
 
         private void OnEnable()
         {
@@ -50,6 +55,7 @@ namespace Inventory
                 busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
                 ModifiersActivator, modifiersPage);
             EventReceiver.OnEnable();
+            StartCoroutine(nameof(CellAnimator));
         }
         private void Start()
         {
@@ -85,20 +91,6 @@ namespace Inventory
                 Instantiate(cellPrefab, freeCellsContainer);
             }
 
-            itemPrefabs = new Dictionary<int, InventoryItem>
-            {
-                {(int)ItemStates.ItemsID.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
-                {(int)ItemStates.ItemsID.TTPistol, Resources.Load<InventoryItem>("InventoryItems\\TT_item_1") },
-                {(int)ItemStates.ItemsID.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
-                {(int)ItemStates.ItemsID.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
-                {(int)ItemStates.ItemsID.CannedFood, Resources.Load<InventoryItem>("InventoryItems\\CannedFood_Item_1") },
-                {(int)ItemStates.ItemsID.Milk, Resources.Load<InventoryItem>("InventoryItems\\Milk_Item_1") },
-                {(int)ItemStates.ItemsID.Binoculars,Resources.Load<InventoryItem>("InventoryItems\\Binoculars_item_1") },
-                {(int)ItemStates.ItemsID.Knife_1,Resources.Load<InventoryItem>("InventoryItems\\Knife_Item_1") },
-                {(int)ItemStates.ItemsID.Bullet_7_62,Resources.Load<InventoryItem>("InventoryItems\\7.62 bullet_Item_1") },
-                {(int)ItemStates.ItemsID.Bullet_9_27,Resources.Load<InventoryItem>("InventoryItems\\9.27 bullet_Item_1") },
-                {(int)ItemStates.ItemsID.Tablets_1,Resources.Load<InventoryItem>("InventoryItems\\Tablets_Item_1") }
-            };
             IsInitialized = true;
 
             EventReceiver.SetSMGData(FindObjectOfType<SMG.SMGModifiersData>());
@@ -143,6 +135,7 @@ namespace Inventory
         {
             Save(Cells);
             EventReceiver.OnDisable();
+            StopCoroutine(nameof(CellAnimator));
         }
         /// <summary>
         /// сохранение инвентаря
@@ -150,9 +143,16 @@ namespace Inventory
         /// <param name="cells"></param>
         private void Save(List<InventoryCell> cells) => inventorySaver.Save(cells);
 
-        public Dictionary<int, InventoryItem> itemPrefabs;
-        public InventoryItem GetItemPrefab(int id) => itemPrefabs[id];
+        public InventoryItem GetItemPrefab(int id) => prefabsData.GetItemPrefab(id);
 
+        private System.Collections.IEnumerator CellAnimator()
+        {
+            while (true)
+            {
+                CellAnimationEvent?.Invoke();
+                yield return null;
+            }
+        }
         public class InventoryEffects
         {
             private readonly AudioClip spendOnCellClip;// звук при наведении на слот

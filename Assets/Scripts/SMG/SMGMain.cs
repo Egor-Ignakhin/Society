@@ -7,7 +7,7 @@ namespace SMG
     {
         [SerializeField] private LayerMask myLayerMask;
         [SerializeField] private GameObject renderObjects;
-        [SerializeField] private GameObject GunMaps;
+        [SerializeField] private GameObject modificationMode;
 
         public bool IsActive { get; private set; }
         [SerializeField]
@@ -19,7 +19,7 @@ namespace SMG
         private Transform ModifiersCellsData;
         [SerializeField]
         private Transform GunsCellsData;
-        public SMGEventReceiver EventReceiver { get; private set; }       
+        public SMGEventReceiver EventReceiver { get; private set; }
 
         [SerializeField]
         private GameObject modifiersAnswer;
@@ -41,64 +41,57 @@ namespace SMG
         {
             EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
                 FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
-        }
-        private void Start()
-        {
-            SetEnableMaps(false);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
-        }
-        public void SetEnableMaps(bool v)
+            SetEnable(false);
+        }        
+        public void SetEnable(bool v)
         {
-            GunMaps.SetActive(IsActive = v);            
+            IsActive = v;
+            modificationMode.SetActive(IsActive);
+            SetEnableCanvasesAndCameras();
+            MSMG.gameObject.SetActive(IsActive);
             if (IsActive)
-            {             
+            {
                 ScreensManager.SetScreen(this);
-                EventReceiver.OnEnable();
-                SetEnableCanvasesAndCameras();
-                MSMG.gameObject.SetActive(IsActive);
+                EventReceiver.OnEnable();                                
             }
             else
-            {                
+            {
                 ScreensManager.SetScreen(null);
-                MSMG.gameObject.SetActive(IsActive);
-                SetEnableCanvasesAndCameras();
-            }
+                EventReceiver.OnDisable();
+            }            
         }
         public void SetEnableSMGCam(bool v)
         {
             renderObjects.SetActive(v);
-            GunMaps.SetActive(!v);
-            if (v)
-                MSMG.Enable();
-            else
-                MSMG.Disable();
+            modificationMode.SetActive(!v);
+            MSMG.SetEnable(v);
         }
         public void SetEnableCanvasesAndCameras()
         {
-            if (!MSMGCamera)
-                return;
-
             var canvases = FindObjectsOfType<Canvas>();
             foreach (var c in canvases)
                 c.enabled = !IsActive;
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
                 c.enabled = !IsActive;
-            EffectsManager.Instance.SetEnableAllEffects(!IsActive);            
+            EffectsManager.Instance.SetEnableAllEffects(!IsActive);
 
-            MSMG.gameObject.SetActive(IsActive);            
+            MSMG.gameObject.SetActive(IsActive);
 
             mCanvas.enabled = true;
         }
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.Escape) && IsActive)
+                SetEnable(false);
+
+
             if (Input.GetMouseButtonDown(0))
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
-                {
-                    elementsSupport.Show();
-                }
+                if (lastSelectedObj && !elementsSupport.IsActive)                
+                    elementsSupport.Show();                
             }
             if (!MSMG.IsActive)
                 return;
@@ -107,11 +100,7 @@ namespace SMG
         private MeshRenderer lastSelectedObj;
         private void FixedUpdate()
         {
-            if (MSMG.IsActive)
-            {
-                return;
-            }
-            if (!IsActive)
+            if (!IsActive || MSMG.IsActive)
                 return;
             Ray ray = MSMGCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))
@@ -126,10 +115,8 @@ namespace SMG
             }
             else
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
-                {
-                    DeselectGunElement();
-                }
+                if (lastSelectedObj && !elementsSupport.IsActive)                
+                    DeselectGunElement();                
             }
         }
         public void DeselectGunElement()
@@ -144,9 +131,5 @@ namespace SMG
             EventReceiver.UnequipMagOnSelGun();
             DeselectGunElement();
         }        
-        private void OnDisable()
-        {
-            EventReceiver.OnDisable();
-        }
     }
 }

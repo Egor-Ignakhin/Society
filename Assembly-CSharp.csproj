@@ -80,7 +80,6 @@
     <Compile Include="Assets\Scripts\CupboardMesh.cs" />
     <Compile Include="Assets\Scripts\DeadScene\DeadSceneManager.cs" />
     <Compile Include="Assets\Scripts\Debug\CommandsContainer.cs" />
-    <Compile Include="Assets\Scripts\Debug\ConsoleCreator.cs" />
     <Compile Include="Assets\Scripts\Debug\DebugConsole.cs" />
     <Compile Include="Assets\Scripts\Debug\DebugItems.cs" />
     <Compile Include="Assets\Scripts\Debug\DebugManager.cs" />
@@ -114,17 +113,18 @@
     <Compile Include="Assets\Scripts\Inventory\Other\InventoryDrawer.cs" />
     <Compile Include="Assets\Scripts\Inventory\Other\ItemsContainer.cs" />
     <Compile Include="Assets\Scripts\Inventory\Other\ItemsLogger.cs" />
+    <Compile Include="Assets\Scripts\Inventory\PrefabsData.cs" />
     <Compile Include="Assets\Scripts\LoadScreensManager.cs" />
     <Compile Include="Assets\Scripts\Localization\Localization.cs" />
     <Compile Include="Assets\Scripts\LookAtMainCamera.cs" />
     <Compile Include="Assets\Scripts\Maps\CompassController.cs" />
     <Compile Include="Assets\Scripts\Maps\MapDrawer.cs" />
     <Compile Include="Assets\Scripts\Maps\MapManager.cs" />
-    <Compile Include="Assets\Scripts\Maps\MapMover.cs" />
     <Compile Include="Assets\Scripts\Maps\PointOnMap.cs" />
     <Compile Include="Assets\Scripts\Maps\StreetNameContainer.cs" />
     <Compile Include="Assets\Scripts\Maps\StreetNameRenderer.cs" />
     <Compile Include="Assets\Scripts\MealSpawner.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuButton.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuClock.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuPause\MenuPauseManager.cs" />
@@ -141,6 +141,7 @@
     <Compile Include="Assets\Scripts\Monsters\Enemy.cs" />
     <Compile Include="Assets\Scripts\Monsters\EnemyCollision.cs" />
     <Compile Include="Assets\Scripts\Monsters\MonstersData.cs" />
+    <Compile Include="Assets\Scripts\Patterns\ICellable.cs" />
     <Compile Include="Assets\Scripts\Patterns\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Patterns\PoolableObject.cs" />
     <Compile Include="Assets\Scripts\Patterns\Singleton.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="Assets\Scripts\SMG\GunCharacteristics.cs" />
     <Compile Include="Assets\Scripts\SMG\GunModifier.cs" />
     <Compile Include="Assets\Scripts\SMG\GunModifiersActiveManager.cs" />
-    <Compile Include="Assets\Scripts\SMG\ISMGCell.cs" />
     <Compile Include="Assets\Scripts\SMG\InventorySMGCell.cs" />
     <Compile Include="Assets\Scripts\SMG\ModifierCharacteristics.cs" />
     <Compile Include="Assets\Scripts\SMG\SMGCamera.cs" />
