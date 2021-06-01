@@ -13,8 +13,8 @@ namespace Enemies
         {
             Vector3 startRot = transform.localEulerAngles;
             transform.LookAt(enemy ? enemy.transform : target);
-            transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);
-        }
+            transform.localEulerAngles = new Vector3(startRot.x, transform.localEulerAngles.y, 0);            
+        }        
 
         protected override string Type()
         {

@@ -164,9 +164,10 @@ public abstract class Enemy : MonoBehaviour
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
-    public virtual void InjureEnemy(float value)
+    public virtual void InjureEnemy(float value, bool isPlayerDamage = true)
     {
-        SetEnemy(BasicNeeds.Instance, true);
+        if (isPlayerDamage)
+            SetEnemy(BasicNeeds.Instance, true);
         UVariables.Health -= value;
     }
     /// <summary>

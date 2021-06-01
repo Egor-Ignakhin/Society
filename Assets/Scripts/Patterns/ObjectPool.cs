@@ -1,20 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour
+public abstract class ObjectPool : MonoBehaviour
 {
     private readonly Stack<PoolableObject> reusableInstances = new Stack<PoolableObject>();
 
     protected PoolableObject prefabAsset;
-    protected void ReturnToPool(PoolableObject instance)
+    private Transform containerReturnedObject;
+    private delegate void Action();
+    private event Action ReusableCoroutine;
+
+    private System.Collections.IEnumerator Start()
     {
-        instance.gameObject.SetActive(false);
-        instance.transform.SetParent(transform);
-        instance.transform.localPosition = Vector3.zero;
-        instance.transform.localScale = Vector3.one;
-        instance.transform.localEulerAngles = Vector3.one;
+        while (true)
+        {
+            yield return new WaitForSeconds(5);
+            ReusableCoroutine?.Invoke();
+        }
+    }
+    public abstract void SetPrefabAsset(PoolableObject instance);
+    protected void Preload()
+    {
+        containerReturnedObject = new GameObject($"{GetType()}_PoolContainer").transform;        
+        for (int i = 0; i < PreLoadedCount(); i++)
+        {
+            var newAsset = Instantiate(prefabAsset);
+            newAsset.OnInit(this);
+            ReturnToPool(newAsset);
+        }
+    }
+    protected abstract int PreLoadedCount();
+    protected virtual bool UnityScale()
+    {
+        return true;
+    }
+    public void ReturnToPool(PoolableObject instance, bool disableObject = true)
+    {
+        if (disableObject)
+        {
+            instance.gameObject.SetActive(false);
+            instance.transform.SetParent(containerReturnedObject);
+            instance.transform.localPosition = Vector3.zero;
+            if (UnityScale())
+                instance.transform.localScale = Vector3.one;
+            instance.transform.localEulerAngles = Vector3.one;
+        }
 
         reusableInstances.Push(instance);
+        ReusableCoroutine -= instance.DifferenceLifeTime;
     }
     protected PoolableObject GetObjectFromPool()
     {
@@ -28,6 +62,8 @@ public class ObjectPool : MonoBehaviour
         else
             retObject = Instantiate(prefabAsset);
 
+        retObject.OnInit(this);
+        ReusableCoroutine += retObject.DifferenceLifeTime;
         return retObject;
     }
 }

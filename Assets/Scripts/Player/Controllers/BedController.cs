@@ -10,6 +10,11 @@ public sealed class BedController : MonoBehaviour, IState
     private BedMesh lastBedMesh;// активная кровать
     private int timeMultiply = 4;// множитель времени, на который умножается время во время сна
 
+    private WorldTime worldTime;
+    private void Awake()
+    {
+        worldTime = FindObjectOfType<WorldTime>();
+    }
     /// <summary>
     /// запись состояния в контроллёр
     /// </summary>
@@ -36,12 +41,12 @@ public sealed class BedController : MonoBehaviour, IState
                 lastBedManager.RiseUp(lastBedMesh);// заправить кровать
                 lastBedMesh = null;
                 lastBedManager = null;
-                WorldTime.Instance.ReduceSpeed(timeMultiply);// возвращение скорости времени к обычному состоянию
+                worldTime.ReduceSpeed(timeMultiply);// возвращение скорости времени к обычному состоянию
                 break;
 
             case State.locked:// в случае укладывания в кровать
                 isSleeping = true;
-                WorldTime.Instance.IncreaseSpeed(timeMultiply);// повышение скорости времени
+                worldTime.IncreaseSpeed(timeMultiply);// повышение скорости времени
                 break;
         }
     }

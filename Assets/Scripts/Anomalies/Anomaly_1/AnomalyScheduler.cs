@@ -18,7 +18,7 @@ namespace Anomaly_1
             var transform = GetComponent<Transform>();
             var collider = GetComponent<Collider>();
 
-            anomalyLifetime.OnInit(anomaly);
+            anomalyLifetime.SetPrefabAsset(anomaly);
             StartCoroutine(SetSpawn(CalculateWaitTime(lowerTimeLimitInSeconds, upperTimeLimitInSeconds), transform, collider));
         }
 

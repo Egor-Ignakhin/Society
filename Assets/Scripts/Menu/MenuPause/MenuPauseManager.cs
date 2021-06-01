@@ -1,5 +1,6 @@
 ﻿using Inventory;
 using MenuScripts.PauseMenu;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -26,24 +27,29 @@ namespace MenuScripts
             private static CurrentGameSettings currentGameSettings;
             public static CurrentGameSettings GetCurrentGameSettings() => currentGameSettings;
             private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
+            private EffectsManager effectsManager;
             private void Start()
             {
                 fpc = FindObjectOfType<FirstPersonController>();
-                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, fpc, SettingsObj, this);
+                effectsManager = FindObjectOfType<EffectsManager>();
+                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, fpc, SettingsObj, this, effectsManager);
                 LoadData();
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
 
-                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
+                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());                
             }
-            private void Update() => menuEventReceiver.OnUpdate();
 
+            internal void Enable()
+            {
+                menuEventReceiver.Enable();
+            }
 
             /// <summary>
             /// смена активности bloom'а
             /// </summary>
             /// <param name="t"></param>
-            public void SetActiveGlobalBloom(Toggle t) => EffectsManager.Instance.SetEnableBloom(t.isOn);
+            public void SetActiveGlobalBloom(Toggle t) => effectsManager.SetEnableBloom(t.isOn);
 
             private bool isInitialized;
             public void ChangeFovSlider()
@@ -80,6 +86,10 @@ namespace MenuScripts
                 string data = JsonUtility.ToJson(currentGameSettings, true);
                 File.WriteAllText(pathForSettings, data);
             }
+
+            public void Hide() => menuEventReceiver.Disable();
+
+
             class MenuEventReceiver
             {
                 private readonly GameObject menuUI;
@@ -89,13 +99,14 @@ namespace MenuScripts
                 private readonly AdvancedSettings advanced = new AdvancedSettings();
                 private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
                 private readonly MenuPauseManager menuPauseManager;
+                private readonly EffectsManager effectsManager;
                 public class AdvancedSettings
                 {
                     public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
                     public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
                     public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
                 }
-                public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn, MenuPauseManager mpm)
+                public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn, MenuPauseManager mpm, EffectsManager em)
                 {
                     menuUI = menu;
                     this.fps = fps;
@@ -129,14 +140,12 @@ namespace MenuScripts
                     }
                     DisableAllTriggers();
                     menuPauseManager = mpm;
-                    commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager);// выключение  меню                    
+                    effectsManager = em;
+                    Disable();
                 }
 
-                public void OnUpdate()
-                {
-                    if (Input.GetKeyDown(KeyCode.Escape))
-                        commandContainer.SetEnableMenu(!menuUI.activeInHierarchy && !ScreensManager.HasActiveScreen(), menuUI, fps, menuPauseManager);
-                }
+                public void Enable() => commandContainer.SetEnableMenu(true, menuUI, fps, menuPauseManager, effectsManager);
+                public void Disable() => commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
 
                 /// <summary>
                 /// наведение на кнопку
@@ -202,7 +211,7 @@ namespace MenuScripts
                             commandContainer.ExitToMainMenu();
                             break;
                         case 7:
-                            commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager);
+                            commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
                             break;
                     }
                 }
@@ -237,11 +246,10 @@ namespace MenuScripts
                 {
                     UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
                 }
-                public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps, MenuPauseManager mpm)
+                public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps, MenuPauseManager mpm, EffectsManager effectsManager)
                 {
                     menu.SetActive(v);
-                    // пауза при открытии инвентаря                                    
-                    FindObjectOfType<InventoryInput>().DisableInventory();
+                    // пауза при открытии инвентаря                                                        
                     if (!v)
                     {
                         ScreensManager.SetScreen(null);
@@ -252,7 +260,7 @@ namespace MenuScripts
                         ScreensManager.SetScreen(mpm);
                         fps.SetState(State.locked);
                     }
-                    EffectsManager.Instance.SetEnableDOF(v);
+                    effectsManager.SetEnableSimpleDOF(v);
                 }
             }
         }

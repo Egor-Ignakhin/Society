@@ -29,15 +29,7 @@ namespace Shoots
             DropUsedBullet();
             CallRecoilEvent();
             return canShoot;
-        }
-        protected override void DropUsedBullet()
-        {
-            if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
-            {
-                rb.AddForce(droppingPlace.right * 4, ForceMode.Impulse);
-                rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
-            }
-        }
+        }        
 
         protected override void PlayFlashEffect()
         {

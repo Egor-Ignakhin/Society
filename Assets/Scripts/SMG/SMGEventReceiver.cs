@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 namespace SMG
@@ -82,7 +80,12 @@ namespace SMG
             modifiersAnswer.SetActive(currentModCell);
         }
 
-        internal void OnEnable()
+        public void SetEnable(bool v)
+        {
+            if (v) OnEnable();
+            else OnDisable();
+        }
+        private void OnEnable()
         {
             ChangeSelectedGunEvent += OnChangeCurrentGunCell;
             FillGunCells();
@@ -96,7 +99,7 @@ namespace SMG
                 UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
             }
         }
-        public void OnDisable() => ChangeSelectedGunEvent -= OnChangeCurrentGunCell;
+        private void OnDisable() => ChangeSelectedGunEvent -= OnChangeCurrentGunCell;
 
         public void OnDeselectModifiersCell()
         {

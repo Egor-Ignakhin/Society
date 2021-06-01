@@ -3,9 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerValueDrawer : MonoBehaviour
+class PlayerValueDrawer : MonoBehaviour
 {
-    [SerializeField] private BasicNeeds valueClass;
+    [SerializeField] private BasicNeeds playerBn;
 
     [SerializeField] private bool disableOnZero;
     [SerializeField] private bool isSprite;
@@ -28,42 +28,36 @@ public class PlayerValueDrawer : MonoBehaviour
         else
             mText = GetComponent<TextMeshProUGUI>();
 
-        if (valueClass == null)
-        {
-            valueClass = FindObjectOfType<BasicNeeds>();
-        }
+        if (!playerBn)        
+            playerBn = FindObjectOfType<BasicNeeds>();        
     }
     private void OnEnable()
     {
         if (mState == state.health)
-            valueClass.HealthChangeValue += OnValueChange;
+            playerBn.HealthChangeValue += OnChangePlayerV;
         else if (mState == state.thirst)
-            valueClass.ThirstChangeValue += OnValueChange;
+            playerBn.ThirstChangeValue += OnChangePlayerV;
         else if (mState == state.food)
-            valueClass.FoodChangeValue += OnValueChange;
+            playerBn.FoodChangeValue += OnChangePlayerV;
         else if (mState == state.radiation)
-            valueClass.RadiationChangeValue += OnValueChange;
-    }
+            playerBn.RadiationChangeValue += OnChangePlayerV;
+    }    
 
-    private void OnValueChange(float value)
-    {
-        SetActivity(value);
-    }
     private void OnDisable()
     {
         if (mState == state.health)
-            valueClass.HealthChangeValue -= OnValueChange;
+            playerBn.HealthChangeValue -= OnChangePlayerV;
         else if (mState == state.thirst)
-            valueClass.ThirstChangeValue -= OnValueChange;
+            playerBn.ThirstChangeValue -= OnChangePlayerV;
         else if (mState == state.food)
-            valueClass.FoodChangeValue -= OnValueChange;
+            playerBn.FoodChangeValue -= OnChangePlayerV;
         else if (mState == state.radiation)
-            valueClass.RadiationChangeValue -= OnValueChange;
+            playerBn.RadiationChangeValue -= OnChangePlayerV;
     }
 
 
 
-    private void SetActivity(float value)
+    private void OnChangePlayerV(float value)
     {
         if (mState == state.health || mState == state.thirst || mState == state.food)
         {
@@ -73,17 +67,17 @@ public class PlayerValueDrawer : MonoBehaviour
                 switch (mState)
                 {
                     case state.health:
-                        max = valueClass.MaximumHealth;
+                        max = playerBn.MaximumHealth;
                         break;
                     case state.thirst:
-                        max = valueClass.MaximumThirst;
+                        max = playerBn.MaximumThirst;
                         break;
                     case state.food:
-                        max = valueClass.MaximumFood;
+                        max = playerBn.MaximumFood;
                         break;
                 }
                 max = 100 / max;
-                transform.localPosition = new Vector3(max * value  - 50, 0);
+                transform.localPosition = new Vector3(max * value - 50, 0);
                 mtRtr.sizeDelta = new Vector2(value * max, 100);
             }
             else
@@ -93,10 +87,10 @@ public class PlayerValueDrawer : MonoBehaviour
         if (mState == state.radiation)
         {
             if (isSprite)
-                mImage.enabled = value > valueClass.MinRadiation && value >= 1;
+                mImage.enabled = value > 1;
             else
             {
-                mText.enabled = value > valueClass.MinRadiation && value >= 1;
+                mText.enabled = value > 1;
                 mText.SetText(Mathf.Round(value).ToString());
             }
         }

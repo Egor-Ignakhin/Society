@@ -12,10 +12,10 @@ public class EnemyCollision : MonoBehaviour
     {
         wasKilled = true;
     }
-    public void InjureEnemy(float value)
+    public void InjureEnemy(float value, bool isPlayerDamage = true)
     {
         if (!wasKilled)
-            mParent.InjureEnemy(value);
+            mParent.InjureEnemy(value, isPlayerDamage);
     }
     private void OnDisable()
     {

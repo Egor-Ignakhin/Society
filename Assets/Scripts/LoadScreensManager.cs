@@ -30,8 +30,7 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
             if (img)
                 img.sprite = lastLoadLevel.sprite;
             if (descText)
-                descText.SetText(lastLoadLevel.description);
-            ScreensManager.SetScreen(this);
+                descText.SetText(lastLoadLevel.description);            
         }
     }
 
@@ -72,6 +71,11 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
         Input.ResetInputAxes();
         if (img)
             img.sprite = null;
+    }
+
+    public void Hide()
+    {
+        
     }
 
     public class LastLoadLevelContainer

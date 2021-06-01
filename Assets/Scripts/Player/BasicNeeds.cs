@@ -22,7 +22,7 @@ namespace PlayerClasses
 
             private set
             {
-                value = Mathf.Clamp(value, MinimumHealth, MaximumHealth);
+                value = Mathf.Clamp(value, 0, MaximumHealth);
                 if (value == 0 && BnInitFlag)
                     Dead();
 
@@ -72,20 +72,19 @@ namespace PlayerClasses
             }
         }
 
-        private float radiation = 1;
+        private float radiation = 0;
         public float Radiation
         {
             get => radiation;
             private set
             {
-                radiation = Mathf.Clamp(value, MinRadiation, MaximumRadiation);
+                radiation = Mathf.Clamp(value, 0, MaximumRadiation);
                 RadiationChangeValue?.Invoke(value);
             }
         }
 
         private readonly float defaultHealth = 80;// изначальное здоровья
-        public float MaximumHealth = 100;// максимальное кол-во здоровья      
-        private readonly float MinimumHealth = 0;// минимальное кол-во здоровья
+        public float MaximumHealth = 100;// максимальное кол-во здоровья              
 
         private readonly int defaultThirst = 100;// изначальное кол-во воды
         private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере
@@ -94,10 +93,8 @@ namespace PlayerClasses
         private readonly int defaultFood = 200;// изначальное кол-во еды
         private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
         public int MaximumFood { get; private set; } = 200;// максимум еды
-
-        private readonly int defaultRadiation = 0;// изначальное кол-во радиации
-        private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере
-        public int MinRadiation = 0;
+        
+        private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
         private readonly int MaximumRadiation = 3000;// максимум радиации
         private bool isInsadeRadiationZone;
         private int currentCountOfZones;
@@ -117,7 +114,7 @@ namespace PlayerClasses
             Health = defaultHealth;
             Thirst = defaultThirst;
             Food = defaultFood;
-            Radiation = defaultRadiation;
+            Radiation = 0;
 
             playerCollisionChecked = gameObject.AddComponent<PlayerCollisionChecked>();
             playerCollisionChecked.OnInit(this);
@@ -149,7 +146,7 @@ namespace PlayerClasses
 
         public void RemoveRadiation()
         {
-            if (Radiation > MinRadiation)
+            if (Radiation > 0)
             {
                 if (!isInsadeRadiationZone)// радиация снимается в безопасной зоне
                     Radiation -= radiationDifference;
@@ -177,8 +174,8 @@ namespace PlayerClasses
         private void Dead() => deadLine.LoadDeadScene();
 
         private void Regeneration()
-        {
-            if (Thirst > MaximumThirst / 2 && Food > MaximumFood / 2)
+        {            
+            if (Thirst > MaximumThirst / 2 && Food > MaximumFood / 2 && Radiation <= 0)
             {
                 Heal(1, 0);
                 Thirst--;
@@ -239,7 +236,7 @@ namespace PlayerClasses
         private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
         private BasicNeeds bn;
         public delegate void CollisionContactHandler();
-        public event CollisionContactHandler playerTakingDamageEvent;
+        public event CollisionContactHandler PlayerTakingDamageEvent;
         public void OnInit(BasicNeeds bn)
         {
             this.bn = bn;
@@ -264,7 +261,7 @@ namespace PlayerClasses
             if (force > minValue)// если сила больше минимальной для нанесения урона
             {
                 bn.InjurePerson(force / 10);
-                playerTakingDamageEvent?.Invoke();
+                PlayerTakingDamageEvent?.Invoke();
             }
         }
     }
@@ -279,7 +276,7 @@ namespace PlayerClasses
         private bool wasDamaged = false;
         private bool coroutineStarted = false;
         private PlayerCollisionChecked playerCollisionChecked;
-        private List<AudioClip> vulnerableCollisionClips = new List<AudioClip>();
+        private readonly List<AudioClip> vulnerableCollisionClips = new List<AudioClip>();
         public void Init(BasicNeeds bn, PlayerCollisionChecked pcc)
         {
             basicNeeds = bn;
@@ -297,7 +294,7 @@ namespace PlayerClasses
             noiseSource.Play();
 
             playerCollisionChecked = pcc;
-            playerCollisionChecked.playerTakingDamageEvent += OnPlayerVulnerableCollision;
+            playerCollisionChecked.PlayerTakingDamageEvent += OnPlayerVulnerableCollision;
             vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\ablat"));
             vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\bolnovnoge"));
             vulnerableCollisionClips.Add(Resources.Load<AudioClip>("Health\\shivi_shive"));
@@ -306,7 +303,7 @@ namespace PlayerClasses
         private void OnDisable()
         {
             basicNeeds.HealthChangeValue -= ChangeHealth;
-            playerCollisionChecked.playerTakingDamageEvent -= OnPlayerVulnerableCollision;
+            playerCollisionChecked.PlayerTakingDamageEvent -= OnPlayerVulnerableCollision;
         }
         /// <summary>
         /// вызов при столкневии, падении игрока (с игроком)

@@ -138,6 +138,7 @@ public class FirstMission : Mission
     /// <param name="i"></param>
     private void SetTask(int i)
     {
+        return;
         string[] allContent = System.IO.File.ReadAllLines(Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber()));
         string neededContent;
         try

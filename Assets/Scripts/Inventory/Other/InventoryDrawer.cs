@@ -12,9 +12,14 @@ public sealed class InventoryDrawer : MonoBehaviour
     public Transform GetMainContainer() => mainContainer;
 
     public Transform GetSupportContainer() => supportContainer;
+    private EffectsManager effectsManager;
 
 
-    private void Start() => EffectsManager.Instance.Init();
+    private void Awake()
+    {
+        effectsManager = FindObjectOfType<EffectsManager>();
+        effectsManager.Init();
+    }
 
 
     /// <summary>
@@ -24,8 +29,7 @@ public sealed class InventoryDrawer : MonoBehaviour
     {
         MainFieldEnabled = !ScreensManager.HasActiveScreen() && value;
         mainField.SetActive(MainFieldEnabled);
-
-        EffectsManager.Instance.SetEnableDOF(MainFieldEnabled);
+        effectsManager.SetEnableSimpleDOF(MainFieldEnabled);
         return MainFieldEnabled;
     }
 }

@@ -1,9 +1,16 @@
-﻿/// <summary>
+﻿using UnityEngine;
+/// <summary>
 /// класс отвечающий за текущий экран, помогает не путатся в открытом инвентаре, меню, смо и тд
 /// </summary>
 static class ScreensManager
 {
+    static ScreenInputReceiver screenInputReceiver;
     private static IGameScreen currentScreen;
+    public static void OnInit()
+    {
+        screenInputReceiver = new GameObject("ScreensSystem_InputReceiver").AddComponent<ScreenInputReceiver>();
+    }
+
     public static void SetScreen(IGameScreen screen)
     {
         currentScreen = screen;
@@ -11,8 +18,8 @@ static class ScreensManager
     }
     private static void SetLockStateCursor()
     {
-        UnityEngine.Cursor.visible = HasActiveScreen();
-        UnityEngine.Cursor.lockState = HasActiveScreen() ? UnityEngine.CursorLockMode.None : UnityEngine.CursorLockMode.Locked;
+        Cursor.visible = HasActiveScreen();
+        Cursor.lockState = HasActiveScreen() ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     /// <summary>
@@ -28,4 +35,26 @@ static class ScreensManager
 }
 public interface IGameScreen
 {
+    void Hide();
+}
+public class ScreenInputReceiver : MonoBehaviour
+{
+    private MenuScripts.PauseMenu.MenuPauseManager pauseManager;
+    private void Start()
+    {
+        pauseManager = FindObjectOfType<MenuScripts.PauseMenu.MenuPauseManager>();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnInputEcs();
+        }
+    }
+    private void OnInputEcs()
+    {
+        if (ScreensManager.HasActiveScreen())
+            ScreensManager.GetActiveScreen().Hide();
+        else pauseManager.Enable();
+    }
 }

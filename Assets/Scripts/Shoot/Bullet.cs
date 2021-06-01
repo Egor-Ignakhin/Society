@@ -3,11 +3,10 @@ namespace Shoots
 {/// <summary>
 /// патрон для оружия
 /// </summary>
-    public class Bullet : MonoBehaviour
+    public class Bullet : PoolableObject
     {
         private Vector3 target;//точка назначения
         private EnemyCollision enemy;// возможный враг
-        private bool isFinished;// долетел ли снаряд
         private bool haveTarget;// имеет ли патрон цель(возможен выстрел в воздух)
         private GameObject impactEffect;// эффекта столкновения
 
@@ -41,9 +40,6 @@ namespace Shoots
 
         private void Update()
         {
-            if (this.isFinished)
-                return;
-
             if ((transform.position = Vector3.MoveTowards(transform.position, target, mBv.Speed * Time.deltaTime)) == target)
                 Boom();
         }
@@ -77,10 +73,7 @@ namespace Shoots
                 impactEffect.transform.SetPositionAndRotation(target, Quaternion.identity);
                 impactEffect.SetActive(true);
             }
-
-            isFinished = true;
-
-            Destroy(gameObject, 0.1f);
+            mPool.ReturnToPool(this);
         }
     }
 }

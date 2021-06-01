@@ -2,6 +2,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Inventory
 {
@@ -43,8 +44,13 @@ namespace Inventory
         {
             inventoryInput = gameObject.AddComponent<InventoryInput>();
             prefabsData = new PrefabsData();
+            SceneManager.sceneLoaded += OnLevelFinishedLoading;
         }
 
+        private void OnLevelFinishedLoading(Scene s, LoadSceneMode lcm)
+        {
+            
+        }
         private void OnEnable()
         {
             inventoryEffects = new InventoryEffects(gameObject);
@@ -57,6 +63,7 @@ namespace Inventory
             EventReceiver.OnEnable();
             StartCoroutine(nameof(CellAnimator));
         }
+       
         private void Start()
         {
             // добавление всех ячеек в список
@@ -136,6 +143,7 @@ namespace Inventory
             Save(Cells);
             EventReceiver.OnDisable();
             StopCoroutine(nameof(CellAnimator));
+            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         }
         /// <summary>
         /// сохранение инвентаря

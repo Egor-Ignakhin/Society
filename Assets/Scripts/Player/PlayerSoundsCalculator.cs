@@ -52,6 +52,7 @@ public class PlayerSoundsCalculator : MonoBehaviour
     {
         var startedCollection = MonstersData.GetCollection();
         var poses = new List<Vector3>();
+        startedCollection.RemoveAll(e => e == null);
         foreach (var e in startedCollection)
         {
             poses.Add(e.transform.position);

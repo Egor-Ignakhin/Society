@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SMG
 {
@@ -17,9 +15,8 @@ namespace SMG
         private void OnChangeModfierCell(SMGModifiersCell cell)
         {
             cell.transform.SetAsFirstSibling();
-            selectedModifier.SetParent(cell.transform);
-            selectedModifier.localPosition = Vector3.zero;
-            selectedModifier.localPosition += new Vector3(-cell.GetComponent<RectTransform>().sizeDelta.x/4, cell.GetComponent<RectTransform>().sizeDelta.y / 4, 0);
+            selectedModifier.SetParent(cell.transform);            
+            selectedModifier.localPosition = new Vector3(-cell.GetComponent<RectTransform>().sizeDelta.x / 4, cell.GetComponent<RectTransform>().sizeDelta.y / 4, 0);
         }
         private void OnDisable()
         {

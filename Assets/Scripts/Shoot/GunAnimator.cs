@@ -8,7 +8,7 @@ namespace Shoots
     /// <summary>
     /// аниматор оружия
     /// </summary>
-    class GunAnimator : Singleton<GunAnimator>
+    class GunAnimator : MonoBehaviour
     {
         private List<GameObject> gunsContainers = new List<GameObject>();
         private List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
@@ -42,7 +42,7 @@ namespace Shoots
         private SMG.SMGEventReceiver SMGEventReceiver;
         private SMG.SMGMain SMGMain;
 
-        private void OnEnable()
+        private void Start()
         {
             for (int i = 0; i < transform.childCount; i++)
                 gunsContainers.Add(transform.GetChild(i).gameObject);

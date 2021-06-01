@@ -4,7 +4,7 @@ namespace Inventory
     /// <summary>
     /// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
     /// </summary>
-    public sealed class InventoryInput : MonoBehaviour
+    public sealed class InventoryInput : MonoBehaviour, IGameScreen
     {
         public delegate void EventHandler(bool value);
         public event EventHandler ChangeActiveEvent;
@@ -26,22 +26,21 @@ namespace Inventory
             fps = FindObjectOfType<FirstPersonController>();
             gunAnimator = FindObjectOfType<Shoots.GunAnimator>();
         }
+        private void Start()
+        {
+            SetEnable(false);
+        }
         private void Update()
         {
             if (ScreensManager.HasActiveScreen() && !isEnabled || gunAnimator.IsAiming)
                 return;
             if (Input.GetKeyDown(changeActiveKeyCode))
-            {
-                ChangeActive(isEnabled = !isEnabled);
-            }
+                SetEnable(isEnabled = !isEnabled);
             if (Input.anyKeyDown)
-            {
                 SelectCell(Input.inputString);
-            }
             if (Input.GetKeyDown(dropCode))
-            {
                 DropEvent?.Invoke(0);
-            }
+
 
             FastMoveCellEvent?.Invoke(Input.GetKey(KeyCode.LeftShift));
 
@@ -52,21 +51,13 @@ namespace Inventory
         /// <summary>
         /// включение видимости инвентаря
         /// </summary>
-        private void ChangeActive(bool value) { ChangeActiveEvent?.Invoke(value); }
-        private void SpinCells(bool v) { ScrollEvent?.Invoke(v); }
-        /// <summary>
-        /// насильное выключение инвентаря
-        /// </summary>
-        public void DisableInventory()
+        public void SetEnable(bool value)
         {
-            ChangeActive(false);
-            isEnabled = false;
+            isEnabled = value;
+            ChangeActiveEvent?.Invoke(value);
+            ScreensManager.SetScreen(isEnabled ? this : null);
         }
-        public void EnableInventory()
-        {
-            ChangeActive(true);
-            isEnabled = true;
-        }
+        private void SpinCells(bool v) => ScrollEvent?.Invoke(v);
 
         /// <summary>
         /// выделение слотов при нажатии клавиш
@@ -89,5 +80,8 @@ namespace Inventory
             var powerForce = 2;
             item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
         }
+
+        public void Hide(){
+            print(1); SetEnable(false); }
     }
 }

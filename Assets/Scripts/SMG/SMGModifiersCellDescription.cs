@@ -20,6 +20,5 @@ namespace SMG
             mImage.sprite = sprite;
         }
         private void Update() => transform.localPosition = Input.mousePosition + new Vector3(20, 20);
-
     }
 }

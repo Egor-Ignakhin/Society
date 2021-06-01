@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SMG
 {
@@ -37,30 +36,25 @@ namespace SMG
 
         [SerializeField]
         private SMGElementsSupport elementsSupport;
+        private EffectsManager effectsManager;
         private void Awake()
         {
+            effectsManager = FindObjectOfType<EffectsManager>();
             EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
                 FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
             SetEnable(false);
-        }        
+            ScreensManager.OnInit();            
+        }
         public void SetEnable(bool v)
         {
             IsActive = v;
             modificationMode.SetActive(IsActive);
             SetEnableCanvasesAndCameras();
             MSMG.gameObject.SetActive(IsActive);
-            if (IsActive)
-            {
-                ScreensManager.SetScreen(this);
-                EventReceiver.OnEnable();                                
-            }
-            else
-            {
-                ScreensManager.SetScreen(null);
-                EventReceiver.OnDisable();
-            }            
+            EventReceiver.SetEnable(IsActive);
+            ScreensManager.SetScreen(IsActive ? this : null);
         }
         public void SetEnableSMGCam(bool v)
         {
@@ -76,7 +70,7 @@ namespace SMG
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
                 c.enabled = !IsActive;
-            EffectsManager.Instance.SetEnableAllEffects(!IsActive);
+            effectsManager.SetEnableAllEffects(!IsActive);
 
             MSMG.gameObject.SetActive(IsActive);
 
@@ -84,14 +78,10 @@ namespace SMG
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && IsActive)
-                SetEnable(false);
-
-
             if (Input.GetMouseButtonDown(0))
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)                
-                    elementsSupport.Show();                
+                if (lastSelectedObj && !elementsSupport.IsActive)
+                    elementsSupport.Show();
             }
             if (!MSMG.IsActive)
                 return;
@@ -115,8 +105,8 @@ namespace SMG
             }
             else
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)                
-                    DeselectGunElement();                
+                if (lastSelectedObj && !elementsSupport.IsActive)
+                    DeselectGunElement();
             }
         }
         public void DeselectGunElement()
@@ -130,6 +120,16 @@ namespace SMG
             gmam.SetMag(ModifierCharacteristics.ModifierIndex.None);
             EventReceiver.UnequipMagOnSelGun();
             DeselectGunElement();
-        }        
+        }
+
+        public void Hide()
+        {
+            if (MSMG.IsActive)
+            {
+                SetEnableSMGCam(false);
+                return;
+            }
+            SetEnable(false);
+        }
     }
 }

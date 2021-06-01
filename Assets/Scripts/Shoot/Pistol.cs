@@ -36,15 +36,7 @@ namespace Shoots
         protected override void PlayFlashEffect()
         {
             flashEffect.Play();
-        }
-        protected override void DropUsedBullet()
-        {
-            if (Instantiate(upBullet, droppingPlace.position, droppingPlace.rotation).TryGetComponent<Rigidbody>(out var rb))
-            {
-                rb.AddForce(droppingPlace.right * 3, ForceMode.Impulse);
-                rb.AddForce(-droppingPlace.forward, ForceMode.Impulse);
-            }
-        }
+        }        
         public override float GetRecoilPower()
         {
             return 0.125f;

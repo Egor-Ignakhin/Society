@@ -17,13 +17,8 @@ namespace SMG
         }
 
         public List<SMGTitleTypeIndex> GetModifiersData() => data;
-        internal void AddModifier(SMGTitleTypeIndex tti)
-        {
-            data.Add(tti);
-        }
-        private void OnDisable()
-        {
-            saver.Save(data, savingPath);
-        }
+        internal void AddModifier(SMGTitleTypeIndex tti) => data.Add(tti);
+
+        private void OnDisable() => saver.Save(data, savingPath);
     }
 }

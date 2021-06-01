@@ -10,7 +10,7 @@ namespace Inventory
     /// <summary>
     /// класс - обработчик событий инвентаря
     /// </summary>
-    public sealed class InventoryEventReceiver : IGameScreen
+    public sealed class InventoryEventReceiver
     {
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
@@ -77,10 +77,11 @@ namespace Inventory
                 m.OnInit();
         }
         internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
-        private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
+        private void ChangeActiveEvent(bool value) => SetEnable(value);
 
-        private void SetPause(bool enabled)
-        {
+        private void SetEnable(bool v)
+        {            
+            bool enabled = inventoryDrawer.ChangeActiveMainField(v);
             if (!enabled)
             {
                 if (lastItemContainer)
@@ -89,8 +90,7 @@ namespace Inventory
             else
                 RewriteSMGCells();
 
-            fps.SetState(enabled ? State.locked : State.unlocked);
-            ScreensManager.SetScreen(enabled ? this : null);
+            fps.SetState(enabled ? State.locked : State.unlocked);            
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)
@@ -128,10 +128,8 @@ namespace Inventory
             draggedItem.SetParent(mainParent);
         }
 
-        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData)
-        {
-            modifiersData = sMGModifiersData;
-        }
+        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData) => modifiersData = sMGModifiersData;
+
 
         public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
         {
@@ -364,7 +362,7 @@ namespace Inventory
                 if (content != null)
                     child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count, content[i].gun);
             }
-            inventoryInput.EnableInventory();
+            inventoryInput.SetEnable(true);
             lastItemContainer = it;
 
             GridLayoutGroup gr = busyCellsContainer.GetComponent<GridLayoutGroup>();
@@ -378,7 +376,6 @@ namespace Inventory
         {
             var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
-            //var foundedCell = cells.Find(c => c.Id == (int)bulletId/* && c.Count == minCount*/);
 
             if (foundedCell)
             {
@@ -449,14 +446,10 @@ namespace Inventory
             takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
             modPageButton.onClick.RemoveListener(ModifiersPageChangeActive);
         }
-        public void ModifiersPageChangeActive()
-        {
-            modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
-        }
-        private void OnInputFastMoveCell(bool v)
-        {
-            canFastMoveSelCell = v;
-        }
+        public void ModifiersPageChangeActive() => modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
+
+        private void OnInputFastMoveCell(bool v) => canFastMoveSelCell = v;        
+
         public class InventoryMassCalculator
         {
             public decimal Weight { get; private set; } = 0;
