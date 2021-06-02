@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 class PlayerValueDrawer : MonoBehaviour
 {
-    [SerializeField] private BasicNeeds playerBn;
+    private BasicNeeds playerBn;
 
     [SerializeField] private bool disableOnZero;
     [SerializeField] private bool isSprite;
@@ -27,8 +27,7 @@ class PlayerValueDrawer : MonoBehaviour
         }
         else
             mText = GetComponent<TextMeshProUGUI>();
-
-        if (!playerBn)        
+           
             playerBn = FindObjectOfType<BasicNeeds>();        
     }
     private void OnEnable()

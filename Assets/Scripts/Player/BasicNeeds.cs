@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PlayerClasses
 {
     public sealed class BasicNeeds : Singleton<BasicNeeds>
-    {
+    {        
         private bool foodWaterMultiply = false;
         public void EnableFoodAndWaterMultiply(bool v) => foodWaterMultiply = v;
 
@@ -93,7 +93,7 @@ namespace PlayerClasses
         private readonly int defaultFood = 200;// изначальное кол-во еды
         private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
         public int MaximumFood { get; private set; } = 200;// максимум еды
-        
+
         private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
         private readonly int MaximumRadiation = 3000;// максимум радиации
         private bool isInsadeRadiationZone;
@@ -129,13 +129,15 @@ namespace PlayerClasses
             StartCoroutine(nameof(HungerTimer));
             StartCoroutine(nameof(RadiationTimer));
         }
-        public void InjurePerson(float value) => Health -= value;
+        public void InjurePerson(float value)
+        {
+            Health -= value;            
+        }
         public void InjurePerson(float h, float r)
         {
             Health -= h;
-            Radiation += r;
-        }
-
+            Radiation += r;            
+        }        
         public void AddMeal(int thirst, int food)
         {
             Food += food;
@@ -174,7 +176,7 @@ namespace PlayerClasses
         private void Dead() => deadLine.LoadDeadScene();
 
         private void Regeneration()
-        {            
+        {
             if (Thirst > MaximumThirst / 2 && Food > MaximumFood / 2 && Radiation <= 0)
             {
                 Heal(1, 0);
@@ -321,6 +323,7 @@ namespace PlayerClasses
                 while (vulnerableCollisionClips[index] == playerSong.clip);
                 return vulnerableCollisionClips[index];
             }
+            playerSong.Stop();
             playerSong.PlayOneShot(CalculateAudio());
         }
         private void ChangeHealth(float v)

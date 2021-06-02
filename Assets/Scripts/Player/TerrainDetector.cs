@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TerrainDetector_MaterialData", menuName = "ScriptableObjects/TerrainDetector_MaterialData", order = 1)]
@@ -7,7 +6,6 @@ public class TerrainDetector_MaterialData : ScriptableObject
 {
     public List<TerrainLayer> terrainLayers = new List<TerrainLayer>(14);
     public List<PhysicMaterial> physicMaterials = new List<PhysicMaterial>(14);
-
 }
 public class TerrainDetector
 {

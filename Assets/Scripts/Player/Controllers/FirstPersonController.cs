@@ -546,7 +546,7 @@ public sealed class FirstPersonController : MonoBehaviour
         {
             Rock, Sand, Leaves, LeavesOld, Swamp,
             Grass, Moss, MossRock, DirtyGround, VeryDirtyGround, Tile, VeryLeaves, VeryTile, VeryGroundTile
-        }
+        }        
         public enum OnlyColliderLayer { Wood }
         private FirstPersonController fpc;
         private Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>> stepSounds;
@@ -590,6 +590,8 @@ public sealed class FirstPersonController : MonoBehaviour
 
         private void PlayStepClip(int physicMaterialIndex, TypeOfMovement movementType)
         {
+            if (!fpc.IsGrounded)
+                return;
             var key = (movementType, physicMaterialIndex);
             if (stepSounds.ContainsKey(key))
             {
