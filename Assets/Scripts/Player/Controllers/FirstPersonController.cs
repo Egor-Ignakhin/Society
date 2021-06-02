@@ -46,7 +46,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private float SprintSpeedInternal;
     private float JumpPowerInternal;
     private float RecumbentingSpeedInternal;
-    public delegate void StepHandler(PhysicMaterial mat, StepPlayer.TypeOfMovement type);
+    public delegate void StepHandler(int matIndex, StepPlayer.TypeOfMovement type);
     public event StepHandler PlayerStepEvent;
 
     [System.Serializable]
@@ -66,7 +66,7 @@ public sealed class FirstPersonController : MonoBehaviour
     }
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
-    private readonly StepPlayer stepPlayer = new StepPlayer();
+    private StepPlayer stepPlayer;
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -104,7 +104,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private Rigidbody _fpsRigidbody;
     public CapsuleCollider GetCollider() => capsule;
     private Vector3 oldPos = Vector3.zero;
-    private PhysicMaterial currentPhysicMaterial;    
+    private int CurrentPhysicMaterialIndex;
     private bool wasGrounded = false;
     #endregion
 
@@ -119,7 +119,6 @@ public sealed class FirstPersonController : MonoBehaviour
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
         _fpsRigidbody = GetComponent<Rigidbody>();
-        stepPlayer.OnInit(this);
         _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
@@ -128,6 +127,11 @@ public sealed class FirstPersonController : MonoBehaviour
     }
     private void OnEnable()
     {
+        terrain = FindObjectOfType<Terrain>();
+        terrainTr = terrain.transform;
+        terrainDetector = new TerrainDetector(terrain);
+        stepPlayer = new StepPlayer(terrainDetector);
+        stepPlayer.OnInit(this);
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
@@ -359,7 +363,7 @@ public sealed class FirstPersonController : MonoBehaviour
         capsule.radius = Mathf.MoveTowards(capsule.radius, capsuleRadiusFollowing, 5 * Time.deltaTime * additionalBraking);
         #endregion
         #region  Reset Checks
-        
+
         if (Advanced.MaxSlopeAngle > 0)
         {
             if (Advanced.IsTouchingFlat || Advanced.IsTouchingWalkable || Advanced.IsTouchingUpright)
@@ -381,18 +385,26 @@ public sealed class FirstPersonController : MonoBehaviour
             if (Sprint) type = StepPlayer.TypeOfMovement.Run;
             else type = StepPlayer.TypeOfMovement.Walk;
         }
-        PlayerStepEvent?.Invoke(currentPhysicMaterial, type);
+        PlayerStepEvent?.Invoke(CurrentPhysicMaterialIndex, type);
         oldPos = transform.position;
         wasGrounded = IsGrounded;
         IsGrounded = false;
     }
+    private Terrain terrain;
+    private Transform terrainTr;
+    private TerrainDetector terrainDetector;
 
     private void SetPhysMaterial()
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
-            currentPhysicMaterial = hit.collider.material;
+        {
+            if (hit.transform != terrainTr)
+                CurrentPhysicMaterialIndex = terrainDetector.GetIndexFromMaterial(hit.collider.sharedMaterial);
+            else
+                CurrentPhysicMaterialIndex = terrainDetector.GetActiveTerrainTextureIdx(transform.position);
+        }
         else
-            currentPhysicMaterial = null;
+            CurrentPhysicMaterialIndex = 0;
     }
     float SlopeCheck()
     {
@@ -522,31 +534,41 @@ public sealed class FirstPersonController : MonoBehaviour
     public class StepPlayer
     {
         public enum TypeOfMovement { None, Walk, Run, JumpLand, JumpStart }
+        public enum Layers { Rock, Sand, Leaves, LeavesOld, Swamp, 
+            Grass, Moss, MossRock, DirtyGround, VeryDirtyGround, Tile, VeryLeaves, VeryTile, VeryGroundTile
+        }
         private FirstPersonController fpc;
-        private Dictionary<(TypeOfMovement type, PhysicMaterialCombine mat), List<AudioClip>> stepSounds;
+        private Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>> stepSounds;
         private AudioSource stepPlayerSource;
+        private readonly TerrainDetector terrainDetector;
+        public StepPlayer(TerrainDetector detector) => terrainDetector = detector;
         internal void OnInit(FirstPersonController firstPersonController)
         {
-            List<AudioClip> LoadAsset(TypeOfMovement type) =>
-               Resources.LoadAll<AudioClip>($"Footsteps_Rock\\Footsteps_Rock_{type}\\").ToList();
+            List<AudioClip> LoadAsset(Layers l, TypeOfMovement type) =>
+               Resources.LoadAll<AudioClip>($"Footsteps\\{l}\\{type}\\").ToList();
 
             fpc = firstPersonController;
             fpc.PlayerStepEvent += PlayStepClip;
-            var rockMat = Resources.Load<PhysicMaterial>("PhysicMaterials\\Rock").bounceCombine;
-            stepSounds = new Dictionary<(TypeOfMovement type, PhysicMaterialCombine mat), List<AudioClip>>
+
+            stepSounds = new Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>>();
+            for (int k = 0; k < (System.Enum.GetNames(typeof(Layers)).Length); k++)
             {
-                { (TypeOfMovement.Walk, rockMat), LoadAsset(TypeOfMovement.Walk) },
-                { (TypeOfMovement.Run, rockMat), LoadAsset(TypeOfMovement.Run) },
-                { (TypeOfMovement.JumpLand, rockMat), LoadAsset(TypeOfMovement.JumpLand) },
-                { (TypeOfMovement.JumpStart, rockMat), LoadAsset(TypeOfMovement.JumpStart) }
-            };
+                int matIndex = terrainDetector.GetIndexFromMaterial(Resources.Load<PhysicMaterial>($"PhysicMaterials\\{(Layers)k}"));
+                for (int i = 1; i < 5; i++)
+                {
+                    TypeOfMovement type = (TypeOfMovement)i;                    
+                    stepSounds.Add((type, matIndex), LoadAsset((Layers)k, type));
+                }
+            }
+
             stepPlayerSource = fpc.gameObject.AddComponent<AudioSource>();
+            stepPlayerSource.volume = 0.25f;
             stepPlayerSource.priority = 126;
         }
 
-        private void PlayStepClip(PhysicMaterial physicMaterial, TypeOfMovement movementType)
+        private void PlayStepClip(int physicMaterialIndex, TypeOfMovement movementType)
         {
-            var key = (movementType, physicMaterial.bounceCombine);
+            var key = (movementType, physicMaterialIndex);
             if (stepSounds.ContainsKey(key))
             {
                 var s = stepSounds[key];
