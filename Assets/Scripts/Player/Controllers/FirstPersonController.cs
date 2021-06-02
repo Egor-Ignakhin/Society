@@ -399,7 +399,15 @@ public sealed class FirstPersonController : MonoBehaviour
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
         {
             if (hit.transform != terrainTr)
-                CurrentPhysicMaterialIndex = terrainDetector.GetIndexFromMaterial(hit.collider.sharedMaterial);
+            {
+                var physMat = hit.collider.sharedMaterial;
+                var index = terrainDetector.GetIndexFromMaterial(physMat);
+
+                if (index == -1)
+                    index = stepPlayer.GetIndexFromMaterial(physMat);
+
+                CurrentPhysicMaterialIndex = index;
+            }
             else
                 CurrentPhysicMaterialIndex = terrainDetector.GetActiveTerrainTextureIdx(transform.position);
         }
@@ -534,30 +542,44 @@ public sealed class FirstPersonController : MonoBehaviour
     public class StepPlayer
     {
         public enum TypeOfMovement { None, Walk, Run, JumpLand, JumpStart }
-        public enum Layers { Rock, Sand, Leaves, LeavesOld, Swamp, 
+        public enum Layers
+        {
+            Rock, Sand, Leaves, LeavesOld, Swamp,
             Grass, Moss, MossRock, DirtyGround, VeryDirtyGround, Tile, VeryLeaves, VeryTile, VeryGroundTile
         }
+        public enum OnlyColliderLayer { Wood }
         private FirstPersonController fpc;
         private Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>> stepSounds;
+        private readonly Dictionary<PhysicMaterial, int> indexFromMats = new Dictionary<PhysicMaterial, int>();
         private AudioSource stepPlayerSource;
         private readonly TerrainDetector terrainDetector;
         public StepPlayer(TerrainDetector detector) => terrainDetector = detector;
+        private List<AudioClip> LoadAsset(string l, TypeOfMovement type) =>
+               Resources.LoadAll<AudioClip>($"Footsteps\\{l}\\{type}\\").ToList();
         internal void OnInit(FirstPersonController firstPersonController)
         {
-            List<AudioClip> LoadAsset(Layers l, TypeOfMovement type) =>
-               Resources.LoadAll<AudioClip>($"Footsteps\\{l}\\{type}\\").ToList();
-
             fpc = firstPersonController;
             fpc.PlayerStepEvent += PlayStepClip;
 
             stepSounds = new Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>>();
-            for (int k = 0; k < (System.Enum.GetNames(typeof(Layers)).Length); k++)
+            int lastMatIndex = 0;
+            for (int k = 0; k < System.Enum.GetNames(typeof(Layers)).Length; k++)
             {
-                int matIndex = terrainDetector.GetIndexFromMaterial(Resources.Load<PhysicMaterial>($"PhysicMaterials\\{(Layers)k}"));
+                lastMatIndex = terrainDetector.GetIndexFromMaterial(Resources.Load<PhysicMaterial>($"PhysicMaterials\\{(Layers)k}"));
                 for (int i = 1; i < 5; i++)
                 {
-                    TypeOfMovement type = (TypeOfMovement)i;                    
-                    stepSounds.Add((type, matIndex), LoadAsset((Layers)k, type));
+                    TypeOfMovement type = (TypeOfMovement)i;
+                    stepSounds.Add((type, lastMatIndex), LoadAsset(((Layers)k).ToString(), type));
+                }
+            }
+            for (int k = 0; k < System.Enum.GetNames(typeof(OnlyColliderLayer)).Length; k++)
+            {
+                lastMatIndex++;
+                indexFromMats.Add(Resources.Load<PhysicMaterial>($"PhysicMaterials\\{(OnlyColliderLayer)k}"), lastMatIndex);
+                for (int i = 1; i < 5; i++)
+                {
+                    TypeOfMovement type = (TypeOfMovement)i;
+                    stepSounds.Add((type, lastMatIndex), LoadAsset(((OnlyColliderLayer)k).ToString(), type));
                 }
             }
 
@@ -584,6 +606,19 @@ public sealed class FirstPersonController : MonoBehaviour
         public void OnDestroy()
         {
             fpc.PlayerStepEvent -= PlayStepClip;
+        }
+
+
+        /// <summary>
+        /// вызов если у террейна нет такого материала(дерево к примеру)
+        /// </summary>
+        /// <param name="physMat"></param>
+        /// <returns></returns>
+        internal int GetIndexFromMaterial(PhysicMaterial physMat)
+        {
+            if (physMat == null)
+                return 0;
+            return indexFromMats[physMat];
         }
     }
     private void OnDestroy()

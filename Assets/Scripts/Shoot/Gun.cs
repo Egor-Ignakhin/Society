@@ -52,9 +52,13 @@ namespace Shoots
         private SMG.GunModifiersActiveManager gunModifiersActiveManager;
         private UsedUpBulletsDropper ubp;
         private ShootedBulletPool sbp;
+        private AudioClip reflectSound;
+        private AudioSource reflectSource;
         private void Awake()
         {
             gunModifiersActiveManager = GetComponent<SMG.GunModifiersActiveManager>();
+            reflectSound = Resources.Load<AudioClip>("Guns\\BulletReflect");
+            reflectSource = new GameObject($"ReflectSource_{GetType()}").AddComponent<AudioSource>();
         }
         private void Start()
         {
@@ -259,7 +263,6 @@ namespace Shoots
                     rb.angularVelocity = rb.transform.right * angularPower;
                 }
             }
-
             public override void SetPrefabAsset(PoolableObject instance)
             {
                 prefabAsset = instance;
@@ -287,7 +290,7 @@ namespace Shoots
 
                 bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);
 
-                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e);
+                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource);
                 return;
             }
             newBullet.Init(bv, ray.GetPoint(maxDistance));

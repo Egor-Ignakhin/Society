@@ -11,13 +11,14 @@ public class TerrainDetector_MaterialData : ScriptableObject
 }
 public class TerrainDetector
 {
-    private TerrainData terrainData;
-    private Terrain terrain; 
-    private int alphamapWidth;
-    private int alphamapHeight;
-    private float[,,] splatmapData;
-    private int numTextures;
-    private TerrainDetector_MaterialData materialData;
+    private readonly TerrainData terrainData;
+    private readonly Terrain terrain;
+    private readonly Transform terrainTr;
+    private readonly int alphamapWidth;
+    private readonly int alphamapHeight;
+    private readonly float[,,] splatmapData;
+    private readonly int numTextures;
+    private readonly List<PhysicMaterial> physicMaterials;
 
     public TerrainDetector(Terrain t)
     {
@@ -27,16 +28,17 @@ public class TerrainDetector
 
         splatmapData = terrainData.GetAlphamaps(0, 0, alphamapWidth, alphamapHeight);
         numTextures = splatmapData.Length / (alphamapWidth * alphamapHeight);
-        materialData = Resources.Load<TerrainDetector_MaterialData>("PhysicMaterials\\TerrainData\\TerrainDetector_MaterialData");
+        physicMaterials = Resources.Load<TerrainDetector_MaterialData>("PhysicMaterials\\TerrainData\\TerrainDetector_MaterialData").physicMaterials;
         terrain = t;
+        terrainTr = terrain.transform;
     }
-    
+
     private Vector3 ConvertToSplatMapCoordinate(Vector3 worldPosition)
     {
-        Vector3 splatPosition = new Vector3();        
-        Vector3 terPosition = terrain.transform.position;
-        splatPosition.x = (worldPosition.x - terPosition.x) / terrain.terrainData.size.x * terrain.terrainData.alphamapWidth;
-        splatPosition.z = (worldPosition.z - terPosition.z) / terrain.terrainData.size.z * terrain.terrainData.alphamapHeight;
+        Vector3 splatPosition = new Vector3();
+        Vector3 terPosition = terrainTr.position;
+        splatPosition.x = (worldPosition.x - terPosition.x) / terrainData.size.x * terrainData.alphamapWidth;
+        splatPosition.z = (worldPosition.z - terPosition.z) / terrainData.size.z * terrainData.alphamapHeight;
         return splatPosition;
     }
 
@@ -60,11 +62,11 @@ public class TerrainDetector
 
     internal int GetIndexFromMaterial(PhysicMaterial sharedMaterial)
     {
-        for (int i = 0; i < materialData.physicMaterials.Count; i++)
+        for (int i = 0; i < physicMaterials.Count; i++)
         {
-            if (sharedMaterial == materialData.physicMaterials[i])
+            if (sharedMaterial == physicMaterials[i])
                 return i;
         }
-        return 0;
+        return -1;
     }
 }

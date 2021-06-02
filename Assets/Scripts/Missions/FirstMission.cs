@@ -279,6 +279,7 @@ public class FirstMission : Mission
     }
     private void SetActiveCheckers()
     {
+        return;
         if (currentTask == part2Task)
         {
             part2Object.SetActive(true);

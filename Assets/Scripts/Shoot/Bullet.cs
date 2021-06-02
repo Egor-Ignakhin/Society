@@ -17,20 +17,23 @@ namespace Shoots
         BulletValues mBv;
 
         public Inventory.ItemStates.ItemsID Id;
+        private AudioClip reflectSound;
+        private AudioSource reflectSource;
 
-        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e)
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource)
         {
             mBv = bv;
             target = t.point;
             enemy = e;
-            haveTarget = true;
-            impactEffect = impact;
+            haveTarget = true;            
 
-            var parent = new GameObject("parentForImpact").transform;
-            parent.SetParent(t.transform);
-            impactEffect = Instantiate(impactEffect, parent);
+            //var parent = new GameObject("parentForImpact").transform;
+            //parent.SetParent(t.transform);
+            impactEffect = Instantiate(impact);
             impactEffect.transform.forward = t.normal;
             impactEffect.SetActive(false);
+            reflectSound = rs;
+            reflectSource = rsource;
         }
         public void Init(BulletValues bv, Vector3 t)
         {
@@ -64,9 +67,8 @@ namespace Shoots
                     target = hit.point;
                     impactEffect.transform.forward = hit.normal;
 
-                    var gg = new GameObject("Source");
-                    gg.AddComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Guns\\BulletReflect"));
-                    gg.transform.position = hit.point;
+                    reflectSource.PlayOneShot(reflectSound);
+                    reflectSource.transform.position = hit.point;
                     return;
                 }
                 
