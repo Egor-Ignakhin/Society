@@ -25,11 +25,11 @@ namespace Shoots
             mBv = bv;
             target = t.point;
             enemy = e;
-            haveTarget = true;            
-
+            haveTarget = true;
+            impactEffect = impact;
             //var parent = new GameObject("parentForImpact").transform;
             //parent.SetParent(t.transform);
-            impactEffect = Instantiate(impact);
+            impactEffect = Instantiate(impactEffect);
             impactEffect.transform.forward = t.normal;
             impactEffect.SetActive(false);
             reflectSound = rs;

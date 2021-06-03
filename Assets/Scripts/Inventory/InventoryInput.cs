@@ -77,8 +77,8 @@ namespace Inventory
             var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
             item.SetCount(count);
             item.SetGun(gun);
-            var powerForce = 2;
-            item.GetComponent<Rigidbody>().AddForce(fps.transform.forward * powerForce, ForceMode.Impulse);
+            var powerForce = 5;
+            item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
         }
 
         public void Hide(){

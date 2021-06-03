@@ -20,15 +20,21 @@ public class TerrainDetector
 
     public TerrainDetector(Terrain t)
     {
-        terrainData = t.terrainData;
-        alphamapWidth = terrainData.alphamapWidth;
-        alphamapHeight = terrainData.alphamapHeight;
+        if (t)
+        {
+            terrainData = t.terrainData;
+            alphamapWidth = terrainData.alphamapWidth;
+            alphamapHeight = terrainData.alphamapHeight;
 
-        splatmapData = terrainData.GetAlphamaps(0, 0, alphamapWidth, alphamapHeight);
-        numTextures = splatmapData.Length / (alphamapWidth * alphamapHeight);
+            splatmapData = terrainData.GetAlphamaps(0, 0, alphamapWidth, alphamapHeight);
+            numTextures = splatmapData.Length / (alphamapWidth * alphamapHeight);
+        }
         physicMaterials = Resources.Load<TerrainDetector_MaterialData>("PhysicMaterials\\TerrainData\\TerrainDetector_MaterialData").physicMaterials;
-        terrain = t;
-        terrainTr = terrain.transform;
+        if (t)
+        {
+            terrain = t;
+            terrainTr = terrain.transform;
+        }
     }
 
     private Vector3 ConvertToSplatMapCoordinate(Vector3 worldPosition)

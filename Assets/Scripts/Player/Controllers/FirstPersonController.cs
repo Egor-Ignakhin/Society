@@ -67,6 +67,7 @@ public sealed class FirstPersonController : MonoBehaviour
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
     private StepPlayer stepPlayer;
+    public bool IsAnomalyMember { get; set; }
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -128,7 +129,8 @@ public sealed class FirstPersonController : MonoBehaviour
     private void OnEnable()
     {
         terrain = FindObjectOfType<Terrain>();
-        terrainTr = terrain.transform;
+        if (terrain)
+            terrainTr = terrain.transform;
         terrainDetector = new TerrainDetector(terrain);
         stepPlayer = new StepPlayer(terrainDetector);
         stepPlayer.OnInit(this);
@@ -230,15 +232,15 @@ public sealed class FirstPersonController : MonoBehaviour
             if (Advanced.IsTouchingUpright && Advanced.IsTouchingWalkable)
             {
                 MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
-                if (!didJump)
+                if (!didJump && !IsAnomalyMember)
                     _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
-            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable)
+            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable && !IsAnomalyMember)
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
             }
 
-            else
+            else if (!IsAnomalyMember)
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (_fpsRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
@@ -280,7 +282,8 @@ public sealed class FirstPersonController : MonoBehaviour
                     Advanced.IsTouchingWalkable = false;
                     Advanced.IsTouchingFlat = false;
                     Advanced.IsTouchingUpright = false;
-                    _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                    if (!IsAnomalyMember)
+                        _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 }
 
             }
@@ -546,7 +549,7 @@ public sealed class FirstPersonController : MonoBehaviour
         {
             Rock, Sand, Leaves, LeavesOld, Swamp,
             Grass, Moss, MossRock, DirtyGround, VeryDirtyGround, Tile, VeryLeaves, VeryTile, VeryGroundTile
-        }        
+        }
         public enum OnlyColliderLayer { Wood }
         private FirstPersonController fpc;
         private Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>> stepSounds;
