@@ -62,10 +62,10 @@ namespace Shoots
         }
         private void Start()
         {
+            effectsManager = FindObjectOfType<EffectsManager>();
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
-            effectsManager = FindObjectOfType<EffectsManager>();
 
             dispenser = new Dispenser(inventoryEv);
             LoadAssets();
@@ -258,9 +258,7 @@ namespace Shoots
                 if (bullet.TryGetComponent<Rigidbody>(out var rb))
                 {
                     rb.AddForce(droppingPlace.right * 4, ForceMode.Impulse);
-                    rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
-                    float angularPower = UnityEngine.Random.Range(300, 1000);
-                    rb.angularVelocity = rb.transform.right * angularPower;
+                    rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);                    
                 }
             }
             public override void SetPrefabAsset(PoolableObject instance)
@@ -302,6 +300,7 @@ namespace Shoots
             IsReload = false;
             mAnimator.SetBool("Reload", false);
             currentReloadTime = 0;
+
             effectsManager.SetRechargeable(IsReload);
         }
 
