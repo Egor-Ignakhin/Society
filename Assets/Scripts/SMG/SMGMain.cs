@@ -13,9 +13,6 @@ namespace SMG
         private SMGCamera MSMG;
         private Camera MSMGCamera;
         private Canvas mCanvas;
-
-        [SerializeField]
-        private Transform ModifiersCellsData;
         [SerializeField]
         private Transform GunsCellsData;
         public SMGEventReceiver EventReceiver { get; private set; }
@@ -37,15 +34,17 @@ namespace SMG
         [SerializeField]
         private SMGElementsSupport elementsSupport;
         private EffectsManager effectsManager;
+        [SerializeField] private Transform additionCellsForModifiers;
+        [SerializeField] private Transform activeModifiersContainer;
         private void Awake()
         {
             effectsManager = FindObjectOfType<EffectsManager>();
-            EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
+            EventReceiver = new SMGEventReceiver(GunsCellsData, modifiersAnswer,
+                FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
             SetEnable(false);
-            ScreensManager.OnInit();            
+            ScreensManager.OnInit();
         }
         public void SetEnable(bool v)
         {

@@ -7,10 +7,10 @@ namespace SMG
     public class SMGEventReceiver
     {
         private readonly List<SMGModifiersCell> ModifiersCells = new List<SMGModifiersCell>();//слоты с модификаторами
-        private readonly List<SMGGunsCell> gunsCells = new List<SMGGunsCell>();// слоты с оружием
+        private readonly List<GunsCell> gunsCells = new List<GunsCell>();// слоты с оружием
         private readonly GameObject modifiersAnswer;// подсказка о модификаторе        
         private SMGModifiersCell currentModCell;//активный слот под модификации
-        private SMGGunsCell currentGunCell;
+        private GunsCell currentGunCell;
         private readonly Inventory.InventoryContainer inventoryContainer;// главный обработчик инвентаря         
         private readonly SMGCamera MSMGCamera;// камера для отрисовки окна предпросмотра
         private readonly SMGModifiersData modifiersData;// контейнер под модификации
@@ -21,15 +21,19 @@ namespace SMG
         public event ChangeGunModsHandler ChangeSelectedGunEvent;
         public delegate void UpdateModifiersHandler(Inventory.InventoryCell ic);
         public event UpdateModifiersHandler UpdateModfiersEvent;
-        public SMGEventReceiver(Transform mcData, Transform gsData, GameObject ma, Inventory.InventoryContainer ic,
-            SMGCamera cam, SMGModifiersData mD, SMGModifiersCellDescription mcd)
+        private readonly Transform additionCellsForModifiers;
+        private readonly Transform activeModifiersContainer;
+        public SMGEventReceiver(Transform gsData, GameObject ma, Inventory.InventoryContainer ic,
+            SMGCamera cam, SMGModifiersData mD, SMGModifiersCellDescription mcd, Transform acfm, Transform acmc)
         {
-            ModifiersCells = mcData.GetComponentsInChildren<SMGModifiersCell>().ToList();
+            activeModifiersContainer = acmc;
+            ModifiersCells = activeModifiersContainer.GetComponentsInChildren<SMGModifiersCell>().ToList();
 
+            Sprite emptySprite = Resources.Load<Sprite>("EmptyCell");
             foreach (var c in ModifiersCells)
-                c.OnInit(this);
+                c.OnInit(this, emptySprite);
 
-            gunsCells = gsData.GetComponentsInChildren<SMGGunsCell>().ToList();
+            gunsCells = gsData.GetComponentsInChildren<GunsCell>().ToList();
 
             foreach (var c in gunsCells)
                 c.OnInit(this);
@@ -41,6 +45,13 @@ namespace SMG
             MSMGCamera = cam;
             modifiersData = mD;
             modifiersCellDescription = mcd;
+            additionCellsForModifiers = acfm;
+
+            int additionCellsCount = 30;
+            for (int i = 0; i < additionCellsCount; i++)
+            {
+                Object.Instantiate(ModifiersCells[0], additionCellsForModifiers).OnInit(this, emptySprite);
+            }
         }
         internal void OnActivateCurrentModifierCell(SMGModifiersCell modifiersCell)
         {
@@ -55,7 +66,7 @@ namespace SMG
             UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
         }
 
-        internal void OnSelectGunsCell(SMGGunsCell sMGGunsCell)
+        internal void OnSelectGunsCell(GunsCell sMGGunsCell)
         {
             currentGunCell = sMGGunsCell;
             MSMGCamera.SetActiveGun(currentGunCell.Id);
@@ -97,6 +108,7 @@ namespace SMG
                 MSMGCamera.SetMagToActiveGun((ModifierCharacteristics.ModifierIndex)currentGunCell.Ic.MGun.Dispenser);
 
                 UpdateModfiersEvent?.Invoke(inventoryContainer.EventReceiver.GetSelectedCell());
+                ChangeModfierCell?.Invoke(ModifiersCells[0]);
             }
         }
         private void OnDisable() => ChangeSelectedGunEvent -= OnChangeCurrentGunCell;
@@ -130,6 +142,12 @@ namespace SMG
             //затем заполнение имеющимися модами            
             for (int i = 0; i < modifirs.Count; i++)
             {
+                if (ModifiersCells.Count <= i)
+                {
+                    var newModCell = additionCellsForModifiers.GetComponentInChildren<SMGModifiersCell>();
+                    ModifiersCells.Add(newModCell);
+                    newModCell.transform.SetParent(activeModifiersContainer);
+                }
                 ModifiersCells[i].ChangeModifier(modifirs[i]);
             }
         }

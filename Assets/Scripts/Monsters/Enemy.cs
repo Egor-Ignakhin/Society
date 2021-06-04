@@ -239,7 +239,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         {
             lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
         }
-        else if (mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
+        else if (mAgent.isOnNavMesh && mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
         {
             if (WaitTarget < 0 || !possibleMove)
             {

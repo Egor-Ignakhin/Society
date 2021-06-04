@@ -82,6 +82,7 @@ namespace SMG
 
         public struct SMGTitleTypeIndex
         {
+            public static SMGTitleTypeIndex None { get; } = new SMGTitleTypeIndex(GunTitles.None, ModifierTypes.None, ModifierIndex.None);
             public readonly GunTitles Title;
             public readonly ModifierTypes Type;
             public readonly ModifierIndex Index;

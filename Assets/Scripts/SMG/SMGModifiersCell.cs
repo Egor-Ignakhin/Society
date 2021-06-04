@@ -11,34 +11,35 @@ namespace SMG
     {
         private SMGEventReceiver eventReceiver;
         private Image mImage;
+        private Sprite defSprite;
         /// <summary>
         /// название оружия - тип модификации - индекс модификации
         /// </summary>
         public SMGTitleTypeIndex TTI { get; private set; }
         public bool IsEmpty => TTI.Title == GunTitles.None;
 
-        public void OnInit(SMGEventReceiver ev)
+        public void OnInit(SMGEventReceiver ev, Sprite dfs)
         {
             eventReceiver = ev;
             mImage = transform.GetChild(0).GetComponent<Image>();
+            defSprite = dfs;
         }
         public void ChangeModifier(SMGTitleTypeIndex modState)
         {
-            mImage.sprite = GetSprite(TTI = modState);
-            mImage.color = Color.white;
+            mImage.sprite = GetSprite(TTI = modState);            
         }
 
         public void Clear()
         {
-            mImage.sprite = null;
-            mImage.color = new Color(0, 0, 0, 0);
+            mImage.sprite = defSprite;
+            TTI = SMGTitleTypeIndex.None;
         }
 
         public void OnPointerClick(PointerEventData eventData) => eventReceiver.OnActivateCurrentModifierCell(this);
 
         public void OnPointerEnter(PointerEventData eventData)
         {            
-            if (mImage.sprite == null) 
+            if (IsEmpty) 
                 return;
             eventReceiver.OnEnterModifiersCell(this);
         }

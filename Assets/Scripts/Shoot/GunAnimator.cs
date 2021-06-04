@@ -81,7 +81,7 @@ namespace Shoots
             {
                 g.MGun.OnInit(interactableLayers, this);
             }
-            inventoryContainer = FindObjectOfType<InventoryContainer>();            
+            inventoryContainer = FindObjectOfType<InventoryContainer>();
             InventoryEventReceiver = inventoryContainer.EventReceiver;
             SMGMain = FindObjectOfType<SMG.SMGMain>();
             SMGEventReceiver = SMGMain.EventReceiver;
@@ -125,7 +125,7 @@ namespace Shoots
 
             else
                 fps.SetZSlant(0);
-        }        
+        }
 
         public void ChangeGun(int id)
         {
@@ -166,6 +166,8 @@ namespace Shoots
 
         public void UpdateGunModifiers(InventoryCell sc)
         {
+            if (sc == null)
+                return;
             inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), sc.MGun.AmmoCount, null);
             guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Dispenser);
             sc.SetAmmoCount(0);
