@@ -25,12 +25,11 @@ namespace SMG
 
         [SerializeField]
         private Camera mCamera;
-        [SerializeField] private Transform gunsContainer;
-
+        [SerializeField] private Transform gunsContainer;        
         public bool IsActive { get; private set; }
 
         private void Awake()
-        {            
+        {
             foreach (var g in guns)
                 DefGunsDefRot.Add(g, g.rotation);
             defCamFov = mCamera.fieldOfView;
@@ -43,10 +42,10 @@ namespace SMG
             activeManager = gunsModsMgs[0];
             SetEnable(false);
         }
-        public void SetActiveGun(int id)
+        public void SetActiveGun(Inventory.InventoryCell ic)
         {
             activeGun.gameObject.SetActive(false);
-            switch (id)
+            switch (ic.Id)
             {
                 case 2:
                     activeGun = guns[0];
@@ -63,6 +62,21 @@ namespace SMG
             }
             activeGun.gameObject.SetActive(true);
         }
+
+        internal void AddOrRemoveEvents(SMGEventReceiver ev, bool v)
+        {            
+            if (v)
+            {
+                ev.UpdateModfiersEvent += SetMagToActiveGun;
+                ev.ChangeGunEvent += SetActiveGun;
+            }
+            else
+            {                
+                ev.UpdateModfiersEvent -= SetMagToActiveGun;
+                ev.ChangeGunEvent -= SetActiveGun;
+            }
+        }
+
         public void RotateAroundMouse()
         {
             if (Input.GetMouseButton(0))
@@ -87,7 +101,7 @@ namespace SMG
         }
 
         public void SetEnable(bool v)
-        {
+        {            
             ResetGunRotation();
             IsActive = v;
         }
@@ -97,7 +111,7 @@ namespace SMG
             mCamera.fieldOfView += fw ? cameraScrollStep : -cameraScrollStep;
 
             mCamera.fieldOfView = Mathf.Clamp(mCamera.fieldOfView, 30, 80);
-        }        
+        }
 
         /// <summary>
         /// очищает ротацию оружия
@@ -110,6 +124,6 @@ namespace SMG
             mCamera.fieldOfView = defCamFov;
         }
 
-        internal void SetMagToActiveGun(ModifierCharacteristics.ModifierIndex dispenser) => activeManager.SetMag(dispenser);
+        internal void SetMagToActiveGun(SMGModifiersCell gc) => activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
     }
 }

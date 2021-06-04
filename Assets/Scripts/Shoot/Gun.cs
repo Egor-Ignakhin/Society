@@ -317,7 +317,7 @@ namespace Shoots
                 {
                     var sc = inventoryEv.GetSelectedCell();
                     if (sc && Inventory.ItemStates.ItsGun(sc.Id))
-                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Dispenser);
+                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Mag);
                     return 0;
                 }
             }

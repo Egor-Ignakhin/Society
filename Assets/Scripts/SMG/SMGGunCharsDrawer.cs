@@ -22,10 +22,11 @@ namespace SMG
         {
             eventReceiver = FindObjectOfType<SMGMain>().EventReceiver;
 
-            eventReceiver.ChangeSelectedGunEvent += OnChangeSelectedGun;            
+            eventReceiver.UpdateModfiersEvent += OnChangeSelectedGun;            
         }
-        public void OnChangeSelectedGun(Inventory.InventoryCell cell)
-        {            
+        public void OnChangeSelectedGun(SMGModifiersCell modCell)
+        {
+            var cell = modCell.Ic;
             int id = cell.Id;
             if (!Inventory.ItemStates.ItsGun(id))
                 return;            
@@ -36,12 +37,12 @@ namespace SMG
             maxFlyDistText.text = $"Максимальная дистанция поражения: {maxFlyD}";
             optFlyDistText.text = $"Оптимальная дистанция поражения: {OptFlyD}";
             caliberText.text = $"Калибр: {Caliber}";
-            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Dispenser)}";
+            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Mag)}";
         }
         private void OnDisable()
         {
             if (eventReceiver != null)            
-                eventReceiver.ChangeSelectedGunEvent -= OnChangeSelectedGun;                            
+                eventReceiver.UpdateModfiersEvent -= OnChangeSelectedGun;                            
         }
     }
 }

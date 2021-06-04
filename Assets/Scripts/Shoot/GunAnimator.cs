@@ -161,16 +161,17 @@ namespace Shoots
             var sc = InventoryEventReceiver.GetSelectedCell();
             guns[currentActiveGunI].MGun.ChangeAmmoCountEvent += sc.SetAmmoCount;
             SMGEventReceiver.UpdateModfiersEvent += UpdateGunModifiers;
-            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Dispenser);
+            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag);
         }
 
-        public void UpdateGunModifiers(InventoryCell sc)
+        public void UpdateGunModifiers(SMG.SMGModifiersCell _)
         {
-            if (sc == null)
+            var ic = InventoryEventReceiver.GetSelectedCell();
+            if (!ic)
                 return;
-            inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), sc.MGun.AmmoCount, null);
-            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Dispenser);
-            sc.SetAmmoCount(0);
+            inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), ic.MGun.AmmoCount, null);
+            guns[currentActiveGunI].MGun.UpdateModifiers(ic.MGun.Mag);
+            ic.SetAmmoCount(0);
         }
         private void DisableGuns()
         {

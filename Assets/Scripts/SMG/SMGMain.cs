@@ -40,7 +40,7 @@ namespace SMG
         {
             effectsManager = FindObjectOfType<EffectsManager>();
             EventReceiver = new SMGEventReceiver(GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer);
+                FindObjectOfType<Inventory.InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
             SetEnable(false);
@@ -49,9 +49,9 @@ namespace SMG
         public void SetEnable(bool v)
         {
             IsActive = v;
+            MSMG.AddOrRemoveEvents(EventReceiver, v);
             modificationMode.SetActive(IsActive);
-            SetEnableCanvasesAndCameras();
-            MSMG.gameObject.SetActive(IsActive);
+            SetEnableCanvasesAndCameras();           
             EventReceiver.SetEnable(IsActive);
             ScreensManager.SetScreen(IsActive ? this : null);
         }
@@ -114,9 +114,7 @@ namespace SMG
             lastSelectedObj = null;
         }
         internal void UnequipGunElement()
-        {
-            GunModifiersActiveManager gmam = lastSelectedObj.transform.GetComponentInParent<GunModifiersActiveManager>();
-            gmam.SetMag(ModifierCharacteristics.ModifierIndex.None);
+        {          
             EventReceiver.UnequipMagOnSelGun();
             DeselectGunElement();
         }

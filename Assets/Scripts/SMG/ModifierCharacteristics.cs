@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventory;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,11 +59,11 @@ namespace SMG
 
         internal static GunTitles GetGunIdFromInvId(int id)
         {
-            if (id == (int)Inventory.ItemStates.ItemsID.Makarov)
+            if (id == (int)ItemStates.ItemsID.Makarov)
                 return GunTitles.Makarov;
-            if (id == (int)Inventory.ItemStates.ItemsID.TTPistol)
+            if (id == (int)ItemStates.ItemsID.TTPistol)
                 return GunTitles.TT_Pistol;
-            if (id == (int)Inventory.ItemStates.ItemsID.Ak_74)
+            if (id == (int)ItemStates.ItemsID.Ak_74)
                 return GunTitles.Ak_74;
             return GunTitles.None;
         }
@@ -92,6 +93,11 @@ namespace SMG
                 Type = mT;
                 Index = mI;
             }
+
+            internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun)
+            {
+                return new SMGTitleTypeIndex((GunTitles)gun.Title, ModifierTypes.Mag, (ModifierIndex)gun.Mag);
+            }            
         }
         public class SMGModifierItem
         {

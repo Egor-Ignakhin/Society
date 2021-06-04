@@ -2,14 +2,14 @@
 [System.Serializable]
 public class SMGInventoryCellGun
 {
-    public int Dispenser = 1;
+    public int Mag = 1;
     public int Silencer = -1;
     public int Title = 0;
 
     public int AmmoCount = 0;
     internal void SetMag(ModifierIndex index)
     {
-        Dispenser = (int)index;
+        Mag = (int)index;
     }
     public void SetTitle(GunTitles t)
     {
@@ -18,7 +18,7 @@ public class SMGInventoryCellGun
     public void Reload(int title, int dispenser, int silencer, int ammocount)
     {
         Title = title;
-        Dispenser = dispenser;
+        Mag = dispenser;
         Silencer = silencer;
         AmmoCount = ammocount;
     }
@@ -30,13 +30,13 @@ public class SMGInventoryCellGun
             return;
         }
         Title = GunAk_74.Title;
-        Dispenser = GunAk_74.Dispenser;
+        Mag = GunAk_74.Mag;
         Silencer = GunAk_74.Silencer;
         AmmoCount = GunAk_74.AmmoCount;
     }
     public void Clear()
     {
-        Dispenser = 0;
+        Mag = 0;
         Silencer = 0;
         AmmoCount = 0;
     }
