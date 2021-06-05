@@ -41,6 +41,12 @@ namespace Inventory
         private GameObject modifiersPage;
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
+
+        internal InventoryCell GetFirstCell()
+        {
+            return inventoryContainer.GetCells()[0];
+        }
+
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,

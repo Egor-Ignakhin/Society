@@ -3,7 +3,7 @@ using System.Linq;
 using TerrainCollections;
 using UnityEngine;
 
-public class StepSoundData : Singleton<StepSoundData>
+public class StepSoundData : MonoBehaviour
 {
     public enum TypeOfMovement { None, Walk, Run, JumpLand, JumpStart }
     public enum Layers
@@ -20,9 +20,11 @@ public class StepSoundData : Singleton<StepSoundData>
                Resources.LoadAll<AudioClip>($"Footsteps\\{l}\\{type}\\").ToList();
     private void Awake()
     {
-        terrainDetector = new TerrainDetector(Terrain.activeTerrain);
-        terrainTr = Terrain.activeTerrain.transform;
         stepSounds = new Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>>();
+        var terrain = Terrain.activeTerrain;
+        terrainDetector = new TerrainDetector(terrain);
+        if (terrain)
+            terrainTr = Terrain.activeTerrain.transform;
         int lastMatIndex = 0;
         for (int k = 0; k < System.Enum.GetNames(typeof(Layers)).Length; k++)
         {
@@ -61,17 +63,17 @@ public class StepSoundData : Singleton<StepSoundData>
     /// <param name="physMat"></param>
     /// <returns></returns>
     private int GetIndexFromMaterial(PhysicMaterial physMat)
-    {        
+    {
         if (physMat == null)
             return 0;
         return indexFromMats[physMat];
     }
     public TerrainDetector GetTerrainDetector() => terrainDetector;
     public int GetIndexFromRayCast(RaycastHit hit, Vector3 gmPosition)
-    {        
+    {
         if (hit.transform != terrainTr)
         {
-            var physMat = hit.collider.sharedMaterial;            
+            var physMat = hit.collider.sharedMaterial;
             var index = terrainDetector.GetIndexFromMaterial(physMat);
 
 

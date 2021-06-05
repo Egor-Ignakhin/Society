@@ -67,7 +67,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     }
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
-    private StepPlayerrer stepPlayer;
+    private StepFpc stepPlayer;
     private StepSoundData stepSoundData;
     public bool IsAnomalyMember { get; set; }
 
@@ -116,8 +116,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
 
     private void Awake()
     {
-        #region Movement Settings - Awake
-        stepSoundData = StepSoundData.Instance;
+        #region Movement Settings - Awake        
         PlayerCamera = Camera.main;
         PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
@@ -130,9 +129,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         #endregion
     }
     private void OnEnable()
-    {
-        stepPlayer = new StepPlayerrer();
-        stepPlayer.OnInit(this);
+    {        
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
@@ -167,6 +164,8 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         };
         playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
         #endregion
+        stepSoundData = FindObjectOfType<StepSoundData>();
+        stepPlayer = new StepFpc(this, stepSoundData);
     }
 
     private void Update()
@@ -512,13 +511,12 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
 
     private float additionalBraking = 1;//добавляемая скорость при перегузе
     public void SetBraking(float b) => additionalBraking = b;
-    public class StepPlayerrer : StepPlayer
-    {        
-        private FirstPersonController fpc;        
-        public StepPlayerrer() => stepSoundData = StepSoundData.Instance;
-
-        public override void OnInit(IMovableController firstPersonController)
+    public class StepFpc : StepPlayer
+    {
+        private FirstPersonController fpc;
+        public StepFpc(IMovableController firstPersonController, StepSoundData ssd)
         {
+            stepSoundData = ssd;
             fpc = (FirstPersonController)firstPersonController;
             fpc.PlayerStepEvent += OnStep;
 

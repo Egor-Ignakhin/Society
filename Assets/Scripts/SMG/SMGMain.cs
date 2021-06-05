@@ -32,7 +32,7 @@ namespace SMG
         private Color defColor;
 
         [SerializeField]
-        private SMGElementsSupport elementsSupport;
+        private DynamicalElementsAnswer DEA;
         private EffectsManager effectsManager;
         [SerializeField] private Transform additionCellsForModifiers;
         [SerializeField] private Transform activeModifiersContainer;
@@ -40,7 +40,7 @@ namespace SMG
         {
             effectsManager = FindObjectOfType<EffectsManager>();
             EventReceiver = new SMGEventReceiver(GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer);
+                FindObjectOfType<Inventory.InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer, DEA);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
             SetEnable(false);
@@ -79,8 +79,8 @@ namespace SMG
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
-                    elementsSupport.Show();
+                if (lastSelectedObj && !DEA.IsActive)
+                    DEA.Show(UnequipGunElement, DeselectGunElement, "Снять модификатор?");
             }
             if (!MSMG.IsActive)
                 return;
@@ -104,7 +104,7 @@ namespace SMG
             }
             else
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
+                if (lastSelectedObj && !DEA.IsActive)
                     DeselectGunElement();
             }
         }

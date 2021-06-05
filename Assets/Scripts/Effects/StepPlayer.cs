@@ -3,11 +3,7 @@
 public abstract class StepPlayer
 {
     protected StepSoundData stepSoundData;    
-    protected AudioSource stepPlayerSource;
-    public StepPlayer() => stepSoundData = StepSoundData.Instance;
-
-    public abstract void OnInit(IMovableController controller);        
-
+    protected AudioSource stepPlayerSource;        
     public virtual void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
     {        
         var key = (movementType, physicMaterialIndex);

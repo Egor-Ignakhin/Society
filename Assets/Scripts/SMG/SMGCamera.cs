@@ -25,7 +25,8 @@ namespace SMG
 
         [SerializeField]
         private Camera mCamera;
-        [SerializeField] private Transform gunsContainer;        
+        [SerializeField] private Transform gunsContainer;       
+        private Inventory.InventoryEventReceiver inventoryEventReceiver; 
         public bool IsActive { get; private set; }
 
         private void Awake()
@@ -41,9 +42,9 @@ namespace SMG
             activeGun = guns[0];
             activeManager = gunsModsMgs[0];
             SetEnable(false);
-        }
+        }        
         public void SetActiveGun(Inventory.InventoryCell ic)
-        {
+        {            
             activeGun.gameObject.SetActive(false);
             switch (ic.Id)
             {
@@ -67,6 +68,7 @@ namespace SMG
         {            
             if (v)
             {
+                inventoryEventReceiver = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
                 ev.UpdateModfiersEvent += SetMagToActiveGun;
                 ev.ChangeGunEvent += SetActiveGun;
             }

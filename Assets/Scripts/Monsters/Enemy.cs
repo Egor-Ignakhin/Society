@@ -11,6 +11,8 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     [SerializeField] protected float fov = 90;// угол обзора монстра
     [SerializeField] protected float seeDistance;// дальность обзора
     [SerializeField] protected float health;// здоровье монстра
+    [SerializeField] private float power;
+    [SerializeField] private float attackDistance;
     public UniqueVariables UVariables { get; private set; }
     public class UniqueVariables
     {
@@ -43,13 +45,6 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             this.Health = Shealth;
         }
     }
-
-    public class TypesEnemies
-    {
-        public const string Bred = "Bred";
-        public const string BloodDog = "BloodDog";
-    }
-    protected abstract string Type();// тип монстра
     [SerializeField] protected Transform defenderPoint;//защитная точка
     protected Transform target;// текущая цель
     protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
@@ -61,27 +56,27 @@ public abstract class Enemy : MonoBehaviour, IMovableController
 
     protected BasicNeeds enemy;// текущий противник
 
-    public delegate void EnemyEvent();
-    public event EnemyEvent DeathEvent;
+    public event System.Action DeathEvent;
 
     private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока    
 
     public delegate void Action(int physMatIndex, StepSoundData.TypeOfMovement type);//TODO: рейкаст
     public event Action EnemyStepEvent;
-    private Terrain terrain;
-    private Transform terrainTr;
+
     private StepSoundData stepSoundData;
     private int CurrentPhysicMaterialIndex;
     private Vector3 oldPos = Vector3.zero;
     private StepEnemy stepEnemy;
-    protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
+    private void Start()
+    {
+        OnInit(attackDistance, power, seeDistance, health);
+    }
+    private void OnInit(float distanceForAttack, float powerInjure, float seeDistance, float health)
     {
         UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
-        stepSoundData = StepSoundData.Instance;
-        terrain = Terrain.activeTerrain;
-        terrainTr = terrain.transform;
+        stepSoundData = FindObjectOfType<StepSoundData>();        
         mAgent.stoppingDistance = UVariables.DistanceForAttack;
         UVariables.ChangeHealthEvent += Death;
 
@@ -90,13 +85,11 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             var dp = new GameObject($"DefenderPointFor{name}").transform;
             dp.position = transform.position;
             defenderPoint = dp;
-        }
-
+        }        
         target = defenderPoint;
         lastTargetPos = target.position;
         MonstersData.AddEnemy(this);
-        stepEnemy = new StepEnemy();
-        stepEnemy.OnInit(this);
+        stepEnemy = new StepEnemy(this, stepSoundData);        
     }
     protected class AnimationsContainer
     {
@@ -294,7 +287,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
 
     private void SetPhysMaterial()
     {
-       if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
             CurrentPhysicMaterialIndex = stepSoundData.GetIndexFromRayCast(hit, transform.position);
         else
             CurrentPhysicMaterialIndex = 0;
@@ -307,12 +300,12 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     }
 
     public class StepEnemy : StepPlayer
-    {        
-        private Enemy enemy;        
-        public StepEnemy() => stepSoundData = StepSoundData.Instance;
+    {
+        private Enemy enemy;
+        public StepEnemy(IMovableController e, StepSoundData ssd)
+        {            
+            stepSoundData = ssd;
 
-        public override void OnInit(IMovableController e)
-        {
             enemy = (Enemy)e;
             enemy.EnemyStepEvent += OnStep;
 
@@ -320,7 +313,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             stepPlayerSource.priority = 129;
             stepPlayerSource.spatialBlend = 1;
             stepPlayerSource.pitch = Random.Range(0.95f, 1.05f);
-        }        
+        }
         public void OnDestroy()
         {
             enemy.EnemyStepEvent -= OnStep;

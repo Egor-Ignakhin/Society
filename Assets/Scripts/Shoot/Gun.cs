@@ -258,7 +258,7 @@ namespace Shoots
                 if (bullet.TryGetComponent<Rigidbody>(out var rb))
                 {
                     rb.AddForce(droppingPlace.right * 4, ForceMode.Impulse);
-                    rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);                    
+                    rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
                 }
             }
             public override void SetPrefabAsset(PoolableObject instance)
@@ -301,7 +301,8 @@ namespace Shoots
             mAnimator.SetBool("Reload", false);
             currentReloadTime = 0;
 
-            effectsManager.SetRechargeable(IsReload);
+            if (effectsManager)
+                effectsManager.SetRechargeable(IsReload);
         }
 
         /// <summary>

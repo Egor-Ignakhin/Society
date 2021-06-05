@@ -15,16 +15,17 @@ namespace SMG
         private readonly SMGModifiersData modifiersData;// контейнер под модификации
         private readonly SMGModifiersCellDescription modifiersCellDescription;// динамичное описание для модификаций
 
-        public delegate void ChangeGunModsHandler(Inventory.InventoryCell ic);
-        public event ChangeGunModsHandler ChangeGunEvent;
+        public delegate void GunChangeHandler(Inventory.InventoryCell ic);
+        public event GunChangeHandler ChangeGunEvent;
 
         public delegate void UpdateModifiersHandler(SMGModifiersCell modCell);
-        public event UpdateModifiersHandler UpdateModfiersEvent;        
+        public event UpdateModifiersHandler UpdateModfiersEvent;
 
         private readonly Transform additionCellsForModifiers;
         private readonly Transform activeModifiersContainer;
+        private DynamicalElementsAnswer DEA;
         public SMGEventReceiver(Transform gsData, GameObject ma, Inventory.InventoryContainer ic,
-            SMGModifiersData mD, SMGModifiersCellDescription mcd, Transform acfm, Transform acmc)
+            SMGModifiersData mD, SMGModifiersCellDescription mcd, Transform acfm, Transform acmc, DynamicalElementsAnswer dea)
         {
             activeModifiersContainer = acmc;
             ModifiersCells = activeModifiersContainer.GetComponentsInChildren<SMGModifiersCell>().ToList();
@@ -51,14 +52,24 @@ namespace SMG
             {
                 Object.Instantiate(ModifiersCells[0], additionCellsForModifiers).OnInit(this, emptySprite);
             }
+            DEA = dea;
         }
+        private SMGModifiersCell ccCandidate;
         internal void OnSelectModifierCell(SMGModifiersCell modifiersCell)
         {
             if (modifiersCell == currentModCell)//если слот пуст
                 return;
+            if (modifiersCell == ModifiersCells[0])
+                return;
+
+            ccCandidate = modifiersCell;
+            DEA.Show(ReplaceModifier, null, "Установить модификатор?");
+        }
+        private void ReplaceModifier()
+        {
 
             modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));
-            currentModCell = modifiersCell;
+            currentModCell = ccCandidate;
 
             currentGunCell.SetMag(currentModCell.TTI.Index);
 
@@ -93,6 +104,7 @@ namespace SMG
         }
         private void OnEnable()
         {
+            ccCandidate = null;
             currentModCell = null;
             currentGunCell = null;
 
@@ -121,7 +133,7 @@ namespace SMG
         private void ReFillModifiersCells()
         {
             ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.Ic.MGun.Title;
-            var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>() 
+            var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>()
             {
                 { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun) }// заполнение 1 слота вставленным модификатором                        
             };
@@ -151,7 +163,7 @@ namespace SMG
                 ModifiersCells.RemoveAt(i);
             }
 
-            UpdateModfiersEvent?.Invoke(ModifiersCells[0]);            
+            UpdateModfiersEvent?.Invoke(ModifiersCells[0]);
         }
         internal void UnequipMagOnSelGun()
         {
