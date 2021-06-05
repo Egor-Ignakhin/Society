@@ -19,7 +19,7 @@ namespace SMG
         public event ChangeGunModsHandler ChangeGunEvent;
 
         public delegate void UpdateModifiersHandler(SMGModifiersCell modCell);
-        public event UpdateModifiersHandler UpdateModfiersEvent;
+        public event UpdateModifiersHandler UpdateModfiersEvent;        
 
         private readonly Transform additionCellsForModifiers;
         private readonly Transform activeModifiersContainer;
@@ -54,7 +54,7 @@ namespace SMG
         }
         internal void OnSelectModifierCell(SMGModifiersCell modifiersCell)
         {
-            if ((modifiersCell == currentModCell))//если слот пуст
+            if (modifiersCell == currentModCell)//если слот пуст
                 return;
 
             modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));
@@ -98,10 +98,7 @@ namespace SMG
 
             ReFillGunCells();
             if (gunsCells[0].Id != 0)
-            {
                 OnSelectGunsCell(gunsCells[0]);
-                UpdateModfiersEvent?.Invoke(ModifiersCells[0]);
-            }
         }
 
         public void OnDeselectModifiersCell() => modifiersAnswer.SetActive(false);
@@ -124,8 +121,10 @@ namespace SMG
         private void ReFillModifiersCells()
         {
             ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.Ic.MGun.Title;
-            var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>();
-            modifirs.Add(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));// заполнение 1 слота вставленным модификатором                        
+            var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>() 
+            {
+                { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun) }// заполнение 1 слота вставленным модификатором                        
+            };
             var md = modifiersData.GetModifiersData().FindAll(m => m.Title == title);
             md.Sort((x, y) => y.Index.CompareTo(x.Index));
             modifirs.AddRange(md);
@@ -152,7 +151,7 @@ namespace SMG
                 ModifiersCells.RemoveAt(i);
             }
 
-            UpdateModfiersEvent?.Invoke(ModifiersCells[0]);
+            UpdateModfiersEvent?.Invoke(ModifiersCells[0]);            
         }
         internal void UnequipMagOnSelGun()
         {

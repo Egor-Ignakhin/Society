@@ -12,7 +12,7 @@ namespace SMG
         private void OnEnable()
         {
             eventReceiver = main.EventReceiver;
-            eventReceiver.UpdateModfiersEvent += OnChangeModfierCell;
+            eventReceiver.UpdateModfiersEvent += OnChangeModfierCell;            
         }
         private void OnChangeModfierCell(SMGModifiersCell cell)
         {
@@ -29,16 +29,14 @@ namespace SMG
             ResetScroll();
         }
 
-        private void ResetScroll()
-        {            
-            scrollBarController.ResetScroll();
-        }
+        private void ResetScroll() => scrollBarController.ResetScroll();
+
 
         private void OnDisable()
         {
             if (eventReceiver != null)
             {
-                eventReceiver.UpdateModfiersEvent -= OnChangeModfierCell;
+                eventReceiver.UpdateModfiersEvent -= OnChangeModfierCell;                
             }
         }
     }
