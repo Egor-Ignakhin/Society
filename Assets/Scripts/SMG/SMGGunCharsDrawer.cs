@@ -37,7 +37,7 @@ namespace SMG
             maxFlyDistText.text = $"Максимальная дистанция поражения: {maxFlyD}";
             optFlyDistText.text = $"Оптимальная дистанция поражения: {OptFlyD}";
             caliberText.text = $"Калибр: {Caliber}";
-            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Mag)}";
+            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Mag)}";            
         }
         private void OnDisable()
         {

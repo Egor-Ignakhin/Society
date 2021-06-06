@@ -8,8 +8,7 @@ public static class Localization
     private static readonly Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
 
     private static readonly Dictionary<string, string> hintContents = new Dictionary<string, string>();// массив подсказок
-    private static Dictionary<string, string> upKeysDescriptions;// словаоь для подсказок (нажатия на клавишу)
-
+    private static Dictionary<string, string> upKeysDescriptions;// словаоь для подсказок (нажатия на клавишу)    
     internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive)
     {
         return $"{upKeysDescriptions[mainType]}({inputInteractive})";
@@ -114,6 +113,5 @@ public static class Localization
     private static string GetTask(int missionNumber) => taskContents[missionNumber];
 
     public static string GetHint(InteractiveObject interactiveObject) => interactiveObject.Type != null ? hintContents[interactiveObject.Type] : null;
-    public static string GetHint(int id) => id != 0 ? hintContents[((Inventory.ItemStates.ItemsID)id).ToString()] : null;
-
+    public static string GetHint(int id) => id != 0 ? hintContents[((Inventory.ItemStates.ItemsID)id).ToString()] : null;    
 }
