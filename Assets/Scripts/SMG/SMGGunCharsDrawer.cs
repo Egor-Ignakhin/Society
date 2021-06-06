@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 namespace SMG
 {
-    public class SMGGunCharsDrawer : MonoBehaviour
+    /// <summary>
+    /// класс - рисовщик хар. об оружии
+    /// </summary>
+    class SMGGunCharsDrawer : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI titleTextDrawing;
         [SerializeField] private TextMeshProUGUI titleTextPreview;
@@ -21,28 +22,27 @@ namespace SMG
         {
             eventReceiver = FindObjectOfType<SMGMain>().EventReceiver;
 
-            eventReceiver.ChangeSelectedGunEvent+= OnChangeSelectedGun;            
+            eventReceiver.UpdateModfiersEvent += OnChangeSelectedGun;            
         }
-        public void OnChangeSelectedGun(Inventory.InventoryCell cell)
-        {            
+        public void OnChangeSelectedGun(SMGModifiersCell modCell)
+        {
+            var cell = modCell.Ic;
             int id = cell.Id;
             if (!Inventory.ItemStates.ItsGun(id))
                 return;            
-            var chars = GunCharacteristics.GetGunCharacteristics(id);
-            titleTextDrawing.text = chars.title;
-            titleTextPreview.text = chars.title;
-            damageText.text = $"Урон: {chars.damage}";
-            maxFlyDistText.text = $"Максимальная дистанция поражения: {chars.maxFlyD}";
-            optFlyDistText.text = $"Оптимальная дистанция поражения: {chars.OptFlyD}";
-            caliberText.text = $"Калибр: {chars.Caliber}";
-            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Dispenser)}";
+            var (title, damage, maxFlyD, OptFlyD, Caliber) = GunCharacteristics.GetGunCharacteristics(id);
+            titleTextDrawing.text = title;
+            titleTextPreview.text = title;
+            damageText.text = $"Урон: {damage}";
+            maxFlyDistText.text = $"Максимальная дистанция поражения: {maxFlyD}";
+            optFlyDistText.text = $"Оптимальная дистанция поражения: {OptFlyD}";
+            caliberText.text = $"Калибр: {Caliber}";
+            dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Mag)}";            
         }
         private void OnDisable()
         {
-            if (eventReceiver != null)
-            {
-                eventReceiver.ChangeSelectedGunEvent -= OnChangeSelectedGun;                
-            }
+            if (eventReceiver != null)            
+                eventReceiver.UpdateModfiersEvent -= OnChangeSelectedGun;                            
         }
     }
 }

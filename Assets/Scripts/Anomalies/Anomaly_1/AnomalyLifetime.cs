@@ -8,10 +8,11 @@ namespace Anomaly_1
         [SerializeField] private float timeForDestroyInSeconds;
         private AnomalyPulsation anomalyPulsation;
 
-        public void OnInit(PoolableObject instance)
+        public override void SetPrefabAsset(PoolableObject instance)
         {
             anomalyPulsation = GetComponent<AnomalyPulsation>();
             prefabAsset = instance;
+            Preload();
         }
 
         public void MakePulsation(Vector3 spawnPosition)
@@ -26,6 +27,11 @@ namespace Anomaly_1
         {
             yield return new WaitForSeconds(timeForDestroyInSeconds);
             ReturnToPool(instantiatedAnomaly);
+        }
+
+        protected override int PreLoadedCount()
+        {
+            return 1;
         }
     }
 }

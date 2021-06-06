@@ -35,6 +35,10 @@ namespace Anomaly_1
             {
                 if (collider.Equals(playerCollider))
                     playerBasicNeeds.InjurePerson(GetRandomPower(damagePower), GetRandomPower(radiationPower));
+                else if(collider.TryGetComponent<EnemyCollision>(out var ec))
+                {
+                    ec.InjureEnemy(GetRandomPower(damagePower), false);
+                }
             }
         }
         private float GetRandomPower(float defValue)

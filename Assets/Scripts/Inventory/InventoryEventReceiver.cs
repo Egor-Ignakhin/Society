@@ -10,7 +10,7 @@ namespace Inventory
     /// <summary>
     /// класс - обработчик событий инвентаря
     /// </summary>
-    public sealed class InventoryEventReceiver : IGameScreen
+    public sealed class InventoryEventReceiver
     {
         private readonly InventoryContainer inventoryContainer;
         private readonly InventoryInput inventoryInput;
@@ -41,6 +41,12 @@ namespace Inventory
         private GameObject modifiersPage;
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
+
+        internal InventoryCell GetFirstCell()
+        {
+            return inventoryContainer.GetCells()[0];
+        }
+
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
@@ -77,10 +83,11 @@ namespace Inventory
                 m.OnInit();
         }
         internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
-        private void ChangeActiveEvent(bool value) => SetPause(inventoryDrawer.ChangeActiveMainField(value));
+        private void ChangeActiveEvent(bool value) => SetEnable(value);
 
-        private void SetPause(bool enabled)
-        {
+        private void SetEnable(bool v)
+        {            
+            bool enabled = inventoryDrawer.ChangeActiveMainField(v);
             if (!enabled)
             {
                 if (lastItemContainer)
@@ -89,20 +96,19 @@ namespace Inventory
             else
                 RewriteSMGCells();
 
-            fps.SetState(enabled ? State.locked : State.unlocked);
-            ScreensManager.SetScreen(enabled ? this : null);
+            fps.SetState(enabled ? State.locked : State.unlocked);            
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)
         {
             // событие входа курсора в сектор ячейки
             candidateForReplaceCell = cell;
-            candidateForReplaceItem = cell.GetItemTransform();
+            candidateForReplaceItem = cell.MItem;
 
             if (isDragged)
                 return;
             draggedCell = cell;
-            draggedItem = cell.GetItemTransform();
+            draggedItem = cell.MItem;
         }
         public InventoryCell GetSelectedCell() => SelectedCell;
         public InventoryCell GetLastSelectedCell() => lastSelectedCell;
@@ -124,14 +130,12 @@ namespace Inventory
             //начало удержания
             isDragged = true;
             draggedCell = cell;
-            draggedItem = cell.GetItemTransform();
+            draggedItem = cell.MItem;
             draggedItem.SetParent(mainParent);
         }
 
-        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData)
-        {
-            modifiersData = sMGModifiersData;
-        }
+        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData) => modifiersData = sMGModifiersData;
+
 
         public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
         {
@@ -227,9 +231,9 @@ namespace Inventory
                 if ((emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty)) && !isScroll)// если нашлись пустые слоты
                 {
                     draggedCell = ic;
-                    draggedItem = draggedCell.GetItemTransform();
+                    draggedItem = draggedCell.MItem;
                     candidateForReplaceCell = emptyCell;
-                    candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+                    candidateForReplaceItem = candidateForReplaceCell.MItem;
 
                     EndDrag();
                     return;
@@ -346,9 +350,9 @@ namespace Inventory
                     break;
 
                 draggedCell = listPlace;
-                draggedItem = draggedCell.GetItemTransform();
+                draggedItem = draggedCell.MItem;
                 candidateForReplaceCell = place;
-                candidateForReplaceItem = candidateForReplaceCell.GetItemTransform();
+                candidateForReplaceItem = candidateForReplaceCell.MItem;
 
                 EndDrag();
             }
@@ -364,7 +368,7 @@ namespace Inventory
                 if (content != null)
                     child.GetComponent<InventoryCell>().SetItem(content[i].id, content[i].count, content[i].gun);
             }
-            inventoryInput.EnableInventory();
+            inventoryInput.SetEnable(true);
             lastItemContainer = it;
 
             GridLayoutGroup gr = busyCellsContainer.GetComponent<GridLayoutGroup>();
@@ -378,7 +382,6 @@ namespace Inventory
         {
             var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
-            //var foundedCell = cells.Find(c => c.Id == (int)bulletId/* && c.Count == minCount*/);
 
             if (foundedCell)
             {
@@ -449,14 +452,10 @@ namespace Inventory
             takeAllButton.onClick.RemoveListener(TakeAllItemsInContainerReceiver);
             modPageButton.onClick.RemoveListener(ModifiersPageChangeActive);
         }
-        public void ModifiersPageChangeActive()
-        {
-            modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
-        }
-        private void OnInputFastMoveCell(bool v)
-        {
-            canFastMoveSelCell = v;
-        }
+        public void ModifiersPageChangeActive() => modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
+
+        private void OnInputFastMoveCell(bool v) => canFastMoveSelCell = v;        
+
         public class InventoryMassCalculator
         {
             public decimal Weight { get; private set; } = 0;

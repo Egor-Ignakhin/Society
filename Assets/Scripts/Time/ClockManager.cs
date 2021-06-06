@@ -8,12 +8,14 @@ public sealed class ClockManager : MonoBehaviour
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Transform[] pointers = new Transform[2];
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForMin;
     [ShowIf(nameof(isElectronicClock), false)] [SerializeField] private Vector3 additionalRotateForHours;
+    private WorldTime worldTime;
     private void Start()
     {
+        worldTime = FindObjectOfType<WorldTime>();
         if (isElectronicClock)
-            WorldTime.Instance.ChangeTimeEvent += RenderOnText;
+            worldTime.ChangeTimeEvent += RenderOnText;
         else
-            WorldTime.Instance.ChangeTimeEventInNumbers += RenderOnPointers;
+            worldTime.ChangeTimeEventInNumbers += RenderOnPointers;
     }
 
     private void RenderOnText(string value)
@@ -31,11 +33,11 @@ public sealed class ClockManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        if (WorldTime.Instance == null)
+        if (!worldTime)
             return;
         if (isElectronicClock)
-            WorldTime.Instance.ChangeTimeEvent -= RenderOnText;
+            worldTime.ChangeTimeEvent -= RenderOnText;
         else
-            WorldTime.Instance.ChangeTimeEventInNumbers -= RenderOnPointers;
+            worldTime.ChangeTimeEventInNumbers -= RenderOnPointers;
     }
 }

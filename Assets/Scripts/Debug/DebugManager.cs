@@ -32,7 +32,7 @@ namespace Debugger
             {
                 isHidden = !isHidden;
                 isMoving = true;
-                FindObjectOfType<InventoryInput>().DisableInventory();
+                ScreensManager.SetScreen(isHidden ? null : this);
             }
         }
         /// <summary>
@@ -60,9 +60,7 @@ namespace Debugger
         /// анимация движения
         /// </summary>
         private void Move()
-        {
-            ScreensManager.SetScreen(isHidden ? null : this);
-
+        {            
             Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
 
             if (background.localPosition != direction)// если анимация не кончилась
@@ -75,6 +73,12 @@ namespace Debugger
             background.gameObject.SetActive(!isHidden);
             isMoving = false;
             activeDebugger.Activate();
+        }
+
+        public void Hide()
+        {
+            isHidden = true;
+            isMoving = true;
         }
     }
 }

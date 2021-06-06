@@ -6,11 +6,13 @@ using UnityEngine.AI;
 /// <summary>
 /// наследники класса - враги, их можно убивать. 
 /// </summary>
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour, IMovableController
 {
     [SerializeField] protected float fov = 90;// угол обзора монстра
     [SerializeField] protected float seeDistance;// дальность обзора
     [SerializeField] protected float health;// здоровье монстра
+    [SerializeField] private float power;
+    [SerializeField] private float attackDistance;
     public UniqueVariables UVariables { get; private set; }
     public class UniqueVariables
     {
@@ -43,13 +45,6 @@ public abstract class Enemy : MonoBehaviour
             this.Health = Shealth;
         }
     }
-
-    public class TypesEnemies
-    {
-        public const string Bred = "Bred";
-        public const string BloodDog = "BloodDog";
-    }
-    protected abstract string Type();// тип монстра
     [SerializeField] protected Transform defenderPoint;//защитная точка
     protected Transform target;// текущая цель
     protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
@@ -61,17 +56,27 @@ public abstract class Enemy : MonoBehaviour
 
     protected BasicNeeds enemy;// текущий противник
 
-    public delegate void EnemyEvent();
-    public event EnemyEvent DeathEvent;
+    public event System.Action DeathEvent;
 
     private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока    
 
-    protected void Init(float distanceForAttack, float powerInjure, float seeDistance, float health)
+    public delegate void Action(int physMatIndex, StepSoundData.TypeOfMovement type);//TODO: рейкаст
+    public event Action EnemyStepEvent;
+
+    private StepSoundData stepSoundData;
+    private int CurrentPhysicMaterialIndex;
+    private Vector3 oldPos = Vector3.zero;
+    private StepEnemy stepEnemy;
+    private void Start()
+    {
+        OnInit(attackDistance, power, seeDistance, health);
+    }
+    private void OnInit(float distanceForAttack, float powerInjure, float seeDistance, float health)
     {
         UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
-
+        stepSoundData = FindObjectOfType<StepSoundData>();        
         mAgent.stoppingDistance = UVariables.DistanceForAttack;
         UVariables.ChangeHealthEvent += Death;
 
@@ -80,11 +85,11 @@ public abstract class Enemy : MonoBehaviour
             var dp = new GameObject($"DefenderPointFor{name}").transform;
             dp.position = transform.position;
             defenderPoint = dp;
-        }
-
+        }        
         target = defenderPoint;
         lastTargetPos = target.position;
         MonstersData.AddEnemy(this);
+        stepEnemy = new StepEnemy(this, stepSoundData);        
     }
     protected class AnimationsContainer
     {
@@ -96,6 +101,22 @@ public abstract class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         RayCastToEnemy();
+        SetPhysMaterial();
+        CallStepEvent();
+    }
+    private void CallStepEvent()
+    {
+        Vector2 to = new Vector2(transform.position.x, transform.position.z);
+        Vector2 from = new Vector2(oldPos.x, oldPos.z);
+        StepSoundData.TypeOfMovement type = StepSoundData.TypeOfMovement.None;
+        if (Mathf.Abs(Vector2.Distance(to, from)) > Time.fixedDeltaTime * 2)
+        {
+            if (enemy) type = StepSoundData.TypeOfMovement.Run;
+            else type = StepSoundData.TypeOfMovement.Walk;
+        }
+
+        EnemyStepEvent?.Invoke(CurrentPhysicMaterialIndex, type);
+        oldPos = transform.position;
     }
     /// <summary>
     /// тут вычисляется путь до цели (по корнерам карты)
@@ -164,9 +185,10 @@ public abstract class Enemy : MonoBehaviour
     /// функция получения урона монстром
     /// </summary>
     /// <param name="value"></param>
-    public virtual void InjureEnemy(float value)
+    public virtual void InjureEnemy(float value, bool isPlayerDamage = true)
     {
-        SetEnemy(BasicNeeds.Instance, true);
+        if (isPlayerDamage)
+            SetEnemy(BasicNeeds.Instance, true);
         UVariables.Health -= value;
     }
     /// <summary>
@@ -210,7 +232,7 @@ public abstract class Enemy : MonoBehaviour
         {
             lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
         }
-        else if (mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
+        else if (mAgent.isOnNavMesh && mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
         {
             if (WaitTarget < 0 || !possibleMove)
             {
@@ -263,5 +285,38 @@ public abstract class Enemy : MonoBehaviour
             mAnim.SetBool(state, value);
     }
 
-    protected void OnDestroy() => UVariables.ChangeHealthEvent -= Death;
+    private void SetPhysMaterial()
+    {
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
+            CurrentPhysicMaterialIndex = stepSoundData.GetIndexFromRayCast(hit, transform.position);
+        else
+            CurrentPhysicMaterialIndex = 0;
+    }
+
+    protected void OnDestroy()
+    {
+        UVariables.ChangeHealthEvent -= Death;
+        stepEnemy.OnDestroy();
+    }
+
+    public class StepEnemy : StepPlayer
+    {
+        private Enemy enemy;
+        public StepEnemy(IMovableController e, StepSoundData ssd)
+        {            
+            stepSoundData = ssd;
+
+            enemy = (Enemy)e;
+            enemy.EnemyStepEvent += OnStep;
+
+            stepPlayerSource = enemy.gameObject.AddComponent<AudioSource>();
+            stepPlayerSource.priority = 129;
+            stepPlayerSource.spatialBlend = 1;
+            stepPlayerSource.pitch = Random.Range(0.95f, 1.05f);
+        }
+        public void OnDestroy()
+        {
+            enemy.EnemyStepEvent -= OnStep;
+        }
+    }
 }

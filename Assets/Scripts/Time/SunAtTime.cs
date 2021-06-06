@@ -10,7 +10,7 @@ namespace Weather
     {
         private void Start()
         {
-            WorldTime.Instance.ChangeTimeEventInNumbers += Rotate;
+            FindObjectOfType<WorldTime>().ChangeTimeEventInNumbers += Rotate;
         }
 
         private void Rotate(int sec, int min, int hours)
@@ -19,8 +19,9 @@ namespace Weather
         }
         private void OnDisable()
         {
-            if (WorldTime.Instance != null)
-                WorldTime.Instance.ChangeTimeEventInNumbers -= Rotate;
+            var wt = FindObjectOfType<WorldTime>();
+            if (wt)
+                wt.ChangeTimeEventInNumbers -= Rotate;
         }
     }
 }

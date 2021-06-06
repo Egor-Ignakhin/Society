@@ -3,11 +3,10 @@ namespace Shoots
 {/// <summary>
 /// патрон для оружия
 /// </summary>
-    public class Bullet : MonoBehaviour
+    public class Bullet : PoolableObject
     {
         private Vector3 target;//точка назначения
         private EnemyCollision enemy;// возможный враг
-        private bool isFinished;// долетел ли снаряд
         private bool haveTarget;// имеет ли патрон цель(возможен выстрел в воздух)
         private GameObject impactEffect;// эффекта столкновения
 
@@ -18,20 +17,23 @@ namespace Shoots
         BulletValues mBv;
 
         public Inventory.ItemStates.ItemsID Id;
+        private AudioClip reflectSound;
+        private AudioSource reflectSource;
 
-        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e)
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource)
         {
             mBv = bv;
             target = t.point;
             enemy = e;
             haveTarget = true;
             impactEffect = impact;
-
-            var parent = new GameObject("parentForImpact").transform;
-            parent.SetParent(t.transform);
-            impactEffect = Instantiate(impactEffect, parent);
+            //var parent = new GameObject("parentForImpact").transform;
+            //parent.SetParent(t.transform);
+            impactEffect = Instantiate(impactEffect);
             impactEffect.transform.forward = t.normal;
             impactEffect.SetActive(false);
+            reflectSound = rs;
+            reflectSource = rsource;
         }
         public void Init(BulletValues bv, Vector3 t)
         {
@@ -41,9 +43,6 @@ namespace Shoots
 
         private void Update()
         {
-            if (this.isFinished)
-                return;
-
             if ((transform.position = Vector3.MoveTowards(transform.position, target, mBv.Speed * Time.deltaTime)) == target)
                 Boom();
         }
@@ -68,19 +67,15 @@ namespace Shoots
                     target = hit.point;
                     impactEffect.transform.forward = hit.normal;
 
-                    var gg = new GameObject("Source");
-                    gg.AddComponent<AudioSource>().PlayOneShot(Resources.Load<AudioClip>("Guns\\BulletReflect"));
-                    gg.transform.position = hit.point;
+                    reflectSource.PlayOneShot(reflectSound);
+                    reflectSource.transform.position = hit.point;
                     return;
                 }
                 
                 impactEffect.transform.SetPositionAndRotation(target, Quaternion.identity);
                 impactEffect.SetActive(true);
             }
-
-            isFinished = true;
-
-            Destroy(gameObject, 0.1f);
+            mPool.ReturnToPool(this);
         }
     }
 }

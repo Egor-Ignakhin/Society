@@ -84,7 +84,7 @@ namespace Debugger
             }
             try
             {
-                Times.WorldTime.Instance.CurrentDate.ForceSetTime(command);
+                Times.WorldTime.CurrentDate.ForceSetTime(command);
             }
             catch { }
         }

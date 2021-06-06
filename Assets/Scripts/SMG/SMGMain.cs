@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SMG
 {
@@ -7,19 +6,16 @@ namespace SMG
     {
         [SerializeField] private LayerMask myLayerMask;
         [SerializeField] private GameObject renderObjects;
-        [SerializeField] private GameObject GunMaps;
+        [SerializeField] private GameObject modificationMode;
 
         public bool IsActive { get; private set; }
         [SerializeField]
         private SMGCamera MSMG;
         private Camera MSMGCamera;
         private Canvas mCanvas;
-
-        [SerializeField]
-        private Transform ModifiersCellsData;
         [SerializeField]
         private Transform GunsCellsData;
-        public SMGEventReceiver EventReceiver { get; private set; }       
+        public SMGEventReceiver EventReceiver { get; private set; }
 
         [SerializeField]
         private GameObject modifiersAnswer;
@@ -36,58 +32,46 @@ namespace SMG
         private Color defColor;
 
         [SerializeField]
-        private SMGElementsSupport elementsSupport;
+        private DynamicalElementsAnswer DEA;
+        private EffectsManager effectsManager;
+        [SerializeField] private Transform additionCellsForModifiers;
+        [SerializeField] private Transform activeModifiersContainer;
         private void Awake()
         {
-            EventReceiver = new SMGEventReceiver(ModifiersCellsData, GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), MSMG, FindObjectOfType<SMGModifiersData>(), modifiersCellDescription);
-        }
-        private void Start()
-        {
-            SetEnableMaps(false);
+            effectsManager = FindObjectOfType<EffectsManager>();
+            EventReceiver = new SMGEventReceiver(GunsCellsData, modifiersAnswer,
+                FindObjectOfType<Inventory.InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer, DEA);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
+            SetEnable(false);
+            ScreensManager.OnInit();
         }
-        public void SetEnableMaps(bool v)
+        public void SetEnable(bool v)
         {
-            GunMaps.SetActive(IsActive = v);            
-            if (IsActive)
-            {             
-                ScreensManager.SetScreen(this);
-                EventReceiver.OnEnable();
-                SetEnableCanvasesAndCameras();
-                MSMG.gameObject.SetActive(IsActive);
-            }
-            else
-            {                
-                ScreensManager.SetScreen(null);
-                MSMG.gameObject.SetActive(IsActive);
-                SetEnableCanvasesAndCameras();
-            }
+            IsActive = v;
+            MSMG.AddOrRemoveEvents(EventReceiver, v);
+            modificationMode.SetActive(IsActive);
+            SetEnableCanvasesAndCameras();           
+            EventReceiver.SetEnable(IsActive);
+            ScreensManager.SetScreen(IsActive ? this : null);
         }
         public void SetEnableSMGCam(bool v)
         {
             renderObjects.SetActive(v);
-            GunMaps.SetActive(!v);
-            if (v)
-                MSMG.Enable();
-            else
-                MSMG.Disable();
+            modificationMode.SetActive(!v);
+            MSMG.SetEnable(v);
         }
         public void SetEnableCanvasesAndCameras()
         {
-            if (!MSMGCamera)
-                return;
-
             var canvases = FindObjectsOfType<Canvas>();
             foreach (var c in canvases)
                 c.enabled = !IsActive;
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
                 c.enabled = !IsActive;
-            EffectsManager.Instance.SetEnableAllEffects(!IsActive);            
+            effectsManager.SetEnableAllEffects(!IsActive);
 
-            MSMG.gameObject.SetActive(IsActive);            
+            MSMG.gameObject.SetActive(IsActive);
 
             mCanvas.enabled = true;
         }
@@ -95,10 +79,8 @@ namespace SMG
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
-                {
-                    elementsSupport.Show();
-                }
+                if (lastSelectedObj && !DEA.IsActive)
+                    DEA.Show(UnequipGunElement, DeselectGunElement, "Снять модификатор?");
             }
             if (!MSMG.IsActive)
                 return;
@@ -107,11 +89,7 @@ namespace SMG
         private MeshRenderer lastSelectedObj;
         private void FixedUpdate()
         {
-            if (MSMG.IsActive)
-            {
-                return;
-            }
-            if (!IsActive)
+            if (!IsActive || MSMG.IsActive)
                 return;
             Ray ray = MSMGCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))
@@ -126,10 +104,8 @@ namespace SMG
             }
             else
             {
-                if (lastSelectedObj && !elementsSupport.IsActive)
-                {
+                if (lastSelectedObj && !DEA.IsActive)
                     DeselectGunElement();
-                }
             }
         }
         public void DeselectGunElement()
@@ -138,15 +114,19 @@ namespace SMG
             lastSelectedObj = null;
         }
         internal void UnequipGunElement()
-        {
-            GunModifiersActiveManager gmam = lastSelectedObj.transform.GetComponentInParent<GunModifiersActiveManager>();
-            gmam.SetMag(ModifierCharacteristics.ModifierIndex.None);
+        {          
             EventReceiver.UnequipMagOnSelGun();
             DeselectGunElement();
-        }        
-        private void OnDisable()
+        }
+
+        public void Hide()
         {
-            EventReceiver.OnDisable();
+            if (MSMG.IsActive)
+            {
+                SetEnableSMGCam(false);
+                return;
+            }
+            SetEnable(false);
         }
     }
 }

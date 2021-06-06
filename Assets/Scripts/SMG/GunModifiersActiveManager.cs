@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 namespace SMG
 {/// <summary>
 /// класс отвечающий за отображение установленных модификаций
@@ -18,6 +19,6 @@ namespace SMG
         {
             magIndex = nMagix;
             UpdateModifiers();
-        }
+        }        
     }
 }

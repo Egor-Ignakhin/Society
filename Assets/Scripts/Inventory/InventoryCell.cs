@@ -9,23 +9,25 @@ namespace Inventory
 /// класс - слота в инвентаре
 /// </summary>
     public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
-        IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler
+        IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler, ICellable
     {
-        [SerializeField] private Image background;
-        [SerializeField] private Image mImage;// картинка
-
-        [SerializeField] private RectTransform mItem;// трансформация предмета
-        [SerializeField] private TextMeshProUGUI mText;// счётчик предметов
+        private Image background;// фон картинки
+        public Image MImage { get; private set; }// картинка
+        public RectTransform MItem { get; private set; }// трансформация предмета
+        private TextMeshProUGUI mText;// счётчик предметов
         private Item MItemContainer { get; set; } = new Item();
         private AdditionalSettins additionalSettins;
         private InventoryEventReceiver eventReceiver;
         private InventoryContainer inventoryContainer;
-        public bool CellIsInventorySon { get; private set; } = false;
+        public bool CellIsInventorySon { get; private set; } = false;// слот инвентарный
+        #region fast Access to mContainer
         public int Id => MItemContainer.Id;
         public int Count => MItemContainer.Count;
         public bool IsEmpty => MItemContainer.IsEmpty;
         public bool IsFilled => MItemContainer.IsFilled;
-        public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();
+        #endregion
+        public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();// контейнер для возможного оружия
+        private RectTransform mRt;
         public sealed class AdditionalSettins
         {
             public readonly Vector3 DefaultScale; // обычный размер
@@ -43,11 +45,16 @@ namespace Inventory
 
         private void Awake()
         {
-            if (additionalSettins == null)
+            if (additionalSettins is null)
                 Init(null);
         }
         public void Init(InventoryContainer ic)
         {
+            background = GetComponent<Image>();
+            MImage = transform.GetChild(0).GetComponent<Image>();
+            MItem = MImage.GetComponent<RectTransform>();
+            MItem.GetChild(0).TryGetComponent(out mText);
+            mRt = GetComponent<RectTransform>();
             additionalSettins = new AdditionalSettins(background);
             if (!ic)// инициализация проходящая для слотов контейнеров
             {
@@ -77,7 +84,7 @@ namespace Inventory
         {
             int outOfRange = MItemContainer.SetItem(id, count + Count, isMerge);
             ReloadGun(gun);
-            ChangeSprite();            
+            ChangeSprite();
 
             return outOfRange;
         }
@@ -89,21 +96,19 @@ namespace Inventory
         {
             int outRangeCount = MItemContainer.SetItem(copyPaste.Id, copyPaste.Count, isMerge);//запись в свободную ячейку кол-во и возвращение излишка
 
-            mItem = copyPaste.MItem;// присвоение новых транс-ов
-            mImage = copyPaste.MImage;// и новых image                        
+            MItem = copyPaste.MItem;// присвоение новых транс-ов
+            MImage = copyPaste.MImage;// и новых image                        
             mText = copyPaste.MText;
-
+            MGun = copyPaste.PossibleGun;
 
             ChangeSprite();
-            ReloadGun(copyPaste.posGun);
+            ReloadGun(copyPaste.PossibleGun);
             return outRangeCount;
         }
         private void UpdateText()
         {
-            if (!ItemStates.ItsGun(Id))
-                mText.SetText(Count > 1 ? Count.ToString() : string.Empty);// если кол-во > 1 то пишется число предметов           
-            else
-                mText.SetText(MGun.AmmoCount.ToString());
+            // если кол-во > 1 то пишется число предметов                       
+            mText.SetText(Count > 1 ? Count.ToString() : (ItemStates.ItsGun(Id) ? MGun.AmmoCount.ToString() : string.Empty));
         }
 
         public void Clear()
@@ -117,8 +122,8 @@ namespace Inventory
         /// <param name="type"></param>
         public void ChangeSprite()
         {
-            mImage.sprite = InventorySpriteData.GetSprite(Id);
-            mImage.color = IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
+            MImage.sprite = InventorySpriteData.GetSprite(Id);
+            MImage.color = IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст
             if (IsEmpty)
@@ -138,7 +143,9 @@ namespace Inventory
         public void OnPointerEnter(PointerEventData eventData)
         {
             eventReceiver.InsideCursorCell(this);
-            StartCoroutine(nameof(BackgroundAnimate));
+            inventoryContainer.CellAnimationEvent += BackgroundAnimate;
+            wasAnimated = false;
+            inventoryContainer.SpendOnCell();
         }
 
         /// <summary>
@@ -162,7 +169,7 @@ namespace Inventory
                 return;
 
             eventReceiver.BeginDrag(this);
-            mImage.raycastTarget = false;//отключение чувствительности предмета            
+            MImage.raycastTarget = false;//отключение чувствительности предмета            
         }
 
         /// <summary>
@@ -193,7 +200,7 @@ namespace Inventory
                 return;
 
             eventReceiver.EndDrag();
-            mImage.raycastTarget = true;//возврат чувствительности предмету
+            MImage.raycastTarget = true;//возврат чувствительности предмету
         }
 
         /// <summary>
@@ -206,23 +213,17 @@ namespace Inventory
                 return;
             eventReceiver.FocusCell(this);
         }
-        private IEnumerator BackgroundAnimate()
-        {
-            bool wasAnimated = false;
-            inventoryContainer.SpendOnCell();
-            while (true)
-            {
-                var rt = background.GetComponent<RectTransform>();
-                Vector3 nextState = wasAnimated ? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
-                rt.localScale = Vector3.MoveTowards(rt.localScale, nextState, 0.5f);
-                if (rt.localScale == additionalSettins.AnimatedScale)
-                {
-                    wasAnimated = true;
-                }
-                if (wasAnimated && rt.localScale == additionalSettins.DefaultScale)
-                    break;
-                yield return null;
-            }
+
+        bool wasAnimated = false;
+        private void BackgroundAnimate()
+        {                                
+            Vector3 nextState = wasAnimated ? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
+            mRt.localScale = Vector3.MoveTowards(mRt.localScale, nextState, 0.5f);
+            if (mRt.localScale == additionalSettins.AnimatedScale)            
+                wasAnimated = true;
+            
+            if (wasAnimated && mRt.localScale == additionalSettins.DefaultScale)
+                inventoryContainer.CellAnimationEvent -= BackgroundAnimate;
         }
 
 
@@ -236,9 +237,6 @@ namespace Inventory
             MItemContainer.DelItem(outOfRange);
             ChangeSprite();
         }
-
-        public RectTransform GetItemTransform() => mItem;
-        public Image GetImage() => mImage;
         public void SetFocus(bool v) => background.color = v ? additionalSettins.FocusedColor : additionalSettins.UnfocusedColor;
 
 
@@ -281,16 +279,16 @@ namespace Inventory
             public Image MImage { get; set; }
             public int Count { get; set; }
             public int Id { get; set; }
-            public SMGInventoryCellGun posGun { get; set; }
+            public SMGInventoryCellGun PossibleGun { get; set; }
 
             public CopyPasteCell(InventoryCell c)
             {
-                MItem = c.GetItemTransform();
-                MImage = c.GetImage();
+                MItem = c.MItem;
+                MImage = c.MImage;
                 Count = c.Count;
                 MText = c.mText;
                 Id = c.Id;
-                posGun = c.MGun;
+                PossibleGun = c.MGun;
             }
             public bool Equals(CopyPasteCell obj) => obj.Id == Id && obj.Count < ItemStates.GetMaxCount(Id) && Count < ItemStates.GetMaxCount(Id);
 

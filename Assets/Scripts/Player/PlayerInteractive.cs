@@ -4,20 +4,20 @@ namespace PlayerClasses
 {
     public sealed class PlayerInteractive : MonoBehaviour
     {
-        private void Start()
-        {
-            mainCamera = Camera.main;
-            playerStatements = GetComponent<PlayerStatements>();
-        }
-
         Camera mainCamera;
         private float interctionDistance = 2;
         private const float sphereCasterRadius = 0.1f;
         [SerializeField] LayerMask interactionLayer;
         public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private PlayerStatements playerStatements;
-        private Vector3 rayStartPos;
         private bool inputedButton = false;
+        private DescriptionDrawer descriptionDrawer;
+        private void Start()
+        {
+            mainCamera = Camera.main;
+            playerStatements = GetComponent<PlayerStatements>();
+            descriptionDrawer = DescriptionDrawer.Instance;
+        }
 
         private void Update()
         {
@@ -28,12 +28,14 @@ namespace PlayerClasses
         }
         private void FixedUpdate() => RayThrow();
 
+        string desc = string.Empty;
+        string mainDesc = string.Empty;
         private void RayThrow()
         {
             Ray ray = mainCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-            string desc = string.Empty;
-            string mainDesc = string.Empty;
             int count = 1;
+            desc = string.Empty;
+            mainDesc = string.Empty;
             if (Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer))
             {
                 var components = hit.transform.GetComponents<InteractiveObject>();
@@ -59,7 +61,7 @@ namespace PlayerClasses
                     }
                 }
             }
-            DescriptionDrawer.Instance.SetHint(desc, mainDesc, count);
+            descriptionDrawer.SetHint(desc, mainDesc, count);
         }
         /*   void OnDrawGizmos()
            {

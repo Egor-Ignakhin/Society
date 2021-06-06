@@ -9,28 +9,30 @@ namespace Maps
         [SerializeField] private float minScale = 0.85f;
         [SerializeField] private float maxScale = 1.15f;
         private float currentMultiply = 1;
-        public Vector3 defaultScale { get; private set; }
+        public Vector3 DefaultScale { get; private set; }
 
         [SerializeField] [Range(0, 5)] private float Speed = 0.25f;
 
         private Transform mTransformIn3d;
+        private MapManager mapManager;
         private void Awake()
         {
             if (itsGameObject)
                 mTransformIn3d = transform;
         }
         private void Start()
-        {
+        {            
+            mapManager = FindObjectOfType<MapDrawer>().MMapManager;
             AddPointToMap();
         }
         public void AddPointToMap()
         {
             if (!itsGameObject)
             {
-                defaultScale = transform.localScale;
+                DefaultScale = transform.localScale;
                 return;
             }
-            MapManager.Add3DObject(transform);
+            mapManager.Add3DObject(transform);
         }
         private void FixedUpdate()
         {
@@ -40,9 +42,9 @@ namespace Maps
         {
             if (itsGameObject)
                 return;
-            if (transform.localScale == defaultScale * currentMultiply)
+            if (transform.localScale == DefaultScale * currentMultiply)
                 SetMultiplyAnimation();
-            Vector3 nextPos = (defaultScale * currentMultiply);
+            Vector3 nextPos = (DefaultScale * currentMultiply);
             transform.localScale = Vector3.MoveTowards(transform.localScale, nextPos, Time.fixedDeltaTime * (maxScale / minScale) * Speed);
         }
         private void SetMultiplyAnimation()
@@ -65,7 +67,7 @@ namespace Maps
         {
             if (itsGameObject)
                 return;
-            MapManager.Remove3DObject(mTransformIn3d, this);
+            mapManager.Remove3DObject(mTransformIn3d, this);
         }
     }
 }

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using UnityEngine;
 namespace Times
 {
-    public sealed class WorldTime : Singleton<WorldTime>
+    public sealed class WorldTime : MonoBehaviour
     {
         private static int Time;// добавленное время за такт
         private int additionalTime = 1;// множитель времени
-        private Date currentDate;// текущая дата
-        public Date CurrentDate
+        private static Date currentDate;// текущая дата
+        public static Date CurrentDate
         {
             get
             {
@@ -77,7 +77,7 @@ namespace Times
         /// <summary>
         /// загрузка даты
         /// </summary>
-        private void LoadDate()
+        private static void LoadDate()
         {
             try
             {

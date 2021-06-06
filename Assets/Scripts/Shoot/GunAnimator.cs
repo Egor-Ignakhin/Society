@@ -8,7 +8,7 @@ namespace Shoots
     /// <summary>
     /// аниматор оружия
     /// </summary>
-    class GunAnimator : Singleton<GunAnimator>
+    class GunAnimator : MonoBehaviour
     {
         private List<GameObject> gunsContainers = new List<GameObject>();
         private List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
@@ -42,7 +42,7 @@ namespace Shoots
         private SMG.SMGEventReceiver SMGEventReceiver;
         private SMG.SMGMain SMGMain;
 
-        private void OnEnable()
+        private void Start()
         {
             for (int i = 0; i < transform.childCount; i++)
                 gunsContainers.Add(transform.GetChild(i).gameObject);
@@ -81,7 +81,7 @@ namespace Shoots
             {
                 g.MGun.OnInit(interactableLayers, this);
             }
-            inventoryContainer = FindObjectOfType<InventoryContainer>();            
+            inventoryContainer = FindObjectOfType<InventoryContainer>();
             InventoryEventReceiver = inventoryContainer.EventReceiver;
             SMGMain = FindObjectOfType<SMG.SMGMain>();
             SMGEventReceiver = SMGMain.EventReceiver;
@@ -125,7 +125,7 @@ namespace Shoots
 
             else
                 fps.SetZSlant(0);
-        }        
+        }
 
         public void ChangeGun(int id)
         {
@@ -161,14 +161,17 @@ namespace Shoots
             var sc = InventoryEventReceiver.GetSelectedCell();
             guns[currentActiveGunI].MGun.ChangeAmmoCountEvent += sc.SetAmmoCount;
             SMGEventReceiver.UpdateModfiersEvent += UpdateGunModifiers;
-            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Dispenser);
+            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag);
         }
 
-        public void UpdateGunModifiers(InventoryCell sc)
+        public void UpdateGunModifiers(SMG.SMGModifiersCell _)
         {
-            inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), sc.MGun.AmmoCount, null);
-            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Dispenser);
-            sc.SetAmmoCount(0);
+            var ic = InventoryEventReceiver.GetSelectedCell();
+            if (!ic)
+                return;
+            inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), ic.MGun.AmmoCount, null);
+            guns[currentActiveGunI].MGun.UpdateModifiers(ic.MGun.Mag);
+            ic.SetAmmoCount(0);
         }
         private void DisableGuns()
         {

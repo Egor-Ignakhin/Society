@@ -717,12 +717,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fov: 180
-  seeDistance: 40
-  health: 300
-  defenderPoint: {fileID: 0}
+  seeDistance: 30
+  health: 500
+  power: 10
+  attackDistance: 2
+  defenderPoint: {fileID: 6453053150532000926}
   layerMasks:
     serializedVersion: 2
-    m_Bits: 1847
+    m_Bits: 1793
   eyes:
   - {fileID: 1937069006}
 --- !u!1 &6117951661289392815

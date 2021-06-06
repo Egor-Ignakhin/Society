@@ -50,19 +50,27 @@ namespace Shoots
         private GunAnimator gunAnimator;
         private EffectsManager effectsManager;
         private SMG.GunModifiersActiveManager gunModifiersActiveManager;
+        private UsedUpBulletsDropper ubp;
+        private ShootedBulletPool sbp;
+        private AudioClip reflectSound;
+        private AudioSource reflectSource;
         private void Awake()
         {
             gunModifiersActiveManager = GetComponent<SMG.GunModifiersActiveManager>();
+            reflectSound = Resources.Load<AudioClip>("Guns\\BulletReflect");
+            reflectSource = new GameObject($"ReflectSource_{GetType()}").AddComponent<AudioSource>();
         }
         private void Start()
         {
+            effectsManager = FindObjectOfType<EffectsManager>();
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
-            effectsManager = EffectsManager.Instance;
 
             dispenser = new Dispenser(inventoryEv);
             LoadAssets();
+            (ubp = gameObject.AddComponent<UsedUpBulletsDropper>()).OnInit(upBullet, droppingPlace);
+            (sbp = gameObject.AddComponent<ShootedBulletPool>()).OnInit(bullet, spawnBulletPlace);
         }
         internal void OnInit(LayerMask interactableLayers, GunAnimator gAnim)
         {
@@ -128,10 +136,12 @@ namespace Shoots
             if (dispenser.IsFull)
                 IsReload = false;
 
-            effectsManager.SetActiveBlur(false);
+            effectsManager.SetRechargeable(IsReload);
+
             if (!IsReload)
                 return;
-            effectsManager.SetActiveBlur(true);
+
+
             int remainingBullets = inventoryEv.Containts(bulletId);
 
             if (remainingBullets <= 0)
@@ -197,16 +207,79 @@ namespace Shoots
 
         public void PlayLastReloadSound() => gunAnimator.PlayArmorySound(lastReloadClip);
 
-
-
         public void SetPossibleShooting(bool isAnimFinish) => possibleShoot = isAnimFinish;
 
-        protected abstract void DropUsedBullet();
+        protected void DropUsedBullet()
+        {
+            ubp.Drop();
+        }
+        public class ShootedBulletPool : ObjectPool
+        {
+            private Transform spawnBulletPlace;
+            public void OnInit(PoolableObject po, Transform sbp)
+            {
+                spawnBulletPlace = sbp;
+                SetPrefabAsset(po);
+                Preload();
+            }
+            public override void SetPrefabAsset(PoolableObject po)
+            {
+                prefabAsset = po;
+            }
+            public Bullet CreateBullet()
+            {
+                var bullet = GetObjectFromPool();
+                bullet.transform.SetPositionAndRotation(spawnBulletPlace.position, spawnBulletPlace.rotation);
+                return bullet as Bullet;
+            }
+
+            protected override int PreLoadedCount()
+            {
+                return 5;
+            }
+            protected override bool UnityScale()
+            {
+                return false;
+            }
+        }
+        public class UsedUpBulletsDropper : ObjectPool
+        {
+            private Transform droppingPlace;
+            public void OnInit(UsedUpBullet up, Transform dp)
+            {
+                droppingPlace = dp;
+                SetPrefabAsset(up);
+                Preload();
+            }
+            public void Drop()
+            {
+                var bullet = GetObjectFromPool();
+                bullet.transform.SetPositionAndRotation(droppingPlace.position, droppingPlace.rotation);
+                if (bullet.TryGetComponent<Rigidbody>(out var rb))
+                {
+                    rb.AddForce(droppingPlace.right * 4, ForceMode.Impulse);
+                    rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
+                }
+            }
+            public override void SetPrefabAsset(PoolableObject instance)
+            {
+                prefabAsset = instance;
+            }
+            protected override bool UnityScale()
+            {
+                return false;
+            }
+
+            protected override int PreLoadedCount()
+            {
+                return 30;
+            }
+        }
         protected abstract void PlayFlashEffect();
         protected void CreateBullet()
         {
-            Ray ray = GunAnimator.Instance.IsAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
-            Bullet newBullet = Instantiate(bullet, spawnBulletPlace.position, spawnBulletPlace.rotation);
+            Ray ray = gunAnimator.IsAiming ? Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)) : new Ray(spawnBulletPlace.position, spawnBulletPlace.forward);
+            Bullet newBullet = sbp.CreateBullet();
             BulletValues bv = new BulletValues(0, maxDistance, caliber, bulletSpeed, 180, Vector3.zero, layerMask);
             playerSoundsCalculator.AddNoise(bv.Caliber);
             if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layerMask, QueryTriggerInteraction.Ignore))
@@ -215,7 +288,7 @@ namespace Shoots
 
                 bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);
 
-                newBullet.Init(bv, hit, enemyFound ? ImpactsContainer.Impacts["Enemy"] : ImpactsContainer.Impacts["Default"], e);
+                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource);
                 return;
             }
             newBullet.Init(bv, ray.GetPoint(maxDistance));
@@ -227,6 +300,9 @@ namespace Shoots
             IsReload = false;
             mAnimator.SetBool("Reload", false);
             currentReloadTime = 0;
+
+            if (effectsManager)
+                effectsManager.SetRechargeable(IsReload);
         }
 
         /// <summary>
@@ -242,33 +318,27 @@ namespace Shoots
                 {
                     var sc = inventoryEv.GetSelectedCell();
                     if (sc && Inventory.ItemStates.ItsGun(sc.Id))
-                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Dispenser);
-                    else return 0;
+                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Mag);
+                    return 0;
                 }
             }
 
-            public Dispenser(Inventory.InventoryEventReceiver iEv)
-            {
-                inventoryEv = iEv;
-            }
-            public void Dispens()
-            {
-                CountBullets--;
-            }
-            public void Reload(int bulletsCount)
-            {
-                CountBullets = bulletsCount;
-            }
+            public Dispenser(Inventory.InventoryEventReceiver iEv) => inventoryEv = iEv;
+
+            public void Dispens() => CountBullets--;
+
+            public void Reload(int bulletsCount) => CountBullets = bulletsCount;
+
             public bool IsFull => CountBullets == MaxBullets;// полна ли обойма
             public bool IsEmpty => CountBullets <= 0;
         }
 
-        public static class ImpactsContainer
+        public static class ImpactsData
         {
             public static Dictionary<string, GameObject> Impacts = new Dictionary<string, GameObject> {// эффекты столкновений
-                { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
-                { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
-        };
+            { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
+            { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
+            };
         }
     }
 }

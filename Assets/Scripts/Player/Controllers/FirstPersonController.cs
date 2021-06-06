@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
-using System.Linq;
+using TerrainCollections;
 using System.Collections.Generic;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 [RequireComponent(typeof(CapsuleCollider)), RequireComponent(typeof(Rigidbody)), AddComponentMenu("First Person Controller")]
 
-public sealed class FirstPersonController : MonoBehaviour
+public sealed class FirstPersonController : MonoBehaviour, IMovableController
 {
     #region Variables    
     #region Look Settings
@@ -17,7 +18,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private const float Sensitivity = 2;
 
     public float SensivityM { get; set; } = 1;
-    private float CameraSmoothing = 5f;
+    private readonly float CameraSmoothing = 5f;
 
     private Camera PlayerCamera;
     private Transform PlayerCameraTr;
@@ -32,15 +33,13 @@ public sealed class FirstPersonController : MonoBehaviour
     #region Movement Settings
     private bool PlayerCanMove = true;
     private bool Sprint = false;
-    private float WalkSpeed = 4f;
+    private readonly float WalkSpeed = 4f;
     private float RecumbentingSpeed;
 
     private const KeyCode SprintKey = KeyCode.LeftShift;
     private float SprintSpeed = 8f;
-    private float JumpPower = 5f;
-    private bool CanSprint = true;
-    private bool CanJump = true;
-    private bool jumpInput;
+    private readonly float JumpPower = 5f;
+    private bool Jump;
     private bool didJump;
 
     private float speed;
@@ -48,7 +47,7 @@ public sealed class FirstPersonController : MonoBehaviour
     private float SprintSpeedInternal;
     private float JumpPowerInternal;
     private float RecumbentingSpeedInternal;
-    public delegate void StepHandler(PhysicMaterial mat, StepPlayer.TypeOfMovement type);
+    public delegate void StepHandler(int matIndex, StepSoundData.TypeOfMovement type);
     public event StepHandler PlayerStepEvent;
 
     [System.Serializable]
@@ -68,7 +67,9 @@ public sealed class FirstPersonController : MonoBehaviour
     }
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
-    private readonly StepPlayer stepPlayer = new StepPlayer();
+    private StepFpc stepPlayer;
+    private StepSoundData stepSoundData;
+    public bool IsAnomalyMember { get; set; }
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -93,6 +94,7 @@ public sealed class FirstPersonController : MonoBehaviour
 
         public float ColliderRadius { get; set; }
         public float ColliderHeight { get; set; }
+        public float ChangeTime = 1;
     }
 
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
@@ -106,21 +108,20 @@ public sealed class FirstPersonController : MonoBehaviour
     private Rigidbody _fpsRigidbody;
     public CapsuleCollider GetCollider() => capsule;
     private Vector3 oldPos = Vector3.zero;
-    private PhysicMaterial currentPhysicMaterial;
+    private int CurrentPhysicMaterialIndex;
+    private bool wasGrounded = false;
     #endregion
 
     #endregion
 
     private void Awake()
     {
-        #region Movement Settings - Awake
-
+        #region Movement Settings - Awake        
         PlayerCamera = Camera.main;
         PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
         _fpsRigidbody = GetComponent<Rigidbody>();
-        stepPlayer.OnInit(this);
         _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
         _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
@@ -128,7 +129,7 @@ public sealed class FirstPersonController : MonoBehaviour
         #endregion
     }
     private void OnEnable()
-    {
+    {        
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
@@ -163,6 +164,8 @@ public sealed class FirstPersonController : MonoBehaviour
         };
         playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
         #endregion
+        stepSoundData = FindObjectOfType<StepSoundData>();
+        stepPlayer = new StepFpc(this, stepSoundData);
     }
 
     private void Update()
@@ -190,10 +193,10 @@ public sealed class FirstPersonController : MonoBehaviour
         #endregion
 
         #region Input Settings - Update
-        if (Input.GetButtonDown("Jump") && CanJump && !ScreensManager.HasActiveScreen())
-            jumpInput = true;
+        if (Input.GetButtonDown("Jump") && !ScreensManager.HasActiveScreen())
+            Jump = true;
         else if (Input.GetButtonUp("Jump"))
-            jumpInput = false;
+            Jump = false;
 
 
         if (!ScreensManager.HasActiveScreen())
@@ -206,7 +209,7 @@ public sealed class FirstPersonController : MonoBehaviour
             }
         }
 
-        Sprint = Input.GetKey(SprintKey) && CanSprint && !ScreensManager.HasActiveScreen();
+        Sprint = Input.GetKey(SprintKey) && !ScreensManager.HasActiveScreen();
         PlayerClasses.BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
         #endregion
@@ -227,15 +230,15 @@ public sealed class FirstPersonController : MonoBehaviour
             if (Advanced.IsTouchingUpright && Advanced.IsTouchingWalkable)
             {
                 MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
-                if (!didJump)
+                if (!didJump && !IsAnomalyMember)
                     _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
-            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable)
+            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable && !IsAnomalyMember)
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
             }
 
-            else
+            else if (!IsAnomalyMember)
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (_fpsRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
@@ -265,26 +268,27 @@ public sealed class FirstPersonController : MonoBehaviour
         #region Jump
         yVelocity = _fpsRigidbody.velocity.y;
 
-        if (IsGrounded && jumpInput && JumpPowerInternal > 0 && !didJump)
+        if (IsGrounded && Jump && JumpPowerInternal > 0 && !didJump)
         {
             if (Advanced.MaxSlopeAngle > 0)
             {
                 if (Advanced.IsTouchingFlat || Advanced.IsTouchingWalkable)
                 {
                     didJump = true;
-                    jumpInput = false;
+                    Jump = false;
                     yVelocity += _fpsRigidbody.velocity.y < 0.01f ? JumpPowerInternal : JumpPowerInternal / 3;
                     Advanced.IsTouchingWalkable = false;
                     Advanced.IsTouchingFlat = false;
                     Advanced.IsTouchingUpright = false;
-                    _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                    if (!IsAnomalyMember)
+                        _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 }
 
             }
             else
             {
                 didJump = true;
-                jumpInput = false;
+                Jump = false;
                 yVelocity += JumpPowerInternal;
             }
 
@@ -313,23 +317,6 @@ public sealed class FirstPersonController : MonoBehaviour
 
 
         _fpsRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
-
-
-        /* if (Advanced.FOVKickAmount > 0)
-         {
-             if (!isCrouching && PlayerCamera.fieldOfView != (BaseCamFOV + (Advanced.FOVKickAmount * 2) - 0.01f))
-             {
-                   if (Mathf.Abs(_fpsRigidbody.velocity.x) > 0.5f || Mathf.Abs(_fpsRigidbody.velocity.z) > 0.5f)// Camera animate
-                    {
-                        PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV + (Advanced.FOVKickAmount * 2), ref Advanced.fovRef, Advanced.ChangeTime);
-                    }
-
-                    else if (PlayerCamera.fieldOfView != baseCamFOV)
-                    {
-                        PlayerCamera.fieldOfView = Mathf.SmoothDamp(PlayerCamera.fieldOfView, baseCamFOV, ref Advanced.fovRef, Advanced.ChangeTime * 0.5f);
-                    }
-             }
-         }*/
 
         float capsuleHeightFollowing, capsuleRadiusFollowing;
         if (isCrouching)
@@ -361,7 +348,6 @@ public sealed class FirstPersonController : MonoBehaviour
         #endregion
         #region  Reset Checks
 
-        IsGrounded = false;
         if (Advanced.MaxSlopeAngle > 0)
         {
             if (Advanced.IsTouchingFlat || Advanced.IsTouchingWalkable || Advanced.IsTouchingUpright)
@@ -373,22 +359,32 @@ public sealed class FirstPersonController : MonoBehaviour
         #endregion                    
         SetPhysMaterial();
         playerSoundsCalculator.SetPlayerSpeed(Mathf.Abs(Vector3.Distance(transform.position, oldPos)));
-        if (Mathf.Abs(Vector3.Distance(transform.position, oldPos)) > Time.fixedDeltaTime * 2)
-        {
-            StepPlayer.TypeOfMovement type = Sprint ? StepPlayer.TypeOfMovement.sprint : StepPlayer.TypeOfMovement.walk;
-            PlayerStepEvent?.Invoke(currentPhysicMaterial, type);
-        }
-        oldPos = transform.position;
+        CallStepEvent();
+        wasGrounded = IsGrounded;
+        IsGrounded = false;
     }
 
     private void SetPhysMaterial()
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))
-        {
-            currentPhysicMaterial = hit.collider.material;
-        }
+            CurrentPhysicMaterialIndex = stepSoundData.GetIndexFromRayCast(hit, transform.position);
         else
-            currentPhysicMaterial = null;
+            CurrentPhysicMaterialIndex = 0;
+    }
+    private void CallStepEvent()
+    {
+        Vector2 to = new Vector2(transform.position.x, transform.position.z);
+        Vector2 from = new Vector2(oldPos.x, oldPos.z);
+        StepSoundData.TypeOfMovement type = StepSoundData.TypeOfMovement.None;
+        if (!wasGrounded && IsGrounded)
+            type = StepSoundData.TypeOfMovement.JumpLand;
+        else if (Mathf.Abs(Vector2.Distance(to, from)) > Time.fixedDeltaTime * 2)
+        {
+            if (Sprint) type = StepSoundData.TypeOfMovement.Run;
+            else type = StepSoundData.TypeOfMovement.Walk;
+        }
+        PlayerStepEvent?.Invoke(CurrentPhysicMaterialIndex, type);
+        oldPos = transform.position;
     }
     float SlopeCheck()
     {
@@ -488,7 +484,6 @@ public sealed class FirstPersonController : MonoBehaviour
                 _fpsRigidbody.velocity = Vector3.zero;
                 break;
         }
-        CanJump = !isLocked;
         _fpsRigidbody.useGravity = !isLocked;
     }
     public void SetPosAndRot(Transform point)
@@ -516,76 +511,30 @@ public sealed class FirstPersonController : MonoBehaviour
 
     private float additionalBraking = 1;//добавляемая скорость при перегузе
     public void SetBraking(float b) => additionalBraking = b;
-    public class StepPlayer
+    public class StepFpc : StepPlayer
     {
-        public enum TypeOfMovement { walk, sprint, jump }
         private FirstPersonController fpc;
-        private Dictionary<(TypeOfMovement type, PhysicMaterialCombine mat), List<AudioClip>> stepSounds;
-        private AudioSource stepPlayerSource;
-        private AudioClip defaultClip;
-        internal void OnInit(FirstPersonController firstPersonController)
+        public StepFpc(IMovableController firstPersonController, StepSoundData ssd)
         {
-            fpc = firstPersonController;
-            fpc.PlayerStepEvent += PlayStepClip;
-            stepSounds = new Dictionary<(TypeOfMovement type, PhysicMaterialCombine mat), List<AudioClip>>
-            {
-                {(TypeOfMovement.walk,Resources.Load<PhysicMaterial>("PhysicMaterials\\Rock").bounceCombine), new List<AudioClip>
-                {{ Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_01")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_02")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_03")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_04")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_05")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_06")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_07")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_08")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_09")}
-                }},
-                {(TypeOfMovement.sprint,Resources.Load<PhysicMaterial>("PhysicMaterials\\Rock").bounceCombine), new List<AudioClip>
-                {{ Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_01")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_02")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_03")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_04")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_05")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_06")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_07")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_08")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_09")},
-                { Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Run\\Footsteps_Rock_Run_10")}
-                }}
-            };
-            defaultClip = Resources.Load<AudioClip>("Footsteps_Rock\\Footsteps_Rock_Walk\\Footsteps_Rock_Walk_01");
+            stepSoundData = ssd;
+            fpc = (FirstPersonController)firstPersonController;
+            fpc.PlayerStepEvent += OnStep;
+
             stepPlayerSource = fpc.gameObject.AddComponent<AudioSource>();
+            stepPlayerSource.volume = 0.25f;
             stepPlayerSource.priority = 126;
         }
 
-        private void PlayStepClip(PhysicMaterial physicMaterial, TypeOfMovement movementType)
-        {            
-            if (stepSounds.ContainsKey((movementType, physicMaterial.bounceCombine)))
-            {
-                int index;
-                //do
-                //{
-                    index = Random.Range(0, stepSounds[(movementType, physicMaterial.bounceCombine)].Count);
-                //}
-              //  while (stepSounds[(movementType, physicMaterial.bounceCombine)][index] == stepPlayerSource.clip);
-
-                if (!stepPlayerSource.isPlaying)
-                {
-                    stepPlayerSource.clip = stepSounds[(movementType, physicMaterial.bounceCombine)][index];
-                    stepPlayerSource.Play();
-                }
-            }
-            else
-            {
-                stepPlayerSource.clip = defaultClip;
-                if ((!stepPlayerSource.isPlaying))
-                    stepPlayerSource.Play();
-            }
+        public override void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
+        {
+            if (!fpc.IsGrounded)
+                return;
+            base.OnStep(physicMaterialIndex, movementType);
         }
 
         public void OnDestroy()
         {
-            fpc.PlayerStepEvent -= PlayStepClip;
+            fpc.PlayerStepEvent -= OnStep;
         }
     }
     private void OnDestroy()
