@@ -103,7 +103,6 @@ namespace Shoots
             Animate();
             if (currentActiveGunI != -1)
                 guns[currentActiveGunI].MGun.SetPossibleShooting(isAnimFinish && !SMGMain.IsActive);
-
         }
 
         private States GetSlant()

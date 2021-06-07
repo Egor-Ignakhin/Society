@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyPulsation.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\SpawnPositionFinder.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselZone.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\TriggerReceiver.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Assets\Scripts\Monsters\Enemy.cs" />
     <Compile Include="Assets\Scripts\Monsters\EnemyCollision.cs" />
     <Compile Include="Assets\Scripts\Monsters\MonstersData.cs" />
+    <Compile Include="Assets\Scripts\Patterns\IBulletReceiver.cs" />
     <Compile Include="Assets\Scripts\Patterns\ICellable.cs" />
     <Compile Include="Assets\Scripts\Patterns\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Patterns\PoolableObject.cs" />
@@ -165,6 +167,8 @@
     <Compile Include="Assets\Scripts\Player\PreafabsCreator.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector_MaterialData.cs" />
+    <Compile Include="Assets\Scripts\Player\ToolExample.cs" />
+    <Compile Include="Assets\Scripts\Player\ToolsAnimator.cs" />
     <Compile Include="Assets\Scripts\PlayerDamageZone.cs" />
     <Compile Include="Assets\Scripts\RadiationZone.cs" />
     <Compile Include="Assets\Scripts\RadioButton.cs" />

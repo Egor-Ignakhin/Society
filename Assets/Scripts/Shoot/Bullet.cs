@@ -19,21 +19,21 @@ namespace Shoots
         public Inventory.ItemStates.ItemsID Id;
         private AudioClip reflectSound;
         private AudioSource reflectSource;
+        private IBulletReceiver bulletReceiver;
 
-        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource)
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource, IBulletReceiver br)
         {
             mBv = bv;
             target = t.point;
             enemy = e;
             haveTarget = true;
             impactEffect = impact;
-            //var parent = new GameObject("parentForImpact").transform;
-            //parent.SetParent(t.transform);
             impactEffect = Instantiate(impactEffect);
             impactEffect.transform.forward = t.normal;
             impactEffect.SetActive(false);
             reflectSound = rs;
             reflectSource = rsource;
+            bulletReceiver = br;
         }
         public void Init(BulletValues bv, Vector3 t)
         {
@@ -54,10 +54,14 @@ namespace Shoots
             if (haveTarget)
             {
                 mBv.SetSpeed();
+
+                if (bulletReceiver != null)
+                    bulletReceiver.OnBulletEnter();
+                
                 if (enemy)
                 {
                     enemy.InjureEnemy(Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance));
-                }
+                }                
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
                 {

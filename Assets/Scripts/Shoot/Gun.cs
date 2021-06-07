@@ -8,7 +8,7 @@ namespace Shoots
     /// оружие
     /// </summary>
     public abstract class Gun : MonoBehaviour
-    {        
+    {
         public event Action ShootEvent;// событие перезарядки    
         public delegate void DispensetHandler(int remBullets);
         public event DispensetHandler ChangeAmmoCountEvent;
@@ -286,8 +286,8 @@ namespace Shoots
                 bv.SetValues(hit.distance, Vector3.Reflect(transform.forward, hit.normal), Math.Abs(90 - Vector3.Angle(ray.direction, hit.normal)));
 
                 bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);
-
-                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource);
+                hit.transform.TryGetComponent(out IBulletReceiver bulletReceiver);
+                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource, bulletReceiver);
                 return;
             }
             newBullet.Init(bv, ray.GetPoint(maxDistance));
