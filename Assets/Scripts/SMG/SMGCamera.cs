@@ -1,44 +1,43 @@
-﻿using Shoots;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace SMG
 {
-    public class SMGCamera : MonoBehaviour
+    /// <summary>
+    /// камера которая рендерит оружия на верстаке, а также она отвечает за режим предпросмотра
+    /// </summary>
+    class SMGCamera : MonoBehaviour
     {
         /// <summary>
         /// шаг камеры при приближении-отдалении
         /// </summary>
 
-        [SerializeField] private List<Transform> guns = new List<Transform>(3);
-        private readonly List<GunModifiersActiveManager> gunsModsMgs = new List<GunModifiersActiveManager>(3);
+        [SerializeField] private List<Transform> guns = new List<Transform>(3);//оружия
+        private readonly List<GunModifiersActiveManager> gunsModsMgs = new List<GunModifiersActiveManager>(3);// менеджеры модификаций на оружиях
 
-        private const int cameraScrollStep = 5;
-        private float defCamFov;
-        private Transform activeGun;
-        private GunModifiersActiveManager activeManager;
+        private const int cameraScrollStep = 5;// сила приближения-отдаления камеры
+        private float defCamFov;// стандартное приближение камеры
+        private Transform activeGun;// активное оружие
+        private GunModifiersActiveManager activeManager;// активный мод. менеджер оружия
         private Vector3 oldPos;
 
-        private readonly Dictionary<Transform, Quaternion> DefGunsDefRot = new Dictionary<Transform, Quaternion>();
-
-        [SerializeField]
+        private readonly Dictionary<Transform, Quaternion> DefGunsDefRot = new Dictionary<Transform, Quaternion>();// стандартные ротации оружий
+        
         private Camera mCamera;
-        [SerializeField] private Transform gunsContainer;       
-        private Inventory.InventoryEventReceiver inventoryEventReceiver; 
+        [SerializeField] private Transform gunsContainer;// контейнер оружия (именно на верстаке)            
         public bool IsActive { get; private set; }
 
         private void Awake()
-        {
-            foreach (var g in guns)
-                DefGunsDefRot.Add(g, g.rotation);
+        {            
+            mCamera = GetComponent<Camera>();
             defCamFov = mCamera.fieldOfView;
             foreach (var g in guns)
+            {
+                DefGunsDefRot.Add(g, g.rotation);
                 g.gameObject.SetActive(false);
-
-            foreach (var g in guns)
                 gunsModsMgs.Add(g.GetComponentInChildren<GunModifiersActiveManager>());
+            }
+            
             activeGun = guns[0];
             activeManager = gunsModsMgs[0];
             SetEnable(false);
@@ -46,29 +45,28 @@ namespace SMG
         public void SetActiveGun(Inventory.InventoryCell ic)
         {            
             activeGun.gameObject.SetActive(false);
+            int index = -1;
             switch (ic.Id)
             {
                 case 2:
-                    activeGun = guns[0];
-                    activeManager = gunsModsMgs[0];
+                    index = 0;
                     break;
-                case 3:
-                    activeGun = guns[1];
-                    activeManager = gunsModsMgs[1];
+                case 3:                    
+                    index = 1;
                     break;
                 case 4:
-                    activeGun = guns[2];
-                    activeManager = gunsModsMgs[2];
+                    index = 2;                    
                     break;
             }
+            activeGun = guns[index];
+            activeManager = gunsModsMgs[index];
             activeGun.gameObject.SetActive(true);
         }
 
         internal void AddOrRemoveEvents(SMGEventReceiver ev, bool v)
         {            
             if (v)
-            {
-                inventoryEventReceiver = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
+            {                
                 ev.UpdateModfiersEvent += SetMagToActiveGun;
                 ev.ChangeGunEvent += SetActiveGun;
             }
@@ -126,6 +124,6 @@ namespace SMG
             mCamera.fieldOfView = defCamFov;
         }
 
-        internal void SetMagToActiveGun(SMGModifiersCell gc) => activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
+        internal void SetMagToActiveGun(ModifierCell gc) => activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
     }
 }

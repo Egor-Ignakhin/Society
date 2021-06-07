@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Inventory;
+﻿using UnityEngine;
 using PlayerClasses;
 
 namespace SMG
 {
+    /// <summary>
+    /// навешивается на модификацию, которую можно подобрать в реальном мире
+    /// </summary>
     class GunModifier : InteractiveObject
     {
         [SerializeField] private ModifierCharacteristics.GunTitles modifiableGun;

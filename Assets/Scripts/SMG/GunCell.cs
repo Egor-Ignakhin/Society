@@ -3,7 +3,10 @@ using UnityEngine.EventSystems;
 
 namespace SMG
 {
-    public class GunsCell : MonoBehaviour, IPointerClickHandler, ICellable
+    /// <summary>
+    /// слот под оружие на верстаке
+    /// </summary>
+    public class GunCell : MonoBehaviour, IPointerClickHandler, ICellable
     {
         private SMGEventReceiver eventReceiver;
         public UnityEngine.UI.Image MImage { get; private set; }

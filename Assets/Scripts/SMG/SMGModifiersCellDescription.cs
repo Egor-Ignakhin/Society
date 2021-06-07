@@ -2,6 +2,9 @@
 using TMPro;
 namespace SMG
 {
+    /// <summary>
+    /// рисовщик информации о модификаторе
+    /// </summary>
     public class SMGModifiersCellDescription : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI textTitle;

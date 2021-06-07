@@ -19,5 +19,5 @@ public abstract class StepPlayer
 }
 public interface IMovableController
 {
-
+    
 }

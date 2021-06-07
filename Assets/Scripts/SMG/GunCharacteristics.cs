@@ -1,23 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using static Inventory.ItemStates;
 
 namespace SMG
 {
     static class GunCharacteristics
     {
-        private static readonly Dictionary<ItemsID, (string Title, int damage, int maxFlyD, int OptFlyD, int Caliber)> guns;
+        private static readonly Dictionary<ItemsID, string> guns;
         private static GunModifierDescription modDescriptions;
+        private static GunDescription gunDescription;
         static GunCharacteristics()
-        {//реализовать реальное описание
-            guns = new Dictionary<ItemsID, (string title, int damage, int maxFlyD, int OptFlyD, int Caliber)>
-            {
-                {ItemsID.Makarov,("Пистолет Макарова (ПМ)",10, 10, 10,10)},
-                {ItemsID.TTPistol,("Тульский Токарев обр. 1933г.",20, 20, 20,20)},
-                {ItemsID.Ak_74,("Автомат Калашникова 5.5x39 (АК-74M)", 30, 30, 30,30)}
-            };
-
+        {
             LoadGMD();
+            LoadGuns();
+            guns = new Dictionary<ItemsID, string>
+            {
+                {ItemsID.Makarov, gunDescription.Data[GunsID.Makarov].Title},
+                {ItemsID.TTPistol, gunDescription.Data[GunsID.TTPistol].Title},
+                {ItemsID.Ak_74, gunDescription.Data[GunsID.Ak_74].Title}
+            };
         }
         private static void LoadGMD()
         {
@@ -25,37 +25,46 @@ namespace SMG
             modDescriptions = UnityEngine.JsonUtility.FromJson<GunModifierDescription>(dataJson);
             for (int i = 0; i < modDescriptions.Modifiers.Count; i++)
             {
-                modDescriptions.titleAndBC.Add(modDescriptions.Modifiers[i].TTI, (modDescriptions.Modifiers[i].BulletsCount, modDescriptions.Modifiers[i].Title, modDescriptions.Modifiers[i].Description));
+                modDescriptions.Data.Add(modDescriptions.Modifiers[i].TTI, (modDescriptions.Modifiers[i].BulletsCount, modDescriptions.Modifiers[i].Title, modDescriptions.Modifiers[i].Description));
             }
         }
-        public static (string title, int damage, int maxFlyD, int OptFlyD, int Caliber) GetGunCharacteristics(int id) => guns[(ItemsID)id];
+        private static void LoadGuns()
+        {
+            string dataJson = System.IO.File.ReadAllText("Localization\\GunsDescriptions.json");
+            gunDescription = UnityEngine.JsonUtility.FromJson<GunDescription>(dataJson);
+            for (int i = 0; i < gunDescription.Guns.Count; i++)
+            {
+                gunDescription.Data.Add((GunsID)i, gunDescription.Guns[i]);
+            }
+        }
+        public static string GetGunTitle(int id) => guns[(ItemsID)id];
         public static int GetBulletsCountFromTTI(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             string modTitle = $"{tti.Title}_{tti.Type}{tti.Index}";
-            if (modDescriptions.titleAndBC.ContainsKey(modTitle))
-                return modDescriptions.titleAndBC[modTitle].bc;
+            if (modDescriptions.Data.ContainsKey(modTitle))
+                return modDescriptions.Data[modTitle].bc;
             else return 0;
         }
         public static string GetNormalTitleFromTTI(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             string modTitle = $"{tti.Title}_{tti.Type}{tti.Index}";
-            if (modDescriptions.titleAndBC.ContainsKey(modTitle))
-                return modDescriptions.titleAndBC[modTitle].title;
+            if (modDescriptions.Data.ContainsKey(modTitle))
+                return modDescriptions.Data[modTitle].title;
             else return string.Empty;
         }
         public static string GetNormalDescriptionFromTTI(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             string modTitle = $"{tti.Title}_{tti.Type}{tti.Index}";
-            if (modDescriptions.titleAndBC.ContainsKey(modTitle))
-                return modDescriptions.titleAndBC[modTitle].desc;
+            if (modDescriptions.Data.ContainsKey(modTitle))
+                return modDescriptions.Data[modTitle].desc;
             else return string.Empty;
         }
     }
     [System.Serializable]
     public class GunModifierDescription
     {
-        public List<Modifier> Modifiers;        
-        public Dictionary<string, (int bc, string title, string desc)> titleAndBC { get; set; } = new Dictionary<string, (int bc, string title, string desc)>();
+        public List<Modifier> Modifiers;
+        public Dictionary<string, (int bc, string title, string desc)> Data { get; } = new Dictionary<string, (int bc, string title, string desc)>();
 
         [System.Serializable]
         public class Modifier
@@ -64,6 +73,18 @@ namespace SMG
             public int BulletsCount;
             public string Title;
             public string Description;
+        }
+    }
+    [System.Serializable]
+    public class GunDescription
+    {
+        public List<Gun> Guns;
+        public Dictionary<GunsID, Gun> Data { get; } = new Dictionary<GunsID, Gun>();
+
+        [System.Serializable]
+        public class Gun
+        {
+            public string Title;
         }
     }
 }

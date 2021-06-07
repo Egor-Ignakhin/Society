@@ -8,9 +8,8 @@ namespace Shoots
     /// оружие
     /// </summary>
     public abstract class Gun : MonoBehaviour
-    {
-        public delegate void ShootHandler();
-        public event ShootHandler ShootEvent;// событие перезарядки    
+    {        
+        public event Action ShootEvent;// событие перезарядки    
         public delegate void DispensetHandler(int remBullets);
         public event DispensetHandler ChangeAmmoCountEvent;
         [SerializeField] protected float caliber = 10;// калибр снаряда    

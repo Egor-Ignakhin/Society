@@ -42,11 +42,6 @@ namespace Inventory
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
 
-        internal InventoryCell GetFirstCell()
-        {
-            return inventoryContainer.GetCells()[0];
-        }
-
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
@@ -284,7 +279,7 @@ namespace Inventory
         // переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
         private bool IsIntersected(Vector2 obj) => inventoryContainer.CellsRect.Find(c => Vector2.Distance(obj, c.position) < 100);
 
-        private void OnDropEvent(int _)
+        private void OnDropEvent()
         {
             if (!SelectedCell || SelectedCell.IsEmpty)
                 return;

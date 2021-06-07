@@ -7,11 +7,11 @@ namespace SMG
 {/// <summary>
 /// класс - слот с модификацией
 /// </summary>
-    public class SMGModifiersCell : MonoBehaviour, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler, ICellable
+    public class ModifierCell : MonoBehaviour, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler, ICellable
     {
-        private SMGEventReceiver eventReceiver;
+        private SMGEventReceiver eventReceiver;// обработчик событий СМО
         private Image mImage;
-        private Sprite defSprite;
+        private Sprite defSprite;// спрайт для пустого слота
         public Inventory.InventoryCell Ic { get; set; }
         /// <summary>
         /// название оружия - тип модификации - индекс модификации
@@ -25,6 +25,11 @@ namespace SMG
             mImage = transform.GetChild(0).GetComponent<Image>();
             defSprite = dfs;
         }
+        /// <summary>
+        /// запись нового модификатора
+        /// </summary>
+        /// <param name="modState"></param>
+        /// <param name="icell"></param>
         public void ChangeModifier(SMGTitleTypeIndex modState, Inventory.InventoryCell icell)
         {
             if (!(mImage.sprite = GetSprite(TTI = modState)))
@@ -32,6 +37,9 @@ namespace SMG
             Ic = icell;
         }
 
+        /// <summary>
+        /// очистка слота
+        /// </summary>
         public void Clear()
         {
             mImage.sprite = defSprite;

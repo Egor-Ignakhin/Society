@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Inventory
 {
@@ -12,6 +11,7 @@ namespace Inventory
 
         public enum ItemsID : int { Default, Axe, Makarov, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
             Lom}
+        public enum GunsID : int { Makarov, TTPistol, Ak_74}
 
         #endregion
         private static readonly Dictionary<ItemsID, (int maxCount, decimal weight)> items;

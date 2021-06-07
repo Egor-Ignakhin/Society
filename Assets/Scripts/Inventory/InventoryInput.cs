@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 namespace Inventory
 {
     /// <summary>
@@ -13,7 +14,7 @@ namespace Inventory
         public delegate void InputHandler(int s);
         public event InputHandler InputKeyEvent;
 
-        public event InputHandler DropEvent;
+        public event Action DropEvent;
         public event EventHandler ScrollEvent;
 
         private const KeyCode changeActiveKeyCode = KeyCode.E;
@@ -39,7 +40,7 @@ namespace Inventory
             if (Input.anyKeyDown)
                 SelectCell(Input.inputString);
             if (Input.GetKeyDown(dropCode))
-                DropEvent?.Invoke(0);
+                DropEvent?.Invoke();
 
 
             FastMoveCellEvent?.Invoke(Input.GetKey(KeyCode.LeftShift));
@@ -81,7 +82,6 @@ namespace Inventory
             item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
         }
 
-        public void Hide(){
-            print(1); SetEnable(false); }
+        public void Hide() => SetEnable(false);
     }
 }

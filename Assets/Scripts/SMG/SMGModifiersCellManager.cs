@@ -1,11 +1,13 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SMG
 {
+    /// <summary>
+    /// класс обрабатывает события обновления модификаторов и оружия, соответственно ставит подсказку на актуальный мод
+    /// </summary>
     class SMGModifiersCellManager : MonoBehaviour
     {
-        [SerializeField] private RectTransform selectedModifier;
+        [SerializeField] private RectTransform selectedModifier;// р-т актуального мода
         [SerializeField] private SMGMain main;
         private SMGEventReceiver eventReceiver;
         [SerializeField] private ScrollBarController scrollBarController;
@@ -14,7 +16,7 @@ namespace SMG
             eventReceiver = main.EventReceiver;
             eventReceiver.UpdateModfiersEvent += OnChangeModfierCell;            
         }
-        private void OnChangeModfierCell(SMGModifiersCell cell)
+        private void OnChangeModfierCell(ModifierCell cell)
         {
             if (cell.TTI.Index == ModifierCharacteristics.ModifierIndex.None)
             {

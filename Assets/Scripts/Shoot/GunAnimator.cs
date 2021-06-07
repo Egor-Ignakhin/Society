@@ -164,7 +164,7 @@ namespace Shoots
             guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag);
         }
 
-        public void UpdateGunModifiers(SMG.SMGModifiersCell _)
+        public void UpdateGunModifiers(SMG.ModifierCell _)
         {
             var ic = InventoryEventReceiver.GetSelectedCell();
             if (!ic)

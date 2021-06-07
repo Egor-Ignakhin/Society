@@ -60,8 +60,8 @@ public abstract class Enemy : MonoBehaviour, IMovableController
 
     private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока    
 
-    public delegate void Action(int physMatIndex, StepSoundData.TypeOfMovement type);//TODO: рейкаст
-    public event Action EnemyStepEvent;
+    public delegate void StepHandler(int physMatIndex, StepSoundData.TypeOfMovement type);
+    public event StepHandler EnemyStepEvent;
 
     private StepSoundData stepSoundData;
     private int CurrentPhysicMaterialIndex;

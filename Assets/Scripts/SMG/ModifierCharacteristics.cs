@@ -70,6 +70,9 @@ namespace SMG
             else return null;
         }
 
+        /// <summary>
+        /// контейнер сод. информацию о типе оружия, типе модификации и качеству модификации
+        /// </summary>
         public struct SMGTitleTypeIndex
         {
             public static SMGTitleTypeIndex None { get; } = new SMGTitleTypeIndex(GunTitles.None, ModifierTypes.None, ModifierIndex.None);
@@ -83,12 +86,20 @@ namespace SMG
                 Index = mI;
             }
 
+            /// <summary>
+            /// возвращает информацию об установленном магазине на оружии
+            /// </summary>
+            /// <param name="gun"></param>
+            /// <returns></returns>
             internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun)
             {
                 return new SMGTitleTypeIndex((GunTitles)gun.Title, ModifierTypes.Mag, (ModifierIndex)gun.Mag);
             }
         }
-        public class SMGModifierItem
+        /// <summary>
+        /// контейнер содержащий спрайт модификатора и его характеристики
+        /// </summary>
+        public struct SMGModifierItem
         {
             public readonly Sprite sprite;
             public readonly int ammoCount;

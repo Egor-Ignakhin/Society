@@ -2,7 +2,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 namespace Inventory
 {
@@ -43,14 +42,9 @@ namespace Inventory
         private void Awake()
         {
             inventoryInput = gameObject.AddComponent<InventoryInput>();
-            prefabsData = new PrefabsData();
-            SceneManager.sceneLoaded += OnLevelFinishedLoading;
+            prefabsData = new PrefabsData();            
         }
 
-        private void OnLevelFinishedLoading(Scene s, LoadSceneMode lcm)
-        {
-            
-        }
         private void OnEnable()
         {
             inventoryEffects = new InventoryEffects(gameObject);
@@ -142,8 +136,7 @@ namespace Inventory
         {
             Save(Cells);
             EventReceiver.OnDisable();
-            StopCoroutine(nameof(CellAnimator));
-            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+            StopCoroutine(nameof(CellAnimator));            
         }
         /// <summary>
         /// сохранение инвентаря
