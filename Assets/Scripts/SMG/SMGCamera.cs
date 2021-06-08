@@ -22,13 +22,13 @@ namespace SMG
         private Vector3 oldPos;
 
         private readonly Dictionary<Transform, Quaternion> DefGunsDefRot = new Dictionary<Transform, Quaternion>();// стандартные ротации оружий
-        
+
         private Camera mCamera;
         [SerializeField] private Transform gunsContainer;// контейнер оружия (именно на верстаке)            
         public bool IsActive { get; private set; }
 
         private void Awake()
-        {            
+        {
             mCamera = GetComponent<Camera>();
             defCamFov = mCamera.fieldOfView;
             foreach (var g in guns)
@@ -37,13 +37,13 @@ namespace SMG
                 g.gameObject.SetActive(false);
                 gunsModsMgs.Add(g.GetComponentInChildren<GunModifiersActiveManager>());
             }
-            
+
             activeGun = guns[0];
             activeManager = gunsModsMgs[0];
             SetEnable(false);
-        }        
+        }
         public void SetActiveGun(Inventory.InventoryCell ic)
-        {            
+        {
             activeGun.gameObject.SetActive(false);
             int index = -1;
             switch (ic.Id)
@@ -51,11 +51,11 @@ namespace SMG
                 case 2:
                     index = 0;
                     break;
-                case 3:                    
+                case 3:
                     index = 1;
                     break;
                 case 4:
-                    index = 2;                    
+                    index = 2;
                     break;
             }
             activeGun = guns[index];
@@ -64,14 +64,14 @@ namespace SMG
         }
 
         internal void AddOrRemoveEvents(SMGEventReceiver ev, bool v)
-        {            
+        {
             if (v)
-            {                
+            {
                 ev.UpdateModfiersEvent += SetMagToActiveGun;
-                ev.ChangeGunEvent += SetActiveGun;
+                ev.ChangeGunEvent += SetActiveGun;                
             }
             else
-            {                
+            {
                 ev.UpdateModfiersEvent -= SetMagToActiveGun;
                 ev.ChangeGunEvent -= SetActiveGun;
             }
@@ -101,7 +101,7 @@ namespace SMG
         }
 
         public void SetEnable(bool v)
-        {            
+        {
             ResetGunRotation();
             IsActive = v;
         }
@@ -124,6 +124,10 @@ namespace SMG
             mCamera.fieldOfView = defCamFov;
         }
 
-        internal void SetMagToActiveGun(ModifierCell gc) => activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
+        internal void SetMagToActiveGun(ModifierCell gc)
+        {
+            activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
+            activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Aim);
+        }
     }
 }

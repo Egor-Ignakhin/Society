@@ -160,7 +160,7 @@ namespace Shoots
             var sc = InventoryEventReceiver.GetSelectedCell();
             guns[currentActiveGunI].MGun.ChangeAmmoCountEvent += sc.SetAmmoCount;
             SMGEventReceiver.UpdateModfiersEvent += UpdateGunModifiers;
-            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag);
+            guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag, sc.MGun.Aim);
         }
 
         public void UpdateGunModifiers(SMG.ModifierCell _)
@@ -169,7 +169,7 @@ namespace Shoots
             if (!ic)
                 return;
             inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), ic.MGun.AmmoCount, null);
-            guns[currentActiveGunI].MGun.UpdateModifiers(ic.MGun.Mag);
+            guns[currentActiveGunI].MGun.UpdateModifiers(ic.MGun.Mag, ic.MGun.Aim);
             ic.SetAmmoCount(0);
         }
         private void DisableGuns()

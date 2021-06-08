@@ -104,7 +104,7 @@ namespace Inventory
         /// <param name="item"></param>    
         public void AddItem(int id, int count, SMGInventoryCellGun gun, bool isRecursion = false)
         {
-            if (Cells.FindAll(c => c.IsEmpty).Count == 0)// если не нашлись свободные слоты
+            if (Cells.FindAll(c => c.IsEmpty()).Count == 0)// если не нашлись свободные слоты
             {
                 //выбрасывание предмета обратно
                 InventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
@@ -114,7 +114,7 @@ namespace Inventory
             // поиск слота, с предметом того же типа, и не заполненным   
             var cell = Cells.Find(c => !c.IsFilled && c.Id.Equals(id));
 
-            if (cell == null) cell = Cells.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
+            if (cell == null) cell = Cells.Find(c => c.IsEmpty());// если слот не нашёлся то запись в пустой слот
 
             cell.SetItem(id, count, gun, false);
 

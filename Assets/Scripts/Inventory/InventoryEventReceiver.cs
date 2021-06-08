@@ -157,7 +157,7 @@ namespace Inventory
         /// </summary>
         private void ParentingDraggedObject()
         {
-            if (!draggedCell || draggedCell.IsEmpty)
+            if (!draggedCell || draggedCell.IsEmpty())
                 return;
 
             if (candidateForReplaceItem && candidateForReplaceItem != draggedItem)
@@ -222,10 +222,10 @@ namespace Inventory
         {
             if (canFastMoveSelCell)
             {
-                if (ic.IsEmpty)
+                if (ic.IsEmpty())
                     return;
                 InventoryCell emptyCell;
-                if ((emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty)) && !isScroll)// если нашлись пустые слоты
+                if ((emptyCell = inventoryContainer.GetHotCells().Find(c => c.IsEmpty())) && !isScroll)// если нашлись пустые слоты
                 {
                     draggedCell = ic;
                     draggedItem = draggedCell.MItem;
@@ -283,7 +283,7 @@ namespace Inventory
 
         private void OnDropEvent()
         {
-            if (!SelectedCell || SelectedCell.IsEmpty)
+            if (!SelectedCell || SelectedCell.IsEmpty())
                 return;
 
             DropItem(SelectedCell.Id, SelectedCell.Count, SelectedCell.MGun);
@@ -294,7 +294,7 @@ namespace Inventory
         }
         public void ActivateItem()
         {
-            if (SelectedCell && SelectedCell.IsEmpty)
+            if (SelectedCell && SelectedCell.IsEmpty())
                 return;
 
             int id = SelectedCell.Id;
@@ -334,15 +334,15 @@ namespace Inventory
             InventoryCell listPlace = null;
             while (true)// нашлись свободные слоты
             {
-                if (list.FindAll(c => !c.IsEmpty).Count == 0)// если не нашлись занятые слоты 
+                if (list.FindAll(c => !c.IsEmpty()).Count == 0)// если не нашлись занятые слоты 
                     break;
 
-                listPlace = list.Find(c => !c.IsEmpty);
+                listPlace = list.Find(c => !c.IsEmpty());
                 // поиск слота, с предметом того же типа, и не заполненным   
                 var place = places.Find(c => !c.IsFilled && c.Id.Equals(listPlace.Id));
 
                 if (place == null)
-                    place = places.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
+                    place = places.Find(c => c.IsEmpty());// если слот не нашёлся то запись в пустой слот
                 if (place == null)//если и пустых нет в инвентаре то выход
                     break;
 

@@ -15,6 +15,7 @@ namespace MenuScripts
         /// </summary>
         sealed class MenuPauseManager : MonoBehaviour, IGameScreen
         {
+            private bool isInitialized;
             private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
             [SerializeField] private Transform mainParent;// контейнер сод. кнопки
             [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
@@ -26,6 +27,10 @@ namespace MenuScripts
             public static CurrentGameSettings GetCurrentGameSettings() => currentGameSettings;
             private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
             private EffectsManager effectsManager;
+            [SerializeField] private Toggle bloomToggle;
+
+            [SerializeField] private TextMeshProUGUI sensivityText;
+            [SerializeField] private Slider sensivitySlider;
             private void Start()
             {
                 fpc = FindObjectOfType<FirstPersonController>();
@@ -35,21 +40,24 @@ namespace MenuScripts
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
 
-                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());                
+                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
+                effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
+                bloomToggle.isOn = currentGameSettings.BloomEnabled;
+                SettingsObj.SetActive(false);
             }
 
-            internal void Enable()
-            {
-                menuEventReceiver.Enable();
-            }
+            public void Enable() => menuEventReceiver.Enable();
+
 
             /// <summary>
             /// смена активности bloom'а
             /// </summary>
             /// <param name="t"></param>
-            public void SetActiveGlobalBloom(Toggle t) => effectsManager.SetEnableBloom(t.isOn);
-
-            private bool isInitialized;
+            public void SetActiveGlobalBloom()
+            {
+                if (effectsManager)
+                    effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
+            }
             public void ChangeFovSlider()
             {
                 if (!isInitialized)
@@ -62,6 +70,12 @@ namespace MenuScripts
                 currentGameSettings.FOV = (float)System.Math.Round(currentGameSettings.FOV, 1);// округление до нормальных значений
 
                 fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
+            }
+            public void ChangeSensivitySlider()
+            {
+                currentGameSettings.Sensivity = (int)(currentGameSettings.MinSensivity + ((currentGameSettings.MaxSensivity - currentGameSettings.MinSensivity) * sensivitySlider.value));                
+           
+                sensivityText.SetText(currentGameSettings.Sensivity.ToString());
             }
             private void LoadData()
             {
@@ -143,7 +157,11 @@ namespace MenuScripts
                 }
 
                 public void Enable() => commandContainer.SetEnableMenu(true, menuUI, fps, menuPauseManager, effectsManager);
-                public void Disable() => commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
+                public void Disable()
+                {
+                    commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
+                    SettingsObj.SetActive(false);
+                }
 
                 /// <summary>
                 /// наведение на кнопку
@@ -183,7 +201,7 @@ namespace MenuScripts
                         obj.Value.text.color = Color.black;
                     }
                 }
-                private void Doing(int index)
+                public void Doing(int index)
                 {
                     switch (index)
                     {
@@ -268,6 +286,12 @@ namespace MenuScripts
             public float minFov = 60;
             public float FOV = 70;
             public float maxFov = 80;
+
+            public bool BloomEnabled = true;
+
+            public int MinSensivity = 0;
+            public int Sensivity = 3;
+            public int MaxSensivity = 10;
         }
     }
 }

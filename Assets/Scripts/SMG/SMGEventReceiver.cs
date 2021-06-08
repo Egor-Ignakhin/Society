@@ -71,7 +71,7 @@ namespace SMG
             modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));
             currentModCell = ccCandidate;
 
-            currentGunCell.SetMag(currentModCell.TTI.Index);
+            currentGunCell.SetMag(currentModCell.TTI.Index);            
 
             modifiersData.RemoveModifier(currentModCell.TTI);
 
@@ -109,7 +109,7 @@ namespace SMG
             currentGunCell = null;
 
             ReFillGunCells();
-            if (gunsCells[0].Id != 0)
+            if (!gunsCells[0].IsEmpty())
                 OnSelectGunsCell(gunsCells[0]);
         }
 
@@ -130,7 +130,7 @@ namespace SMG
         /// вызовывается для перестройки коллекции модификаторов
         /// </summary>
         /// <param name="ic"></param>
-        private void ReFillModifiersCells()
+        public void ReFillModifiersCells()
         {
             ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.Ic.MGun.Title;
             var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>()

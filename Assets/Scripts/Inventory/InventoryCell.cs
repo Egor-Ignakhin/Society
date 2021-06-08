@@ -23,7 +23,10 @@ namespace Inventory
         #region fast Access to mContainer
         public int Id => MItemContainer.Id;
         public int Count => MItemContainer.Count;
-        public bool IsEmpty => MItemContainer.IsEmpty;
+        public bool IsEmpty()
+        {
+            return MItemContainer.IsEmpty;
+        }
         public bool IsFilled => MItemContainer.IsFilled;
         #endregion
         public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();// контейнер для возможного оружия
@@ -123,10 +126,10 @@ namespace Inventory
         public void ChangeSprite()
         {
             MImage.sprite = InventorySpriteData.GetSprite(Id);
-            MImage.color = IsEmpty ? new Color(1, 1, 1, 0) : Color.white;
+            MImage.color = IsEmpty() ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст
-            if (IsEmpty)
+            if (IsEmpty())
                 eventReceiver.UnfocusSelectedCell(this);//снимается фокус со слота
         }
 
@@ -165,7 +168,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (IsEmpty)
+            if (IsEmpty())
                 return;
 
             eventReceiver.BeginDrag(this);
@@ -181,7 +184,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (IsEmpty)
+            if (IsEmpty())
                 return;
 
             eventReceiver.OnDrag(eventData);
@@ -196,7 +199,7 @@ namespace Inventory
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (IsEmpty)
+            if (IsEmpty())
                 return;
 
             eventReceiver.EndDrag();
@@ -216,12 +219,12 @@ namespace Inventory
 
         bool wasAnimated = false;
         private void BackgroundAnimate()
-        {                                
+        {
             Vector3 nextState = wasAnimated ? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;
             mRt.localScale = Vector3.MoveTowards(mRt.localScale, nextState, 0.5f);
-            if (mRt.localScale == additionalSettins.AnimatedScale)            
+            if (mRt.localScale == additionalSettins.AnimatedScale)
                 wasAnimated = true;
-            
+
             if (wasAnimated && mRt.localScale == additionalSettins.DefaultScale)
                 inventoryContainer.CellAnimationEvent -= BackgroundAnimate;
         }

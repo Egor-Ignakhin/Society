@@ -171,7 +171,11 @@ namespace Shoots
             }
         }
 
-        public void UpdateModifiers(int index) => gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)index);
+        public void UpdateModifiers(int magIndex, int aimIndex)
+        {
+            gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)magIndex);
+            gunModifiersActiveManager.SetAim((SMG.ModifierCharacteristics.ModifierIndex)aimIndex);
+        }
 
         /// <summary>
         /// выполняется при загрузке сохранения

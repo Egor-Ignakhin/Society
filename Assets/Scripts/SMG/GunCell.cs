@@ -14,6 +14,10 @@ namespace SMG
         public Inventory.InventoryCell Ic { get; private set; }
         private TMPro.TextMeshProUGUI mText;
 
+        public bool IsEmpty()
+        {
+            return Id == 0;
+        }
         public void ChangeItem(int id, Inventory.InventoryCell gc)
         {
             Ic = gc;
@@ -41,11 +45,12 @@ namespace SMG
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (Id == 0)
+            if (IsEmpty())
                 return;
             eventReceiver.OnSelectGunsCell(this);
         }
 
         internal void SetMag(ModifierCharacteristics.ModifierIndex index) => Ic.MGun.SetMag(index);
+        public void SetAim(ModifierCharacteristics.ModifierIndex index) => Ic.MGun.SetAim(index);
     }
 }

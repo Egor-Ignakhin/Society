@@ -3,5 +3,6 @@
 /// </summary>
 interface ICellable
 {
+    bool IsEmpty();
     void Clear();    
 }

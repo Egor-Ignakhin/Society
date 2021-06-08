@@ -17,7 +17,10 @@ namespace SMG
         /// название оружия - тип модификации - индекс модификации
         /// </summary>
         public SMGTitleTypeIndex TTI { get; private set; }
-        private bool IsEmpty => TTI.Title == GunTitles.None;
+        public bool IsEmpty()
+        {
+            return TTI.Title == GunTitles.None;
+        }
 
         public void OnInit(SMGEventReceiver ev, Sprite dfs)
         {
@@ -48,14 +51,14 @@ namespace SMG
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (IsEmpty)
+            if (IsEmpty())
                 return;
             eventReceiver.OnSelectModifierCell(this);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (IsEmpty)
+            if (IsEmpty())
                 return;
             eventReceiver.OnEnterModifiersCell(this);
         }

@@ -12,6 +12,10 @@ namespace SMG
         private SMGInventoryCellsEventReceiver SMGICEV;
         private Image mImage;
         public SMGTitleTypeIndex TTI { get; private set; }
+        public bool IsEmpty()
+        {
+            return TTI.Equals(SMGTitleTypeIndex.None);
+        }
         public void OnInit(SMGInventoryCellsEventReceiver smgicev)
         {
             mImage = GetComponent<Image>();
@@ -27,11 +31,14 @@ namespace SMG
         public void RewriteSprite(SMGTitleTypeIndex modState)
         {
             TTI = modState;
-            mImage.sprite = GetSprite(TTI);            
+            mImage.sprite = GetSprite(TTI);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (IsEmpty())
+                return;
+
             if (eventData.button == PointerEventData.InputButton.Right)
                 SMGICEV.OnClick(this);
         }
