@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SMG;
+using System;
 using UnityEngine;
 namespace Inventory
 {
@@ -14,7 +15,8 @@ namespace Inventory
         public delegate void InputHandler(int s);
         public event InputHandler InputKeyEvent;
 
-        public event Action DropEvent;
+        public event Action<string, int> DropEvent;
+        public event Action InputKeyDrop;
         public event EventHandler ScrollEvent;
 
         private const KeyCode changeActiveKeyCode = KeyCode.E;
@@ -27,6 +29,7 @@ namespace Inventory
             fps = FindObjectOfType<FirstPersonController>();
             gunAnimator = FindObjectOfType<Shoots.GunAnimator>();
         }
+
         private void Start()
         {
             SetEnable(false);
@@ -40,7 +43,7 @@ namespace Inventory
             if (Input.anyKeyDown)
                 SelectCell(Input.inputString);
             if (Input.GetKeyDown(dropCode))
-                DropEvent?.Invoke();
+                InputKeyDrop?.Invoke();
 
 
             FastMoveCellEvent?.Invoke(Input.GetKey(KeyCode.LeftShift));
@@ -73,13 +76,26 @@ namespace Inventory
                 InputKeyEvent?.Invoke(s);
         }
 
-        internal void DropItem(InventoryItem inventoryItem, int count, SMGInventoryCellGun gun)
+        internal void DropItem(InventoryItem inventoryItem, int id, int count, SMGInventoryCellGun gun)
         {
             var item = Instantiate(inventoryItem, fps.transform.position, fps.transform.rotation);
             item.SetCount(count);
             item.SetGun(gun);
             var powerForce = 5;
             item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
+
+            DropEvent?.Invoke(Localization.GetHint(id), count);
+        }
+
+        internal void DropModifier(ModifierCharacteristics.SMGTitleTypeIndex tti)
+        {
+            var pref = ModifiersPrefabsData.GetPrefabFromTTI(tti);           
+            var item = Instantiate(pref, fps.transform.position, fps.transform.rotation);
+            var powerForce = 5;
+            item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
+
+
+            DropEvent?.Invoke(GunCharacteristics.GetNormalTitleFromTTI(tti), 1);
         }
 
         public void Hide() => SetEnable(false);

@@ -8,8 +8,7 @@ namespace SMG
     /// </summary>
     public class DynamicalElementsAnswer : MonoBehaviour
     {
-        [SerializeField] private GameObject background;
-        [SerializeField] private SMGMain main;
+        [SerializeField] private GameObject background;        
         [SerializeField] private TextMeshProUGUI onOkeybtnText;
         [SerializeField] private TextMeshProUGUI onCancelbtnText;
         public bool IsActive => background.activeInHierarchy;
@@ -22,7 +21,7 @@ namespace SMG
         }
         public void Show(Action onOkeyMethod, Action onCancelMethod, string okeyText = "Да", string cancelText = "Отмена")
         {
-            transform.localPosition = Input.mousePosition;
+            transform.position = Input.mousePosition;
             background.SetActive(true);
 
             currentOnOkeymtd = onOkeyMethod;

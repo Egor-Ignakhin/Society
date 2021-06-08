@@ -59,32 +59,33 @@ namespace SMG
                 return modDescriptions.Data[modTitle].desc;
             else return string.Empty;
         }
-    }
-    [System.Serializable]
-    public class GunModifierDescription
-    {
-        public List<Modifier> Modifiers;
-        public Dictionary<string, (int bc, string title, string desc)> Data { get; } = new Dictionary<string, (int bc, string title, string desc)>();
 
         [System.Serializable]
-        public class Modifier
+        public class GunModifierDescription
         {
-            public string TTI;
-            public int BulletsCount;
-            public string Title;
-            public string Description;
+            public List<Modifier> Modifiers;
+            public Dictionary<string, (int bc, string title, string desc)> Data { get; } = new Dictionary<string, (int bc, string title, string desc)>();
+
+            [System.Serializable]
+            public class Modifier
+            {
+                public string TTI;
+                public int BulletsCount;
+                public string Title;
+                public string Description;
+            }
         }
-    }
-    [System.Serializable]
-    public class GunDescription
-    {
-        public List<Gun> Guns;
-        public Dictionary<GunsID, Gun> Data { get; } = new Dictionary<GunsID, Gun>();
-
         [System.Serializable]
-        public class Gun
+        public class GunDescription
         {
-            public string Title;
+            public List<Gun> Guns;
+            public Dictionary<GunsID, Gun> Data { get; } = new Dictionary<GunsID, Gun>();
+
+            [System.Serializable]
+            public class Gun
+            {
+                public string Title;
+            }
         }
     }
 }

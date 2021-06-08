@@ -13,7 +13,7 @@ namespace Inventory
         private List<TextMeshProUGUI> activeLoggers = new List<TextMeshProUGUI>();
         private const float delayToDisable = 4f;// длительность отображения логгера
 
-        private void OnEnable()
+        private void Start()
         {
             disabledloggers = new Stack<TextMeshProUGUI>();
             for (int i = 0; i < 5; i++)
@@ -26,7 +26,8 @@ namespace Inventory
             }
             inventoryContainer = FindObjectOfType<InventoryContainer>();
             inventoryContainer.TakeItemEvent += DrawNewItem;
-            inventoryContainer.ActivateItemEvent += DrawUsedItem;
+            inventoryContainer.ActivateItemEvent += DrawUsedItem;            
+            inventoryContainer.InventoryInput.DropEvent += DropItem;
         }
         private void Update()
         {
@@ -50,7 +51,9 @@ namespace Inventory
             if (!inventoryContainer.IsInitialized)
                 return;
 
-            AddNewLogger().SetText($"Добавлено: {Localization.GetHint(id)}  x{count}");           
+            var lg = AddNewLogger();
+            lg.SetText($"Добавлено: {Localization.GetHint(id)}  x{count}");
+            lg.color = Color.green;
         }
         private TextMeshProUGUI AddNewLogger()
         {
@@ -78,13 +81,24 @@ namespace Inventory
         {
             if (!inventoryContainer.IsInitialized)
                 return;
-            
-            AddNewLogger().SetText($"Использовано: {Localization.GetHint(id)}  x{count}");
+            var lg = AddNewLogger();
+            lg.SetText($"Использовано: {Localization.GetHint(id)}  x{count}");
+            lg.color = Color.white;
+        }
+        private void DropItem(string title, int count)
+        {
+            if (!inventoryContainer.IsInitialized)
+                return;
+
+            var lg = AddNewLogger();
+            lg.SetText($"- {title}  x{count}");
+            lg.color = Color.red;
         }
         private void OnDisable()
         {
             inventoryContainer.TakeItemEvent -= DrawNewItem;
-            inventoryContainer.ActivateItemEvent -= DrawUsedItem;
+            inventoryContainer.ActivateItemEvent -= DrawUsedItem;            
+            inventoryContainer.InventoryInput.DropEvent -= DropItem;
             disabledloggers = null;
             activeLoggers = null;
         }

@@ -29,8 +29,9 @@ namespace Inventory
         [SerializeField] private Button ModifiersActivator;
         [SerializeField] private GameObject modifiersPage;
         [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
-        private InventoryInput inventoryInput;
+        public InventoryInput InventoryInput { get; private set; }
         private InventoryDrawer inventoryDrawer;
+
         public delegate void InteractiveHandler(int id, int count);
         public event InteractiveHandler TakeItemEvent;
         public event InteractiveHandler ActivateItemEvent;
@@ -41,8 +42,8 @@ namespace Inventory
 
         private void Awake()
         {
-            inventoryInput = gameObject.AddComponent<InventoryInput>();
-            prefabsData = new PrefabsData();            
+            InventoryInput = gameObject.AddComponent<InventoryInput>();
+            prefabsData = new PrefabsData();
         }
 
         private void OnEnable()
@@ -52,12 +53,12 @@ namespace Inventory
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
-                ModifiersActivator, modifiersPage);
+                busyCellsContainer, this, ItemsLabelDescription, InventoryInput, inventoryDrawer, weightText, takeAllButton,
+                ModifiersActivator, modifiersPage, FindObjectOfType<SMG.SMGInventoryCellsEventReceiver>());
             EventReceiver.OnEnable();
             StartCoroutine(nameof(CellAnimator));
         }
-       
+
         private void Start()
         {
             // добавление всех ячеек в список
@@ -104,12 +105,16 @@ namespace Inventory
         public void AddItem(int id, int count, SMGInventoryCellGun gun, bool isRecursion = false)
         {
             if (Cells.FindAll(c => c.IsEmpty).Count == 0)// если не нашлись свободные слоты
+            {
+                //выбрасывание предмета обратно
+                InventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
                 return;
+            }
 
             // поиск слота, с предметом того же типа, и не заполненным   
             var cell = Cells.Find(c => !c.IsFilled && c.Id.Equals(id));
 
-            if (cell is null) cell = Cells.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
+            if (cell == null) cell = Cells.Find(c => c.IsEmpty);// если слот не нашёлся то запись в пустой слот
 
             cell.SetItem(id, count, gun, false);
 
@@ -136,7 +141,7 @@ namespace Inventory
         {
             Save(Cells);
             EventReceiver.OnDisable();
-            StopCoroutine(nameof(CellAnimator));            
+            StopCoroutine(nameof(CellAnimator));
         }
         /// <summary>
         /// сохранение инвентаря

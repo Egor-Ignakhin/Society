@@ -41,11 +41,12 @@ namespace Inventory
         private GameObject modifiersPage;
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
+        private SMG.SMGInventoryCellsEventReceiver SMGICEV;
 
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
-         TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage)
+         TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage, SMG.SMGInventoryCellsEventReceiver smgicev)
         {
             mainParent = mp;
             fps = controller;
@@ -59,12 +60,13 @@ namespace Inventory
             takeAllButton = taB;
             modPageButton = modbtn;
             modifiersPage = modPage;
+            SMGICEV = smgicev;
         }
         public void OnEnable()
         {
             inventoryInput.ChangeActiveEvent += ChangeActiveEvent;
             inventoryInput.InputKeyEvent += OnInputCellsNums;
-            inventoryInput.DropEvent += OnDropEvent;
+            inventoryInput.InputKeyDrop += OnDropEvent;
             inventoryInput.ScrollEvent += OnScrollEvent;
             ItemsLabelDescription.SetActive(false);
             inventoryContainer.TakeItemEvent += inventoryMassCalculator.AddItem;
@@ -73,15 +75,15 @@ namespace Inventory
             takeAllButton.gameObject.SetActive(false);
             modifiersPage.SetActive(false);
             modPageButton.onClick.AddListener(ModifiersPageChangeActive);
-
+            
             foreach (var m in modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>())
-                m.OnInit();
+                m.OnInit(SMGICEV);
         }
         internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
         private void ChangeActiveEvent(bool value) => SetEnable(value);
 
         private void SetEnable(bool v)
-        {            
+        {
             bool enabled = inventoryDrawer.ChangeActiveMainField(v);
             if (!enabled)
             {
@@ -91,7 +93,7 @@ namespace Inventory
             else
                 RewriteSMGCells();
 
-            fps.SetState(enabled ? State.locked : State.unlocked);            
+            fps.SetState(enabled ? State.locked : State.unlocked);
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)
@@ -273,7 +275,7 @@ namespace Inventory
 
         private void DropItem(int id, int count, SMGInventoryCellGun gun)
         {
-            inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), count, gun);
+            inventoryInput.DropItem(inventoryContainer.GetItemPrefab(id), id, count, gun);
         }
 
         // переделать с проверки расстояния на проверку по пересеч. фигуры (динамической)
@@ -425,7 +427,7 @@ namespace Inventory
             lastItemContainer = null;
             takeAllButton.gameObject.SetActive(false);
         }
-        private void RewriteSMGCells()
+        public void RewriteSMGCells()
         {
             var smgCells = modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>();
             var modData = modifiersData.GetModifiersData();
@@ -440,7 +442,7 @@ namespace Inventory
         {
             inventoryInput.ChangeActiveEvent -= ChangeActiveEvent;
             inventoryInput.InputKeyEvent -= OnInputCellsNums;
-            inventoryInput.DropEvent -= OnDropEvent;
+            inventoryInput.InputKeyDrop -= OnDropEvent;
             inventoryInput.ScrollEvent -= OnScrollEvent;
             inventoryInput.FastMoveCellEvent -= OnInputFastMoveCell;
             inventoryContainer.TakeItemEvent -= inventoryMassCalculator.AddItem;
@@ -449,7 +451,7 @@ namespace Inventory
         }
         public void ModifiersPageChangeActive() => modifiersPage.SetActive(!modifiersPage.activeInHierarchy);
 
-        private void OnInputFastMoveCell(bool v) => canFastMoveSelCell = v;        
+        private void OnInputFastMoveCell(bool v) => canFastMoveSelCell = v;
 
         public class InventoryMassCalculator
         {
