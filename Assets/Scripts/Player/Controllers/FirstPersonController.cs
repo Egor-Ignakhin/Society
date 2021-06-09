@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -12,7 +13,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private float VerticalRotationRange = 0f;
     private readonly float HeadMaxY = 90;
     private readonly float HeadMinY = -90;
-    private const float Sensitivity = 2;
+    private float Sensitivity = 3;
 
     public float SensivityM { get; set; } = 1;
     private readonly float CameraSmoothing = 5f;
@@ -92,7 +93,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         public float ColliderRadius { get; set; }
         public float ColliderHeight { get; set; }
         public float ChangeTime = 1;
-    }
+    }    
 
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
     private CapsuleCollider capsule;
@@ -533,6 +534,10 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         {
             fpc.PlayerStepEvent -= OnStep;
         }
+    }
+    internal void SetSensivity(int sensivity)
+    {
+        Sensitivity = sensivity;
     }
     private void OnDestroy()
     {

@@ -15,7 +15,6 @@ namespace MenuScripts
         /// </summary>
         sealed class MenuPauseManager : MonoBehaviour, IGameScreen
         {
-            private bool isInitialized;
             private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
             [SerializeField] private Transform mainParent;// контейнер сод. кнопки
             [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
@@ -31,6 +30,7 @@ namespace MenuScripts
 
             [SerializeField] private TextMeshProUGUI sensivityText;
             [SerializeField] private Slider sensivitySlider;
+            [SerializeField] private Toggle reloadCABToggle;
             private void Start()
             {
                 fpc = FindObjectOfType<FirstPersonController>();
@@ -39,15 +39,29 @@ namespace MenuScripts
                 LoadData();
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
+                fovText.SetText(currentGameSettings.FOV.ToString());
+                Camera.main.fieldOfView = currentGameSettings.FOV;
 
-                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
+                sensivitySlider.value = (float)currentGameSettings.Sensivity / 10;
+                sensivityText.SetText(currentGameSettings.Sensivity.ToString());
+
                 effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
+                effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled);
                 bloomToggle.isOn = currentGameSettings.BloomEnabled;
+                reloadCABToggle.isOn = currentGameSettings.reloadEffectEnabled;
                 SettingsObj.SetActive(false);
+                sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
+                fovSlider.onValueChanged.AddListener(ChangeFovSlider);
+
+                SetSensivityToFPC();
             }
 
             public void Enable() => menuEventReceiver.Enable();
 
+            private void SetSensivityToFPC()
+            {
+                fpc.SetSensivity(currentGameSettings.Sensivity);
+            }
 
             /// <summary>
             /// смена активности bloom'а
@@ -58,24 +72,26 @@ namespace MenuScripts
                 if (effectsManager)
                     effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
             }
-            public void ChangeFovSlider()
+            public void SetActiveReloadCAB()
             {
-                if (!isInitialized)
-                {
-                    isInitialized = true;
-                    return;
-                }
-                currentGameSettings.FOV = currentGameSettings.minFov + ((currentGameSettings.maxFov - currentGameSettings.minFov) * fovSlider.value);
+                if (effectsManager)
+                    effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled = reloadCABToggle.isOn);
+            }
+            public void ChangeFovSlider(float v)
+            {
+                currentGameSettings.FOV = currentGameSettings.minFov + ((currentGameSettings.maxFov - currentGameSettings.minFov) * v);
 
                 currentGameSettings.FOV = (float)System.Math.Round(currentGameSettings.FOV, 1);// округление до нормальных значений
 
-                fovText.SetText((Camera.main.fieldOfView = currentGameSettings.FOV).ToString());
+                fovText.SetText(currentGameSettings.FOV.ToString());
+                Camera.main.fieldOfView = currentGameSettings.FOV;
             }
-            public void ChangeSensivitySlider()
+            public void ChangeSensivitySlider(float v)
             {
-                currentGameSettings.Sensivity = (int)(currentGameSettings.MinSensivity + ((currentGameSettings.MaxSensivity - currentGameSettings.MinSensivity) * sensivitySlider.value));                
-           
+                currentGameSettings.Sensivity = (int)(v * 10);
+
                 sensivityText.SetText(currentGameSettings.Sensivity.ToString());
+                SetSensivityToFPC();
             }
             private void LoadData()
             {
@@ -91,7 +107,12 @@ namespace MenuScripts
                 if (currentGameSettings == null)
                     currentGameSettings = new CurrentGameSettings();
             }
-            private void OnDisable() => SaveData();
+            private void OnDisable()
+            {
+                SaveData();
+                sensivitySlider.onValueChanged.RemoveListener(ChangeSensivitySlider);
+                fovSlider.onValueChanged.RemoveListener(ChangeFovSlider);
+            }
 
             private void SaveData()
             {
@@ -292,6 +313,8 @@ namespace MenuScripts
             public int MinSensivity = 0;
             public int Sensivity = 3;
             public int MaxSensivity = 10;
+
+            public bool reloadEffectEnabled = true;
         }
     }
 }

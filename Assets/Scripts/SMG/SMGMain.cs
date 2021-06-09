@@ -77,6 +77,8 @@ namespace SMG
         }
         private void Update()
         {
+            if (!IsActive)
+                return;
             if (Input.GetMouseButtonDown(1))
             {
                 if (lastSelectedObj && !DEA.IsActive && (!lastSelectedObj.GetComponent<SMGGunElement>().IsEmpty()))
@@ -100,8 +102,15 @@ namespace SMG
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))
             {
                 MeshRenderer currentMesh = hit.transform.GetComponent<MeshRenderer>();
-                if (lastSelectedObj && (currentMesh != lastSelectedObj) && (!lastSelectedObj.GetComponent<SMGGunElement>().IsEmpty()))
-                    lastSelectedObj.material.SetColor("_EmissionColor", defColor);
+                if (lastSelectedObj && (currentMesh != lastSelectedObj))
+                {
+                    if (lastSelectedObj.TryGetComponent<SMGGunElement>(out var element))
+                    {
+                        if (element.IsEmpty())
+                            return;
+                        lastSelectedObj.material.SetColor("_EmissionColor", defColor);
+                    }
+                }
 
                 if (currentMesh != lastSelectedObj)
                     currentMesh.material.SetColor("_EmissionColor", selectableColor);
@@ -115,15 +124,17 @@ namespace SMG
         }
         public void DeselectGunElement()
         {
-            if (!lastSelectedObj.GetComponent<SMGGunElement>().IsEmpty())
+            if (lastSelectedObj.TryGetComponent<SMGGunElement>(out var element))
             {
+                if (element.IsEmpty())
+                    return;
                 lastSelectedObj.material.SetColor("_EmissionColor", defColor);
                 lastSelectedObj = null;
             }
         }
         internal void UnequipGunElement()
         {
-            EventReceiver.UnequipMagOnSelGun();
+            EventReceiver.UnequipGunElement(lastSelectedObj.GetComponent<SMGGunElement>());
             DeselectGunElement();
         }
 

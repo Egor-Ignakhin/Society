@@ -91,10 +91,12 @@ namespace SMG
             /// </summary>
             /// <param name="gun"></param>
             /// <returns></returns>
-            internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun)
+            internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun, ModifierTypes type)
             {
-                return new SMGTitleTypeIndex((GunTitles)gun.Title, ModifierTypes.Mag, (ModifierIndex)gun.Mag);
-            }
+                var tti = new SMGTitleTypeIndex((GunTitles)gun.Title, type, type == ModifierTypes.Mag? (ModifierIndex)gun.Mag : (ModifierIndex)gun.Aim);
+
+                return tti;
+            }            
         }
         /// <summary>
         /// контейнер содержащий спрайт модификатора и его характеристики

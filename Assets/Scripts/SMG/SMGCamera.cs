@@ -67,12 +67,12 @@ namespace SMG
         {
             if (v)
             {
-                ev.UpdateModfiersEvent += SetMagToActiveGun;
+                ev.UpdateModfiersEvent += SetModifiersToActiveGun;
                 ev.ChangeGunEvent += SetActiveGun;                
             }
             else
             {
-                ev.UpdateModfiersEvent -= SetMagToActiveGun;
+                ev.UpdateModfiersEvent -= SetModifiersToActiveGun;
                 ev.ChangeGunEvent -= SetActiveGun;
             }
         }
@@ -124,10 +124,10 @@ namespace SMG
             mCamera.fieldOfView = defCamFov;
         }
 
-        internal void SetMagToActiveGun(ModifierCell gc)
+        internal void SetModifiersToActiveGun(ModifierCell gc)
         {
             activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
-            activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Aim);
+            activeManager.SetAim((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Aim);
         }
     }
 }

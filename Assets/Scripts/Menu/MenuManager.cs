@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 namespace MenuScripts
@@ -8,39 +7,37 @@ namespace MenuScripts
     {
         private AudioClip OnButtonEnterSound;
         private AudioSource aud;
+        [SerializeField] private GameObject settings;
         private void Awake()
         {
             OnButtonEnterSound = Resources.Load<AudioClip>("Inventory\\tic_2");
             aud = gameObject.AddComponent<AudioSource>();
             aud.volume = 0.5f;
+            settings.SetActive(false);
+        }
+        public void LoadNewGame()
+        {
+            MissionsManager.State state = new MissionsManager.State();
+            string data = JsonUtility.ToJson(state, true);
+            File.WriteAllText(MissionsManager.StateFolder + MissionsManager.StateFile, data);
+
+            LoadGame();
+        }
+        public void Settings()
+        {
+            settings.gameObject.SetActive(!settings.gameObject.activeInHierarchy);
+        }
+        public void Keyboard()
+        {
+
         }
         public void LoadGame()
         {
             FindObjectOfType<ScenesManager>().LoadNextScene();
         }
-        public void EnableInfo()
-        {
-            ResetMissions();
-        }
-        public void ResetMissions()
-        {
-            MissionsManager.State state = new MissionsManager.State();
-            string data = JsonUtility.ToJson(state, true);
-            File.WriteAllText(MissionsManager.StateFolder + MissionsManager.StateFile, data);
-        }
-
         internal void OnButtonEnter()
         {
             aud.PlayOneShot(OnButtonEnterSound);
-        }
-
-        public void LoadDemoMouseAnton()
-        {
-          LoadScreensManager.Instance.LoadLevel(5, 0);
-        }
-        public void LoadPolygon()
-        {
-            FindObjectOfType<ScenesManager>().LoadNextScene(6);
         }
         public void ExitFromGame()
         {

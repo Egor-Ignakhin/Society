@@ -67,13 +67,15 @@ namespace SMG
         }
         private void ReplaceModifier()
         {
+            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, ccCandidate.TTI.Type));
 
-            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));
+            modifiersData.RemoveModifier(ccCandidate.TTI);
             currentModCell = ccCandidate;
 
-            currentGunCell.SetMag(currentModCell.TTI.Index);            
-
-            modifiersData.RemoveModifier(currentModCell.TTI);
+            if (currentModCell.TTI.Type == ModifierCharacteristics.ModifierTypes.Mag)
+                currentGunCell.SetMag(currentModCell.TTI.Index);
+            else if (currentModCell.TTI.Type == ModifierCharacteristics.ModifierTypes.Aim)
+                currentGunCell.SetAim(currentModCell.TTI.Index);
 
             ReFillModifiersCells();
         }
@@ -135,7 +137,7 @@ namespace SMG
             ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.Ic.MGun.Title;
             var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>()
             {
-                { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun) }// заполнение 1 слота вставленным модификатором                        
+                { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, (ModifierCharacteristics.ModifierTypes)currentGunCell.Ic.MGun.Mag) }// заполнение 1 слота вставленным модификатором                        
             };
             var md = modifiersData.GetModifiersData().FindAll(m => m.Title == title);
             md.Sort((x, y) => y.Index.CompareTo(x.Index));
@@ -165,11 +167,16 @@ namespace SMG
 
             UpdateModfiersEvent?.Invoke(ModifiersCells[0]);
         }
-        internal void UnequipMagOnSelGun()
+        internal void UnequipGunElement(SMGGunElement element)
         {
             currentModCell = null;
-            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun));
-            currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
+
+            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, element.GetModifierType()));
+            if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Mag)
+                currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
+            else if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Aim)
+                currentGunCell.SetAim(ModifierCharacteristics.ModifierIndex.None);
+
             ModifiersCells[0].Clear();
             ReFillModifiersCells();
         }

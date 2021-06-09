@@ -46,4 +46,8 @@ public sealed class EffectsManager : MonoBehaviour
         isRechargeable = v;
         chromaticAberration.active = true;
     }
+    public void SetEnableReloadCAB(bool v)
+    {
+        NeccecryAnimateCAB = v;
+    }
 }
