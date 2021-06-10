@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 6430034626964105867}
   - component: {fileID: 4704731888914136752}
   - component: {fileID: 6668675808508020874}
+  - component: {fileID: 4374066962297360224}
   m_Layer: 0
   m_Name: osnova_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &6430034626964105867
 Transform:
@@ -79,6 +80,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &4374066962297360224
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587738365114567119}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.014610175, y: 0.0062589515, z: 0.01579651}
+  m_Center: {x: -0.007305146, y: -0.00015099693, z: 0.00011857993}
 --- !u!1 &670792042719555748
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,12 +104,13 @@ GameObject:
   - component: {fileID: 8127943109575441294}
   - component: {fileID: 4169630871231307395}
   - component: {fileID: 4038146956649427384}
+  - component: {fileID: 6416167739219586877}
   m_Layer: 0
   m_Name: derzhalki_veshalki_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &8127943109575441294
 Transform:
@@ -158,6 +173,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &6416167739219586877
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670792042719555748}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.009220935, y: 0.0007817995, z: 0.00067560363}
+  m_Center: {x: -0.000000059604645, y: -0.0000001453154, z: 0.0060674124}
 --- !u!1 &1993905567143627287
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,12 +197,13 @@ GameObject:
   - component: {fileID: 7600196823589633391}
   - component: {fileID: 1409718155916192878}
   - component: {fileID: 8183106943469236258}
+  - component: {fileID: 1684917160292906654}
   m_Layer: 0
   m_Name: petli_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &7600196823589633391
 Transform:
@@ -237,6 +266,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &1684917160292906654
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993905567143627287}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.01465184, y: 0.000041920954, z: 0.01485835}
+  m_Center: {x: 0.0073049595, y: -1.3460519e-10, z: 0.0051361006}
 --- !u!1 &3620921318601485291
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +293,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &4110599458072375633
 Transform:
@@ -287,12 +329,13 @@ GameObject:
   - component: {fileID: 4338864734997920935}
   - component: {fileID: 6761575675982592953}
   - component: {fileID: 5830851098467892789}
+  - component: {fileID: 5607882985120620425}
   m_Layer: 0
   m_Name: polki_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &4338864734997920935
 Transform:
@@ -355,6 +398,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5607882985120620425
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5508225518608215405}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0042987405, y: 0.005344248, z: 0.008482108}
+  m_Center: {x: 2.2597126e-22, y: -0.000000029802322, z: -0.004168434}
 --- !u!1 &5571764315947717336
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,12 +422,13 @@ GameObject:
   - component: {fileID: 9176589855511232512}
   - component: {fileID: 1403456010707817560}
   - component: {fileID: 7018853827206270331}
+  - component: {fileID: 5413345395500787306}
   m_Layer: 0
   m_Name: dver_levaja_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &9176589855511232512
 Transform:
@@ -434,6 +491,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5413345395500787306
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5571764315947717336}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0048710955, y: 0.0007183699, z: 0.014990549}
+  m_Center: {x: -0.0024355776, y: -0.0003595365, z: 0.0011047251}
 --- !u!1 &6119894009029350937
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,12 +515,13 @@ GameObject:
   - component: {fileID: 5172116961038567396}
   - component: {fileID: 7300054377022567898}
   - component: {fileID: 8415506726099628158}
+  - component: {fileID: 9159167802409564336}
   m_Layer: 0
   m_Name: dver_centralnaja_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &5172116961038567396
 Transform:
@@ -513,6 +584,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &9159167802409564336
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119894009029350937}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.004871099, y: 0.00038047566, z: 0.014990553}
+  m_Center: {x: -0.002435548, y: -0.00019058902, z: 0.0011047259}
 --- !u!1 &6132357924185567556
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,12 +608,13 @@ GameObject:
   - component: {fileID: 7618243222746547010}
   - component: {fileID: 1245732342568596584}
   - component: {fileID: 3339364392064853069}
+  - component: {fileID: 8200718084892083719}
   m_Layer: 0
   m_Name: veshalka_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &7618243222746547010
 Transform:
@@ -592,6 +677,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &8200718084892083719
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6132357924185567556}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.009173337, y: 0.00027394277, z: 0.0002836064}
+  m_Center: {x: -0.00018488197, y: 0, z: 0.0000000021609594}
 --- !u!1 &7139019993622441033
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,12 +701,13 @@ GameObject:
   - component: {fileID: 1828686042812238127}
   - component: {fileID: 5659089174770390112}
   - component: {fileID: 506509242995256775}
+  - component: {fileID: 7015842412480493475}
   m_Layer: 0
   m_Name: dver_pravaja_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1828686042812238127
 Transform:
@@ -671,6 +770,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &7015842412480493475
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7139019993622441033}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0048679872, y: 0.00071837433, z: 0.01499055}
+  m_Center: {x: 0.0024339631, y: -0.0003595383, z: 0.0011047267}
 --- !u!1 &9006576173703816818
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,12 +794,13 @@ GameObject:
   - component: {fileID: 847198271432429308}
   - component: {fileID: 6517822382654667202}
   - component: {fileID: 8068522228983536313}
+  - component: {fileID: 7487504206318403206}
   m_Layer: 0
   m_Name: nogi_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &847198271432429308
 Transform:
@@ -750,3 +863,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &7487504206318403206
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9006576173703816818}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.012673438, y: 0.0050241104, z: 0.0019269563}
+  m_Center: {x: -0.000000059604645, y: 0, z: -0.0007302058}

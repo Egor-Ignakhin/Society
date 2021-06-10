@@ -40,7 +40,7 @@ public sealed class EffectsManager : MonoBehaviour
     }
     internal void SetEnableAllEffects(bool v) => globalVolume.enabled = v;
     public void SetRechargeable(bool v)
-    {
+    {        
         if (!NeccecryAnimateCAB)
             return;
         isRechargeable = v;

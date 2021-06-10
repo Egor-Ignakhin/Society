@@ -1,22 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using static Inventory.ItemStates;
 
 namespace SMG
 {
     static class GunCharacteristics
     {
-        private static readonly Dictionary<ItemsID, string> guns;
+        private static readonly Dictionary<ItemsID, GunDescription.Gun> guns;
         private static GunModifierDescription modDescriptions;
         private static GunDescription gunDescription;
         static GunCharacteristics()
         {
             LoadGMD();
             LoadGuns();
-            guns = new Dictionary<ItemsID, string>
+            guns = new Dictionary<ItemsID, GunDescription.Gun>
             {
-                {ItemsID.Makarov, gunDescription.Data[GunsID.Makarov].Title},
-                {ItemsID.TTPistol, gunDescription.Data[GunsID.TTPistol].Title},
-                {ItemsID.Ak_74, gunDescription.Data[GunsID.Ak_74].Title}
+                {ItemsID.Makarov, gunDescription.Data[GunsID.Makarov]},
+                {ItemsID.TTPistol, gunDescription.Data[GunsID.TTPistol]},
+                {ItemsID.Ak_74, gunDescription.Data[GunsID.Ak_74]}
             };
         }
         private static void LoadGMD()
@@ -37,7 +38,9 @@ namespace SMG
                 gunDescription.Data.Add((GunsID)i, gunDescription.Guns[i]);
             }
         }
-        public static string GetGunTitle(int id) => guns[(ItemsID)id];
+                
+        public static string GetGunTitle(int id) => guns[(ItemsID)id].Title;
+        public static string GetCaliberFromTitle(int id) => guns[(ItemsID)id].Caliber;
         public static int GetBulletsCountFromTTI(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             string modTitle = $"{tti.Title}_{tti.Type}{tti.Index}";
@@ -60,13 +63,13 @@ namespace SMG
             else return string.Empty;
         }
 
-        [System.Serializable]
+        [Serializable]
         public class GunModifierDescription
         {
             public List<Modifier> Modifiers;
             public Dictionary<string, (int bc, string title, string desc)> Data { get; } = new Dictionary<string, (int bc, string title, string desc)>();
 
-            [System.Serializable]
+            [Serializable]
             public class Modifier
             {
                 public string TTI;
@@ -75,16 +78,17 @@ namespace SMG
                 public string Description;
             }
         }
-        [System.Serializable]
+        [Serializable]
         public class GunDescription
         {
             public List<Gun> Guns;
             public Dictionary<GunsID, Gun> Data { get; } = new Dictionary<GunsID, Gun>();
 
-            [System.Serializable]
+            [Serializable]
             public class Gun
             {
                 public string Title;
+                public string Caliber;
             }
         }
     }

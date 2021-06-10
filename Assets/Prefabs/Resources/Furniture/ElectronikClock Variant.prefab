@@ -195,6 +195,19 @@ MonoBehaviour:
   - {fileID: 0}
   additionalRotateForMin: {x: 0, y: 0, z: 0}
   additionalRotateForHours: {x: 0, y: 0, z: 0}
+--- !u!65 &8739896284575881628
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2353453960440147146}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.05612588, y: 0.26432785, z: 0.12489383}
+  m_Center: {x: 0.0042020897, y: -0.019241963, z: 0.00047979582}
 --- !u!1001 &3199891345347465627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -225,37 +238,37 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.754
+      value: 57.471
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.384
+      value: 1.101
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.082
+      value: 30.344
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6123723
+      value: 0.5000015
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.6123723
+      value: -0.50000143
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.35355374
+      value: -0.49999854
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.3535537
+      value: -0.4999985
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
@@ -270,7 +283,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 60.000004
+      value: -90.00001
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
@@ -280,7 +293,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 840c8566c8f30de46ae25d8c19a3be14,
         type: 3}
       propertyPath: m_Name
-      value: ElectronikClock
+      value: ElectronikClock Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 840c8566c8f30de46ae25d8c19a3be14, type: 3}

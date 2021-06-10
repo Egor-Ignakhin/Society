@@ -120,7 +120,7 @@ namespace Shoots
 
             Reload();
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.R) && !gunAnimator.IsAiming)
             {
                 IsReload = true;
             }
@@ -135,6 +135,7 @@ namespace Shoots
             if (dispenser.IsFull)
                 IsReload = false;
 
+
             effectsManager.SetRechargeable(IsReload);
 
             if (!IsReload)
@@ -145,7 +146,7 @@ namespace Shoots
 
             if (remainingBullets <= 0)
             {
-                IsReload = false;
+                IsReload = false;                
                 return;
             }
 
