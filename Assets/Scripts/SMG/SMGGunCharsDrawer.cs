@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using System;
 
 namespace SMG
 {
@@ -33,9 +34,10 @@ namespace SMG
             var title = GunCharacteristics.GetGunTitle(id);
             titleTextDrawing.text = title;
             titleTextPreview.text = title;
-            damageText.text = $"Урон: N/A";
-            maxFlyDistText.text = $"Максимальная дистанция поражения: N/A";
-            optFlyDistText.text = $"Оптимальная дистанция поражения: N/A";
+            damageText.text = 
+                $"Урон: {GunCharacteristics.GetDamage(id)}";
+            maxFlyDistText.text = $"Максимальная дистанция поражения: {GunCharacteristics.GetMaximumDistanceFromTitle(id)}";
+            optFlyDistText.text = $"Оптимальная дистанция поражения: {GunCharacteristics.GetOptimalDistanceFromTitle(id)}";
             caliberText.text = $"Калибр: {GunCharacteristics.GetCaliberFromTitle(id)}";
             dispVolText.text = $"Объём магазина: {ModifierCharacteristics.GetAmmoCountFromDispenser(cell.MGun.Title, cell.MGun.Mag)}";
         }

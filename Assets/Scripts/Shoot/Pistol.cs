@@ -12,10 +12,6 @@ namespace Shoots
             lastReloadClip = Resources.Load<AudioClip>("Guns\\MakarovLastReload");
             nullBulletsClip = Resources.Load<AudioClip>("Guns\\MakarovBulletsNull");
         }
-        public override float CartridgeDispenser()
-        {
-            return 0.25f;
-        }
         protected override void Update()
         {
             if (Input.GetMouseButtonDown(0))

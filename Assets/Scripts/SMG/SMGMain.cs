@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace SMG
 {
@@ -84,15 +85,22 @@ namespace SMG
                 if (lastSelectedObj && !DEA.IsActive && (!lastSelectedObj.GetComponent<SMGGunElement>().IsEmpty()))
                     DEA.Show(UnequipGunElement, DeselectGunElement, "Снять модификатор?");
             }
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.R) && !DEA.IsActive)
             {
-                if (lastSelectedObj && !DEA.IsActive)
-                    EventReceiver.ReFillModifiersCells();
+                if (EventReceiver.CurGunCellContAnyMod())
+                {
+                    DEA.Show(UnequipAllElements, null, "Вы действительно хотите разобрать оружие?");
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.V) && !MSMG.IsActive)
+            {
+                SetEnableSMGCam(true);
             }
             if (!MSMG.IsActive)
                 return;
             MSMG.RotateAroundMouse();
         }
+
         private MeshRenderer lastSelectedObj;
         private void FixedUpdate()
         {
@@ -104,12 +112,7 @@ namespace SMG
                 MeshRenderer currentMesh = hit.transform.GetComponent<MeshRenderer>();
                 if (lastSelectedObj && (currentMesh != lastSelectedObj))
                 {
-                    if (lastSelectedObj.TryGetComponent<SMGGunElement>(out var element))
-                    {
-                        if (element.IsEmpty())
-                            return;
-                        lastSelectedObj.material.SetColor("_EmissionColor", defColor);
-                    }
+                    lastSelectedObj.material.SetColor("_EmissionColor", defColor);
                 }
 
                 if (currentMesh != lastSelectedObj)
@@ -124,18 +127,22 @@ namespace SMG
         }
         public void DeselectGunElement()
         {
-            if (lastSelectedObj.TryGetComponent<SMGGunElement>(out var element))
-            {
-                if (element.IsEmpty())
-                    return;
-                lastSelectedObj.material.SetColor("_EmissionColor", defColor);
-                lastSelectedObj = null;
-            }
+            lastSelectedObj.material.SetColor("_EmissionColor", defColor);
+            lastSelectedObj = null;
         }
         internal void UnequipGunElement()
         {
             EventReceiver.UnequipGunElement(lastSelectedObj.GetComponent<SMGGunElement>());
             DeselectGunElement();
+        }
+        private void UnequipAllElements()
+        {
+            if (lastSelectedObj)
+            {
+                lastSelectedObj.material.SetColor("_EmissionColor", defColor);
+                lastSelectedObj = null;
+            }
+            EventReceiver.UnequipAllElements();
         }
 
         public void Hide()

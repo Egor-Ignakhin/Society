@@ -14,10 +14,10 @@ namespace Shoots
         public event DispensetHandler ChangeAmmoCountEvent;
         [SerializeField] protected float caliber = 10;// калибр снаряда    
         protected bool possibleShoot = true;// возможность стрелять
-        public virtual float CartridgeDispenser() => 1;// возможная частота нажатия на курок в секунду
+        public float CartridgeDispenser = 1;// возможная частота нажатия на курок в секунду
         private float currentCartridgeDispenser;
 
-        public virtual float ReloadTime() => 5;// время перезарядки
+        public float ReloadTime;// время перезарядки
         private float currentReloadTime = 0;
         protected Dispenser dispenser;// магазин
         [SerializeField] private Animator mAnimator;
@@ -86,7 +86,7 @@ namespace Shoots
             if (!possibleShoot)
                 return false;
 
-            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser() && inventoryEv.GetSelectedCell().MGun.AmmoCount > 0 && !IsReload;
+            bool canShooting = currentCartridgeDispenser >= CartridgeDispenser && inventoryEv.GetSelectedCell().MGun.AmmoCount > 0 && !IsReload;
             if (canShooting)
             {
                 FastReload(inventoryEv.GetSelectedCell().MGun.AmmoCount);
@@ -95,7 +95,7 @@ namespace Shoots
                 mAnimator.SetTrigger("Fire");
                 gunAnimator.PlayArmorySound(fireClip);
             }
-            else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser())// если пуль нет, то происходит щелчок пустого затвора
+            else if (!isAutomatic && currentCartridgeDispenser >= CartridgeDispenser)// если пуль нет, то происходит щелчок пустого затвора
             {
                 currentCartridgeDispenser = 0;
                 gunAnimator.PlayArmorySound(nullBulletsClip);
@@ -127,7 +127,7 @@ namespace Shoots
         }
         private void CartridgeDispens()
         {
-            if (currentCartridgeDispenser < CartridgeDispenser())
+            if (currentCartridgeDispenser < CartridgeDispenser)
                 currentCartridgeDispenser += Time.deltaTime;
         }
         private void Reload()
@@ -150,7 +150,7 @@ namespace Shoots
                 return;
             }
 
-            IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime();
+            IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime;
             mAnimator.SetBool("Reload", IsReload);
 
             if (!IsReload)

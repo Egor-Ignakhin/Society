@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1671967936
 Transform:
@@ -44,7 +44,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.65916854, b: 0, a: 1}
   m_Intensity: 1.5
-  m_Range: 30
+  m_Range: 50
   m_SpotAngle: 120
   m_InnerSpotAngle: 120
   m_CookieSize: 10
@@ -82,15 +82,15 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 1.5
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
-  m_ShadowRadius: 30
+  m_ShadowRadius: 50
   m_ShadowAngle: 0
 --- !u!1001 &8104550401593155630
 PrefabInstance:
@@ -107,32 +107,32 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.869
+      value: 33.27
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.49
+      value: 21.845
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.842
+      value: 67.558
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8660257
+      value: 0.0000029653306
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4999996
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
@@ -142,12 +142,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 60.000004
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -180.00002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
@@ -157,12 +157,12 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_Name
-      value: Lamp_02 Variant (1)
+      value: Lamp_02 Variant (13)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1157157925247381238, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
@@ -172,12 +172,12 @@ PrefabInstance:
     - target: {fileID: 5162820104835090806, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6794624106324820558, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 8029106800918022278, guid: 07b0a1a2d716b364980938b7519a541d,
         type: 3}

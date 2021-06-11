@@ -36,17 +36,9 @@ namespace Shoots
             flashEffect.time = 0;
             flashEffect.Play();
         }
-        public override float CartridgeDispenser()
-        {
-            return 0.125f;
-        }
         public override float GetRecoilPower()
         {
             return 0.125f;
-        }
-        public override float ReloadTime()
-        {
-            return 3.75f;
-        }
+        }        
     }
 }

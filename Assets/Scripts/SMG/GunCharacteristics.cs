@@ -38,9 +38,14 @@ namespace SMG
                 gunDescription.Data.Add((GunsID)i, gunDescription.Guns[i]);
             }
         }
-                
+
+        internal static object GetDamage(int id)=> guns[(ItemsID)id].Damage;
+
+
         public static string GetGunTitle(int id) => guns[(ItemsID)id].Title;
         public static string GetCaliberFromTitle(int id) => guns[(ItemsID)id].Caliber;
+        public static string GetOptimalDistanceFromTitle(int id) => guns[(ItemsID)id].OptimalDistance;
+        public static string GetMaximumDistanceFromTitle(int id) => guns[(ItemsID)id].MaximumDistance;
         public static int GetBulletsCountFromTTI(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
             string modTitle = $"{tti.Title}_{tti.Type}{tti.Index}";
@@ -61,7 +66,7 @@ namespace SMG
             if (modDescriptions.Data.ContainsKey(modTitle))
                 return modDescriptions.Data[modTitle].desc;
             else return string.Empty;
-        }
+        }        
 
         [Serializable]
         public class GunModifierDescription
@@ -89,6 +94,9 @@ namespace SMG
             {
                 public string Title;
                 public string Caliber;
+                public string OptimalDistance;
+                public string MaximumDistance;
+                public string Damage;
             }
         }
     }

@@ -67,7 +67,7 @@ namespace SMG
         }
         private void ReplaceModifier()
         {
-            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, ccCandidate.TTI.Type));
+            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ccCandidate.TTI.Type));
 
             modifiersData.RemoveModifier(ccCandidate.TTI);
             currentModCell = ccCandidate;
@@ -80,14 +80,19 @@ namespace SMG
             ReFillModifiersCells();
         }
 
+        internal bool CurGunCellContAnyMod()
+        {
+            return currentGunCell && ((currentGunCell.MGun.Aim != 0) || (currentGunCell.MGun.Mag != 0));
+        }
+
         internal void OnSelectGunsCell(GunCell sMGGunsCell)
         {
             if (currentGunCell == sMGGunsCell)
                 return;
 
             currentGunCell = sMGGunsCell;
-            ReFillModifiersCells();
             ChangeGunEvent?.Invoke(currentGunCell.Ic);
+            ReFillModifiersCells();
         }
 
         /// <summary>
@@ -112,7 +117,10 @@ namespace SMG
 
             ReFillGunCells();
             if (!gunsCells[0].IsEmpty())
+            {
                 OnSelectGunsCell(gunsCells[0]);
+                ReFillModifiersCells();
+            }
         }
 
         public void OnDeselectModifiersCell() => modifiersAnswer.SetActive(false);
@@ -128,16 +136,31 @@ namespace SMG
             for (int i = 0; i < cellsContGun.Count; i++)
                 gunsCells[i].ChangeItem(cellsContGun[i].Id, cellsContGun[i]);
         }
+
+        internal void UnequipAllElements()
+        {
+            if (currentGunCell)
+            {
+                modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ModifierCharacteristics.ModifierTypes.Mag));
+                modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ModifierCharacteristics.ModifierTypes.Aim));
+
+                currentGunCell.SetAim(ModifierCharacteristics.ModifierIndex.None);
+                currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
+
+                ReFillModifiersCells();
+            }
+        }
+
         /// <summary>
         /// вызовывается для перестройки коллекции модификаторов
         /// </summary>
         /// <param name="ic"></param>
         public void ReFillModifiersCells()
         {
-            ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.Ic.MGun.Title;
+            ModifierCharacteristics.GunTitles title = (ModifierCharacteristics.GunTitles)currentGunCell.MGun.Title;
             var modifirs = new List<ModifierCharacteristics.SMGTitleTypeIndex>()
             {
-                { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, (ModifierCharacteristics.ModifierTypes)currentGunCell.Ic.MGun.Mag) }// заполнение 1 слота вставленным модификатором                        
+                { ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, (ModifierCharacteristics.ModifierTypes)currentGunCell.MGun.Mag) }// заполнение 1 слота вставленным модификатором                        
             };
             var md = modifiersData.GetModifiersData().FindAll(m => m.Title == title);
             md.Sort((x, y) => y.Index.CompareTo(x.Index));
@@ -171,7 +194,7 @@ namespace SMG
         {
             currentModCell = null;
 
-            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.Ic.MGun, element.GetModifierType()));
+            modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, element.GetModifierType()));
             if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Mag)
                 currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
             else if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Aim)

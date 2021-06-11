@@ -13,6 +13,7 @@ namespace SMG
         public int Id { get; private set; }
         public Inventory.InventoryCell Ic { get; private set; }
         private TMPro.TextMeshProUGUI mText;
+        public SMGInventoryCellGun MGun => Ic.MGun;
 
         public bool IsEmpty()
         {
@@ -39,8 +40,8 @@ namespace SMG
         public void OnInit(SMGEventReceiver ev)
         {
             eventReceiver = ev;
-            MImage = GetComponent<UnityEngine.UI.Image>();
-            mText = transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+            MImage = transform.GetChild(0).GetComponent<UnityEngine.UI.Image>();
+            mText = GetComponentInChildren<TMPro.TextMeshProUGUI>();
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -50,7 +51,7 @@ namespace SMG
             eventReceiver.OnSelectGunsCell(this);
         }
 
-        internal void SetMag(ModifierCharacteristics.ModifierIndex index) => Ic.MGun.SetMag(index);
-        public void SetAim(ModifierCharacteristics.ModifierIndex index) => Ic.MGun.SetAim(index);
+        internal void SetMag(ModifierCharacteristics.ModifierIndex index) => MGun.SetMag(index);
+        public void SetAim(ModifierCharacteristics.ModifierIndex index) => MGun.SetAim(index);
     }
 }
