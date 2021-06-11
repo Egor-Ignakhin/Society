@@ -106,12 +106,13 @@ GameObject:
   - component: {fileID: 4903915152027014932}
   - component: {fileID: 7409430122598571686}
   - component: {fileID: 7409430122598571352}
+  - component: {fileID: 1832095294}
   m_Layer: 8
   m_Name: door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &6633891765814296269
 Transform:
@@ -200,6 +201,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11a6de1fe8978da4e8d8cc997db48e2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!208 &1832095294
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5533532142678943802}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.002, y: 0.007, z: 0.011000001}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.004, z: 0.011000001}
+  m_TimeToStationary: 0.5
 --- !u!1 &5640554034637839114
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +324,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &6705714716755397899
 Transform:
