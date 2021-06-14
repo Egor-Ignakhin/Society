@@ -47,7 +47,8 @@ namespace S.A
         {
             foreach (var g in guns)
             {
-                g.Value.gameObject.SetActive(false);
+                if (g.Value)
+                    g.Value.gameObject.SetActive(false);
             }
             if (guns.ContainsKey(ActiveItemId))
                 guns[ActiveItemId].gameObject.SetActive(true);
