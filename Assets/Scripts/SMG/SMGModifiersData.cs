@@ -23,7 +23,7 @@ namespace SMG
         internal void AddModifier(SMGTitleTypeIndex tti)
         {
             if (tti.Index != ModifierIndex.None)
-            {
+            {                
                 if (data.Count < maxDataCount)//если в контейнере есть место
                     data.Add(tti);
                 else

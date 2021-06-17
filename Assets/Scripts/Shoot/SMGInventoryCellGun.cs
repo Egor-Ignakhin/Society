@@ -1,25 +1,23 @@
-﻿using static SMG.ModifierCharacteristics;
+﻿using UnityEngine;
+using static SMG.ModifierCharacteristics;
 [System.Serializable]
 public class SMGInventoryCellGun
 {
     public int Mag = 1;
     public int Aim = 0;
-    public int Silencer = -1;
+    public int Silencer = 0;
     public int Title = 0;
 
     public int AmmoCount = 0;
-    internal void SetMag(ModifierIndex index)
-    {
-        Mag = (int)index;
-    }
-    public void SetAim(ModifierIndex index)
-    {
-        Aim = (int)index;
-    }
-    public void SetTitle(GunTitles t)
-    {
-        Title = (int)t;
-    }
+    internal void SetMag(ModifierIndex index) => Mag = (int)index;
+
+    public void SetAim(ModifierIndex index) => Aim = (int)index;
+
+    public void SetSilencer(ModifierIndex index) => Silencer = (int)index;
+
+
+    public void SetTitle(GunTitles t) => Title = (int)t;
+
     public void Reload(int title, int dispenser, int silencer, int ammocount, int aim)
     {
         Title = title;
@@ -48,8 +46,5 @@ public class SMGInventoryCellGun
         Silencer = 0;
         AmmoCount = 0;
     }
-    public void SetAmmoCount(int ac)
-    {
-        AmmoCount = ac;
-    }
+    public void SetAmmoCount(int ac) => AmmoCount = ac;
 }

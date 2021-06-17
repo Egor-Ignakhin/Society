@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using static Inventory.ItemStates;
 
 namespace SMG
@@ -39,9 +40,8 @@ namespace SMG
             }
         }
 
+        internal static string GetGunDescriptionFromTitle(int title) => guns[(ItemsID)title].Description;       
         internal static object GetDamage(int id)=> guns[(ItemsID)id].Damage;
-
-
         public static string GetGunTitle(int id) => guns[(ItemsID)id].Title;
         public static string GetCaliberFromTitle(int id) => guns[(ItemsID)id].Caliber;
         public static string GetOptimalDistanceFromTitle(int id) => guns[(ItemsID)id].OptimalDistance;
@@ -97,6 +97,7 @@ namespace SMG
                 public string OptimalDistance;
                 public string MaximumDistance;
                 public string Damage;
+                public string Description;
             }
         }
     }

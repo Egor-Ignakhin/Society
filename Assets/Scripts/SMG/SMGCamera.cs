@@ -128,6 +128,7 @@ namespace SMG
         {
             activeManager.SetMag((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Mag);
             activeManager.SetAim((ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Aim);
+            activeManager.SetSilencer((SMG.ModifierCharacteristics.ModifierIndex)gc.Ic.MGun.Silencer);
         }
     }
 }

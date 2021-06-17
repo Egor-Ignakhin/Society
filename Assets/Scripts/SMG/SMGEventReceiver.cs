@@ -72,10 +72,7 @@ namespace SMG
             modifiersData.RemoveModifier(ccCandidate.TTI);
             currentModCell = ccCandidate;
 
-            if (currentModCell.TTI.Type == ModifierCharacteristics.ModifierTypes.Mag)
-                currentGunCell.SetMag(currentModCell.TTI.Index);
-            else if (currentModCell.TTI.Type == ModifierCharacteristics.ModifierTypes.Aim)
-                currentGunCell.SetAim(currentModCell.TTI.Index);
+            currentGunCell.SetModeFromReplacedMode(currentModCell.TTI.Type, currentModCell.TTI.Index);
 
             ReFillModifiersCells();
         }
@@ -143,9 +140,11 @@ namespace SMG
             {
                 modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ModifierCharacteristics.ModifierTypes.Mag));
                 modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ModifierCharacteristics.ModifierTypes.Aim));
+                modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ModifierCharacteristics.ModifierTypes.Silencer));
 
                 currentGunCell.SetAim(ModifierCharacteristics.ModifierIndex.None);
                 currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
+                currentGunCell.SetSilencer(ModifierCharacteristics.ModifierIndex.None);
 
                 ReFillModifiersCells();
             }
@@ -199,6 +198,8 @@ namespace SMG
                 currentGunCell.SetMag(ModifierCharacteristics.ModifierIndex.None);
             else if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Aim)
                 currentGunCell.SetAim(ModifierCharacteristics.ModifierIndex.None);
+            else if (element.GetModifierType() == ModifierCharacteristics.ModifierTypes.Silencer)
+                currentGunCell.SetSilencer(ModifierCharacteristics.ModifierIndex.None);
 
             ModifiersCells[0].Clear();
             ReFillModifiersCells();

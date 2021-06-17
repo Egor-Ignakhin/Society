@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SMG
@@ -53,5 +54,17 @@ namespace SMG
 
         internal void SetMag(ModifierCharacteristics.ModifierIndex index) => MGun.SetMag(index);
         public void SetAim(ModifierCharacteristics.ModifierIndex index) => MGun.SetAim(index);
+
+        internal void SetSilencer(ModifierCharacteristics.ModifierIndex index) => MGun.SetSilencer(index);
+
+        internal void SetModeFromReplacedMode(ModifierCharacteristics.ModifierTypes type, ModifierCharacteristics.ModifierIndex index)
+        {
+            if (type == ModifierCharacteristics.ModifierTypes.Mag)
+                SetMag(index);
+            else if (type == ModifierCharacteristics.ModifierTypes.Aim)
+                SetAim(index);
+            else if (type == ModifierCharacteristics.ModifierTypes.Silencer)
+                SetSilencer(index);
+        }
     }
 }

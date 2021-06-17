@@ -11,6 +11,7 @@ namespace SMG
             modPrefabs = new Dictionary<SMGTitleTypeIndex, GunModifier>
             {
                 {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Mag, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Mag_1")},
+                {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Silencer, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Silencer_1")},
                 {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Aim, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Aim_1")},
                 {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Aim, ModifierIndex._2), Resources.Load<GunModifier>("SMG\\TT_Aim_2")},
 
@@ -18,7 +19,7 @@ namespace SMG
             };
         }
         public static GunModifier GetPrefabFromTTI(SMGTitleTypeIndex tti)
-        {            
+        {
             return modPrefabs[tti];
         }
     }

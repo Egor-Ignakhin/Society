@@ -11,15 +11,21 @@ namespace Anomaly_1
         [SerializeField] private float radiationPower;
         private Collider playerCollider;
         private PlayerClasses.BasicNeeds playerBasicNeeds;
+        private AudioSource mAud;
+        private AudioClip PulsateClip;
 
         private void Awake()
         {
             FindObjectOfType<FirstPersonController>().TryGetComponent(out playerCollider);
             playerCollider.TryGetComponent(out playerBasicNeeds);
+            mAud = gameObject.AddComponent<AudioSource>();
+            mAud.spatialBlend = 1;
+            PulsateClip = Resources.Load<AudioClip>("Anomalyes\\An_0");
         }
         public void Pulsate(Vector3 spawnPosition)
         {
-            StartCoroutine(PrepareForPulsation(spawnPosition));
+            mAud.PlayOneShot(PulsateClip);
+            StartCoroutine(PrepareForPulsation(spawnPosition));            
         }
 
         private IEnumerator PrepareForPulsation(Vector3 spawnPosition)

@@ -12,8 +12,7 @@ namespace SMG
         public enum ModifierTypes { None, Silencer, Mag, Aim }
         public enum ModifierIndex { None, _1, _2, _3 }
 
-        private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions 
-            = new Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)>();// словарь содержащий инфу о модификаторе
+        private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions;            
 
         //доступ по имени оружия, типу мода и индксу мода и возврат всех возможных характеристик
         public static readonly Dictionary<SMGTitleTypeIndex, SMGModifierItem> modifiersCharacteristics = new Dictionary<SMGTitleTypeIndex, SMGModifierItem>();
@@ -26,7 +25,7 @@ namespace SMG
             for (int g = 1; g <= gunsCount; g++)
             {
                 GunTitles gun = (GunTitles)g;
-                for (int t = 2; t < 4; t++)
+                for (int t = 1; t < 4; t++)
                 {
                     for (int i = 1; i < 3; i++)
                     {

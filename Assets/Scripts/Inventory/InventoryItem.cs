@@ -18,20 +18,22 @@ public sealed class InventoryItem : InteractiveObject
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
     private SMG.ModifierCharacteristics.ModifierIndex magIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
-    
+
+    [ShowIf(nameof(itsGun), true)]
+    [SerializeField] private List<GameObject> silencers = new List<GameObject>();
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
     private SMG.ModifierCharacteristics.ModifierIndex silencerIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField] private List<GameObject> aims = new List<GameObject>();
-        
+
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
     private SMG.ModifierCharacteristics.ModifierIndex aimIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
 
     [EditorButton(nameof(UpdateModifiers), "Update modifiers", activityType: ButtonActivityType.Everything)]
-    [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;    
+    [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;
     private bool isDroppedGun = false;
 
     private void Start()
@@ -51,6 +53,7 @@ public sealed class InventoryItem : InteractiveObject
         possibleGun.Reload(g);
 
         aimIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Aim;
+        silencerIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Silencer;
         UpdateModifiers();
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
@@ -68,9 +71,10 @@ public sealed class InventoryItem : InteractiveObject
     private void UpdateModifiers()
     {
         for (int i = 0; i < aims.Count; i++)
-        {
             aims[i].SetActive(i == (int)aimIndex);
-        }
+
+        for (int i = 0; i < silencers.Count; i++)
+            silencers[i].SetActive(i == (int)silencerIndex);
     }
 
     internal void SetCount(int c) => count = c;

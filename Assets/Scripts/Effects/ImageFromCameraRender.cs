@@ -5,11 +5,12 @@ public class ImageFromCameraRender : MonoBehaviour
 {
     [SerializeField] private Camera cam;
     [SerializeField] private GameObject g;
+    [SerializeField] private bool isItem;
     private void Start()
     {
         RenderTexture currentRT = RenderTexture.active;
 
-        RenderTexture rt = new RenderTexture(256, 256, 64);
+        RenderTexture rt = isItem ? new RenderTexture(256, 256, 64) : new RenderTexture(3840, 2160, 4096);
 
         // Устанавливаем созданную текстуру как целевую
         RenderTexture.active = rt;
