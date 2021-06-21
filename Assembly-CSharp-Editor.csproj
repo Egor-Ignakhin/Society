@@ -713,6 +713,14 @@
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURPEditor.csproj">
+      <Project>{ABEB2632-E385-F207-93D5-D3C2582BB102}</Project>
+      <Name>StylizedWaterForURPEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURP.csproj">
+      <Project>{76E15C64-FA5F-D37F-FC2E-97DBF361E346}</Project>
+      <Name>StylizedWaterForURP</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -77,7 +77,10 @@ MonoBehaviour:
   itsGun: 0
   titleGun: 0
   magIndex: 0
+  silencers: []
   silencerIndex: 0
+  aims: []
+  aimIndex: 0
   ammoCount: 0
 --- !u!1001 &3105731077180028049
 PrefabInstance:
@@ -109,17 +112,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0003ddac4a45b3c4298c36f44175ea7e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.548
+      value: 47.441
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0003ddac4a45b3c4298c36f44175ea7e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.281
+      value: 0.674
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0003ddac4a45b3c4298c36f44175ea7e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.1803
+      value: 27.084
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0003ddac4a45b3c4298c36f44175ea7e,
         type: 3}
@@ -159,6 +162,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 0003ddac4a45b3c4298c36f44175ea7e,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d98ee08780674ff4bbceb39560d04893, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 0003ddac4a45b3c4298c36f44175ea7e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: d98ee08780674ff4bbceb39560d04893, type: 2}
     - target: {fileID: -7511558181221131132, guid: 0003ddac4a45b3c4298c36f44175ea7e,

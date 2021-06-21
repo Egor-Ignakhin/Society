@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Scripts\CTI_SRP_CustomWind.cs" />
     <Compile Include="Assets\Other\DBK\Scripts\DBK_ColorThemeSelect.cs" />
+    <Compile Include="Assets\Other\Stylized Water For URP\Demos\Buoyancy\BuoyantObject.cs" />
+    <Compile Include="Assets\Other\Stylized Water For URP\Demos\Buoyancy\GerstnerWaveDisplacement.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyLifetime.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyPulsation.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
@@ -264,6 +266,9 @@
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Lighting.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\WaterFoam.hlsl" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Acknowledgements.uxml" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Find Errors.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
@@ -272,29 +277,43 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Billboard.hlsl" />
     <None Include="Assets\Other\DBK\Shaders\DBK_Rebar.shader" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\About.uxml" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Support.uxml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Bending.hlsl" />
     <None Include="Assets\AllSkyFree\AllSkyFree_Readme.txt" />
     <None Include="Assets\Other\Conifers [BOTD]\Getting started.txt" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\WaterCaustics.hlsl" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\WaterLighting.hlsl" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Find Errors.uxml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\CTI URP Bark Array.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\About.uss" />
     <None Include="Assets\Other\DBK\Shaders\DBK_ConcreteRubble.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\Caustics\Caustics.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\CTI URP Billboard.shader" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Toolbar.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\WaterColor.hlsl" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\StylizedWaterForURP.hlsl" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\CTI URP Bark.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Other\Stylized Water For URP\Shaders\Libraries\WaterWaves.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Inputs.hlsl" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Support.uss" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Toolbar.uxml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Shared\Shaders\SurfaceShader_VC.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\Other\Stylized Water For URP\Scripts\UI\Acknowledgements.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Other\DBK\Shaders\DBK_Concrete.shader" />
     <None Include="Assets\Other\DBK\HDRP &amp; URP\readme.txt" />
@@ -912,6 +931,14 @@
     <ProjectReference Include="Toolbox-Editor.csproj">
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURPEditor.csproj">
+      <Project>{ABEB2632-E385-F207-93D5-D3C2582BB102}</Project>
+      <Name>StylizedWaterForURPEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="StylizedWaterForURP.csproj">
+      <Project>{76E15C64-FA5F-D37F-FC2E-97DBF361E346}</Project>
+      <Name>StylizedWaterForURP</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
