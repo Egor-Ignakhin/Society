@@ -16,6 +16,8 @@ public sealed class InventoryItem : InteractiveObject
     [ShowIf(nameof(itsGun), true)] [SerializeField] private SMG.ModifierCharacteristics.GunTitles titleGun = SMG.ModifierCharacteristics.GunTitles.None;
 
     [ShowIf(nameof(itsGun), true)]
+    [SerializeField] private List<GameObject> mags = new List<GameObject>();
+    [ShowIf(nameof(itsGun), true)]
     [SerializeField]
     private SMG.ModifierCharacteristics.ModifierIndex magIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
 
@@ -52,6 +54,7 @@ public sealed class InventoryItem : InteractiveObject
             isDroppedGun = true;
         possibleGun.Reload(g);
 
+        magIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Mag;
         aimIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Aim;
         silencerIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Silencer;
         UpdateModifiers();
@@ -70,11 +73,14 @@ public sealed class InventoryItem : InteractiveObject
     }
     private void UpdateModifiers()
     {
-        for (int i = 0; i < aims.Count; i++)
-            aims[i].SetActive(i == (int)aimIndex);
-
-        for (int i = 0; i < silencers.Count; i++)
-            silencers[i].SetActive(i == (int)silencerIndex);
+        SetEnableActiveMod(silencers, (int)silencerIndex);
+        SetEnableActiveMod(aims, (int)aimIndex);
+        SetEnableActiveMod(mags, (int)magIndex);
+    }
+    private void SetEnableActiveMod(List<GameObject> mods, int index)
+    {
+        for (int i = 0; i < mods.Count; i++)
+            mods[i].SetActive(i == (int)index);
     }
 
     internal void SetCount(int c) => count = c;

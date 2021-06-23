@@ -5,18 +5,19 @@ namespace SMG
 {
     static class ModifiersPrefabsData
     {
-        private static readonly Dictionary<SMGTitleTypeIndex, GunModifier> modPrefabs;
+        private static readonly Dictionary<SMGTitleTypeIndex, GunModifier> modPrefabs = new Dictionary<SMGTitleTypeIndex, GunModifier>();
         static ModifiersPrefabsData()
         {
-            modPrefabs = new Dictionary<SMGTitleTypeIndex, GunModifier>
+            for (int g = 1; g < 4; g++)
             {
-                {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Mag, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Mag_1")},
-                {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Silencer, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Silencer_1")},
-                {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Aim, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\TT_Aim_1")},
-                {new SMGTitleTypeIndex(GunTitles.TT_Pistol,ModifierTypes.Aim, ModifierIndex._2), Resources.Load<GunModifier>("SMG\\TT_Aim_2")},
-
-                {new SMGTitleTypeIndex(GunTitles.Ak_74,ModifierTypes.Mag, ModifierIndex._1), Resources.Load<GunModifier>("SMG\\AK74_Mag_1")}
-            };
+                for (int t = 1; t < 4; t++)
+                {
+                    for (int i = 1; i < 3; i++)
+                    {
+                        modPrefabs.Add(new SMGTitleTypeIndex((GunTitles)g, (ModifierTypes)t, (ModifierIndex)i), Resources.Load<GunModifier>($"SMG\\{(GunTitles)g}_{(ModifierTypes)t}{(ModifierIndex)i}"));
+                    }
+                }
+            }
         }
         public static GunModifier GetPrefabFromTTI(SMGTitleTypeIndex tti)
         {
