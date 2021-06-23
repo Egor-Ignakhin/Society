@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8857219849559384501}
   - component: {fileID: 8857219849559384502}
   - component: {fileID: 8857219849559384503}
+  - component: {fileID: -854072824088380686}
   m_Layer: 8
   m_Name: TT_Pistol_Mag_1
   m_TagString: Untagged
@@ -113,6 +114,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-854072824088380686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8857219849559384392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7609e50a09f4ea8468b5e32fd259d83d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 7062266566111559414, guid: 41f8ff0010c941940bd9159f9b6f083c, type: 3}
 --- !u!1 &8857219851204569884
 GameObject:
   m_ObjectHideFlags: 0

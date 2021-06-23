@@ -57,11 +57,11 @@ namespace Shoots
 
                 if (bulletReceiver != null)
                     bulletReceiver.OnBulletEnter();
-                
+
                 if (enemy)
                 {
                     enemy.InjureEnemy(Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance));
-                }                
+                }
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
                 {
@@ -75,8 +75,8 @@ namespace Shoots
                     reflectSource.transform.position = hit.point;
                     return;
                 }
-                
-                impactEffect.transform.SetPositionAndRotation(target, Quaternion.identity);
+
+                impactEffect.transform.position = target;
                 impactEffect.SetActive(true);
             }
             mPool.ReturnToPool(this);

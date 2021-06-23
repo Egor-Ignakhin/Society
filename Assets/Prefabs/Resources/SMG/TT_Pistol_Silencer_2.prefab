@@ -57,8 +57,9 @@ GameObject:
   - component: {fileID: 8585534293232407004}
   - component: {fileID: 8164078559027272443}
   - component: {fileID: 8164078559027272442}
+  - component: {fileID: 7035895009497252747}
   m_Layer: 8
-  m_Name: TT_Silencer_2 1
+  m_Name: TT_Pistol_Silencer_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,3 +158,16 @@ MonoBehaviour:
   modifiableGun: 2
   type: 1
   index: 2
+--- !u!114 &7035895009497252747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180308074520534841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7609e50a09f4ea8468b5e32fd259d83d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 7062266566111559414, guid: 41f8ff0010c941940bd9159f9b6f083c, type: 3}
