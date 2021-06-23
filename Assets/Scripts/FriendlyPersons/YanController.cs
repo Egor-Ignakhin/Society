@@ -22,7 +22,8 @@ namespace FriendlyPersons
         }
         private IEnumerator SetDistForAgent()
         {
-            mAgent.SetDestination((targetPoint = points[0]).position);
+            if (mAgent.isOnNavMesh)
+                mAgent.SetDestination((targetPoint = points[0]).position);
             while (true)
             {
                 if (mAgent.isOnNavMesh)
@@ -33,7 +34,8 @@ namespace FriendlyPersons
                         if (iterator >= points.Count)
                             iterator = 0;
 
-                        mAgent.SetDestination((targetPoint = points[iterator]).position);
+                        if (mAgent.isOnNavMesh)
+                            mAgent.SetDestination((targetPoint = points[iterator]).position);
                     }
                     ThrowRay();
                 }
