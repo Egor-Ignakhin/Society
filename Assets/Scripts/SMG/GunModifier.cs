@@ -16,7 +16,7 @@ namespace SMG
         private void Start()
         {
             data = FindObjectOfType<SMGModifiersData>();
-            SetType("GunModifier");
+            SetType($"{modifiableGun}_{type}{index}");
         }
         public override void Interact(PlayerStatements pl)
         {

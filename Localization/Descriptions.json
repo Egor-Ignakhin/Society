@@ -1,20 +1,84 @@
-type : [None]; Description : [];
-type : [OpenedDoor]; Description : [Закрыть дверь];
-type : [ClosedDoor]; Description : [Открыть дверь];
-type : [LockedDoor]; Description : [Дверь заперта];
-type : [Axe]; Description : [Топор обычный];
-type : [Сhair]; Description : [Стул];
-type : [Milk]; Description : [Молоко];
-type : [Ak_74]; Description : [Ак-74];
-type : [TTPistol]; Description : [Тульский Токарев];
-type : [Makarov]; Description : [Пистолет Макарова];
-type : [CannedFood]; Description : [Консерва];
-type : [Binoculars]; Description : [Бинокль];
-type : [Workbench]; Description : [Верстак];
-type : [Knife_1]; Description : [Кухонный ножичек];
-type : [Bullet_7_62]; Description : [Патрон 7.62*39мм];
-type : [Bullet_9_27]; Description : [Экспансивная пуля 9.3мм];
-type : [Container_1]; Description : [Сундук];
-type : [Tablets_1]; Description : [Йодные таблетки];
-type : [Lom]; Description : [Лом];
-type : [GunModifier]; Description : [Оружейная модификация];
+{
+    "Types":
+    [{
+            "Type": "None",
+            "Desc": ""
+        }, {
+            "Type": "OpenedDoor",
+            "Desc": "Закрыть дверь"
+        }, {
+            "Type": "ClosedDoor",
+            "Desc": "Открыть дверь"
+        }, {
+            "Type": "LockedDoor",
+            "Desc": "Дверь заперта"
+        }, {
+            "Type": "Axe",
+            "Desc": "Топор обычный"
+        }, {
+            "Type": "Сhair",
+            "Desc": "Стул"
+        }, {
+            "Type": "Milk",
+            "Desc": "Молоко"
+        }, {
+            "Type": "Ak_74",
+            "Desc": "Ак - 74"
+        }, {
+            "Type": "TTPistol",
+            "Desc": "Тульский Токарев"
+        }, {
+            "Type": "Makarov",
+            "Desc": "Пистолет Макарова"
+        }, {
+            "Type": "CannedFood",
+            "Desc": "Консерва"
+        }, {
+            "Type": "Binoculars",
+            "Desc": "Бинокль"
+        }, {
+            "Type": "Workbench",
+            "Desc": "Верстак"
+        }, {
+            "Type": "Knife_1",
+            "Desc": "Кухонный ножичек"
+        }, {
+            "Type": "Bullet_7_62",
+            "Desc": "Патрон 7.62 * 39мм"
+        }, {
+            "Type": "Bullet_9_27",
+            "Desc": "Экспансивная пуля 9.3мм"
+        }, {
+            "Type": "Container_1",
+            "Desc": "Сундук"
+        }, {
+            "Type": "Tablets_1",
+            "Desc": "Йодные таблетки"
+        }, {
+            "Type": "Lom",
+            "Desc": "Лом"
+        }, {
+            "Type": "TT_Pistol_Mag_1",
+            "Desc": "Обойма для ТТ (1 ур.)"
+        }, {
+            "Type": "TT_Pistol_Mag_2",
+            "Desc": "Обойма для ТТ (2 ур.)"
+        }, {
+            "Type": "TT_Pistol_Aim_1",
+            "Desc": "Планка Пикатинни для ТТ"
+        }, {
+            "Type": "TT_Pistol_Aim_2",
+            "Desc": "Голограф для ТТ"
+        }, {
+            "Type": "TT_Pistol_Silencer_1",
+            "Desc": "ДТК для ТТ"
+        }, {
+            "Type": "TT_Pistol_Silencer_2",
+            "Desc": "Глушитель для ТТ"        
+		}, {
+            "Type": "Ak_74_Mag_1",
+            "Desc": "Обойма для Ак74 (1 ур.)"
+        }
+
+    ]
+}

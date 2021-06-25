@@ -6,13 +6,12 @@ public static class Localization
 {
     private static readonly Dictionary<int, string> dialogContents = new Dictionary<int, string>();// пути к диалогам    
     private static readonly Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
-
-    private static readonly Dictionary<string, string> hintContents = new Dictionary<string, string>();// массив подсказок
     private static Dictionary<string, string> upKeysDescriptions;// словаоь для подсказок (нажатия на клавишу)    
     internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive)
     {
         return $"{upKeysDescriptions[mainType]}({inputInteractive})";
     }
+    private static HintsData hintsData;
 
     public enum Type { Dialogs, Tasks, Hints }
     public static class MainTypes
@@ -55,35 +54,7 @@ public static class Localization
                 taskContents.Add(i, contents[i]);
             }
         }
-        #endregion
-        #region SetHints
-        string[] hints = File.ReadAllLines(Directory.GetCurrentDirectory() + "\\Localization\\Descriptions.json");
-        char startSeparator = '[';
-        char endSeparator = ']';
-        for (int k = 0; k < hints.Length; k++)
-        {
-            string hint = hints[k];
-            string key = "";
-            bool wasChar = false;
-            for (int i = 0; i < hint.Length; i++)
-            {
-                if (hint[i] == startSeparator)
-                {
-                    wasChar = true;
-                    continue;
-                }
-                if (wasChar)
-                {
-                    if (hint[i] == endSeparator)
-                        break;
-                    key += hint[i];
-                }
-            }
-            hint = hint.Replace(hint.Substring(0, hint.LastIndexOf(startSeparator) + 1), "");
-            string value = hint.Replace(hint.Substring(hint.LastIndexOf(endSeparator)), "");
-            hintContents.Add(key, value);
-        }
-        #endregion
+        #endregion       
 
         #region SetUpLeys
         upKeysDescriptions = new Dictionary<string, string>
@@ -93,7 +64,34 @@ public static class Localization
         };
         #endregion
     }
+    private static void InitHD()
+    {
+        string hdata = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Descriptions.json");
+        hintsData = JsonUtility.FromJson<HintsData>(hdata);
+        hintsData.hints = new Dictionary<string, string>();
+        for (int i = 0; i < hintsData.Types.Count; i++)
+        {
+            hintsData.hints.Add(hintsData.Types[i].Type, hintsData.Types[i].Desc);
+        }
+    }
+    [System.Serializable]
+    public class HintsData
+    {
+        public List<Hint> Types;
+        public Dictionary<string, string> hints;
+        public string GetHint(string t)
+        {            
+            return hints[t];
+        }
 
+        [System.Serializable]
+        public class Hint
+        {
+            public string Type;
+            public string Desc;
+        }
+
+    }
     public static string PathToCurrentLanguageContent(Type type, int missionNumber)// возвращает путь до нужного содержимого
     {
         switch (type)
@@ -102,8 +100,6 @@ public static class Localization
                 return GetDialog(missionNumber);
             case Type.Tasks:
                 return GetTask(missionNumber);
-            //case Type.Hints:
-            //   return GetHint(interactiveObject);
             default:
                 return null;
         }
@@ -112,6 +108,17 @@ public static class Localization
 
     private static string GetTask(int missionNumber) => taskContents[missionNumber];
 
-    public static string GetHint(InteractiveObject interactiveObject) => interactiveObject.Type != null ? hintContents[interactiveObject.Type] : null;
-    public static string GetHint(int id) => id != 0 ? hintContents[((Inventory.ItemStates.ItemsID)id).ToString()] : null;    
+    public static string GetHint(InteractiveObject interactiveObject)
+    {
+        if (hintsData == null)
+            InitHD();
+        return interactiveObject.Type != null ? hintsData.GetHint(interactiveObject.Type) : null;
+    }
+    public static string GetHint(int id)
+    {
+        if (hintsData == null)
+            InitHD();
+        return id != 0 ? hintsData.GetHint(((Inventory.ItemStates.ItemsID)id).ToString()) : null;
+    }
+
 }
