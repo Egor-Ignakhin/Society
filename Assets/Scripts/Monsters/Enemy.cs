@@ -67,7 +67,8 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     private int CurrentPhysicMaterialIndex;
     private Vector3 oldPos = Vector3.zero;
     private StepEnemy stepEnemy;
-    private void Start()
+    protected AudioClip[] deathClip;
+    protected virtual void Start()
     {
         OnInit(attackDistance, power, seeDistance, health);
     }
@@ -76,7 +77,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
         mAgent = GetComponent<NavMeshAgent>();
         mAnim = GetComponent<Animator>();
-        stepSoundData = FindObjectOfType<StepSoundData>();        
+        stepSoundData = FindObjectOfType<StepSoundData>();
         mAgent.stoppingDistance = UVariables.DistanceForAttack;
         UVariables.ChangeHealthEvent += Death;
 
@@ -85,11 +86,11 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             var dp = new GameObject($"DefenderPointFor{name}").transform;
             dp.position = transform.position;
             defenderPoint = dp;
-        }        
+        }
         target = defenderPoint;
         lastTargetPos = target.position;
         MonstersData.AddEnemy(this);
-        stepEnemy = new StepEnemy(this, stepSoundData);        
+        stepEnemy = new StepEnemy(this, stepSoundData);
     }
     protected class AnimationsContainer
     {
@@ -194,17 +195,23 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     /// <summary>
     /// функция смерти
     /// </summary>
-    protected void Death(float health)
+    private void Death(float health)
     {
         if (health > UniqueVariables.MinHealth)
             return;
         mAgent.enabled = false;
         SetAnimationClip();
-        mAnim.SetTrigger(AnimationsContainer.Death);
+        mAnim.Play($"death_{Random.Range(1,3)}");
+        mAnim.SetBool(AnimationsContainer.Death, true);
         mAnim.applyRootMotion = true;
         enabled = false;
         DeathEvent.Invoke();
         MonstersData.RemoveEnemy(this);
+        PlayDeathClip();
+    }
+    private void PlayDeathClip()
+    {
+        stepEnemy.PlayDeathClip(deathClip);
     }
 
     /// <summary>
@@ -303,7 +310,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     {
         private Enemy enemy;
         public StepEnemy(IMovableController e, StepSoundData ssd)
-        {            
+        {
             stepSoundData = ssd;
 
             enemy = (Enemy)e;
@@ -317,6 +324,12 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         public void OnDestroy()
         {
             enemy.EnemyStepEvent -= OnStep;
+        }
+
+        internal void PlayDeathClip(AudioClip[] deathClip)
+        {
+            int index = Random.Range(0, deathClip.Length);
+            stepPlayerSource.PlayOneShot(deathClip[index]);
         }
     }
 }

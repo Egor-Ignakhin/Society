@@ -54,7 +54,7 @@ MonoBehaviour:
   defenderPoint: {fileID: 0}
   layerMasks:
     serializedVersion: 2
-    m_Bits: 1847
+    m_Bits: 1793
   eyes:
   - {fileID: 5426286328943827081}
 --- !u!195 &528553974573247146
@@ -105,6 +105,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 528553974573247148}
     m_Modifications:
+    - target: {fileID: 1838488957, guid: e102e6ac9e51d3c4c97f74dcae2c59f4, type: 3}
+      propertyPath: mParent
+      value: 
+      objectReference: {fileID: 528553974573247147}
     - target: {fileID: 7035565055256447050, guid: e102e6ac9e51d3c4c97f74dcae2c59f4,
         type: 3}
       propertyPath: m_RootOrder
@@ -165,7 +169,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: blood_dog1 Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 531634587, guid: e102e6ac9e51d3c4c97f74dcae2c59f4, type: 3}
+    - {fileID: 531634586, guid: e102e6ac9e51d3c4c97f74dcae2c59f4, type: 3}
+    - {fileID: 531634585, guid: e102e6ac9e51d3c4c97f74dcae2c59f4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e102e6ac9e51d3c4c97f74dcae2c59f4, type: 3}
 --- !u!4 &3093220390764376089 stripped
 Transform:
