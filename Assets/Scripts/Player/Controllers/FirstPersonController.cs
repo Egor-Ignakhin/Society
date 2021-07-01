@@ -28,8 +28,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private PlayerSoundsCalculator playerSoundsCalculator;
     #endregion
 
-    #region Movement Settings
-    private bool PlayerCanMove = true;
+    #region Movement Settings    
     private bool Sprint = false;
     private readonly float WalkSpeed = 4f;
     private float RecumbentingSpeed;
@@ -66,8 +65,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
     private StepFpc stepPlayer;
-    private StepSoundData stepSoundData;
-    public bool IsAnomalyMember { get; set; }
+    private StepSoundData stepSoundData;    
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -93,7 +91,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         public float ColliderRadius { get; set; }
         public float ColliderHeight { get; set; }
         public float ChangeTime = 1;
-    }    
+    }
 
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
     private CapsuleCollider capsule;
@@ -127,7 +125,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         #endregion
     }
     private void OnEnable()
-    {        
+    {
         SprintSpeed = WalkSpeed * 1.5f;
         WalkSpeedInternal = WalkSpeed;
         SprintSpeedInternal = SprintSpeed;
@@ -228,15 +226,15 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             if (Advanced.IsTouchingUpright && Advanced.IsTouchingWalkable)
             {
                 MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
-                if (!didJump && !IsAnomalyMember)
+                if (!didJump)
                     _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
-            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable && !IsAnomalyMember)
+            else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable)
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
             }
 
-            else if (!IsAnomalyMember)
+            else
             {
                 _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (_fpsRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
@@ -278,8 +276,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
                     Advanced.IsTouchingWalkable = false;
                     Advanced.IsTouchingFlat = false;
                     Advanced.IsTouchingUpright = false;
-                    if (!IsAnomalyMember)
-                        _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                    _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 }
 
             }
@@ -302,17 +299,11 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
 
         #endregion
 
-        if (PlayerCanMove)
-        {
-            Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity));
-            if (newVel.y > 0)
-                newVel *= additionalBraking;
-            _fpsRigidbody.velocity = newVel;
-        }
-        else _fpsRigidbody.velocity = Vector3.zero;
-
+        Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity));
+        if (newVel.y > 0)
+            newVel *= additionalBraking;
+        _fpsRigidbody.velocity = newVel;
         capsule.sharedMaterial = inputXY.magnitude > 0 || !IsGrounded ? Advanced.ZeroFrictionMaterial : Advanced.HighFrictionMaterial;
-
 
         _fpsRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
 
@@ -468,22 +459,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             Advanced.IsTouchingUpright = false;
         }
     }
-    public void SetState(State s)
-    {
-        bool isLocked = (s == State.locked);
-        switch (s)
-        {
-            case State.unlocked:
-                _fpsRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-                break;
 
-            case State.locked:
-                _fpsRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                _fpsRigidbody.velocity = Vector3.zero;
-                break;
-        }
-        _fpsRigidbody.useGravity = !isLocked;
-    }
     public void SetPosAndRot(Transform point)
     {
         transform.position = point.position;

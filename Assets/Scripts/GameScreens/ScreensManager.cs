@@ -4,17 +4,17 @@
 /// </summary>
 static class ScreensManager
 {
-    static ScreenInputReceiver screenInputReceiver;
     private static IGameScreen currentScreen;
     public static void OnInit()
     {
-        screenInputReceiver = new GameObject("ScreensSystem_InputReceiver").AddComponent<ScreenInputReceiver>();
+        new GameObject("ScreensSystem_InputReceiver").AddComponent<ScreenInputReceiver>();
     }
 
-    public static void SetScreen(IGameScreen screen)
+    public static void SetScreen(IGameScreen screen, bool slsc = true)
     {
         currentScreen = screen;
-        SetLockStateCursor();
+        if (slsc)
+            SetLockStateCursor();
     }
     private static void SetLockStateCursor()
     {

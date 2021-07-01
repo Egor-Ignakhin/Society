@@ -92,8 +92,7 @@ namespace Inventory
             }
             else
                 RewriteSMGCells();
-
-            fps.SetState(enabled ? State.locked : State.unlocked);
+            
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)

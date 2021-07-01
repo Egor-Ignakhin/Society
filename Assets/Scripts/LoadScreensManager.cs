@@ -36,7 +36,9 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
 
     public void LoadLevel(int level, int currentLevel)
     {
-        var operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(currentLevel == -1 ? level : currentLevel);
+        Resources.UnloadUnusedAssets();
+        System.GC.Collect(2);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentLevel == -1 ? level : currentLevel);
         if (background)
             background.SetActive(true);
         int imgIt = Random.Range(1, 8);
@@ -48,15 +50,13 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
         }
         if (descText)
             descText.SetText(text);
-        lastLoadLevel = new LastLoadLevelContainer(operation, img ? img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}") : null, text);
+        lastLoadLevel = new LastLoadLevelContainer(img ? img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}") : null, text);
         ScreensManager.SetScreen(this);
     }
     private void Update()
     {
         if (lastLoadLevel != null)
         {
-            if (text)
-                text.SetText($"{lastLoadLevel.GetProggres()}/100%");
             if (Input.anyKeyDown)
             {
                 OnClose();
@@ -80,13 +80,10 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
 
     public class LastLoadLevelContainer
     {
-        private readonly AsyncOperation operation;
         public readonly string description;
-        public float GetProggres() => operation == null ? operation.progress : 100;
         public readonly Sprite sprite;
-        public LastLoadLevelContainer(AsyncOperation op, Sprite s, string t)
+        public LastLoadLevelContainer(Sprite s, string t)
         {
-            operation = op;
             sprite = s;
             description = t;
         }

@@ -2,24 +2,22 @@
 
 public sealed class ChairManager : MonoBehaviour
 {
-    private Transform playerT;
-    private FirstPersonController fps;// игрок
+    private Transform playerT;    
     private Vector3 seatAngles = new Vector3(0, 90, 0);// сидячее положение
     private Transform lastPlayerParent;
     //координаты игрока до посадки
     private Vector3 lastPlayerLocalEulerAngles;
     private Vector3 lastPlayerPosition;
-    private bool isInitialized = false;
-    private void Init()
+    private SeatController seatController;
+    private void Awake()
     {
-        playerT = Camera.main.transform;
-        fps = FindObjectOfType<FirstPersonController>();
-        isInitialized = true;
+        playerT = Camera.main.transform;        
+        seatController = FindObjectOfType<SeatController>();
     }
     internal void Interact(ChairMesh c)
     {
-        SeatController.RemoveLastChair();
-        GetOutOfChair(c);
+        seatController.RemoveLastChair();
+        GetOutOfChair(c);        
     }
 
     /// <summary>
@@ -27,11 +25,7 @@ public sealed class ChairManager : MonoBehaviour
     /// </summary>
     /// <param name="c"></param>
     private void GetOutOfChair(ChairMesh c)
-    {
-        if (!isInitialized)
-        {
-            Init();
-        }
+    {        
         if (c.IsOccupied)// если стул занят
         {
             DeOccupied(c);
@@ -41,34 +35,30 @@ public sealed class ChairManager : MonoBehaviour
 
         //перемещение позиций в сидячее значение
         lastPlayerParent = playerT.parent;
-        playerT.SetParent(c.transform);
+        playerT.SetParent(c.GetSeatPlace());
 
         lastPlayerLocalEulerAngles = playerT.localEulerAngles;
         playerT.localEulerAngles = seatAngles;
 
         lastPlayerPosition = playerT.position;
-        playerT.position = c.SeatPlace.position;
+        playerT.position = c.GetSeatPlace().position;
         //конец перемещения позиций
-
-        fps.SetState(State.locked);// блокировка персонажа
-        playerT.GetComponent<SeatController>().SetState(State.locked, this, c);
+        
+        seatController.SetState(State.locked, this, c);
     }
     /// <summary>
     /// поднятся со стула
     /// </summary>
     /// <param name="cMesh"></param>
-    public void RiseUp(ChairMesh cMesh)
-    {
-        GetOutOfChair(cMesh);
-    }
+    public void RiseUp(ChairMesh cMesh) => GetOutOfChair(cMesh);
+
     public void DeOccupied(ChairMesh c)
-    {
+    {        
         //Возвращение позиций в исходное значение
         playerT.SetParent(lastPlayerParent);
         playerT.localEulerAngles = lastPlayerLocalEulerAngles;
         playerT.position = lastPlayerPosition;
-        //конец возвращений позиций
-        fps.SetState(State.unlocked);// разблокировка персонажа
+        //конец возвращений позиций        
         c.SetOccupied(false);// стул больше не занят
     }
 }

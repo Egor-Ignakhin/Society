@@ -1,32 +1,24 @@
 ﻿using PlayerClasses;
 using UnityEngine;
 
-public class ChairMesh : InteractiveObject
+public sealed class ChairMesh : InteractiveObject
 {
     [SerializeField] private ChairManager mManager;
-    public Transform SeatPlace;
-    [SerializeField] private float timeMultiply = 1;
+    [SerializeField] private Transform SeatPlace;
 
     public bool IsOccupied { get; private set; }
     protected override void Awake()
     {
         base.Awake();
-        if (timeMultiply == 0)
-            Debug.LogError("time is stopped!");
         SetType("Сhair");
     }
 
-    public void SetOccupied(bool value)
-    {
-        IsOccupied = value;
-    }
+    public void SetOccupied(bool value) => IsOccupied = value;
+
     public override void Interact(PlayerStatements pl)
     {
         mManager.Interact(this);
         IsOccupied = true;
     }
-    public float GetTimeMultiply()
-    {
-        return timeMultiply;
-    }
+    public Transform GetSeatPlace() => SeatPlace;
 }

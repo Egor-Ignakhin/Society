@@ -31,12 +31,15 @@ namespace MenuScripts
             [SerializeField] private TextMeshProUGUI sensivityText;
             [SerializeField] private Slider sensivitySlider;
             [SerializeField] private Toggle reloadCABToggle;
-            private void Start()
+            private void Awake()
             {
                 fpc = FindObjectOfType<FirstPersonController>();
                 effectsManager = FindObjectOfType<EffectsManager>();
-                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, fpc, SettingsObj, this, effectsManager);
+                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, SettingsObj, this, effectsManager);
                 LoadData();
+            }
+            private void Start()
+            {                
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
                 fovText.SetText(currentGameSettings.FOV.ToString());
@@ -126,7 +129,6 @@ namespace MenuScripts
             class MenuEventReceiver
             {
                 private readonly GameObject menuUI;
-                private readonly FirstPersonController fps;
                 private readonly GameObject SettingsObj;
                 private readonly CommandContainer commandContainer = new CommandContainer();
                 private readonly AdvancedSettings advanced = new AdvancedSettings();
@@ -139,10 +141,9 @@ namespace MenuScripts
                     public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
                     public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
                 }
-                public MenuEventReceiver(GameObject menu, Transform mainParent, FirstPersonController fps, GameObject stn, MenuPauseManager mpm, EffectsManager em)
+                public MenuEventReceiver(GameObject menu, Transform mainParent, GameObject stn, MenuPauseManager mpm, EffectsManager em)
                 {
                     menuUI = menu;
-                    this.fps = fps;
                     SettingsObj = stn;
                     for (int i = 0; i < mainParent.childCount; i++)
                     {
@@ -177,10 +178,10 @@ namespace MenuScripts
                     Disable();
                 }
 
-                public void Enable() => commandContainer.SetEnableMenu(true, menuUI, fps, menuPauseManager, effectsManager);
+                public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager);
                 public void Disable()
                 {
-                    commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
+                    commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                     SettingsObj.SetActive(false);
                 }
 
@@ -248,7 +249,7 @@ namespace MenuScripts
                             commandContainer.ExitToMainMenu();
                             break;
                         case 7:
-                            commandContainer.SetEnableMenu(false, menuUI, fps, menuPauseManager, effectsManager);
+                            commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                             break;
                     }
                 }
@@ -283,19 +284,17 @@ namespace MenuScripts
                 {
                     UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
                 }
-                public void SetEnableMenu(bool v, GameObject menu, FirstPersonController fps, MenuPauseManager mpm, EffectsManager effectsManager)
+                public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
                 {
                     menu.SetActive(v);
                     // пауза при открытии инвентаря                                                        
                     if (!v)
                     {
                         ScreensManager.SetScreen(null);
-                        fps.SetState(State.unlocked);
                     }
                     else
                     {
                         ScreensManager.SetScreen(mpm);
-                        fps.SetState(State.locked);
                     }
                     effectsManager.SetEnableSimpleDOF(v);
                 }
@@ -322,5 +321,7 @@ class GameSettings
 {
     public static float MinFov() => MenuPauseManager.GetCurrentGameSettings().minFov;
     public static float FOV() => MenuPauseManager.GetCurrentGameSettings().FOV;
-    public static float MaxFov() => MenuPauseManager.GetCurrentGameSettings().FOV;
+    public static float MaxFov() => MenuPauseManager.GetCurrentGameSettings().maxFov;
+
+    public static float GetSensivity() => MenuPauseManager.GetCurrentGameSettings().Sensivity;
 }

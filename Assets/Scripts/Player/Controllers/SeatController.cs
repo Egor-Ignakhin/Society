@@ -1,19 +1,14 @@
 ﻿using UnityEngine;
 
-public class SeatController : Singleton<SeatController>, IState
+public class SeatController : MonoBehaviour, IGameScreen
 {
-    public State CurrentState { get; set; }
     private bool isSitting;
-    private KeyCode pressToStay = KeyCode.Space;// клавиша для того, чтобы встать
     private ChairManager lastChairManager;// активная система стульев
-    private ChairMesh lastChairMesh;// активный стул
-    private Times.WorldTime worldTime;
-    private Camera playerCamera;
+    private ChairMesh lastChairMesh;// активный стул    
 
-    private void Awake()
+    private void Start()
     {
-        worldTime = FindObjectOfType<Times.WorldTime>();
-        playerCamera = Camera.main;
+        sensitivity = GameSettings.GetSensivity();
     }
     /// <summary>
     /// запись состояния в контроллёр
@@ -25,60 +20,59 @@ public class SeatController : Singleton<SeatController>, IState
     {
         // запись состояния во время начала сна
         if (manager != null)
-        {
             lastChairManager = manager;
-        }
+
         if (cMesh != null)
-        {
             lastChairMesh = cMesh;
-        }
+
         // конец записи состояния
 
         switch (s)
         {
-            case State.unlocked:// в случае поднятия с кровати
+            case State.unlocked:
                 isSitting = false;
-                lastChairManager.RiseUp(lastChairMesh);// заправить кровать               
-                worldTime.ReduceSpeed(lastChairMesh.GetTimeMultiply());// возвращение скорости времени к обычному состоянию
+                lastChairManager.RiseUp(lastChairMesh);// заправить кровать                               
                 lastChairMesh = null;
                 lastChairManager = null;
+                ScreensManager.SetScreen(null);
                 break;
 
-            case State.locked:// в случае укладывания в кровать
+            case State.locked:// в случае укладывания в кровать                
+                ScreensManager.SetScreen(this, false);
                 isSitting = true;
-                worldTime.IncreaseSpeed(lastChairMesh.GetTimeMultiply());// повышение скорости времени
                 break;
         }
     }
 
 
-    private float sensitivityHor = 3;
-    private float sensitivityVert = 3;
-    private float minimumVert = -45.0f;
-    private float maximumVert = 45.0f;
-    private float rotationX = 0;
+    private float sensitivity;
+    private readonly float minimumVert = -45.0f;
+    private readonly float maximumVert = 45.0f;
 
 
     private void Update()
     {
         if (isSitting)
         {
-            if (Input.GetKeyDown(pressToStay))
-            {
-                SetState(State.unlocked);
-            }
+            float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
+            float rotationY = Input.GetAxis("Mouse X") * sensitivity;
 
-            rotationX -= Input.GetAxis("Mouse Y") * sensitivityVert;
-            rotationX = Mathf.Clamp(rotationX, minimumVert, maximumVert);
-            float delta = Input.GetAxis("Mouse X") * sensitivityHor;
-            float rotationY = transform.localEulerAngles.y + delta;
-            transform.localEulerAngles = new Vector3(rotationX, rotationY, 0);
+            transform.parent.localEulerAngles += new Vector3(0, rotationY, rotationX);
+            if (transform.parent.eulerAngles.z < 315 && transform.parent.eulerAngles.z > maximumVert * 2)
+                transform.parent.eulerAngles = new Vector3(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, minimumVert);
+            if (transform.parent.eulerAngles.z < maximumVert * 2 && transform.parent.eulerAngles.z > maximumVert)
+                transform.parent.eulerAngles = new Vector3(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, maximumVert);
         }
     }
 
-    public static void RemoveLastChair()
+    public void RemoveLastChair()
     {
-        if (Instance.lastChairManager != null && Instance.lastChairMesh != null)
-            Instance.lastChairManager.DeOccupied(Instance.lastChairMesh);
+        if (lastChairManager != null && lastChairMesh != null)
+            lastChairManager.DeOccupied(lastChairMesh);
+    }
+
+    public void Hide()
+    {
+        SetState(State.unlocked);
     }
 }

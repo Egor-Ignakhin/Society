@@ -31,8 +31,7 @@ public sealed class BedManager : MonoBehaviour
             playerT.localEulerAngles = lastPlayerLocalEulerAngles;
             playerT.position = lastPlayerPosition;
             playerT.localScale = Vector3.one;
-            //конец возвращений позиций
-            fps.SetState(State.unlocked);// разблокировка персонажа
+            //конец возвращений позиций            
             b.SetOccupied(false);// кровать больше не занята
             return;
         }
@@ -48,8 +47,7 @@ public sealed class BedManager : MonoBehaviour
         lastPlayerPosition = playerT.position;
         playerT.position = b.SleepPlace.position;
         //конец перемещения позиций
-
-        fps.SetState(State.locked);// блокировка персонажа
+        
         playerT.GetComponent<BedController>().SetState(State.locked, this, b);
     }
     /// <summary>
