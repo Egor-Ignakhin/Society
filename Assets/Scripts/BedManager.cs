@@ -3,7 +3,7 @@
 public sealed class BedManager : MonoBehaviour
 {
     private Transform playerT;
-    private FirstPersonController fps;// игрок
+    private BedController bc;// игрок
     private Vector3 sleepAngles = new Vector3(-30, 90, 0);// положение во сне
     private Transform lastPlayerParent;
     //координаты игрока до сна
@@ -12,7 +12,7 @@ public sealed class BedManager : MonoBehaviour
     private void Awake()
     {
         playerT = Camera.main.transform;
-        fps = FindObjectOfType<FirstPersonController>();
+        bc = FindObjectOfType<BedController>();
     }
     internal void Interact(BedMesh b)
     {
@@ -39,16 +39,16 @@ public sealed class BedManager : MonoBehaviour
 
         //перемещение позиций в спальное значение
         lastPlayerParent = playerT.parent;
-        playerT.SetParent(b.transform);
+        playerT.SetParent(b.GetSleepPlace());
 
         lastPlayerLocalEulerAngles = playerT.localEulerAngles;
         playerT.localEulerAngles = sleepAngles;
 
         lastPlayerPosition = playerT.position;
-        playerT.position = b.SleepPlace.position;
+        playerT.position = b.GetSleepPlace().position;
         //конец перемещения позиций
-        
-        playerT.GetComponent<BedController>().SetState(State.locked, this, b);
+
+        bc.SetState(State.locked, this, b);
     }
     /// <summary>
     /// поднятся с кровати

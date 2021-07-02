@@ -4,7 +4,7 @@ using UnityEngine;
 public sealed class BedMesh : InteractiveObject
 {
     [SerializeField] private BedManager mManager;
-    public Transform SleepPlace;
+    [SerializeField] private Transform SleepPlace;
     public bool IsOccupied { get; private set; }
     public override void Interact(PlayerStatements pl)
     {
@@ -15,4 +15,5 @@ public sealed class BedMesh : InteractiveObject
     {
         IsOccupied = value;
     }
+    public Transform GetSleepPlace() => SleepPlace;
 }
