@@ -3,10 +3,17 @@ using UnityEngine;
 
 public sealed class DoorManager : MonoBehaviour, IChangeable// класс реализует взаимодействие, а так же движение двери
 {
+    public enum RateTypes { normal, extrim }
     [SerializeField] private State currentState;
     private State nextState = State.nullable;
     public bool IsOpen { get; private set; }// открытость двери
     private bool canInteract { get; set; } = true;// возможность взаимодействия
+
+    internal void SetDefaultRate(RateTypes rateType, float lerpRate)
+    {
+        isExtrimSituation = rateType == RateTypes.extrim;
+        ExtrimLerpRate = lerpRate;
+    }
 
     [SerializeField] private Vector3 openState = new Vector3(0, -90, 0);// открытое состояние
 

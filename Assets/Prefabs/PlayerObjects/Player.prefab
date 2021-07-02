@@ -55,7 +55,7 @@ GameObject:
   m_Component:
   - component: {fileID: 455121579}
   - component: {fileID: 455121580}
-  m_Layer: 13
+  m_Layer: 12
   m_Name: Axe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1451,7 +1451,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 2
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 2
 --- !u!114 &2147786083578924828
 MonoBehaviour:
@@ -1859,7 +1859,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 0.1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -3862,7 +3862,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ef8587d7308a7734db1847a46c89280f,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2147420509913002238, guid: ef8587d7308a7734db1847a46c89280f,
         type: 3}
@@ -3882,17 +3882,17 @@ PrefabInstance:
     - target: {fileID: 2235760959103727197, guid: ef8587d7308a7734db1847a46c89280f,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5216899797413175583, guid: ef8587d7308a7734db1847a46c89280f,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 9132277610227095455, guid: ef8587d7308a7734db1847a46c89280f,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef8587d7308a7734db1847a46c89280f, type: 3}
