@@ -64,8 +64,8 @@ namespace PlayerClasses
                         }
                     }
                 }
-                descriptionDrawer.SetHint(desc, mainDesc, count);
-            }            
+            }
+            descriptionDrawer.SetHint(desc, mainDesc, count);
         }
         /*private void OnDrawGizmos()
         {

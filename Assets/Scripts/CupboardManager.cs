@@ -5,20 +5,21 @@ public sealed class CupboardManager : MonoBehaviour// класс реализу�
 {
     private List<CupboardMesh> cases { get; set; } = new List<CupboardMesh>();// ящики
     private List<Transform> currentMovingCases { get; set; } = new List<Transform>();// ящики в движении
-    [SerializeField] private float targetX;// конечная точка открытых ящиков
-    private float startX;// начальная точка закрытых ящиков
+    [SerializeField] private Vector3 target;// конечная точка открытых ящиков
+    private Vector3 start;// начальная точка закрытых ящиков
     private float deltaRate = 1;// скорость движения ящиков
     private void Start()
     {
         if (cases.Count > 0)
-            startX = cases[0].transform.localPosition.x;
+            start = cases[0].transform.localPosition;
     }
     public void AddCase(CupboardMesh m)
     {
         cases.Add(m);
     }
-    public void Interact(Transform currentCase)
+    public void Interact(Transform currentCase, float speed)
     {
+        deltaRate = speed;
         currentMovingCases.Add(currentCase);
     }
     private void OpenCloseCases()
@@ -29,7 +30,7 @@ public sealed class CupboardManager : MonoBehaviour// класс реализу�
             for (int i = 0; i < cases.Count; i++)
             {
                 if (cs.gameObject.GetInstanceID() == cases[i].gameObject.GetInstanceID())
-                    localTargetPlace.x = cases[i].IsOpen ? startX : targetX;// установка точки назначения
+                    localTargetPlace = cases[i].IsOpen ? start : target;// установка точки назначения
             }
             cs.localPosition = Vector3.MoveTowards(cs.localPosition, localTargetPlace, deltaRate * Time.fixedDeltaTime);// движение ящика назад или вперёд
             if (cs.localPosition == localTargetPlace)

@@ -11,7 +11,7 @@ public sealed class DoorMesh : InteractiveObject//класс реализует 
         base.Awake();
         mManager = transform.parent.GetComponent<DoorManager>();
         mManager.SetType(this);
-        mManager.SetDefaultRate(rateType, lerpSpeed);
+        mManager.SetDefaultRate(rateType, lerpSpeed);        
     }
     public override void Interact(PlayerClasses.PlayerStatements pl)
     {

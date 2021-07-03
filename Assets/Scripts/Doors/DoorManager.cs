@@ -7,7 +7,8 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     [SerializeField] private State currentState;
     private State nextState = State.nullable;
     public bool IsOpen { get; private set; }// открытость двери
-    private bool canInteract { get; set; } = true;// возможность взаимодействия
+    private bool canInteract = true;// возможность взаимодействия
+
 
     internal void SetDefaultRate(RateTypes rateType, float lerpRate)
     {
@@ -15,11 +16,10 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
         ExtrimLerpRate = lerpRate;
     }
 
-    [SerializeField] private Vector3 openState = new Vector3(0, -90, 0);// открытое состояние
+    [SerializeField] private Vector3 openState;// открытое состояние
 
-    [SerializeField] private Vector3 lockState = new Vector3(0, 0, 0);// закрытое состояние
+    [SerializeField] private Vector3 lockState;// закрытое состояние
 
-    private float lerpRate { get; set; } = 1;// скорость обычного движения двери
     private float ExtrimLerpRate { get; set; } = 100;// скорость экстремального движения двери
     private DoorMesh lastDoorMesh;
 
@@ -61,23 +61,21 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     }
     private bool Rotate(Vector3 state)
     {
-        return isExtrimSituation ? ExtrimRotate(state) : UsuallyRotate(state);
+        var rotation = Quaternion.Euler(state);
+        return isExtrimSituation ? ExtrimRotate(rotation) : UsuallyRotate(rotation);
     }
-    private bool UsuallyRotate(Vector3 state)
+    private bool UsuallyRotate(Quaternion rotation)
     {
-
-        Quaternion rotation = Quaternion.Euler(state);
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, rotation, lerpRate * Time.deltaTime);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, rotation, Time.deltaTime);
 
         return Math.Round(transform.localRotation.y, 5) == Math.Round(rotation.y, 5);
     }
 
-    private bool ExtrimRotate(Vector3 state)
+    private bool ExtrimRotate(Quaternion rotation)
     {
-        Quaternion needRotation = Quaternion.Euler(0.0f, state.y, 0.0f);
-        transform.localRotation = Quaternion.RotateTowards(transform.localRotation, needRotation, ExtrimLerpRate * Time.deltaTime);
+        transform.localRotation = Quaternion.RotateTowards(transform.localRotation, rotation, ExtrimLerpRate * Time.deltaTime);
 
-        return Quaternion.Angle(transform.localRotation, needRotation) < 0.01f;
+        return Quaternion.Angle(transform.localRotation, rotation) < 0.01f;
     }
     private void SetDescription()
     {
