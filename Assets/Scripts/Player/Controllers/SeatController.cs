@@ -5,7 +5,7 @@ public class SeatController : MonoBehaviour, IGameScreen
     private bool isSitting;
     private ChairManager lastChairManager;// активная система стульев
     private ChairMesh lastChairMesh;// активный стул    
-
+    private Transform currentParent;
     private void Start()
     {
         sensitivity = GameSettings.GetSensivity();
@@ -35,11 +35,13 @@ public class SeatController : MonoBehaviour, IGameScreen
                 lastChairMesh = null;
                 lastChairManager = null;
                 ScreensManager.SetScreen(null);
+                currentParent = null;
                 break;
 
             case State.locked:// в случае укладывания в кровать                
                 ScreensManager.SetScreen(this, false);
                 isSitting = true;
+                currentParent = cMesh.GetSeatPlace();
                 break;
         }
     }
@@ -57,11 +59,11 @@ public class SeatController : MonoBehaviour, IGameScreen
             float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
             float rotationY = Input.GetAxis("Mouse X") * sensitivity;
 
-            transform.parent.localEulerAngles += new Vector3(0, rotationY, rotationX);
-            if (transform.parent.eulerAngles.z < 315 && transform.parent.eulerAngles.z > maximumVert * 2)
-                transform.parent.eulerAngles = new Vector3(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, minimumVert);
-            if (transform.parent.eulerAngles.z < maximumVert * 2 && transform.parent.eulerAngles.z > maximumVert)
-                transform.parent.eulerAngles = new Vector3(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, maximumVert);
+            currentParent.localEulerAngles += new Vector3(0, rotationY, rotationX);
+            if (currentParent.eulerAngles.z < 315 && currentParent.eulerAngles.z > maximumVert * 2)
+                currentParent.eulerAngles = new Vector3(currentParent.eulerAngles.x, currentParent.eulerAngles.y, minimumVert);
+            if (currentParent.eulerAngles.z < maximumVert * 2 && currentParent.eulerAngles.z > maximumVert)
+                currentParent.eulerAngles = new Vector3(currentParent.eulerAngles.x, currentParent.eulerAngles.y, maximumVert);
         }
     }
 
