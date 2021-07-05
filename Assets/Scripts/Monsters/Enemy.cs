@@ -1,4 +1,5 @@
 ﻿using PlayerClasses;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -45,7 +46,6 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             this.Health = Shealth;
         }
     }
-    [SerializeField] protected Transform defenderPoint;//защитная точка
     protected Transform target;// текущая цель
     protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
     protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)
@@ -68,6 +68,8 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     private Vector3 oldPos = Vector3.zero;
     private StepEnemy stepEnemy;
     protected AudioClip[] deathClip;
+    private TargetPointsManager tpm;
+    [SerializeField] private Transform targetPointsParent;
     protected virtual void Start()
     {
         OnInit(attackDistance, power, seeDistance, health);
@@ -81,16 +83,12 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         mAgent.stoppingDistance = UVariables.DistanceForAttack;
         UVariables.ChangeHealthEvent += Death;
 
-        if (!defenderPoint)
-        {
-            var dp = new GameObject($"DefenderPointFor{name}").transform;
-            dp.position = transform.position;
-            defenderPoint = dp;
-        }
-        target = defenderPoint;
-        lastTargetPos = target.position;
         MonstersData.AddEnemy(this);
         stepEnemy = new StepEnemy(this, stepSoundData);
+        tpm = new TargetPointsManager(targetPointsParent);
+
+        target = tpm.GetCurrentTarget(this);
+        lastTargetPos = target.position;
     }
     protected class AnimationsContainer
     {
@@ -124,7 +122,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>
-    private bool CalculateDistance(Vector3 pos)
+    private float CalculateDistance(Vector3 pos)
     {
         NavMeshPath path = new NavMeshPath();
         float dist = float.PositiveInfinity;
@@ -134,7 +132,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             for (int x = 1; x < path.corners.Length; x++)
                 dist += Vector3.Distance(path.corners[x - 1], path.corners[x]);
         }
-        return dist <= UVariables.SeeDistance;
+        return dist;
     }
     /// <summary>
     /// тут вычисляется угол обзора по отношению к заданной позиции
@@ -163,7 +161,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         {
             if (Physics.Linecast(e.position, pos, out RaycastHit hit, layerMasks, QueryTriggerInteraction.Ignore))
             {
-                if (!CalculateDistance(pos))
+                if (CalculateDistance(pos) >= UVariables.SeeDistance)
                     continue;
                 if (!CalculateAngle(pos))
                     continue;
@@ -201,7 +199,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
             return;
         mAgent.enabled = false;
         SetAnimationClip();
-        mAnim.Play($"death_{Random.Range(1,3)}");
+        mAnim.Play($"death_{Random.Range(1, 3)}");
         mAnim.SetBool(AnimationsContainer.Death, true);
         mAnim.applyRootMotion = true;
         enabled = false;
@@ -221,7 +219,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     public void SetEnemy(BasicNeeds e, bool fromNoise = false)
     {
         enemy = e;
-        SetTarget(enemy ? enemy.transform : defenderPoint);
+        SetTarget(enemy ? enemy.transform : tpm.GetCurrentTarget(this));
         if (enemy)
             WaitTarget = 5;
         if (fromNoise)
@@ -234,16 +232,16 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     protected virtual void SetTarget(Transform t)
     {
         target = t;
-        bool possibleMove = CalculateDistance(lastTargetPos);
+        bool possibleMove = CalculateDistance(lastTargetPos) <= UVariables.SeeDistance;
         if (enemy)//враг не потерян
         {
             lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
         }
-        else if (mAgent.isOnNavMesh && mAgent.remainingDistance < mAgent.stoppingDistance || !possibleMove)
+        else if ((mAgent.isOnNavMesh && mAgent.remainingDistance < mAgent.stoppingDistance) || !possibleMove)
         {
             if (WaitTarget < 0 || !possibleMove)
             {
-                lastTargetPos = defenderPoint.position;
+                lastTargetPos = tpm.GetCurrentTarget(this).position;
             }
             else
             {
@@ -330,6 +328,36 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         {
             int index = Random.Range(0, deathClip.Length);
             stepPlayerSource.PlayOneShot(deathClip[index]);
+        }
+    }
+    public class TargetPointsManager
+    {
+        private readonly List<EnemyPoint> points = new List<EnemyPoint>();
+        private int currentPointIt = 0;
+
+        public TargetPointsManager(Transform pointsParent)
+        {
+            points.AddRange(pointsParent.GetComponentsInChildren<EnemyPoint>());
+        }
+        private void CalculateNextPoint()
+        {
+            if (points[currentPointIt].GetDelay() > 0)
+                return;
+            else
+            {
+                points[currentPointIt].ResetDelay();                
+            }
+            currentPointIt++;
+            if (currentPointIt >= points.Count)
+                currentPointIt = 0;
+        }
+        public Transform GetCurrentTarget(Enemy e)
+        {
+            var dist = e.CalculateDistance(points[currentPointIt].transform.position);
+            if (dist < e.attackDistance * 1.5f)
+                CalculateNextPoint();
+
+            return points[currentPointIt].transform;
         }
     }
 }
