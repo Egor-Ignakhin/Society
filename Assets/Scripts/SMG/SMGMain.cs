@@ -37,6 +37,7 @@ namespace SMG
         private EffectsManager effectsManager;
         [SerializeField] private Transform additionCellsForModifiers;
         [SerializeField] private Transform activeModifiersContainer;
+
         private void Awake()
         {
             effectsManager = FindObjectOfType<EffectsManager>();
@@ -74,6 +75,16 @@ namespace SMG
 
             MSMG.gameObject.SetActive(IsActive);
 
+            Camera cam;
+            if (cam = FindObjectOfType<FirstPersonController>().GetCamera())
+            {
+                cam.enabled = true;
+                if (!IsActive)
+                {
+                    cam.transform.SetParent(FindObjectOfType<FirstPersonController>().transform.GetChild(0));
+                }
+            }
+
             mCanvas.enabled = true;
         }
         private void Update()
@@ -85,7 +96,7 @@ namespace SMG
                 if (lastSelectedObj && !DEA.IsActive && (!lastSelectedObj.GetComponent<SMGGunElement>().IsEmpty()))
                     DEA.Show(UnequipGunElement, DeselectGunElement, "Снять модификатор?");
             }
-            if (Input.GetKeyDown(KeyCode.R) && !DEA.IsActive)
+            if (Input.GetKeyDown(KeyCode.R))
             {
                 if (EventReceiver.CurGunCellContAnyMod())
                 {
@@ -104,11 +115,11 @@ namespace SMG
         private MeshRenderer lastSelectedObj;
         private void FixedUpdate()
         {
-            if (!IsActive || MSMG.IsActive)
+            if (!IsActive || MSMG.IsActive || DEA.IsActive)
                 return;
             Ray ray = MSMGCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))
-            {
+            {                
                 MeshRenderer currentMesh = hit.transform.GetComponent<MeshRenderer>();
                 if (lastSelectedObj && (currentMesh != lastSelectedObj))
                 {
@@ -116,7 +127,9 @@ namespace SMG
                 }
 
                 if (currentMesh != lastSelectedObj)
-                    currentMesh.material.SetColor("_EmissionColor", selectableColor);
+                {
+                    currentMesh.material.SetColor("_EmissionColor", selectableColor);         
+                }
                 lastSelectedObj = currentMesh;
             }
             else

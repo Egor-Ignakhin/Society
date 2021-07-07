@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 namespace SMG
@@ -50,7 +51,7 @@ namespace SMG
             int additionCellsCount = 30;
             for (int i = 0; i < additionCellsCount; i++)
             {
-                Object.Instantiate(ModifiersCells[0], additionCellsForModifiers).OnInit(this, emptySprite);
+                UnityEngine.Object.Instantiate(ModifiersCells[0], additionCellsForModifiers).OnInit(this, emptySprite);
             }
             DEA = dea;
         }
@@ -79,7 +80,7 @@ namespace SMG
 
         internal bool CurGunCellContAnyMod()
         {
-            return currentGunCell && ((currentGunCell.MGun.Aim != 0) || (currentGunCell.MGun.Mag != 0));
+            return currentGunCell && ((currentGunCell.MGun.Aim != 0) || (currentGunCell.MGun.Mag != 0) || (currentGunCell.MGun.Silencer != 0));
         }
 
         internal void OnSelectGunsCell(GunCell sMGGunsCell)

@@ -96,7 +96,7 @@ namespace Shoots
         }
         private void Update()
         {
-            IsAiming = Input.GetMouseButton(1);
+            IsAiming = Input.GetMouseButton(1) && (currentActiveGunI != -1);
 
             TiltCamera(GetSlant());
 
@@ -168,7 +168,11 @@ namespace Shoots
             var ic = InventoryEventReceiver.GetSelectedCell();
             if (!ic)
                 return;
-            inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), ic.MGun.AmmoCount, null);
+
+            //если в оружие больше 0 патрон
+            if (ic.MGun.AmmoCount > 0)
+                inventoryContainer.AddItem((int)guns[currentActiveGunI].MGun.GetBulletId(), ic.MGun.AmmoCount, null);// добавление кол-ва из магазина
+
             guns[currentActiveGunI].MGun.UpdateModifiers(ic.MGun.Mag, ic.MGun.Aim, ic.MGun.Silencer);
             ic.SetAmmoCount(0);
         }

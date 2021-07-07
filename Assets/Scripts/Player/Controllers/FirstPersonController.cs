@@ -65,7 +65,10 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
     private StepFpc stepPlayer;
-    private StepSoundData stepSoundData;    
+
+    internal Camera GetCamera() => PlayerCamera;
+
+    private StepSoundData stepSoundData;
 
     [System.Serializable]
     public sealed class AdvancedSettings
@@ -113,7 +116,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private void Awake()
     {
         #region Movement Settings - Awake        
-        PlayerCamera = Camera.main;
+        PlayerCamera = Camera.main;        
         PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();

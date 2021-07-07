@@ -92,9 +92,8 @@ namespace SMG
             /// <returns></returns>
             internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun, ModifierTypes type)
             {
-                var tti = new SMGTitleTypeIndex((GunTitles)gun.Title, type, type == ModifierTypes.Mag? (ModifierIndex)gun.Mag : (ModifierIndex)gun.Aim);
-
-                return tti;
+                return new SMGTitleTypeIndex((GunTitles)gun.Title, type, type == ModifierTypes.Mag? 
+                    (ModifierIndex)gun.Mag : (type == ModifierTypes.Silencer? (ModifierIndex)gun.Silencer : (ModifierIndex)gun.Aim));
             }            
         }
         /// <summary>
