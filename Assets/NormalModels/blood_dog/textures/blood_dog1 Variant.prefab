@@ -97,7 +97,7 @@ Animator:
   m_GameObject: {fileID: 7703558383349404400}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 81345df584ee08f47bf00061d8e8bacb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -145,12 +145,12 @@ MonoBehaviour:
   health: 500
   power: 3
   attackDistance: 2
-  defenderPoint: {fileID: 0}
   layerMasks:
     serializedVersion: 2
     m_Bits: 1847
   eyes:
   - {fileID: 1568039130}
+  targetPointsParent: {fileID: 0}
 --- !u!1001 &7361661739677200289
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -246,7 +246,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3aacfebc556a9a045a93c30ef33c7678,
         type: 3}
       propertyPath: m_Name
-      value: blood_dog1 (1)
+      value: blood_dog1 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3aacfebc556a9a045a93c30ef33c7678,
         type: 3}
