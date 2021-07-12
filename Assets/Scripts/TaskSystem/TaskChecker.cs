@@ -1,37 +1,41 @@
-﻿using PlayerClasses;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// класс вызывает при контакте событие чекпоинта
 /// </summary>
 public sealed class TaskChecker : InteractiveObject
 {
-    [SerializeField] private bool active = true;
-    [SerializeField] private Mission mMission;
+    [System.Flags]
+    public enum MissionFlags
+    {
+        Nothing = 0,
+        M_1 = 1,
+        M_2 = 2,
+        M_3 = 4,
+        M_4 = 8,
+        M_5 = 16,
+        M_6 = 32,
+        M_7 = 64,
+        M_8 = 128,
+        M_9 = 256,
+        Everything = ~0
+    }
+
+    [EnumFlag]
+    [SerializeField]
+    private MissionFlags enumFlag = MissionFlags.M_1;
+
+    private Mission mMission;
     [SerializeField] private MonoBehaviour target;
-
-    [Space(15)]
-    [SerializeField] private bool delayedToInvoke;
-    [ShowIf(nameof(delayedToInvoke), true)] [SerializeField] private float delayToInvoke;
-
-    [Space(15)]
-    [SerializeField] private bool EnableNextChecker;
-    [ShowIf(nameof(EnableNextChecker), true)] [SerializeField] private GameObject nextChecker;
-
-    [Space(15)]
-    [SerializeField] private bool reportAfterChangeStateOfObject;
-    [ShowIf(nameof(reportAfterChangeStateOfObject), true)] [SerializeField] private GameObject changedObject;
-
-    [Space(15)]
-    [SerializeField] private bool isSupportForExtrmCloseDoor;
 
     private bool hasInteracted;
 
-
-    public override void Interact(PlayerStatements pl)
+    private void Start()
     {
-        Report();
+        if (enumFlag == MissionFlags.M_1)
+            mMission = FindObjectOfType<FirstMission>();
     }
+    public override void Interact() => Report();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -40,36 +44,12 @@ public sealed class TaskChecker : InteractiveObject
             Report();
         }
     }
-    private async void Report()
+    private void Report()
     {
-        if (!active)
-            return;
         if (hasInteracted)
             return;
         hasInteracted = true;
-        if (delayedToInvoke)
-            await System.Threading.Tasks.Task.Delay((int)delayToInvoke * 1000);
 
         mMission.Report();
-
-        if (EnableNextChecker)
-        {
-            if (isSupportForExtrmCloseDoor)
-            {
-                while (!(mMission as FirstMission).PossibleMoveToBunker())
-                {
-                    await System.Threading.Tasks.Task.Delay(100);
-                }
-            }
-            nextChecker.SetActive(true);
-        }
-    }
-    public void SetInteracted(bool value)
-    {
-        hasInteracted = value;
-    }
-    public void SetActive(bool v)
-    {
-        active = v;
     }
 }

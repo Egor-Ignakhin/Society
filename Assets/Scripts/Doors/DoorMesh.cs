@@ -13,7 +13,7 @@ public sealed class DoorMesh : InteractiveObject//класс реализует 
         mManager.SetType(this);
         mManager.SetDefaultRate(rateType, lerpSpeed);        
     }
-    public override void Interact(PlayerClasses.PlayerStatements pl)
+    public override void Interact()
     {
         mManager.Interact(this);
     }

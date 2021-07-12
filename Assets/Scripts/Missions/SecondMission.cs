@@ -1,21 +1,8 @@
 ﻿public sealed class SecondMission : Mission
 {
-    public override void ContinueMission(int skipLength)
-    {
-        throw new System.NotImplementedException();
-    }
+    public override int GetMissionNumber() => 1;
 
-    public override void FinishMission()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override int GetMissionNumber()
-    {
-        return 1;
-    }
-
-    public override void Report()
+    protected override void OnReportTask(int currentTask, bool isLoad = false)
     {
         throw new System.NotImplementedException();
     }

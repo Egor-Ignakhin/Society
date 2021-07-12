@@ -30,7 +30,7 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
             if (img)
                 img.sprite = lastLoadLevel.sprite;
             if (descText)
-                descText.SetText(lastLoadLevel.description);            
+                descText.SetText(lastLoadLevel.description);
         }
     }
 
@@ -75,8 +75,10 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
 
     public void Hide()
     {
-        
+
     }
+
+    public KeyCode HideKey() => KeyCode.Escape;
 
     public class LastLoadLevelContainer
     {

@@ -50,7 +50,7 @@ namespace FriendlyPersons
             {
                 if (hit.transform.TryGetComponent<DoorMesh>(out var door))
                 {
-                    door.Interact(null);
+                    door.Interact();
                 }
             }
         }

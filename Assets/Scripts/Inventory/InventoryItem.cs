@@ -34,7 +34,6 @@ public sealed class InventoryItem : InteractiveObject
     [SerializeField]
     private SMG.ModifierCharacteristics.ModifierIndex aimIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
 
-    [EditorButton(nameof(UpdateModifiers), "Update modifiers", activityType: ButtonActivityType.Everything)]
     [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;
     private bool isDroppedGun = false;
 
@@ -57,9 +56,9 @@ public sealed class InventoryItem : InteractiveObject
         magIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Mag;
         aimIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Aim;
         silencerIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Silencer;
-        UpdateModifiers();
+        OnValidate();
     }
-    public override void Interact(PlayerClasses.PlayerStatements pl)
+    public override void Interact()
     {
         inventoryContainer.AddItem(Id, GetCount(), possibleGun);
         Destroy(gameObject);
@@ -71,7 +70,7 @@ public sealed class InventoryItem : InteractiveObject
         this.Id = id;
         SetDescription();
     }
-    private void UpdateModifiers()
+    private void OnValidate()
     {
         SetEnableActiveMod(silencers, (int)silencerIndex);
         SetEnableActiveMod(aims, (int)aimIndex);

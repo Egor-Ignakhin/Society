@@ -24,18 +24,21 @@ namespace Inventory
         private bool isEnabled;
         private FirstPersonController fps;
         private Shoots.GunAnimator gunAnimator;
+        private bool canInteractive = true;
         private void Awake()
         {
             fps = FindObjectOfType<FirstPersonController>();
             gunAnimator = FindObjectOfType<Shoots.GunAnimator>();
         }
 
-        private void Start()
-        {
-            SetEnable(false);
-        }
+        internal void SetInteractive(bool v) => canInteractive = v;
+
+        private void Start() => SetEnable(false);
+
         private void Update()
         {
+            if (!canInteractive)
+                return;
             if (ScreensManager.HasActiveScreen() && !isEnabled || gunAnimator.IsAiming)
                 return;
             if (Input.GetKeyDown(changeActiveKeyCode))
@@ -89,7 +92,7 @@ namespace Inventory
 
         internal void DropModifier(ModifierCharacteristics.SMGTitleTypeIndex tti)
         {
-            var pref = ModifiersPrefabsData.GetPrefabFromTTI(tti);           
+            var pref = ModifiersPrefabsData.GetPrefabFromTTI(tti);
             var item = Instantiate(pref, fps.transform.position, fps.transform.rotation);
             var powerForce = 5;
             item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
@@ -99,5 +102,7 @@ namespace Inventory
         }
 
         public void Hide() => SetEnable(false);
+
+        public KeyCode HideKey() => KeyCode.Escape;
     }
 }

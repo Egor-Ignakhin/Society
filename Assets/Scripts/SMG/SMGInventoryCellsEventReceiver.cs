@@ -19,7 +19,7 @@ namespace SMG
         private void Start()
         {
             var icon = FindObjectOfType<Inventory.InventoryContainer>();
-            inventoryInput = icon.InventoryInput;
+            inventoryInput = icon.inventoryInput;
             inventoryEventReceiver = icon.EventReceiver;
             modifiersData = FindObjectOfType<SMGModifiersData>();
         }

@@ -7,15 +7,13 @@ namespace PlayerClasses
         Camera mainCamera;
         private float interctionDistance = 2;
         private const float sphereCasterRadius = 0.01f;        
-        public static KeyCode InputInteractive { get; set; } = KeyCode.F;
-        private PlayerStatements playerStatements;
+        public static KeyCode InputInteractive { get; set; } = KeyCode.F;        
         private bool inputedButton = false;
-        private DescriptionDrawer descriptionDrawer;
+        private Inventory.DescriptionDrawer descriptionDrawer;
         private void Start()
         {
-            mainCamera = Camera.main;
-            playerStatements = GetComponent<PlayerStatements>();
-            descriptionDrawer = DescriptionDrawer.Instance;
+            mainCamera = Camera.main;            
+            descriptionDrawer = Inventory.DescriptionDrawer.Instance;
             descriptionDrawer.SetHint(desc, mainDesc, 0);
         }
 
@@ -58,7 +56,7 @@ namespace PlayerClasses
 
                         if (inputedButton)
                         {
-                            c.Interact(playerStatements);
+                            c.Interact();
                             if (++i == components.Length)
                                 inputedButton = false;
                         }

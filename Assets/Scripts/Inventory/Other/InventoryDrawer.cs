@@ -1,35 +1,38 @@
 ﻿using UnityEngine;
 
-public sealed class InventoryDrawer : MonoBehaviour
+namespace Inventory
 {
-    [SerializeField] private GameObject mainField;
-
-    [Space(15)]
-    [SerializeField] private Transform mainContainer;
-    [SerializeField] private Transform supportContainer;
-
-    private bool MainFieldEnabled = false;
-    public Transform GetMainContainer() => mainContainer;
-
-    public Transform GetSupportContainer() => supportContainer;
-    private EffectsManager effectsManager;
-
-
-    private void Awake()
+    public sealed class InventoryDrawer : MonoBehaviour
     {
-        effectsManager = FindObjectOfType<EffectsManager>();
-        effectsManager.Init();
-    }
+        [SerializeField] private GameObject mainField;
+
+        [Space(15)]
+        [SerializeField] private Transform mainContainer;
+        [SerializeField] private Transform supportContainer;
+
+        private bool MainFieldEnabled = false;
+        public Transform GetMainContainer() => mainContainer;
+
+        public Transform GetSupportContainer() => supportContainer;
+        private EffectsManager effectsManager;
 
 
-    /// <summary>
-    /// смена активности инвентаря
-    /// </summary>
-    public bool ChangeActiveMainField(bool value)
-    {
-        MainFieldEnabled = !ScreensManager.HasActiveScreen() && value;
-        mainField.SetActive(MainFieldEnabled);
-        effectsManager.SetEnableSimpleDOF(MainFieldEnabled);
-        return MainFieldEnabled;
+        private void Awake()
+        {
+            effectsManager = FindObjectOfType<EffectsManager>();
+            effectsManager.Init();
+        }
+
+
+        /// <summary>
+        /// смена активности инвентаря
+        /// </summary>
+        public bool ChangeActiveMainField(bool value)
+        {
+            MainFieldEnabled = !ScreensManager.HasActiveScreen() && value;
+            mainField.SetActive(MainFieldEnabled);
+            effectsManager.SetEnableSimpleDOF(MainFieldEnabled);
+            return MainFieldEnabled;
+        }
     }
 }

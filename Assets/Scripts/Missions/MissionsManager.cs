@@ -1,26 +1,23 @@
-﻿using PlayerClasses;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 public sealed class MissionsManager : MonoBehaviour
 {
-    private BasicNeeds playerBasicNeeds;
-    private EffectsCanvas effectsCanvas;
-    public static string StateFolder { get; private set; } = Directory.GetCurrentDirectory() + "\\Saves";// папка с сохранением
-    public static string StateFile { get; private set; } = "\\State.json";// сохранение
+    public static string savePath = Directory.GetCurrentDirectory() + "\\Saves\\State.json";// папка с сохранением    
     private State currentState;
 
-    private string nextMission;
     public enum MissionType
     {
         none,
         narrative,
         additional
     }
+    private void Awake()
+    {
+        Localization.Init();
+    }
     private void OnEnable()
     {
-        effectsCanvas = FindObjectOfType<EffectsCanvas>();
-        playerBasicNeeds = BasicNeeds.Instance;
         LoadState();
         StartOrContinueMission(currentState.currentMission);
     }
@@ -32,42 +29,30 @@ public sealed class MissionsManager : MonoBehaviour
     {
         try
         {
-            string data = File.ReadAllText(StateFolder + StateFile);
+            string data = File.ReadAllText(savePath);
             currentState = JsonUtility.FromJson<State>(data);
         }
         catch
         {
             currentState = new State();
-            if (!Directory.Exists(StateFolder))
-            {
-                Directory.CreateDirectory(StateFolder);
-                File.Create(StateFolder + StateFile);
-            }
+            if (!File.Exists(savePath))                            
+                File.Create(savePath);            
         }
-    }
-
-    internal EffectsCanvas GetEffectsCanvas()
-    {
-        return effectsCanvas;
     }
     private void SaveState()
     {
         string data = JsonUtility.ToJson(currentState, true);
-        File.WriteAllText(StateFolder + StateFile, data);
+        File.WriteAllText(savePath, data);
     }
-    public void ResetTasks()
-    {
-        currentState.currentTask = 0;
-    }
+    public void ResetTasks() => currentState.currentTask = 0;
+
     public void ReportMission()
     {
         currentState.currentMission++;
         ResetTasks();
     }
-    public void ReportTask()
-    {
-        currentState.currentTask++;
-    }
+    public void ReportTask() => currentState.currentTask++;
+
     public void StartOrContinueMission(int num)
     {
         switch (num)
@@ -77,10 +62,6 @@ public sealed class MissionsManager : MonoBehaviour
                 ChangeMissionType(MissionType.narrative);
                 break;
         }
-    }
-    public BasicNeeds GetPlayerBasicNeeds()
-    {
-        return playerBasicNeeds;
     }
     private void OnDisable()
     {
@@ -104,18 +85,10 @@ public sealed class MissionsManager : MonoBehaviour
     }
     private void Finish1Mission()
     {
-        // игрок где-то просыпается или появляется    
-        nextMission = "Направляйтесь куда-то на поверхность к дяде Биллу";
         ChangeMissionType(MissionType.none);
         ReportMission();
     }
-    private void ChangeMissionType(MissionType type)
-    {
+    private void ChangeMissionType(MissionType type) =>
         currentState.missionType = type;
 
-        if (type == MissionType.none)// если миссия закончилась и новая не началась
-        {
-            TaskDrawer.Instance.DrawNewTask(nextMission);
-        }
-    }
 }

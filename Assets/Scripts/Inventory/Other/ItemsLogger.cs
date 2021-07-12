@@ -27,7 +27,7 @@ namespace Inventory
             inventoryContainer = FindObjectOfType<InventoryContainer>();
             inventoryContainer.TakeItemEvent += DrawNewItem;
             inventoryContainer.ActivateItemEvent += DrawUsedItem;            
-            inventoryContainer.InventoryInput.DropEvent += DropItem;
+            inventoryContainer.inventoryInput.DropEvent += DropItem;
         }
         private void Update()
         {
@@ -98,7 +98,7 @@ namespace Inventory
         {
             inventoryContainer.TakeItemEvent -= DrawNewItem;
             inventoryContainer.ActivateItemEvent -= DrawUsedItem;            
-            inventoryContainer.InventoryInput.DropEvent -= DropItem;
+            inventoryContainer.inventoryInput.DropEvent -= DropItem;
             disabledloggers = null;
             activeLoggers = null;
         }

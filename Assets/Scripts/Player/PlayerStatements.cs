@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PlayerClasses
 {
@@ -7,18 +6,12 @@ namespace PlayerClasses
     {
         private BasicNeeds mBasicNeeds;// класс базовых нужд
 
-        private void Awake()
-        {
-            mBasicNeeds = GetComponent<BasicNeeds>();            
-        }
-        public void MealPlayer(int food, int water)
-        {
-            mBasicNeeds.AddMeal(water, food);
-        }
+        private void Awake() => mBasicNeeds = GetComponent<BasicNeeds>();
 
-        internal void HealPlayer(float health, float radiation)
-        {
+        public void MealPlayer(int food, int water) =>
+            mBasicNeeds.AddMeal(water, food);
+
+        internal void HealPlayer(float health, float radiation) =>
             mBasicNeeds.Heal(health, radiation);
-        }
     }
 }

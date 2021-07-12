@@ -1,4 +1,5 @@
 ﻿using PlayerClasses;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -29,6 +30,12 @@ class PlayerActionBar : MonoBehaviour
         healthAnimatedBar.localPosition = Vector3.MoveTowards(healthAnimatedBar.localPosition, nextPos, 1 / animateSpeed);
         healthAnimatedBar.sizeDelta = Vector2.MoveTowards(healthAnimatedBar.sizeDelta, nextSize, 1 / animateSpeed);
     }
+
+    internal void SetVisible(bool v)
+    {
+        gameObject.SetActive(v);
+    }
+
     private void OnChangeHealth(float v)
     {
         lastHp = currentHP;

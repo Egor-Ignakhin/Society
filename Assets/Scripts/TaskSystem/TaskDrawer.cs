@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public sealed class TaskDrawer : Singleton<TaskDrawer>// класс отрисовывает задачи
 {
@@ -8,6 +9,10 @@ public sealed class TaskDrawer : Singleton<TaskDrawer>// класс отрисо
     {
         text.SetText(c);
         gameObject.SetActive(c != string.Empty);
+    }
 
+    internal void SetVisible(bool v)
+    {
+        gameObject.SetActive(v);
     }
 }

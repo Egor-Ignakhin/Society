@@ -60,7 +60,7 @@ namespace Debugger
         /// анимация движения
         /// </summary>
         private void Move()
-        {            
+        {
             Vector3 direction = isHidden ? hiddenPos : ShowingPos;// установка таргетной позиции
 
             if (background.localPosition != direction)// если анимация не кончилась
@@ -80,5 +80,7 @@ namespace Debugger
             isHidden = true;
             isMoving = true;
         }
+
+        public KeyCode HideKey() => KeyCode.Escape;
     }
 }

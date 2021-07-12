@@ -77,4 +77,6 @@ public class SeatController : MonoBehaviour, IGameScreen
     {
         SetState(State.unlocked);
     }
+
+    public KeyCode HideKey() => KeyCode.Space;
 }

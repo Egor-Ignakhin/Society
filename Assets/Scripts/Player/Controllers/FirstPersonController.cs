@@ -65,6 +65,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     public CrouchModifiers MCrouchModifiers { get; set; } = new CrouchModifiers();
     public RecumbentModifiers MRecumbentModifiers { get; set; } = new RecumbentModifiers();
     private StepFpc stepPlayer;
+    private bool PossibleJump;
 
     internal Camera GetCamera() => PlayerCamera;
 
@@ -96,6 +97,8 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         public float ChangeTime = 1;
     }
 
+    internal void SetPossibleJump(bool v) => PossibleJump = v;
+
     public AdvancedSettings Advanced { get; set; } = new AdvancedSettings();
     private CapsuleCollider capsule;
     private bool IsGrounded = true;
@@ -116,7 +119,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private void Awake()
     {
         #region Movement Settings - Awake        
-        PlayerCamera = Camera.main;        
+        PlayerCamera = Camera.main;
         PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
@@ -192,7 +195,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         #endregion
 
         #region Input Settings - Update
-        if (Input.GetButtonDown("Jump") && !ScreensManager.HasActiveScreen())
+        if (PossibleJump && Input.GetButtonDown("Jump") && !ScreensManager.HasActiveScreen())
             Jump = true;
         else if (Input.GetButtonUp("Jump"))
             Jump = false;
@@ -212,6 +215,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         PlayerClasses.BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
         #endregion
+        SetPossibleJump(true);
     }
 
     private void FixedUpdate()

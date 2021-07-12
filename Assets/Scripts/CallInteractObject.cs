@@ -1,12 +1,8 @@
-﻿using PlayerClasses;
-using UnityEngine;
+﻿using UnityEngine;
 
-class CallInteractObject : InteractiveObject
+sealed class CallInteractObject : InteractiveObject
 {
     [SerializeField] private InteractiveObject receiver;
 
-    public override void Interact(PlayerStatements pl)
-    {
-        receiver.Interact(pl);
-    }
+    public override void Interact() => receiver.Interact();
 }

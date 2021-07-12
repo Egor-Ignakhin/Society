@@ -1,12 +1,14 @@
 ﻿using PlayerClasses;
+using System;
 using UnityEngine;
 
 public sealed class BedMesh : InteractiveObject
 {
     [SerializeField] private BedManager mManager;
     [SerializeField] private Transform SleepPlace;
+
     public bool IsOccupied { get; private set; }
-    public override void Interact(PlayerStatements pl)
+    public override void Interact()
     {
         mManager.Interact(this);
         IsOccupied = true;
@@ -15,5 +17,6 @@ public sealed class BedMesh : InteractiveObject
     {
         IsOccupied = value;
     }
+
     public Transform GetSleepPlace() => SleepPlace;
 }

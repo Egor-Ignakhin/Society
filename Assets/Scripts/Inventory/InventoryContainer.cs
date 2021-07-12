@@ -2,6 +2,8 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
+using System.Threading.Tasks;
 
 namespace Inventory
 {
@@ -19,6 +21,7 @@ namespace Inventory
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
         private InventoryEffects inventoryEffects;
+
         private readonly InventorySaver inventorySaver = new InventorySaver();
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
@@ -29,7 +32,7 @@ namespace Inventory
         [SerializeField] private Button ModifiersActivator;
         [SerializeField] private GameObject modifiersPage;
         [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
-        public InventoryInput InventoryInput { get; private set; }
+        public InventoryInput inventoryInput { get; private set; }
         private InventoryDrawer inventoryDrawer;
 
         public delegate void InteractiveHandler(int id, int count);
@@ -39,10 +42,21 @@ namespace Inventory
         private PrefabsData prefabsData;
         public delegate void AnimationHandler();
         public event AnimationHandler CellAnimationEvent;
+        private bool canInteractive;
+        internal async void SetInteractive(bool v)
+        {
+            await Task.Delay(100);
+            canInteractive = v;
 
+
+            inventoryInput.SetInteractive(v);
+            inventoryDrawer.GetSupportContainer().gameObject.SetActive(v);
+
+
+        }
         private void Awake()
         {
-            InventoryInput = gameObject.AddComponent<InventoryInput>();
+            inventoryInput = gameObject.AddComponent<InventoryInput>();
             prefabsData = new PrefabsData();
         }
 
@@ -53,7 +67,7 @@ namespace Inventory
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, InventoryInput, inventoryDrawer, weightText, takeAllButton,
+                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
                 ModifiersActivator, modifiersPage, FindObjectOfType<SMG.SMGInventoryCellsEventReceiver>());
             EventReceiver.OnEnable();
             StartCoroutine(nameof(CellAnimator));
@@ -107,7 +121,7 @@ namespace Inventory
             if (Cells.FindAll(c => c.IsEmpty()).Count == 0)// если не нашлись свободные слоты
             {
                 //выбрасывание предмета обратно
-                InventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
+                inventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
                 return;
             }
 

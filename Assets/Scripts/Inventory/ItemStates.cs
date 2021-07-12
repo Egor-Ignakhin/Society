@@ -9,7 +9,7 @@ namespace Inventory
     {
         #region Constants
 
-        public enum ItemsID : int { Default, Axe, Makarov, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
+        public enum ItemsID : int { Default, Axe_1, Makarov, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
             Lom}
         public enum GunsID : int { Makarov, TTPistol, Ak_74}
 
@@ -22,7 +22,7 @@ namespace Inventory
         {
             items = new Dictionary<ItemsID, (int, decimal)>
             {   {ItemsID.Default, (0,0) },
-                {ItemsID.Axe, (1,1.3m) },
+                {ItemsID.Axe_1, (1,1.3m) },
                 {ItemsID.Makarov, (1,1) },
                 {ItemsID.TTPistol, (1,1) },
                 {ItemsID.Ak_74, (1,4) },

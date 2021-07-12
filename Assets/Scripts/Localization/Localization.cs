@@ -3,14 +3,11 @@ using System.IO;
 using UnityEngine;
 
 public static class Localization
-{
-    private static readonly Dictionary<int, string> dialogContents = new Dictionary<int, string>();// пути к диалогам    
-    private static readonly Dictionary<int, string> taskContents = new Dictionary<int, string>();// пути к задачам
-    private static Dictionary<string, string> upKeysDescriptions;// словаоь для подсказок (нажатия на клавишу)    
-    internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive)
-    {
-        return $"{upKeysDescriptions[mainType]}({inputInteractive})";
-    }
+{    
+    private static Dictionary<string, string> upKeysDescriptions;// словарь для подсказок (нажатия на клавишу)    
+    internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive) =>
+         $"{upKeysDescriptions[mainType]}({inputInteractive})";
+
     private static HintsData hintsData;
 
     public enum Type { Dialogs, Tasks, Hints }
@@ -19,40 +16,36 @@ public static class Localization
         public const string Default = "Взаимодествовать";
         public const string Item = "Поднять предмет ";
     }
+    private static firstMTaskContent taskContent;
+    private static firstMDialogsContent dialogContent;
 
-    static Localization()
+    [System.Serializable]
+    public class firstMTaskContent
     {
-        Init();
+        public List<string> Tasks;// пути к задачам
+        public string GetTask(int ch) => Tasks[ch];
     }
-    static void Init()
+
+    [System.Serializable]
+    public class firstMDialogsContent
+    {
+        public List<string> Dialogs;// пути к задачам
+        public string GetTask(int ch) => Dialogs[ch];
+    }
+
+    public static void Init()
     {
         // инициализация путей
         #region SetDialogs
         {
-            List<string> contents = new List<string>
-            {
-                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_1.json",
-                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_2.json"
-            };
-
-            for (int i = 0; i < contents.Count; i++)
-            {
-                dialogContents.Add(i, contents[i]);
-            }
+            string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_1.json");
+            dialogContent = JsonUtility.FromJson<firstMDialogsContent>(data);
         }
         #endregion
         #region SetTasks
         {
-            List<string> contents = new List<string>
-            {
-                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_1.json",
-                Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_2.json"
-            };
-
-            for (int i = 0; i < contents.Count; i++)
-            {
-                taskContents.Add(i, contents[i]);
-            }
+            string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_1.json");
+            taskContent = JsonUtility.FromJson<firstMTaskContent>(data);
         }
         #endregion       
 
@@ -80,7 +73,7 @@ public static class Localization
         public List<Hint> Types;
         public Dictionary<string, string> hints;
         public string GetHint(string t)
-        {            
+        {
             return hints[t];
         }
 
@@ -92,21 +85,21 @@ public static class Localization
         }
 
     }
-    public static string PathToCurrentLanguageContent(Type type, int missionNumber)// возвращает путь до нужного содержимого
+    public static string PathToCurrentLanguageContent(Type type, int missionNumber, int checkpoint)// возвращает путь до нужного содержимого
     {
         switch (type)
         {
             case Type.Dialogs:
-                return GetDialog(missionNumber);
+                return GetDialog(missionNumber, checkpoint);
             case Type.Tasks:
-                return GetTask(missionNumber);
+                return GetTask(missionNumber, checkpoint);
             default:
                 return null;
         }
     }
-    private static string GetDialog(int missionNumber) => dialogContents[missionNumber];
+    private static string GetDialog(int missionNumber,int checkpoint) => dialogContent.GetTask(checkpoint);
 
-    private static string GetTask(int missionNumber) => taskContents[missionNumber];
+    private static string GetTask(int missionNumber, int checkpoint) => taskContent.GetTask(checkpoint);
 
     public static string GetHint(InteractiveObject interactiveObject)
     {

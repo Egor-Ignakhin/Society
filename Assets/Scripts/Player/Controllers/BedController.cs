@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public sealed class BedController : MonoBehaviour, IGameScreen
 {
@@ -6,6 +7,41 @@ public sealed class BedController : MonoBehaviour, IGameScreen
     private BedMesh lastBedMesh;// активная кровать 
     private bool isSleeping;
     private Transform currentParent;
+    private float sensitivity;
+    public bool PossibleDeoccupied { get; private set; } = true;
+    private readonly float minimumVert = -45.0f;
+    private readonly float maximumVert = 45.0f;
+    private FirstPersonController fpc;
+
+    private void Awake()
+    {
+        fpc = FindObjectOfType<FirstPersonController>();
+    }
+    private void Start()
+    {
+        sensitivity = GameSettings.GetSensivity();        
+    }
+    private void Update()
+    {
+        if (isSleeping)
+        {
+            float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
+            float rotationY = Input.GetAxis("Mouse X") * sensitivity;
+
+            currentParent.localEulerAngles += new Vector3(0, rotationY, rotationX);
+            Vector3 cAngles = currentParent.eulerAngles;
+            if (cAngles.z < 315 && cAngles.z > maximumVert * 2)
+                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, minimumVert);
+            if (cAngles.z < maximumVert * 2 && cAngles.z > maximumVert)
+                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, maximumVert);
+        }
+    }
+
+    internal void SetPossibleDeoccupied(bool v)
+    {
+        PossibleDeoccupied = v;
+    }
+
     /// <summary>
     /// запись состояния в контроллёр
     /// </summary>
@@ -42,32 +78,14 @@ public sealed class BedController : MonoBehaviour, IGameScreen
                 currentParent = bMesh.GetSleepPlace();
                 break;
         }
-    }
-    private float sensitivity;
-    private readonly float minimumVert = -45.0f;
-    private readonly float maximumVert = 45.0f;
-
-    private void Start()
-    {
-        sensitivity = GameSettings.GetSensivity();
-    }
-    private void Update()
-    {
-        if (isSleeping)
-        {
-            float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
-            float rotationY = Input.GetAxis("Mouse X") * sensitivity;
-
-            currentParent.localEulerAngles += new Vector3(0, rotationY, rotationX);
-            Vector3 cAngles = currentParent.eulerAngles;
-            if (cAngles.z < 315 && cAngles.z > maximumVert * 2)
-                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, minimumVert);
-            if (cAngles.z < maximumVert * 2 && cAngles.z > maximumVert)
-                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, maximumVert);
-        }
+        fpc.SetPossibleJump(false);
     }
     public void Hide()
     {
+        if (!PossibleDeoccupied)
+            return;
         SetState(State.unlocked);
     }
+
+    public KeyCode HideKey() => KeyCode.Space;
 }

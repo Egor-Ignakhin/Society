@@ -19,7 +19,7 @@ namespace MenuScripts
         {
             MissionsManager.State state = new MissionsManager.State();
             string data = JsonUtility.ToJson(state, true);
-            File.WriteAllText(MissionsManager.StateFolder + MissionsManager.StateFile, data);
+            File.WriteAllText(MissionsManager.savePath, data);
 
             LoadGame();
         }

@@ -15,7 +15,7 @@ public sealed class EatingObject : InteractiveObject
         defaultFoodNutrition = foodNutrition;
         SetType("Milk");
     }
-    public override void Interact(PlayerClasses.PlayerStatements player)
+    public override void Interact()
     {
       //  player.SendMessage(PlayerClasses.PlayerStatements.Message.meal, this);
         //TODO pool of objects

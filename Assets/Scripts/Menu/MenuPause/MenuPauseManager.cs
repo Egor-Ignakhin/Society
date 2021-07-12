@@ -125,6 +125,7 @@ namespace MenuScripts
 
             public void Hide() => menuEventReceiver.Disable();
 
+            public KeyCode HideKey() => KeyCode.Escape;
 
             class MenuEventReceiver
             {

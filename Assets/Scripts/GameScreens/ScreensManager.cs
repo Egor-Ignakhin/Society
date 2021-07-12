@@ -31,11 +31,12 @@ static class ScreensManager
     /// возвращает активный экран
     /// </summary>
     /// <returns></returns>
-    public static IGameScreen GetActiveScreen() => currentScreen;
+    public static IGameScreen GetActiveScreen() => currentScreen;    
 }
 public interface IGameScreen
 {
     void Hide();
+    KeyCode HideKey();
 }
 public class ScreenInputReceiver : MonoBehaviour
 {
@@ -46,12 +47,13 @@ public class ScreenInputReceiver : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        KeyCode bb = (ScreensManager.GetActiveScreen() != null) ? ScreensManager.GetActiveScreen().HideKey() : KeyCode.Escape;
+        if (Input.GetKeyDown(bb))
         {
-            OnInputEcs();
+            OnInputBackButton();
         }
     }
-    private void OnInputEcs()
+    private void OnInputBackButton()
     {
         if (ScreensManager.HasActiveScreen())
             ScreensManager.GetActiveScreen().Hide();

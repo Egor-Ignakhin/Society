@@ -8,7 +8,7 @@ public abstract class InteractiveObject : MonoBehaviour
 
     protected virtual void Awake() => SetDescription();
 
-    public abstract void Interact(PlayerClasses.PlayerStatements pl);
+    public abstract void Interact();
     public string Description { get; protected set; }
     public string MainDescription { get; protected set; } = string.Empty;
 

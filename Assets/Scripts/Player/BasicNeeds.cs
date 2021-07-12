@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PlayerClasses
 {
     public sealed class BasicNeeds : Singleton<BasicNeeds>
-    {        
+    {
         private bool foodWaterMultiply = false;
         public void EnableFoodAndWaterMultiply(bool v) => foodWaterMultiply = v;
 
@@ -34,6 +34,11 @@ namespace PlayerClasses
         {
             Health += h;
             Radiation -= r;
+        }
+
+        internal void SetEnableStamins(bool v)
+        {
+            allStaminsEnable = v;
         }
 
         private int thirst;
@@ -109,6 +114,8 @@ namespace PlayerClasses
 
         private readonly float DamageFromRadiation = 1;
         private PlayerCollisionChecked playerCollisionChecked;
+        private bool allStaminsEnable = true;
+
         private void Start()
         {
             Health = defaultHealth;
@@ -131,13 +138,13 @@ namespace PlayerClasses
         }
         public void InjurePerson(float value)
         {
-            Health -= value;            
+            Health -= value;
         }
         public void InjurePerson(float h, float r)
         {
             Health -= h;
-            Radiation += r;            
-        }        
+            Radiation += r;
+        }
         public void AddMeal(int thirst, int food)
         {
             Food += food;
@@ -188,8 +195,11 @@ namespace PlayerClasses
         {
             while (true)
             {
-                Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
-                Regeneration();
+                if (allStaminsEnable)
+                {
+                    Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
+                    Regeneration();
+                }
                 yield return new WaitForSeconds(waitForThirst);
             }
         }
@@ -197,7 +207,8 @@ namespace PlayerClasses
         {
             while (true)
             {
-                Food -= foodDifference * (foodWaterMultiply ? 2 : 1);
+                if (allStaminsEnable)
+                    Food -= foodDifference * (foodWaterMultiply ? 2 : 1);
                 yield return new WaitForSeconds(waitForHunger);
             }
         }
@@ -205,7 +216,8 @@ namespace PlayerClasses
         {
             while (true)
             {
-                RemoveRadiation();
+                if (allStaminsEnable)
+                    RemoveRadiation();
                 yield return new WaitForSeconds(waitForRadiation);
             }
         }

@@ -12,7 +12,7 @@ namespace Radio
         {
             mManager = transform.parent.parent.GetComponent<RadioManager>();
         }
-        public override void Interact(PlayerStatements pl)
+        public override void Interact()
         {
             mManager.SendMessage(action);
         }

@@ -18,7 +18,7 @@ namespace SMG
             data = FindObjectOfType<SMGModifiersData>();
             SetType($"{modifiableGun}_{type}{index}");
         }
-        public override void Interact(PlayerStatements pl)
+        public override void Interact()
         {
             data.AddModifier(new ModifierCharacteristics.SMGTitleTypeIndex(modifiableGun, type, index));
             Destroy(gameObject);

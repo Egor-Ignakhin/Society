@@ -1,13 +1,9 @@
-﻿using PlayerClasses;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BarrelCampScripts
 {
-    public class CampSaver : InteractiveObject// класс отвечающий за сохранение в лагере
+    sealed class CampSaver : InteractiveObject// класс отвечающий за сохранение в лагере
     {
-        public override void Interact(PlayerStatements pl)
-        {
-            Debug.Log("Save");
-        }
+        public override void Interact() => Debug.Log("Save");
     }
 }

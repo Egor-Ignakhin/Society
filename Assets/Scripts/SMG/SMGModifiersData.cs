@@ -14,7 +14,7 @@ namespace SMG
         private Inventory.InventoryInput inventoryInput;
         private void OnEnable()
         {
-            inventoryInput = FindObjectOfType<Inventory.InventoryContainer>().InventoryInput;
+            inventoryInput = FindObjectOfType<Inventory.InventoryContainer>().inventoryInput;
             saver = new SMGSaver();
             saver.Load(ref data, savingPath);
         }

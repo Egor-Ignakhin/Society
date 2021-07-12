@@ -8,7 +8,7 @@ namespace Inventory
     {
         private readonly Dictionary<ItemsID, InventoryItem> prefabs = new Dictionary<ItemsID, InventoryItem>
             {
-                {ItemsID.Axe, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
+                {ItemsID.Axe_1, Resources.Load<InventoryItem>("InventoryItems\\Axe_Item_1") },
                 {ItemsID.TTPistol, Resources.Load<InventoryItem>("InventoryItems\\TT_item_1") },
                 { ItemsID.Makarov, Resources.Load<InventoryItem>("InventoryItems\\Makarov_Item_1") },
                 { ItemsID.Ak_74, Resources.Load<InventoryItem>("InventoryItems\\AK-74u_Item_1") },
@@ -21,6 +21,6 @@ namespace Inventory
                 { ItemsID.Tablets_1,Resources.Load<InventoryItem>("InventoryItems\\Tablets_Item_1") },
                 { ItemsID.Lom, Resources.Load<InventoryItem>("InventoryItems\\Lom_Item_1") }
             };
-        public InventoryItem GetItemPrefab(int id)=> prefabs[(ItemsID)id];
+        public InventoryItem GetItemPrefab(int id) => prefabs[(ItemsID)id];
     }
 }

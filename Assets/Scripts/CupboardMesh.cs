@@ -13,7 +13,7 @@ public sealed class CupboardMesh : InteractiveObject
         mManager.AddCase(this);
         SetOpened(IsOpen);
     }
-    public override void Interact(PlayerClasses.PlayerStatements pl)
+    public override void Interact()
     {
         if (!canInteract || isLockedCupboard)
             return;

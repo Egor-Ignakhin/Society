@@ -1,5 +1,4 @@
-﻿using PlayerClasses;
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class ChairMesh : InteractiveObject
 {
@@ -15,7 +14,7 @@ public sealed class ChairMesh : InteractiveObject
 
     public void SetOccupied(bool value) => IsOccupied = value;
 
-    public override void Interact(PlayerStatements pl)
+    public override void Interact()
     {
         mManager.Interact(this);
         IsOccupied = true;

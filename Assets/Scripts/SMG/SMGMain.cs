@@ -167,5 +167,7 @@ namespace SMG
             }
             SetEnable(false);
         }
+
+        public KeyCode HideKey() => KeyCode.Escape;
     }
 }
