@@ -1,11 +1,20 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 namespace Dialogs
-{
-    public sealed class DialogDrawer : Singleton<DialogDrawer>// класс отвечающий за отрисовку диалогов
+{/// <summary>
+/// класс отвечающий за отрисовку диалогов
+/// </summary>
+    public sealed class DialogDrawer : MonoBehaviour
     {
         private float delayToDimming;
         [SerializeField] private TMPro.TextMeshProUGUI text;
         [SerializeField] private UnityEngine.UI.Image backgroundImage;
+
+        [SerializeField] private List<GameObject> allDialogComponents = new List<GameObject>();
+        private void Start()
+        {
+            SetEnableAll(false);
+        }
         public void DrawNewDialog(Dialog d, float delay = 1)
         {
             delayToDimming = delay;
@@ -27,6 +36,14 @@ namespace Dialogs
         private void SetActive(bool v)
         {
             backgroundImage.enabled = text.enabled = v;
+        }
+
+        internal void SetEnableAll(bool v)
+        {
+            foreach (var g in allDialogComponents)
+            {
+                g.SetActive(v);
+            }
         }
     }
     public class Dialog

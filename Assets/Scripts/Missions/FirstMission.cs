@@ -24,7 +24,7 @@ public sealed class FirstMission : Mission
             FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
             FindObjectOfType<Inventory.InventoryContainer>().SetInteractive(false);
             FindObjectOfType<PlayerActionBar>().SetVisible(false);
-            PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
+            PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);            
         }
         if (currentTask == 0)
         {
@@ -37,6 +37,14 @@ public sealed class FirstMission : Mission
             TaskDrawer.Instance.SetVisible(false);
 
             onLoadBedMesh.Interact();
+        }
+        if(currentTask == 2)
+        {
+            TaskDrawer.Instance.SetVisible(false);
+        }
+        if(currentTask == 3)
+        {
+            TaskDrawer.Instance.SetVisible(true);            
         }
     }
     private void Update()

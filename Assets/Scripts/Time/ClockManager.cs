@@ -17,9 +17,15 @@ public sealed class ClockManager : MonoBehaviour
         else
             worldTime.ChangeTimeEventInNumbers += RenderOnPointers;
     }
-
+    int delayAfterLastAnim;
     private void RenderOnText(string value)
     {
+        if ((++delayAfterLastAnim) > 1)
+        {
+            value = value.Replace(':', ' ');
+            delayAfterLastAnim = 0;
+        }
+
         text.SetText(value);
     }
     private void RenderOnPointers(int s, int m, int h)

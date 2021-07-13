@@ -24,7 +24,7 @@ public sealed class TaskChecker : InteractiveObject
     [EnumFlag]
     [SerializeField]
     private MissionFlags enumFlag = MissionFlags.M_1;
-
+    [SerializeField] private int task;
     private Mission mMission;
     [SerializeField] private MonoBehaviour target;
 
@@ -46,6 +46,9 @@ public sealed class TaskChecker : InteractiveObject
     }
     private void Report()
     {
+        //защита от нажатия не по сценарию
+        if (mMission.GetCurrentTask() != (task - 1))
+            return;
         if (hasInteracted)
             return;
         hasInteracted = true;

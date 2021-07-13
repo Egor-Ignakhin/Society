@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ReseterMissions
 {
+#if UNITY_EDITOR
     [MenuItem("Tools/Reset missions")]
     private static void ResetMissions()
     {
@@ -11,4 +12,5 @@ public class ReseterMissions
         string data = JsonUtility.ToJson(state, true);
         File.WriteAllText(MissionsManager.savePath, data);
     }
+#endif
 }

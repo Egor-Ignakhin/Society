@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public abstract class Mission : MonoBehaviour
 {
-    protected static int currentTask = 0;
+    protected int currentTask = 0;
     private MissionsManager missionsManager;
     protected virtual void Awake()
     {
@@ -24,8 +25,7 @@ public abstract class Mission : MonoBehaviour
 
     public abstract int GetMissionNumber();
     public void ContinueMission(int skipLength)
-    {     
-    
+    {        
         currentTask = skipLength;
         SetTask(currentTask);
     }
@@ -41,5 +41,9 @@ public abstract class Mission : MonoBehaviour
 
         TaskDrawer.Instance.DrawNewTask(neededContent);
     }
+
+    internal int GetCurrentTask() => currentTask;
+    
+
     protected abstract void OnReportTask(int currentTask, bool isLoad = false);
 }

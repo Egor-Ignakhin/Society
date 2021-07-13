@@ -39,6 +39,7 @@ public sealed class MissionsManager : MonoBehaviour
                 File.Create(savePath);            
         }
     }
+    public static Mission GetCurrentMission() => FindObjectOfType<FirstMission>();
     private void SaveState()
     {
         string data = JsonUtility.ToJson(currentState, true);
