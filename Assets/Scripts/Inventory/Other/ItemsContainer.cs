@@ -1,4 +1,4 @@
-﻿using PlayerClasses;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,18 +10,18 @@ namespace Inventory
     public sealed class ItemsContainer : InteractiveObject
     {
         public const int maxCells = 40;
-        [SerializeField] private Types startedType;
-        [Range(0, maxCells)] [SerializeField] private int cellsCount;
+        [HideInInspector] [SerializeField] private Types startedType;
+        [HideInInspector] [Range(0, maxCells)] [SerializeField] private int cellsCount;
         private List<(int id, int count, SMGInventoryCellGun gun)> container = new List<(int id, int count, SMGInventoryCellGun gun)>();
         public List<(int id, int count, SMGInventoryCellGun gun)> GetData() => container;
         private bool isOpened;
         private InventoryEventReceiver inventoryEventReceiver;
-        [SerializeField] private List<int> startedItems = new List<int>();
-        [SerializeField] private List<int> startedCount = new List<int>();
+        [HideInInspector] [SerializeField] private List<int> startedItems = new List<int>();
+        [HideInInspector] [SerializeField] private List<int> startedCount = new List<int>();
         public (List<int> items, List<int> count) GetStartedData() => (startedItems, startedCount);
         private void Start()
-        {
-            inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
+        {            
+               inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
             for (int i = 0; i < startedItems.Count; i++)
             {
                 var possibleGun = new SMGInventoryCellGun();
@@ -46,6 +46,7 @@ namespace Inventory
             container = lst;
             isOpened = false;
         }
+#if UNITY_EDITOR
         private void OnValidate()
         {
             startedType = Types.Container_1;
@@ -73,10 +74,37 @@ namespace Inventory
                     (startedItems[i] == 0))
                     startedCount[i] = 0;
             }
+            //фикс когда количество обычных предметов = 0
+            for (int i = 0; i < startedItems.Count; i++)
+            {
+                if ((startedItems[i] > 0) &&
+                    (startedCount[i] == 0))
+                    startedCount[i] = 1;
+            }
         }
+
+        public void RemoveStartedItem(int index)
+        {
+            startedItems.RemoveAt(index);
+            startedCount.RemoveAt(index);
+            cellsCount--;
+        }
+
         private void Reset()
         {
             startedType = Types.Container_1;
         }
+        public void AddStartedItem(int index)
+        {
+            startedItems.Add(index);
+            startedCount.Add(1);
+            cellsCount++;
+        }
+
+        public void SetStartedCount(int index, int newCount)
+        {
+            startedCount[index] = newCount;
+        }
+#endif
     }
 }
