@@ -51,7 +51,7 @@ namespace Inventory
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        internal static bool ItsGun(int id) => id == (int)ItemsID.Makarov || id == (int)ItemsID.TTPistol || id == (int)ItemsID.Ak_74;
+        public static bool ItsGun(int id) => id == (int)ItemsID.Makarov || id == (int)ItemsID.TTPistol || id == (int)ItemsID.Ak_74;
 
 
         /// <summary>

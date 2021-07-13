@@ -23,10 +23,7 @@ namespace Inventory
         #region fast Access to mContainer
         public int Id => MItemContainer.Id;
         public int Count => MItemContainer.Count;
-        public bool IsEmpty()
-        {
-            return MItemContainer.IsEmpty;
-        }
+        public bool IsEmpty()=> MItemContainer.IsEmpty;        
         public bool IsFilled => MItemContainer.IsFilled;
         #endregion
         public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();// контейнер для возможного оружия

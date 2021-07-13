@@ -18,15 +18,17 @@ namespace Inventory
         private InventoryEventReceiver inventoryEventReceiver;
         [HideInInspector] [SerializeField] private List<int> startedItems = new List<int>();
         [HideInInspector] [SerializeField] private List<int> startedCount = new List<int>();
-        public (List<int> items, List<int> count) GetStartedData() => (startedItems, startedCount);
+        [HideInInspector] [SerializeField] private List<SMGInventoryCellGun> startedPossibleGuns = new List<SMGInventoryCellGun>();
+        public (List<int> items, List<int> count, List<SMGInventoryCellGun> possibleGuns) GetStartedData() => (startedItems, startedCount, startedPossibleGuns);
         private void Start()
-        {            
-               inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
+        {
+            inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
             for (int i = 0; i < startedItems.Count; i++)
             {
-                var possibleGun = new SMGInventoryCellGun();
-                possibleGun.Reload(null);
-                container.Add((startedItems[i], startedCount[i], possibleGun));
+                if (!ItemStates.ItsGun(startedItems[i]))
+                    startedPossibleGuns[i].Reload(null);
+
+                container.Add((startedItems[i], startedCount[i], startedPossibleGuns[i]));
             }
             SetType(startedType.ToString());
         }
@@ -94,10 +96,21 @@ namespace Inventory
         {
             startedType = Types.Container_1;
         }
+
+        public void SetSilencerIndex(int index, int newValue)
+        {
+            startedPossibleGuns[index].Silencer = newValue;
+        }
+
         public void AddStartedItem(int index)
         {
             startedItems.Add(index);
+
             startedCount.Add(1);
+
+            startedPossibleGuns.Add(new SMGInventoryCellGun());
+            startedPossibleGuns[startedPossibleGuns.Count - 1].Reload(null);
+
             cellsCount++;
         }
 
