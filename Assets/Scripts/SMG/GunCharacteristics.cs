@@ -40,8 +40,8 @@ namespace SMG
             }
         }
 
-        internal static string GetGunDescriptionFromTitle(int title) => guns[(ItemsID)title].Description;       
-        internal static object GetDamage(int id)=> guns[(ItemsID)id].Damage;
+        internal static string GetGunDescriptionFromTitle(int title) => guns[(ItemsID)title].Description;
+        internal static object GetDamage(int id) => guns[(ItemsID)id].Damage;
         public static string GetGunTitle(int id) => guns[(ItemsID)id].Title;
         public static string GetCaliberFromTitle(int id) => guns[(ItemsID)id].Caliber;
         public static string GetOptimalDistanceFromTitle(int id) => guns[(ItemsID)id].OptimalDistance;
@@ -66,7 +66,7 @@ namespace SMG
             if (modDescriptions.Data.ContainsKey(modTitle))
                 return modDescriptions.Data[modTitle].desc;
             else return string.Empty;
-        }        
+        }
 
         [Serializable]
         public class GunModifierDescription
@@ -99,6 +99,33 @@ namespace SMG
                 public string Damage;
                 public string Description;
             }
+        }
+
+        internal static int MaxMagFromID(int v)
+        {
+            if (v == (int)ItemsID.TTPistol)
+            {
+                return 2;
+            }
+            return 0;
+        }
+
+        internal static int MaxAimFromID(int v)
+        {
+            if (v == (int)ItemsID.TTPistol)
+            {
+                return 2;
+            }
+            return 0;
+        }
+
+        internal static int MaxSilencerFromID(int v)
+        {
+            if (v == (int)ItemsID.TTPistol)
+            {
+                return 2;
+            }
+            return 0;
         }
     }
 }

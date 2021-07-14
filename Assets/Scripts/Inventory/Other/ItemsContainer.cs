@@ -16,19 +16,23 @@ namespace Inventory
         public List<(int id, int count, SMGInventoryCellGun gun)> GetData() => container;
         private bool isOpened;
         private InventoryEventReceiver inventoryEventReceiver;
-        [HideInInspector] [SerializeField] private List<int> startedItems = new List<int>();
-        [HideInInspector] [SerializeField] private List<int> startedCount = new List<int>();
-        [HideInInspector] [SerializeField] private List<SMGInventoryCellGun> startedPossibleGuns = new List<SMGInventoryCellGun>();
-        public (List<int> items, List<int> count, List<SMGInventoryCellGun> possibleGuns) GetStartedData() => (startedItems, startedCount, startedPossibleGuns);
+        [HideInInspector] public List<int> StartedItems = new List<int>();
+        [HideInInspector] public List<int> StartedCount = new List<int>();
+
+        #region SMG
+        [HideInInspector] public List<int> Aims = new List<int>();
+        [HideInInspector] public List<int> Mags = new List<int>();
+        [HideInInspector] public List<int> Silencers = new List<int>();
+        #endregion
+        public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers);
         private void Start()
         {
             inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
-            for (int i = 0; i < startedItems.Count; i++)
+            for (int i = 0; i < StartedItems.Count; i++)
             {
-                if (!ItemStates.ItsGun(startedItems[i]))
-                    startedPossibleGuns[i].Reload(null);
-
-                container.Add((startedItems[i], startedCount[i], startedPossibleGuns[i]));
+                var possibleGun = new SMGInventoryCellGun();
+                possibleGun.Reload(StartedItems[i], Mags[i], Silencers[i], 0, Aims[i]);
+                container.Add((StartedItems[i], StartedCount[i], possibleGun));
             }
             SetType(startedType.ToString());
         }
@@ -53,71 +57,106 @@ namespace Inventory
         {
             startedType = Types.Container_1;
 
-            if (startedItems.Count < cellsCount)
+            if (StartedItems.Count < cellsCount)
             {
-                for (int i = startedItems.Count; i < cellsCount; i++)
+                for (int i = StartedItems.Count; i < cellsCount; i++)
                 {
-                    startedItems.Add(0);
-                    startedCount.Add(1);
+                    StartedItems.Add(0);
+                    StartedCount.Add(1);
+                    Silencers.Add(0);
+                    Mags.Add(0);
+                    Aims.Add(0);
                 }
             }
             else
             {
-                while (startedItems.Count > cellsCount)
+                while (StartedItems.Count > cellsCount)
                 {
-                    startedItems.RemoveAt(startedItems.Count - 1);
-                    startedCount.RemoveAt(startedCount.Count - 1);
+                    StartedItems.RemoveAt(StartedItems.Count - 1);
+                    StartedCount.RemoveAt(StartedCount.Count - 1);
+                    Silencers.RemoveAt(Silencers.Count - 1);
+                    Mags.RemoveAt(Mags.Count - 1);
+                    Aims.RemoveAt(Aims.Count - 1);
                 }
             }
             //фикс возможных проблем связанных с "количеством пустого слота"
-            for (int i = 0; i < startedItems.Count; i++)
+            for (int i = 0; i < StartedItems.Count; i++)
             {
-                if ((startedCount[i] > 0) &&
-                    (startedItems[i] == 0))
-                    startedCount[i] = 0;
+                if ((StartedCount[i] > 0) &&
+                    (StartedItems[i] == 0))
+                {
+                    StartedCount[i] = 0;
+                    Silencers[i] = 0;
+                    Mags[i] = 0;
+                    Aims[i] = 0;
+                }
             }
             //фикс когда количество обычных предметов = 0
-            for (int i = 0; i < startedItems.Count; i++)
+            for (int i = 0; i < StartedItems.Count; i++)
             {
-                if ((startedItems[i] > 0) &&
-                    (startedCount[i] == 0))
-                    startedCount[i] = 1;
+                if ((StartedItems[i] > 0) &&
+                    (StartedCount[i] == 0))
+                {
+                    StartedCount[i] = 1;
+                    {
+                        StartedCount[i] = 0;
+                        Silencers[i] = 0;
+                        Mags[i] = 0;
+                        Aims[i] = 0;
+                    }
+                }
             }
         }
 
         public void RemoveStartedItem(int index)
         {
-            startedItems.RemoveAt(index);
-            startedCount.RemoveAt(index);
+            StartedItems.RemoveAt(index);
+            StartedCount.RemoveAt(index);
+            Mags.RemoveAt(index);
+            Silencers.RemoveAt(index);
+            Aims.RemoveAt(index);
             cellsCount--;
         }
 
         private void Reset()
         {
             startedType = Types.Container_1;
+            StartedCount.Clear();
+            StartedItems.Clear();
+
+            Aims.Clear();
+            Mags.Clear();
+            Silencers.Clear();
+
+            cellsCount = 0;
+            Debug.ClearDeveloperConsole();
         }
 
-        public void SetSilencerIndex(int index, int newValue)
+        public void SetStartedSilencerIndex(int index, int newValue) =>
+            Silencers[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.MaxSilencerFromID(StartedItems[index]));
+
+        public void SetStartedMagIndex(int index, int newValue) =>
+            Mags[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.MaxMagFromID(StartedItems[index]));
+
+        public void SetStartedAimIndex(int index, int newValue) =>
+            Aims[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.MaxAimFromID(StartedItems[index]));
+
+
+        public void AddStartedItem(int itemID)
         {
-            startedPossibleGuns[index].Silencer = newValue;
-        }
+            StartedItems.Add(itemID);
 
-        public void AddStartedItem(int index)
-        {
-            startedItems.Add(index);
+            StartedCount.Add(1);
 
-            startedCount.Add(1);
-
-            startedPossibleGuns.Add(new SMGInventoryCellGun());
-            startedPossibleGuns[startedPossibleGuns.Count - 1].Reload(null);
+            Silencers.Add(0);
+            Mags.Add(0);
+            Aims.Add(0);
 
             cellsCount++;
         }
 
-        public void SetStartedCount(int index, int newCount)
-        {
-            startedCount[index] = newCount;
-        }
+        public void SetStartedCount(int index, int newCount) =>
+            StartedCount[index] = newCount;
 #endif
     }
 }

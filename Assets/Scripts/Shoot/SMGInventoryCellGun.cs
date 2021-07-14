@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using static SMG.ModifierCharacteristics;
 [System.Serializable]
-public class SMGInventoryCellGun : Object
+public class SMGInventoryCellGun
 {
     public int Mag = 1;
     public int Aim = 0;
