@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 namespace Dialogs
 {/// <summary>
@@ -7,10 +9,13 @@ namespace Dialogs
     public sealed class DialogDrawer : MonoBehaviour
     {
         private float delayToDimming;
-        [SerializeField] private TMPro.TextMeshProUGUI text;
+        [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private UnityEngine.UI.Image backgroundImage;
 
         [SerializeField] private List<GameObject> allDialogComponents = new List<GameObject>();
+
+        [SerializeField] private TextMeshProUGUI nameAndLevelText;
+        [SerializeField] private TextMeshProUGUI relationText;
         private void Start()
         {
             SetEnableAll(false);
@@ -38,12 +43,21 @@ namespace Dialogs
             backgroundImage.enabled = text.enabled = v;
         }
 
+        internal void SetRelationAtPlayer(string prp)
+        {
+            relationText.SetText($"Отношение    {prp}");
+        }
+
         internal void SetEnableAll(bool v)
         {
             foreach (var g in allDialogComponents)
             {
                 g.SetActive(v);
             }
+        }
+        public void SetNameAndLevel(string pName, int lvl)
+        {
+            nameAndLevelText.SetText($"{pName} | {lvl} уровень");
         }
     }
     public class Dialog
