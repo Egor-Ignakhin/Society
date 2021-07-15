@@ -25,7 +25,8 @@ public sealed class PrologMission : Mission
             FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
             FindObjectOfType<Inventory.InventoryContainer>().SetInteractive(false);
             FindObjectOfType<PlayerActionBar>().SetVisible(false);
-            PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);            
+            PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
+            Times.WorldTime.CurrentDate.ForceSetTime("23:32");
         }
         if (currentTask == 0)
         {
@@ -39,18 +40,18 @@ public sealed class PrologMission : Mission
 
             onLoadBedMesh.Interact();
         }
-        if(currentTask == 1)
+        if (currentTask == 1)
         {
             sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych_0"));
         }
-        if(currentTask == 2)
+        if (currentTask == 2)
         {
             TaskDrawer.Instance.SetVisible(false);
             sanSanych.PlayDialogsTraker();
         }
-        if(currentTask == 3)
+        if (currentTask == 3)
         {
-            TaskDrawer.Instance.SetVisible(true);            
+            TaskDrawer.Instance.SetVisible(true);
         }
     }
     private void Update()

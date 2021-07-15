@@ -21,6 +21,7 @@ namespace Dialogs
         [SerializeField] private Transform dialogsWindowParent;
 
         private DialogWindow DialogWindowInstance;
+        [SerializeField] private List<DialogAnswer> allAnswers = new List<DialogAnswer>();
         private void Start()
         {
             SetEnableAll(false);
@@ -74,8 +75,15 @@ namespace Dialogs
 
         internal void DrawPersonDialog(string pName, string text)
         {
-            var dialogWindow = Instantiate(DialogWindowInstance, dialogsWindowParent);            
+            var dialogWindow = Instantiate(DialogWindowInstance, dialogsWindowParent);
             dialogWindow.OnInit(pName, text);
+        }
+
+        internal void SetAnswers((string data, Action func) a1, (string data, Action func) a2, (string data, Action func) a3)
+        {
+            allAnswers[0].SetAnswer(a1);
+            allAnswers[1].SetAnswer(a2);
+            allAnswers[2].SetAnswer(a3);
         }
     }
     public class Dialog
