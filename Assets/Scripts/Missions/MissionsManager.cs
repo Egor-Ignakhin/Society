@@ -39,7 +39,7 @@ public sealed class MissionsManager : MonoBehaviour
                 File.Create(savePath);            
         }
     }
-    public static Mission GetCurrentMission() => FindObjectOfType<FirstMission>();
+    public static Mission GetCurrentMission() => FindObjectOfType<PrologMission>();
     private void SaveState()
     {
         string data = JsonUtility.ToJson(currentState, true);
@@ -59,7 +59,7 @@ public sealed class MissionsManager : MonoBehaviour
         switch (num)
         {
             case 0:
-                FindObjectOfType<FirstMission>().ContinueMission(currentState.currentTask);
+                FindObjectOfType<PrologMission>().ContinueMission(currentState.currentTask);
                 ChangeMissionType(MissionType.narrative);
                 break;
         }

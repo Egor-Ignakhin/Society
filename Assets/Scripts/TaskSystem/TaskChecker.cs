@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// класс вызывает при контакте событие чекпоинта
 /// </summary>
 public sealed class TaskChecker : InteractiveObject
 {
-    [System.Flags]
+    [Flags]
     public enum MissionFlags
     {
         Nothing = 0,
@@ -33,7 +34,7 @@ public sealed class TaskChecker : InteractiveObject
     private void Start()
     {
         if (enumFlag == MissionFlags.M_1)
-            mMission = FindObjectOfType<FirstMission>();
+            mMission = FindObjectOfType<PrologMission>();
     }
     public override void Interact() => Report();
 
@@ -47,7 +48,7 @@ public sealed class TaskChecker : InteractiveObject
     private void Report()
     {
         //защита от нажатия не по сценарию
-        if (mMission.GetCurrentTask() != (task - 1))
+        if (!CanInteract())
             return;
         if (hasInteracted)
             return;
@@ -55,4 +56,8 @@ public sealed class TaskChecker : InteractiveObject
 
         mMission.Report();
     }
+
+    internal bool CanInteract() =>
+        (mMission.GetCurrentTask() == (task - 1));
+
 }

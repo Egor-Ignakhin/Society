@@ -15,10 +15,16 @@ namespace Dialogs
         [SerializeField] private List<GameObject> allDialogComponents = new List<GameObject>();
 
         [SerializeField] private TextMeshProUGUI nameAndLevelText;
+        [SerializeField] private TextMeshProUGUI fractionText;
         [SerializeField] private TextMeshProUGUI relationText;
+
+        [SerializeField] private Transform dialogsWindowParent;
+
+        private DialogWindow DialogWindowInstance;
         private void Start()
         {
             SetEnableAll(false);
+            DialogWindowInstance = Resources.Load<DialogWindow>("Dialog_window");
         }
         public void DrawNewDialog(Dialog d, float delay = 1)
         {
@@ -26,6 +32,12 @@ namespace Dialogs
             text.SetText(d.Content);
             SetActive(true);
         }
+
+        internal void SetFraction(string fraction)
+        {
+            fractionText.SetText($"— Фракция {fraction}");
+        }
+
         private void Update()
         {
             if (delayToDimming > 0)
@@ -58,6 +70,12 @@ namespace Dialogs
         public void SetNameAndLevel(string pName, int lvl)
         {
             nameAndLevelText.SetText($"{pName} | {lvl} уровень");
+        }
+
+        internal void DrawPersonDialog(string pName, string text)
+        {
+            var dialogWindow = Instantiate(DialogWindowInstance, dialogsWindowParent);            
+            dialogWindow.OnInit(pName, text);
         }
     }
     public class Dialog
