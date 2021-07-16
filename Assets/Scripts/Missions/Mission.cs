@@ -5,6 +5,7 @@ public abstract class Mission : MonoBehaviour
 {
     protected int currentTask = 0;
     private MissionsManager missionsManager;
+    protected int missionItems = 0;
     protected virtual void Awake()
     {
         missionsManager = FindObjectOfType<MissionsManager>();
@@ -13,24 +14,38 @@ public abstract class Mission : MonoBehaviour
     {
         OnReportTask(currentTask, true);
     }
+
+    internal void OnAddMissionItem()
+    {
+        missionItems++;
+        Report(true);
+    }
+
     /// <summary>
     /// событие чекпоинта
     /// </summary>
-    public void Report()
+    public void Report(bool isMissionItem = false)
     {
-        missionsManager.ReportTask();
-        SetTask(++currentTask);
-        OnReportTask(currentTask);
+        if (!isMissionItem)
+        {
+            missionsManager.ReportTask();
+            SetTask(++currentTask);
+            OnReportTask(currentTask);
+        }
+        else
+        {
+            OnReportTask(currentTask, false, true);
+        }
     }
 
     public abstract int GetMissionNumber();
     public void ContinueMission(int skipLength)
-    {        
+    {
         currentTask = skipLength;
         SetTask(currentTask);
     }
 
-    public  void FinishMission()
+    public void FinishMission()
     {
         missionsManager.FinishMission(GetMissionNumber());
         gameObject.SetActive(false);
@@ -43,7 +58,7 @@ public abstract class Mission : MonoBehaviour
     }
 
     internal int GetCurrentTask() => currentTask;
-    
 
-    protected abstract void OnReportTask(int currentTask, bool isLoad = false);
+
+    protected abstract void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false);
 }

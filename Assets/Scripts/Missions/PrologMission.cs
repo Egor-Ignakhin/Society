@@ -1,24 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class PrologMission : Mission
 {
     public override int GetMissionNumber() => 0;
     [SerializeField] private BedMesh onLoadBedMesh;
     private readonly List<Action> actions = new List<Action>();
-    [SerializeField] private TalkingPerson sanSanych;
+    [SerializeField] private SanSanychPerson sanSanych;
+    [SerializeField] private IlyaiPerson ilya;
+    [SerializeField] private GameObject ilyaObjects;
     protected override void Awake()
     {
         actions.Add(() =>
         {
             FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
             Inventory.DescriptionDrawer.Instance.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
-
+        });
+        actions.Add(() =>
+        {
+            SceneManager.LoadScene(ScenesManager.MainMenu);
         });
         base.Awake();
     }
-    protected override void OnReportTask(int currentTask, bool isLoad = false)
+    protected override void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false)
     {
         if (isLoad)
         {
@@ -27,6 +33,17 @@ public sealed class PrologMission : Mission
             FindObjectOfType<PlayerActionBar>().SetVisible(false);
             PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
             Times.WorldTime.CurrentDate.ForceSetTime("23:32");
+        }
+        if (isMissiomItem)
+        {
+            if (currentTask == 5)
+            {
+                if(missionItems == 3)
+                {
+                    Report();
+                }
+            }
+            return;
         }
         if (currentTask == 0)
         {
@@ -52,6 +69,28 @@ public sealed class PrologMission : Mission
         if (currentTask == 3)
         {
             TaskDrawer.Instance.SetVisible(true);
+        }
+        if (currentTask == 4)
+        {
+            TaskDrawer.Instance.SetVisible(false);
+            ilya.PlayDialogsTraker();
+        }
+        if (currentTask == 5)
+        {
+            ilyaObjects.SetActive(true);
+        }
+        if(currentTask == 7)
+        {
+            //завхоз бежит
+            print(1);
+            Report();
+        }
+        if(currentTask == 9)
+        {
+            TaskDrawer.Instance.SetVisible(false);
+            DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
+            db.OnInit(2, Color.black);
+            db.SubsctibeOnFinish(actions[1]);            
         }
     }
     private void Update()

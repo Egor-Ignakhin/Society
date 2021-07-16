@@ -61,6 +61,17 @@ namespace Dialogs
             relationText.SetText($"Отношение    {prp}");
         }
 
+        internal void ClearDialogs()
+        {
+            for (int i = 0; i < dialogsWindowParent.childCount; i++)
+            {
+                var g = dialogsWindowParent.GetChild(i).gameObject;
+                g.transform.SetParent(null);
+                Destroy(g);
+                i--;
+            }
+        }
+
         internal void SetEnableAll(bool v)
         {
             foreach (var g in allDialogComponents)
