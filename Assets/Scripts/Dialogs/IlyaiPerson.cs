@@ -8,20 +8,20 @@ public class IlyaiPerson : TalkingPerson
     {
         base.Awake();
 
-        dialogs = new List<(DialogType, string, string)>
+        dialogs = new List<(DialogType, string, string, bool IsBreakDialog)>
     {
-        ( DialogType.Player,"Привет, Илюх. Где Гриша?",null ),
-        (DialogType.Opponent,"Отошёл набить брюхо. А ты по какому поводу? Ужин ещё только через полчаса.", null),
+        ( DialogType.Player,"Привет, Илюх. Где Гриша?",null,false ),
+        (DialogType.Opponent,"Отошёл набить брюхо. А ты по какому поводу? Ужин ещё только через полчаса.", null,false),
         (DialogType.Player,"Полчаса до ужина, Гриня уже хомячит… В его стиле. То-то он сразу на пост завпровизией сразу претендовал." +
-        " Ладно, не в этом дело, у нас фильтры полетели", "Мда.." ),
-        (DialogType.Opponent,"Знаю, Саныч уже заходил, нет больше фильтров", null),
-        (DialogType.Player,"В этом и загвоздка. Фильтров нет, вода тоже кончается, так что долго без них мы не протянем", "В этом и загвоздка"),
-        (DialogType.Opponent,"Умеешь ты обнадёживать..", null),
-        (DialogType.Player,"Ну так вот, Саныч дал ориентировку, что в соседнем здании есть очистная станция…", "Мне тут Саныч подсказал..."),
-        (DialogType.Opponent,"Ты ж не хочешь..", null),
+        " Ладно, не в этом дело, у нас фильтры полетели", "Мда..",false ),
+        (DialogType.Opponent,"Знаю, Саныч уже заходил, нет больше фильтров", null,false),
+        (DialogType.Player,"В этом и загвоздка. Фильтров нет, вода тоже кончается, так что долго без них мы не протянем", "В этом и загвоздка",false),
+        (DialogType.Opponent,"Умеешь ты обнадёживать..", null,false),
+        (DialogType.Player,"Ну так вот, Саныч дал ориентировку, что в соседнем здании есть очистная станция…", "Мне тут Саныч подсказал...",false),
+        (DialogType.Opponent,"Ты ж не хочешь..", null,false),
         (DialogType.Player, "Не хочу конечно, помирать никому не охота, да надо. Без фильтров мы в любом случае помрём, а так только я, если не повезёт.",
-        "Не хочу конечно, помирать никому не охота, да надо. "),
-        (DialogType.Opponent, "Ну в таком случае… Вот тебе противогаз, химза и антирад. Береги себя, Дим.", null)
+        "Не хочу конечно, помирать никому не охота, да надо. ",false),
+        (DialogType.Opponent, "Ну в таком случае… Вот тебе противогаз, химза и антирад. Береги себя, Дим.", null,true)
     };
     }
     public override void FinishDialog()
@@ -68,7 +68,7 @@ public class IlyaiPerson : TalkingPerson
         while (true)
         {
             //если говорит дима то звук 2д иначе 3д
-            if ((currentDialog - 1) == dialogs.Count)
+            if ((currentDialog > 1) && dialogs[currentDialog - 2].IsBreakDialog)
             {
                 FinishDialog();
                 break;

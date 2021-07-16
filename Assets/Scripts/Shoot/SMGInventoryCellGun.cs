@@ -18,6 +18,10 @@ public class SMGInventoryCellGun
 
     public void SetTitle(GunTitles t) => Title = (int)t;
 
+    public SMGInventoryCellGun()
+    {
+        Clear();
+    }
     public void Reload(int title, int dispenser, int silencer, int ammocount, int aim)
     {
         Title = title;

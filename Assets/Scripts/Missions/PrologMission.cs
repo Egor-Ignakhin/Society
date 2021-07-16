@@ -10,7 +10,7 @@ public sealed class PrologMission : Mission
     private readonly List<Action> actions = new List<Action>();
     [SerializeField] private SanSanychPerson sanSanych;
     [SerializeField] private IlyaiPerson ilya;
-    [SerializeField] private GameObject ilyaObjects;
+    [SerializeField] private GameObject ilyaObjects;    
     protected override void Awake()
     {
         actions.Add(() =>
@@ -30,6 +30,7 @@ public sealed class PrologMission : Mission
         {
             FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
             FindObjectOfType<Inventory.InventoryContainer>().SetInteractive(false);
+            FindObjectOfType<Inventory.InventoryContainer>().ClearInventory();
             FindObjectOfType<PlayerActionBar>().SetVisible(false);
             PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
             Times.WorldTime.CurrentDate.ForceSetTime("23:32");
@@ -38,7 +39,7 @@ public sealed class PrologMission : Mission
         {
             if (currentTask == 5)
             {
-                if(missionItems == 3)
+                if (missionItems == 3)
                 {
                     Report();
                 }
@@ -59,12 +60,11 @@ public sealed class PrologMission : Mission
         }
         if (currentTask == 1)
         {
-            sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych_0"));
+            sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));
         }
         if (currentTask == 2)
         {
             TaskDrawer.Instance.SetVisible(false);
-            sanSanych.PlayDialogsTraker();
         }
         if (currentTask == 3)
         {
@@ -79,18 +79,22 @@ public sealed class PrologMission : Mission
         {
             ilyaObjects.SetActive(true);
         }
-        if(currentTask == 7)
+        if (currentTask == 7)
         {
             //завхоз бежит
-            print(1);
-            Report();
+            sanSanych.SetRunningState(true);
+            sanSanych.SetTarget(FindObjectOfType<FirstPersonController>().transform);
         }
-        if(currentTask == 9)
+        if (currentTask == 8)
+        {
+            FindObjectOfType<Inventory.InventoryContainer>().AddItem((int)Inventory.ItemStates.ItemsID.Tablets_1, 10, new SMGInventoryCellGun());
+        }
+        if (currentTask == 9)
         {
             TaskDrawer.Instance.SetVisible(false);
             DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
             db.OnInit(2, Color.black);
-            db.SubsctibeOnFinish(actions[1]);            
+            db.SubsctibeOnFinish(actions[1]);
         }
     }
     private void Update()

@@ -27,7 +27,7 @@ namespace Inventory
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
         private PlayerClasses.PlayerStatements playerStatements;
-        [SerializeField] private GameObject ItemsLabelDescription;
+        [SerializeField] private GameObject ItemsLabelDescription;    
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private Button ModifiersActivator;
         [SerializeField] private GameObject modifiersPage;
@@ -144,6 +144,11 @@ namespace Inventory
                 TakeItemEvent?.Invoke(id, count);
         }
         public void SpendOnCell() => inventoryEffects.PlaySpendClip();
+        internal void ClearInventory()
+        {
+            foreach (var c in Cells)
+                c.Clear();
+        }
 
         public void ActivateItem() => EventReceiver.ActivateItem();
 

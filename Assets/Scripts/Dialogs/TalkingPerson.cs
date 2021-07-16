@@ -16,15 +16,17 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     protected enum DialogType { Opponent, Player }
     [SerializeField] protected bool canLeaveFromDialog;
     protected bool answerInDialogHasTaked = false;
-    protected List<(DialogType dt, string screenText, string answerText)> dialogs;
+    protected List<(DialogType dt, string screenText, string answerText, bool IsBreakDialog)> dialogs;
     protected TaskChecker mtaskChecker;
     protected int currentDialog = 1;
     protected float clipLingth;
+    protected Animator mAnimator;
     protected abstract string PathToClips();
     protected override void Awake()
     {
         personSource = GetComponent<AudioSource>();
         mtaskChecker = GetComponent<TaskChecker>();
+        mAnimator = GetComponent<Animator>();
         base.Awake();
     }
     protected virtual void Start()
