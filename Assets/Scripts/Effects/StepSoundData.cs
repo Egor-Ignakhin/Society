@@ -11,7 +11,7 @@ public class StepSoundData : MonoBehaviour
         Rock, Sand, Leaves, LeavesOld, Swamp,
         Grass, Moss, MossRock, DirtyGround, VeryDirtyGround, Tile, VeryLeaves, VeryTile, VeryGroundTile
     }
-    public enum OnlyColliderLayer { Wood }
+    public enum OnlyColliderLayer { Wood, Metal }
     private Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>> stepSounds;
     private readonly Dictionary<PhysicMaterial, int> indexFromMats = new Dictionary<PhysicMaterial, int>();
     private TerrainDetector terrainDetector;
