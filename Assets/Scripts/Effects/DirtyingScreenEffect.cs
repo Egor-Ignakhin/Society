@@ -24,8 +24,7 @@ public sealed class DirtyingScreenEffect : MonoBehaviour
         if (mImage.color.a > 1)
         {
             FinishEvent?.Invoke();
-            FinishEvent = null;
-            Destroy(gameObject);
+            FinishEvent = null;            
         }
     }
 

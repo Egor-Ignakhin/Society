@@ -8,9 +8,9 @@ public class ReseterMissions
     [MenuItem("Tools/Reset missions")]
     private static void ResetMissions()
     {
-        MissionsManager.State state = new MissionsManager.State();
+        Missions.MissionsManager.State state = new Missions.MissionsManager.State();
         string data = JsonUtility.ToJson(state, true);
-        File.WriteAllText(MissionsManager.savePath, data);
+        File.WriteAllText(Missions.MissionsManager.savePath, data);
     }
 #endif
 }

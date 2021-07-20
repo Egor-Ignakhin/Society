@@ -1,9 +1,12 @@
-﻿public sealed class SecondMission : Mission
+﻿namespace Missions
 {
-    public override int GetMissionNumber() => 1;
-
-    protected override void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false)
+    sealed class SecondMission : Mission
     {
-        throw new System.NotImplementedException();
+        public override int GetMissionNumber() => 1;
+
+        protected override void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

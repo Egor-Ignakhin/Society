@@ -26,7 +26,7 @@ public class IlyaiPerson : TalkingPerson
     }
     public override void FinishDialog()
     {
-        MissionsManager.GetCurrentMission().Report();
+        Missions.MissionsManager.GetActiveMission().Report();
         var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
         ddrawer.SetEnableAll(false);
 

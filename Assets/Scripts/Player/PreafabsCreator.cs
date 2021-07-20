@@ -5,7 +5,7 @@ class PreafabsCreator : MonoBehaviour
 {
     private void Awake()
     {
-        var parent = new GameObject("Loading_Prefabs_Data").transform;
+        var parent = GameObject.Find("UI").transform;
         var prefabs = Resources.LoadAll("Canvases\\");        
 
         foreach (var c in prefabs)

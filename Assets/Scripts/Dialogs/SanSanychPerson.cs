@@ -7,6 +7,7 @@ sealed class SanSanychPerson : TalkingPerson
 {
     private Transform target;
     private NavMeshAgent mAgent;
+    private bool interactionTakesPlace;
     protected override void Awake()
     {
         base.Awake();
@@ -35,6 +36,9 @@ sealed class SanSanychPerson : TalkingPerson
 
     public override void Interact()
     {
+        if (interactionTakesPlace)
+            return;
+        interactionTakesPlace = true;
         var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
         ddrawer.SetEnableAll(true);
         ddrawer.SetNameAndLevel(personName, personLevel);
@@ -51,7 +55,7 @@ sealed class SanSanychPerson : TalkingPerson
     }
     public override void FinishDialog()
     {
-        MissionsManager.GetCurrentMission().Report();
+        Missions.MissionsManager.GetActiveMission().Report();
         var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
         ddrawer.SetEnableAll(false);
 
@@ -62,6 +66,7 @@ sealed class SanSanychPerson : TalkingPerson
         cameraPlayer.localRotation = Quaternion.identity;
         lastCameraParent = null;
         ScreensManager.SetScreen(null);
+        interactionTakesPlace = false;
     }
     public void SetRunningState(bool v)
     {

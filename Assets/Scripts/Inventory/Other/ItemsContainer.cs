@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Inventory
@@ -25,6 +24,9 @@ namespace Inventory
         [HideInInspector] public List<int> Silencers = new List<int>();
         #endregion
         public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers);
+
+        private AudioSource mAud;
+        private AudioClip OpenCloseClip;
         private void Start()
         {
             inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
@@ -35,6 +37,10 @@ namespace Inventory
                 container.Add((StartedItems[i], StartedCount[i], possibleGun));
             }
             SetType(startedType.ToString());
+            mAud = gameObject.AddComponent<AudioSource>();
+            mAud.spatialBlend = 1;
+            mAud.rolloffMode = AudioRolloffMode.Linear;
+            OpenCloseClip = Resources.Load<AudioClip>("Boxes\\OpenClose\\_0");
         }
 
         public override void Interact()
@@ -43,6 +49,7 @@ namespace Inventory
                 return;
             inventoryEventReceiver.OpenContainer(container, cellsCount, this);
             isOpened = true;
+            mAud.PlayOneShot(OpenCloseClip);
         }
         /// <summary>
         /// метод закрывает сохраняет ячейки в памяти

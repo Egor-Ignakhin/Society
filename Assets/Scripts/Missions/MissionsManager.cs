@@ -1,95 +1,90 @@
 ﻿using System.IO;
 using UnityEngine;
-
-public sealed class MissionsManager : MonoBehaviour
-{
-    public static string savePath = Directory.GetCurrentDirectory() + "\\Saves\\State.json";// папка с сохранением    
-    private State currentState;
-
-    public enum MissionType
+namespace Missions
+{/// <summary>
+/// Главный за все миссии
+/// </summary>
+    public sealed class MissionsManager : MonoBehaviour
     {
-        none,
-        narrative,
-        additional
-    }
-    private void Awake()
-    {
-        Localization.Init();
-    }
-    private void OnEnable()
-    {
-        LoadState();
-        StartOrContinueMission(currentState.currentMission);
-    }
-
-    /// <summary>
-    /// загрузка состояния миссий
-    /// </summary>
-    private void LoadState()
-    {
-        try
+        public static string savePath = Directory.GetCurrentDirectory() + "\\Saves\\State.json";// папка с сохранением    
+        private State currentState;// состояние миссий        
+        private void Awake()
         {
-            string data = File.ReadAllText(savePath);
-            currentState = JsonUtility.FromJson<State>(data);
+            Localization.Init();
         }
-        catch
+        private void OnEnable()
         {
-            currentState = new State();
-            if (!File.Exists(savePath))                            
-                File.Create(savePath);            
+            LoadState();
+            StartOrContinueMission(currentState.currentMission);
         }
-    }
-    public static Mission GetCurrentMission() => FindObjectOfType<PrologMission>();
-    private void SaveState()
-    {
-        string data = JsonUtility.ToJson(currentState, true);
-        File.WriteAllText(savePath, data);
-    }
-    public void ResetTasks() => currentState.currentTask = 0;
 
-    public void ReportMission()
-    {
-        currentState.currentMission++;
-        ResetTasks();
-    }
-    public void ReportTask() => currentState.currentTask++;
-
-    public void StartOrContinueMission(int num)
-    {
-        switch (num)
+        /// <summary>
+        /// загрузка состояния миссий
+        /// </summary>
+        private void LoadState()
         {
-            case 0:
-                FindObjectOfType<PrologMission>().ContinueMission(currentState.currentTask);
-                ChangeMissionType(MissionType.narrative);
-                break;
+            try
+            {
+                string data = File.ReadAllText(savePath);
+                currentState = JsonUtility.FromJson<State>(data);
+            }
+            catch
+            {
+                currentState = new State();
+                if (!File.Exists(savePath))
+                    File.Create(savePath);
+            }
         }
-    }
-    private void OnDisable()
-    {
-        SaveState();
-    }
-    [System.Serializable]
-    public class State
-    {
-        public MissionType missionType = MissionType.none;
-        public int currentMission = 0;
-        public int currentTask = 0;
-    }
-    public void FinishMission(int n)
-    {
-        switch (n)
+        /// <summary>
+        /// возвращает активную миссию
+        /// </summary>
+        /// <returns></returns>
+        public static Mission GetActiveMission() => FindObjectOfType<PrologMission>();
+        /// <summary>
+        /// Сохранение миссий
+        /// </summary>
+        private void SaveState()
         {
-            case 0:
-                Finish1Mission();
-                break;
+            string data = JsonUtility.ToJson(currentState, true);
+            File.WriteAllText(savePath, data);
+        }
+        /// <summary>
+        /// Сбрасывает задачи для активной миссии
+        /// </summary>
+        public void ResetTasks() => currentState.currentTask = 0;
+        /// <summary>
+        /// Сообщает при завершении миссии
+        /// </summary>
+        public void ReportMission()
+        {
+            currentState.currentMission++;
+            ResetTasks();
+        }
+        /// <summary>
+        /// Сообщает при завершении задачи
+        /// </summary>
+        public void ReportTask() => currentState.currentTask++;
+        /// <summary>
+        /// Вызывается для начала или продолжения миссии с последней задачи
+        /// </summary>
+        /// <param name="num"></param>
+        public void StartOrContinueMission(int num)
+        {
+            switch (num)
+            {
+                case 0:
+                    FindObjectOfType<PrologMission>().ContinueMission(currentState.currentTask);
+                    break;
+            }
+        }
+        private void OnDisable() => SaveState();
+        public void FinishMission() => ReportMission();
+
+        [System.Serializable]
+        public class State
+        {
+            public int currentMission = 0;
+            public int currentTask = 0;
         }
     }
-    private void Finish1Mission()
-    {
-        ChangeMissionType(MissionType.none);
-        ReportMission();
-    }
-    private void ChangeMissionType(MissionType type) =>
-        currentState.missionType = type;
-
 }

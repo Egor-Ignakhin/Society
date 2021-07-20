@@ -24,6 +24,21 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
     private DoorMesh lastDoorMesh;
 
     private bool isExtrimSituation;
+    public enum OpenClipType { _0, _1 }
+    [SerializeField] private OpenClipType openClipType;
+    private AudioSource mAud;
+    private AudioClip openCloseClip;
+    private void Start()
+    {
+        mAud = GetComponent<AudioSource>();
+        if (!mAud)
+        {
+            mAud = gameObject.AddComponent<AudioSource>();
+            mAud.spatialBlend = 1;
+            mAud.rolloffMode = AudioRolloffMode.Linear;
+        }
+        openCloseClip = Resources.Load<AudioClip>($"DoorClips\\OpenClose\\{openClipType}");
+    }
 
     public void Interact(DoorMesh doorMesh)
     {
@@ -41,6 +56,7 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
         canInteract = !canInteract;
         IsOpen = !IsOpen;
         lastDoorMesh.SetType("None");
+        mAud.PlayOneShot(openCloseClip);
     }
     public void SetStateAfterNextInteract(State state)
     {

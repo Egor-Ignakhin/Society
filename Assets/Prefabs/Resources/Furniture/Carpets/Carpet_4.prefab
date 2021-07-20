@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 4011193073954592012}
   - component: {fileID: 435506794148874290}
   - component: {fileID: 8509528256740912959}
+  - component: {fileID: 2203928428351874562}
   m_Layer: 0
   m_Name: Carpet_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &4011193073954592012
 Transform:
@@ -79,3 +80,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &2203928428351874562
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089465690220949875}
+  m_Material: {fileID: 13400000, guid: d01454522fc19ce49aa28c78c4739212, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.029533047, y: 0.018276853, z: 0.00033783662}
+  m_Center: {x: -0.0016812825, y: 0.0011936558, z: -0.000060907914}
