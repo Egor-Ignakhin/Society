@@ -22,5 +22,10 @@ namespace Effects
             mAud.clip = clips;
             mAud.Play();
         }
+        private void FixedUpdate()
+        {
+            if (!mAud.isPlaying)
+                currentCol = null;
+        }
     }
 }

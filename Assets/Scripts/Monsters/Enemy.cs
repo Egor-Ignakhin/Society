@@ -48,7 +48,13 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     }
     protected Transform target;// текущая цель
     protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
+
+    internal bool HasEnemy() => enemy != null;
+
     protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)
+
+    internal float GetDistanceToTarget() => enemy ? CalculateDistance(target.position) : 100000;
+
     protected NavMeshAgent mAgent;
     protected Animator mAnim;
     [SerializeField] protected LayerMask layerMasks;
@@ -70,6 +76,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     protected AudioClip[] deathClip;
     private TargetPointsManager tpm;
     [SerializeField] private Transform targetPointsParent;
+    public bool StepEventIsEnabled { get; set; } = true;
     protected virtual void Start()
     {
         OnInit(attackDistance, power, seeDistance, health);
@@ -216,20 +223,24 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     /// функция установки противника
     /// </summary>
     /// <param name="enemy"></param>
-    public void SetEnemy(BasicNeeds e, bool fromNoise = false)
+    public void SetEnemy(BasicNeeds e, bool fromNoise = false, Transform noiseTarget = null)
     {
         enemy = e;
         SetTarget(enemy ? enemy.transform : tpm.GetCurrentTarget(this));
         if (enemy)
             WaitTarget = 5;
         if (fromNoise)
+        {
             enemy = null;
+            if (noiseTarget)
+                SetTarget(noiseTarget);
+        }
     }
     /// <summary>
     /// функция установки цели
     /// </summary>
     /// <param name="target"></param>
-    protected virtual void SetTarget(Transform t)
+    public virtual void SetTarget(Transform t)
     {
         target = t;
         bool possibleMove = CalculateDistance(lastTargetPos) <= UVariables.SeeDistance;
@@ -345,7 +356,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
                 return;
             else
             {
-                points[currentPointIt].ResetDelay();                
+                points[currentPointIt].ResetDelay();
             }
             currentPointIt++;
             if (currentPointIt >= points.Count)
@@ -353,11 +364,15 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         }
         public Transform GetCurrentTarget(Enemy e)
         {
-            var dist = e.CalculateDistance(points[currentPointIt].transform.position);
-            if (dist < e.attackDistance * 1.5f)
-                CalculateNextPoint();
+            if (points.Count > 0)
+            {
+                var dist = e.CalculateDistance(points[currentPointIt].transform.position);
+                if (dist < e.attackDistance * 1.5f)
+                    CalculateNextPoint();
 
-            return points[currentPointIt].transform;
+                return points[currentPointIt].transform;
+            }
+            else return e.transform;
         }
     }
 }

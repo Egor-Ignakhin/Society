@@ -518,7 +518,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1803812490204463841}
   - component: {fileID: 1803812490204463840}
-  - component: {fileID: 1803812490204463843}
   - component: {fileID: 1803812490204463842}
   m_Layer: 8
   m_Name: TT_item_1
@@ -565,19 +564,6 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &1803812490204463843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803812490204463869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7609e50a09f4ea8468b5e32fd259d83d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 1803812490204463841}
 --- !u!114 &1803812490204463842
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ namespace CampSystem
         }
         private void Start()
         {       
-            radialMenu = FindObjectOfType<RadialMenu>(); // Получаем компонент внутри канваса
+            radialMenu = RadialMenu.Instance; // Получаем компонент внутри канваса
             radialMenu.gameObject.SetActive(false);
             foreach (SectionGameobjects section in levelsOfProtection) // Для каждого уровня защиты
             {

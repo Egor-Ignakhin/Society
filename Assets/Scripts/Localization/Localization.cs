@@ -6,7 +6,7 @@ public static class Localization
 {    
     private static Dictionary<string, string> upKeysDescriptions;// словарь для подсказок (нажатия на клавишу)    
     internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive) =>
-         $"{upKeysDescriptions[mainType]}({inputInteractive})";
+         $"{upKeysDescriptions[mainType]} ({inputInteractive})";
 
     private static HintsData hintsData;
 
@@ -14,7 +14,7 @@ public static class Localization
     public static class MainTypes
     {
         public const string Default = "Взаимодествовать";
-        public const string Item = "Поднять предмет ";
+        public const string Item = "Поднять предмет";
     }
     private static firstMTaskContent taskContent;
     private static firstMDialogsContent dialogContent;

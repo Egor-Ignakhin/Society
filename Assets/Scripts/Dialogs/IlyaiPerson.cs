@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IlyaiPerson : TalkingPerson
 {
+    protected override string PathToClips() => "Dialogs\\Other\\IlyaDialogs\\Ilya_";
     protected override void Awake()
     {
         base.Awake();
@@ -23,44 +24,6 @@ public class IlyaiPerson : TalkingPerson
         "Не хочу конечно, помирать никому не охота, да надо. ",false),
         (DialogType.Opponent, "Ну в таком случае… Вот тебе противогаз, химза и антирад. Береги себя, Дим.", null,true)
     };
-    }
-    public override void FinishDialog()
-    {
-        Missions.MissionsManager.GetActiveMission().Report();
-        var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
-        ddrawer.SetEnableAll(false);
-
-
-        var cameraPlayer = Camera.main.transform;
-        cameraPlayer.SetParent(lastCameraParent);
-        cameraPlayer.localPosition = Vector3.zero;
-        cameraPlayer.localRotation = Quaternion.identity;
-        lastCameraParent = null;
-        ScreensManager.SetScreen(null);
-    }
-
-    public override void Hide()
-    {
-        if (canLeaveFromDialog)
-            FinishDialog();
-    }
-
-    public override KeyCode HideKey() => KeyCode.Escape;
-
-    public override void Interact()
-    {
-        var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
-        ddrawer.SetEnableAll(true);
-        ddrawer.SetNameAndLevel(personName, personLevel);
-        ddrawer.SetRelationAtPlayer(personRelationAtPlayer);
-        ddrawer.SetFraction(fraction);
-
-        var cameraPlayer = Camera.main.transform;
-        lastCameraParent = cameraPlayer.parent;
-        cameraPlayer.SetParent(null);
-        neededPosition = cameraPlace.position;
-        neededRotation = cameraPlace.rotation;
-        ScreensManager.SetScreen(this);
     }
 
     protected override IEnumerator DialogsTraker()
@@ -109,6 +72,4 @@ public class IlyaiPerson : TalkingPerson
             }
         }
     }
-
-    protected override string PathToClips() => "Dialogs\\Other\\IlyaDialogs\\Ilya_";
 }

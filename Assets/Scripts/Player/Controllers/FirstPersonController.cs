@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,11 +24,13 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private Vector3 followAngles;
     private Vector3 followVelocity;
 
-    private PlayerSoundsCalculator playerSoundsCalculator;
+    private Effects.PlayerSoundsCalculator playerSoundsCalculator;
     #endregion
 
     #region Movement Settings    
     private bool Sprint = false;
+    private bool CanSprinting = true;
+    public void SetPossibleSprinting(bool v) => CanSprinting = v;
     private readonly float WalkSpeed = 4f;
     private float RecumbentingSpeed;
 
@@ -112,6 +113,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private Vector3 oldPos = Vector3.zero;
     private int CurrentPhysicMaterialIndex;
     private bool wasGrounded = false;
+    public bool StepEventIsEnabled { get; set; } = true;
     #endregion
 
     #endregion
@@ -164,7 +166,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             frictionCombine = PhysicMaterialCombine.Maximum,
             bounceCombine = PhysicMaterialCombine.Average
         };
-        playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
+        playerSoundsCalculator = FindObjectOfType<Effects.PlayerSoundsCalculator>();
         #endregion
         stepSoundData = FindObjectOfType<StepSoundData>();
         stepPlayer = new StepFpc(this, stepSoundData);
@@ -211,7 +213,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             }
         }
 
-        Sprint = Input.GetKey(SprintKey) && !ScreensManager.HasActiveScreen();
+        Sprint = (Input.GetKey(SprintKey)) && (!ScreensManager.HasActiveScreen()) && (CanSprinting);
         PlayerClasses.BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
         #endregion
@@ -354,7 +356,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         }
         #endregion                    
         SetPhysMaterial();
-        playerSoundsCalculator.SetPlayerSpeed(Mathf.Abs(Vector3.Distance(transform.position, oldPos)));
+        playerSoundsCalculator.SetPlayerSpeed(Mathf.Abs(Vector3.Distance(transform.position, oldPos)) * 100);
         CallStepEvent();
         wasGrounded = IsGrounded;
         IsGrounded = false;
@@ -494,9 +496,11 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     public void SetBraking(float b) => additionalBraking = b;
     public class StepFpc : StepPlayer
     {
-        private FirstPersonController fpc;
+        private readonly FirstPersonController fpc;
+        private readonly IMovableController fpcController;
         public StepFpc(IMovableController firstPersonController, StepSoundData ssd)
         {
+            fpcController = firstPersonController;
             stepSoundData = ssd;
             fpc = (FirstPersonController)firstPersonController;
             fpc.PlayerStepEvent += OnStep;
@@ -509,6 +513,8 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         public override void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
         {
             if (!fpc.IsGrounded)
+                return;
+            if (!fpcController.StepEventIsEnabled)
                 return;
             base.OnStep(physicMaterialIndex, movementType);
         }

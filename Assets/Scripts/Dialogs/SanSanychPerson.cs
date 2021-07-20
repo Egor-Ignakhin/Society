@@ -1,17 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 sealed class SanSanychPerson : TalkingPerson
 {
-    private Transform target;
-    private NavMeshAgent mAgent;
-    private bool interactionTakesPlace;
+    protected override string PathToClips() => "Dialogs\\Other\\SanSanych\\";
     protected override void Awake()
     {
-        base.Awake();
-        mAgent = GetComponent<NavMeshAgent>();
+        base.Awake();        
         dialogs = new List<(DialogType type, string mainData, string shortData, bool IsBreakDialog)>
     {
         ( DialogType.Player,"Даров, Сан Саныч, чего случилось?",null,false ),
@@ -32,91 +28,7 @@ sealed class SanSanychPerson : TalkingPerson
         (DialogType.Opponent,"Слушай, Дим, я понимаю, дело рискованной, но ты уж постарайся вернуться. На вот, чтобы уж точно не пропал *Всучивает аптечку*", null,false),
         (DialogType.Player,"Спасибо, Сан Саныч, постараюсь.", "Спасибо, Сан Саныч, постараюсь.",true)
         };
-    }
-
-    public override void Interact()
-    {
-        if (interactionTakesPlace)
-            return;
-        interactionTakesPlace = true;
-        var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
-        ddrawer.SetEnableAll(true);
-        ddrawer.SetNameAndLevel(personName, personLevel);
-        ddrawer.SetRelationAtPlayer(personRelationAtPlayer);
-        ddrawer.SetFraction(fraction);
-
-        var cameraPlayer = Camera.main.transform;
-        lastCameraParent = cameraPlayer.parent;
-        cameraPlayer.SetParent(null);
-        neededPosition = cameraPlace.position;
-        neededRotation = cameraPlace.rotation;
-        ScreensManager.SetScreen(this);
-        PlayDialogsTraker();
-    }
-    public override void FinishDialog()
-    {
-        Missions.MissionsManager.GetActiveMission().Report();
-        var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
-        ddrawer.SetEnableAll(false);
-
-
-        var cameraPlayer = Camera.main.transform;
-        cameraPlayer.SetParent(lastCameraParent);
-        cameraPlayer.localPosition = Vector3.zero;
-        cameraPlayer.localRotation = Quaternion.identity;
-        lastCameraParent = null;
-        ScreensManager.SetScreen(null);
-        interactionTakesPlace = false;
-    }
-    public void SetRunningState(bool v)
-    {
-        mAnimator.SetBool("IsRunning", v);
-    }
-    public void SetTarget(Transform t)
-    {
-        target = t;
-    }
-    private float CalculateDistance(Vector3 pos)
-    {
-        NavMeshPath path = new NavMeshPath();
-        float dist = float.PositiveInfinity;
-        if (mAgent.isOnNavMesh && mAgent.CalculatePath(pos, path))
-        {
-            dist = 0;
-            for (int x = 1; x < path.corners.Length; x++)
-                dist += Vector3.Distance(path.corners[x - 1], path.corners[x]);
-        }
-        return dist;
-    }
-    private void FixedUpdate()
-    {
-        if (target)
-        {
-            mAgent.SetDestination(target.position);
-            if (CalculateDistance(target.position) < mAgent.stoppingDistance)
-            {
-                target = null;
-                SetRunningState(false);
-                TaskDrawer.Instance.SetVisible(false);
-                if (currentDialog > 2 && dialogs[currentDialog - 2].IsBreakDialog)
-                {
-                    dialogs[currentDialog - 2] = (dialogs[currentDialog - 2].dt, dialogs[currentDialog - 2].screenText, dialogs[currentDialog - 2].answerText, false);
-                }
-                Interact();
-            }
-        }
-
-    }
-    private void Update()
-    {
-        if (target)
-        {
-            var targetRotation = Quaternion.LookRotation(mAgent.steeringTarget - transform.position, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2.0f);
-
-            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
-        }
-    }
+    }       
     protected override IEnumerator DialogsTraker()
     {
         while (true)
@@ -164,15 +76,5 @@ sealed class SanSanychPerson : TalkingPerson
                 yield return null;
             }
         }
-    }
-
-    public override void Hide()
-    {
-        if (canLeaveFromDialog)
-            FinishDialog();
-    }
-
-    public override KeyCode HideKey() => KeyCode.Escape;
-
-    protected override string PathToClips() => "Dialogs\\Other\\SanSanych\\";
+    }                  
 }

@@ -40,7 +40,7 @@ namespace Shoots
         protected AudioClip reloadClip;
         protected AudioClip lastReloadClip;
         protected AudioClip nullBulletsClip;
-        private PlayerSoundsCalculator playerSoundsCalculator;
+        private Effects.PlayerSoundsCalculator playerSoundsCalculator;
 
         private bool isAutomatic;// автоматическое ли оружие
         protected Inventory.InventoryEventReceiver inventoryEv;
@@ -62,7 +62,7 @@ namespace Shoots
         private void Start()
         {
             effectsManager = FindObjectOfType<EffectsManager>();
-            playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
+            playerSoundsCalculator = FindObjectOfType<Effects.PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
 

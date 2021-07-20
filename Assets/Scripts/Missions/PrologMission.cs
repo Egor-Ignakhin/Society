@@ -18,9 +18,11 @@ namespace Missions
             {
                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
                 Inventory.DescriptionDrawer.Instance.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
+                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
             });
             actions.Add(() =>
             {
+                ScreensManager.SetScreen(null);
                 SceneManager.LoadScene(ScenesManager.MainMenu);
             });
             base.Awake();
@@ -35,6 +37,8 @@ namespace Missions
                 FindObjectOfType<PlayerActionBar>().SetVisible(false);
                 PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
                 Times.WorldTime.CurrentDate.ForceSetTime("23:32");
+                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
+                FindObjectOfType<FirstPersonController>().SetPossibleSprinting(false);
             }
             if (isMissiomItem)
             {
@@ -73,8 +77,7 @@ namespace Missions
             }
             if (currentTask == 4)
             {
-                TaskDrawer.Instance.SetVisible(false);
-                ilya.PlayDialogsTraker();
+                TaskDrawer.Instance.SetVisible(false);                
             }
             if (currentTask == 5)
             {

@@ -2,7 +2,7 @@
 
 namespace CampSystem
 {
-    sealed class RadialMenu : MonoBehaviour
+    sealed class RadialMenu : Singleton<RadialMenu>
     {
         [SerializeField] private int numberOfSelections = 12;
         [SerializeField] private RadialSelection[] radialSelections;

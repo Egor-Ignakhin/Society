@@ -2,21 +2,28 @@
 
 namespace Effects
 {
-    public class InvItemCollision : MonoBehaviour
+    /// <summary>
+    /// класс вызывает шум падения предмета при его столкновении
+    /// </summary>
+    public sealed class InvItemCollision : MonoBehaviour
     {
         private DropableSoundsManager manager;
-        [SerializeField] private Transform parent;
-        private bool called;
-        private void Start()
+        private InventoryItem inventoryItem;
+        private Rigidbody mRb;
+        private void Start() => manager = FindObjectOfType<DropableSoundsManager>();
+
+        public void OnInit(InventoryItem it, Rigidbody rb)
         {
-            manager = FindObjectOfType<DropableSoundsManager>();
+            inventoryItem = it;
+            mRb = rb;
         }
-        private void OnCollisionStay(Collision collision)
+        private void OnCollisionStay(Collision col)
         {
-            if (called)
-                return;
-            manager.PlayClip(parent.position, this);
-            called = true;
+            if (mRb.velocity.magnitude > 0.5f)
+            {
+                manager.PlayClip(transform.position, this);
+                PlayerSoundsCalculator.AddItemSound(inventoryItem);
+            }
         }
     }
 }

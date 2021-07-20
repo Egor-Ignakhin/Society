@@ -70,12 +70,15 @@ namespace Missions
         /// <param name="num"></param>
         public void StartOrContinueMission(int num)
         {
+            Mission foundedMission = null;
             switch (num)
             {
                 case 0:
-                    FindObjectOfType<PrologMission>().ContinueMission(currentState.currentTask);
+                    foundedMission = FindObjectOfType<PrologMission>();
                     break;
             }
+            if (foundedMission)
+                foundedMission.ContinueMission(currentState.currentTask);
         }
         private void OnDisable() => SaveState();
         public void FinishMission() => ReportMission();

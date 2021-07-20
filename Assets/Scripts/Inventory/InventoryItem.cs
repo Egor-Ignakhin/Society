@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Inventory;
 using System.Collections.Generic;
+using static SMG.ModifierCharacteristics;
 
 
 //объект с возможностью положить в инвентарь
@@ -13,26 +14,26 @@ public sealed class InventoryItem : InteractiveObject
     [SerializeField] private bool itsGun;
 
     private SMGInventoryCellGun possibleGun = new SMGInventoryCellGun();
-    [ShowIf(nameof(itsGun), true)] [SerializeField] private SMG.ModifierCharacteristics.GunTitles titleGun = SMG.ModifierCharacteristics.GunTitles.None;
+    [ShowIf(nameof(itsGun), true)] [SerializeField] private GunTitles titleGun = GunTitles.None;
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField] private List<GameObject> mags = new List<GameObject>();
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
-    private SMG.ModifierCharacteristics.ModifierIndex magIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
+    private ModifierIndex magIndex = ModifierIndex.None;
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField] private List<GameObject> silencers = new List<GameObject>();
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
-    private SMG.ModifierCharacteristics.ModifierIndex silencerIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
+    private ModifierIndex silencerIndex = ModifierIndex.None;
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField] private List<GameObject> aims = new List<GameObject>();
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
-    private SMG.ModifierCharacteristics.ModifierIndex aimIndex = SMG.ModifierCharacteristics.ModifierIndex.None;
+    private ModifierIndex aimIndex = ModifierIndex.None;
 
     [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;
     private bool isDroppedGun = false;
@@ -46,6 +47,8 @@ public sealed class InventoryItem : InteractiveObject
         SetType(startItem.ToString());
         if (!isDroppedGun)
             possibleGun.Reload((int)titleGun, (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex);
+
+        gameObject.AddComponent<Effects.InvItemCollision>().OnInit(this, GetComponent<Rigidbody>());
     }
     public void SetGun(SMGInventoryCellGun g)
     {
@@ -53,9 +56,9 @@ public sealed class InventoryItem : InteractiveObject
             isDroppedGun = true;
         possibleGun.Reload(g);
 
-        magIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Mag;
-        aimIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Aim;
-        silencerIndex = (SMG.ModifierCharacteristics.ModifierIndex)possibleGun.Silencer;
+        magIndex = (ModifierIndex)possibleGun.Mag;
+        aimIndex = (ModifierIndex)possibleGun.Aim;
+        silencerIndex = (ModifierIndex)possibleGun.Silencer;
         OnValidate();
     }
     public override void Interact()
