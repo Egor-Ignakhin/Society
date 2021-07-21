@@ -2,6 +2,7 @@
 using Inventory;
 using System.Collections.Generic;
 using static SMG.ModifierCharacteristics;
+using System;
 
 
 //объект с возможностью положить в инвентарь
@@ -34,6 +35,13 @@ public sealed class InventoryItem : InteractiveObject
     [ShowIf(nameof(itsGun), true)]
     [SerializeField]
     private ModifierIndex aimIndex = ModifierIndex.None;
+    
+    internal void OnInit(int count, ItemStates.ItemsID item, bool itsGun)
+    {
+        this.count = count;
+        startItem = item;
+        this.itsGun = itsGun;
+    }
 
     [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;
     private bool isDroppedGun = false;

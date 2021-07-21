@@ -6,8 +6,11 @@ namespace Debugger
 {
     public static class CommandsContainer// класс содержащий список возможных команд для консоли и их исполняющий
     {
+        private static DebugConsole debugConsole;
         public static Dictionary<string, Action<string>> commands;// словарь команд
         private static int gameMode;// 0 is deadly; 1 is godly
+
+        public static void SetDebugConsole(DebugConsole dc) => debugConsole = dc;
         /// <summary>
         /// // распил строки на тип команды и параметры для неё
         /// </summary>
@@ -48,9 +51,11 @@ namespace Debugger
             (string type, string command) = Substring(input);
             if (!commands.ContainsKey(type))
                 return $"Erorr: {input}: command not found!";
-            if (gameMode == 0 && type != nameof(GAMEMODE))
+            if ((gameMode == 0) && (type != nameof(GAMEMODE)) && (type != nameof(HELP)))
                 return $"Error: {input}: insufficient permissions!";
             commands[type](command);
+            if (type == nameof(HELP))
+                return "HELP COMMAND";
             return string.Empty;
         }
         static CommandsContainer()
@@ -67,8 +72,27 @@ namespace Debugger
                 {nameof(ENDLESSHEALTH),ENDLESSHEALTH },
                 {nameof(ENDLESSFOOD),ENDLESSFOOD },
                 {nameof(ENDLESSWATER),ENDLESSWATER },
-                {nameof(ENDLESSBULLETS),ENDLESSBULLETS }
+                {nameof(ENDLESSAMMO),ENDLESSAMMO },
+                {nameof(HELP),HELP }
             };
+        }
+        private static void HELP(string c)
+        {
+            int i = 0;
+            debugConsole.Print($"{++i}. Use 'Settime hrs:min' to setup global time", true, 20);
+            debugConsole.Print($"{++i}. Use 'GAMEMODE n' to setup god mode", true, 20);
+            debugConsole.Print($"{++i}. Use 'SETHEALTH n' to set the amount of health to the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'SETFOOD n' to set the amount of food to the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'SETWATER n' to set the amount of water to the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'SETRADIATION n' to set the amount of radiation to the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'HEAL' to fully restore the characteristics of the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'SETPOS (x,y,z)' to setup global postion of the player", true, 20);
+            debugConsole.Print($"{++i}. Use 'ENDLESSHEALTH n' to set the mode to 'Infinite Health'", true, 20);
+            debugConsole.Print($"{++i}. Use 'ENDLESSFOOD n' to set the mode to 'Infinite Food'", true, 20);
+            debugConsole.Print($"{++i}. Use 'ENDLESSWATER n' to set the mode to 'Infinite Water'", true, 20);
+            debugConsole.Print($"{++i}. Use 'ENDLESSAMMO n' to set the mode to 'Infinite Ammo'", true, 20);
+            debugConsole.Print($"{++i}. Use 'HELP' to get help", true, 20);
+
         }
         /// <summary>
         /// бесконесное здоровье
@@ -97,12 +121,12 @@ namespace Debugger
             int v = Convert.ToInt32(c);
             PlayerClasses.BasicNeeds.EndlessWater = (v == 1);// если 1 то беск. хп
         }
-        private static void ENDLESSBULLETS(string c)
+        private static void ENDLESSAMMO(string c)
         {
             try
             {
                 int v = Convert.ToInt32(c);
-                Inventory.InventoryEventReceiver.EndlessBullets = (v == 1);// если 1 то беск. хп
+                Shoots.Gun.EndlessBullets = (v == 1);// если 1 то беск. хп
             }
             catch
             {

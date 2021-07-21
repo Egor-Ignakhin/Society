@@ -38,11 +38,10 @@ namespace Inventory
         private bool isDragged;// происходит ли удержание
         private InventoryCell SelectedCell;
         private InventoryCell lastSelectedCell;
-        private GameObject modifiersPage;
-        private Button modPageButton;
+        private readonly GameObject modifiersPage;
+        private readonly Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
-        private SMG.SMGInventoryCellsEventReceiver SMGICEV;
-        public static bool EndlessBullets;
+        private readonly SMG.SMGInventoryCellsEventReceiver SMGICEV;        
 
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
@@ -376,11 +375,7 @@ namespace Inventory
         }
 
         internal void DelItem(ItemStates.ItemsID itemId, int count)
-        {
-            if (EndlessBullets && ItemStates.ItsBullet((int)itemId))
-            {//выход если включены беск. патроны
-                return;
-            }
+        {            
             var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)itemId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
 

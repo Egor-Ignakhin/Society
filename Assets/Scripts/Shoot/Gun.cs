@@ -53,6 +53,7 @@ namespace Shoots
         private ShootedBulletPool sbp;
         private AudioClip reflectSound;
         private AudioSource reflectSource;
+        public static bool EndlessBullets { get; set; }
         private void Awake()
         {
             gunModifiersActiveManager = GetComponent<SMG.GunModifiersActiveManager>();
@@ -146,7 +147,7 @@ namespace Shoots
 
             if (remainingBullets <= 0)
             {
-                IsReload = false;                
+                IsReload = false;
                 return;
             }
 
@@ -161,6 +162,7 @@ namespace Shoots
                     remainingBullets -= outOfRange;
                 }
                 inventoryEv.DelItem(bulletId, remainingBullets);
+
                 dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().MGun.AmmoCount);
                 if (dispenser.CountBullets > dispenser.MaxBullets)
                 {
@@ -330,7 +332,11 @@ namespace Shoots
 
             public Dispenser(Inventory.InventoryEventReceiver iEv) => inventoryEv = iEv;
 
-            public void Dispens() => CountBullets--;
+            public void Dispens()
+            {
+                if (!EndlessBullets)
+                    CountBullets--;
+            }
 
             public void Reload(int bulletsCount) => CountBullets = bulletsCount;
 

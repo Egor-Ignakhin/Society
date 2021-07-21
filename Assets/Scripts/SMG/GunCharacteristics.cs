@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TMPro;
 using static Inventory.ItemStates;
 
 namespace SMG
@@ -101,7 +100,7 @@ namespace SMG
             }
         }
 
-        internal static int MaxMagFromID(int v)
+        internal static int GetMaxMagFromID(int v)
         {
             if (v == (int)ItemsID.TTPistol)
             {
@@ -110,7 +109,7 @@ namespace SMG
             return 0;
         }
 
-        internal static int MaxAimFromID(int v)
+        internal static int GetMaxAimFromID(int v)
         {
             if (v == (int)ItemsID.TTPistol)
             {
@@ -119,7 +118,7 @@ namespace SMG
             return 0;
         }
 
-        internal static int MaxSilencerFromID(int v)
+        internal static int GetMaxSilencerFromID(int v)
         {
             if (v == (int)ItemsID.TTPistol)
             {

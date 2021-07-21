@@ -7,7 +7,7 @@ namespace Debugger
     /// <summary>
     /// класс для работы с консолью
     /// </summary>
-    sealed class DebugConsole : MonoBehaviour, IDebug
+    public sealed class DebugConsole : MonoBehaviour, IDebug
     {
         [SerializeField] private GameObject FieldPrefab;// префаб поля в консоли
         [SerializeField] private Transform EventsContainer;// контейнер для полей
@@ -18,14 +18,15 @@ namespace Debugger
         private int commandIterator = 0;// итератор для система управления стрелка вверх и вниз
         private bool isSelected;// выделено ли поле ввода
 
-        public bool Active { get; set; } = true;        
+        public bool Active { get; set; } = true;
         GameObject IDebug.gameObject => gameObject;
 
         private void Awake()
-        {            
+        {
+            CommandsContainer.SetDebugConsole(this);
             // дефолтные надписи в консоли
-            CreateField("Society Console", true);
-            CreateField("Use 'Help' to get page of help", true, 20);
+            Print("Society Console", true);
+            Print("Use 'Help' to get page of help", true, 20);
         }
         private void Update()
         {
@@ -71,7 +72,7 @@ namespace Debugger
         /// </summary>
         /// <param name="value"></param>
         /// <param name="systemNote"></param>
-        private void CreateField(string value, bool systemNote = false, int fontSize = 25)
+        public void Print(string value, bool systemNote = false, int fontSize = 25)
         {
             var field = Instantiate(FieldPrefab, EventsContainer);
             var text = field.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -95,9 +96,9 @@ namespace Debugger
             enteredCommands.Add(lastCommand);// добавление в лист команд 
             commandIterator = enteredCommands.Count;// присвоение итератору позиицю последней команды
 
-            string errorType = CommandsContainer.Execution(lastCommand);// вызов обработки команды и одновременно сбор возможной ошибки команды
+            string errorType = CommandsContainer.Execution(lastCommand);// вызов обработки команды и одновременно сбор возможной ошибки команды            
             if (errorType == string.Empty)// если команда прошла без ошибок
-                CreateField("> " + lastCommand);// создание нового поля
+                Print("> " + lastCommand);// создание нового поля
 
             inputField.text = string.Empty;
             inputField.ActivateInputField();
@@ -111,7 +112,9 @@ namespace Debugger
         {
             if (type == string.Empty)
                 return;
-            CreateField(type);
+            if (type == "HELP COMMAND")
+                return;
+            Print(type);
         }
         #region SelectDeselectEvents
         public void OnSelect()

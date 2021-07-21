@@ -54,7 +54,6 @@ namespace Inventory
         /// <returns></returns>
         public static bool ItsGun(int id) => id == (int)ItemsID.Makarov || id == (int)ItemsID.TTPistol || id == (int)ItemsID.Ak_74;
 
-
         /// <summary>
         /// возвращает максимальное число стака предмета в инвентаре
         /// </summary>

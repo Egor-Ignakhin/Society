@@ -1,10 +1,9 @@
-﻿using Inventory;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Debugger
 {
-    class DebugManager : MonoBehaviour, IGameScreen
+    sealed class DebugManager : MonoBehaviour, IGameScreen
     {
         [SerializeField] private Transform background;// фон
         private bool isHidden = true;
@@ -30,9 +29,11 @@ namespace Debugger
                 Move();
             if (Input.GetKeyDown(KeyCode.F1))
             {
+                if (ScreensManager.HasActiveScreen())
+                    return;
                 isHidden = !isHidden;
                 isMoving = true;
-                ScreensManager.SetScreen(isHidden ? null : this);
+                ScreensManager.SetScreen(this);
             }
         }
         /// <summary>
@@ -79,6 +80,7 @@ namespace Debugger
         {
             isHidden = true;
             isMoving = true;
+            ScreensManager.SetScreen(null);
         }
 
         public KeyCode HideKey() => KeyCode.Escape;
