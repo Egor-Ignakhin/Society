@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Debugger
 {
-    public class CommandsContainer// класс содержащий список возможных команд для консоли и их исполняющий
+    public static class CommandsContainer// класс содержащий список возможных команд для консоли и их исполняющий
     {
-        public delegate void Func(string command);
-        public static Dictionary<string, Func> commands;// словарь команд
+        public static Dictionary<string, Action<string>> commands;// словарь команд
         private static int gameMode;// 0 is deadly; 1 is godly
         /// <summary>
         /// // распил строки на тип команды и параметры для неё
@@ -41,14 +41,11 @@ namespace Debugger
         /// <returns></returns>
         public static string Execution(string input)
         {
-            string output = "";
-            for (int i = 0; i < input.Length; i++)
-                output += char.ToUpper(input[i]);
+            input = input.ToUpper();
+            input = input.TrimStart(' ');
+            input = input.TrimEnd(' ');
 
-            output = output.TrimStart(' ');
-            output = output.TrimEnd(' ');
-
-            (string type, string command) = Substring(output);
+            (string type, string command) = Substring(input);
             if (!commands.ContainsKey(type))
                 return $"Erorr: {input}: command not found!";
             if (gameMode == 0 && type != nameof(GAMEMODE))
@@ -58,7 +55,7 @@ namespace Debugger
         }
         static CommandsContainer()
         {
-            commands = new Dictionary<string, Func> {
+            commands = new Dictionary<string, Action<string>> {
                 {nameof(SETTIME), SETTIME},
                 {nameof(GAMEMODE), GAMEMODE},
                 {nameof(SETHEALTH), SETHEALTH},
@@ -66,8 +63,51 @@ namespace Debugger
                 {nameof(SETWATER), SETWATER},
                 {nameof(SETRADIATION), SETRADIATION},
                 {nameof(HEAL), HEAL},
-                {nameof(SETPOS), SETPOS}
+                {nameof(SETPOS), SETPOS},
+                {nameof(ENDLESSHEALTH),ENDLESSHEALTH },
+                {nameof(ENDLESSFOOD),ENDLESSFOOD },
+                {nameof(ENDLESSWATER),ENDLESSWATER },
+                {nameof(ENDLESSBULLETS),ENDLESSBULLETS }
             };
+        }
+        /// <summary>
+        /// бесконесное здоровье
+        /// </summary>
+        /// <param name="c"></param>
+        private static void ENDLESSHEALTH(string c)
+        {
+            int v = Convert.ToInt32(c);
+            PlayerClasses.BasicNeeds.EndlessHealth = (v == 1);// если 1 то беск. хп
+        }
+        /// <summary>
+        /// бесконечная еда
+        /// </summary>
+        /// <param name="c"></param>
+        private static void ENDLESSFOOD(string c)
+        {
+            int v = Convert.ToInt32(c);
+            PlayerClasses.BasicNeeds.EndlessFood = (v == 1);// если 1 то беск. хп
+        }
+        /// <summary>
+        /// бесконечная вода
+        /// </summary>
+        /// <param name="c"></param>
+        private static void ENDLESSWATER(string c)
+        {
+            int v = Convert.ToInt32(c);
+            PlayerClasses.BasicNeeds.EndlessWater = (v == 1);// если 1 то беск. хп
+        }
+        private static void ENDLESSBULLETS(string c)
+        {
+            try
+            {
+                int v = Convert.ToInt32(c);
+                Inventory.InventoryEventReceiver.EndlessBullets = (v == 1);// если 1 то беск. хп
+            }
+            catch
+            {
+
+            }
         }
         /// <summary>
         /// установка мирового времени
@@ -155,9 +195,9 @@ namespace Debugger
             var ss = posStr.Split(',');
             int.TryParse(ss[0], out int x);
             int.TryParse(ss[1], out int y);
-            int.TryParse(ss[2], out int z);            
+            int.TryParse(ss[2], out int z);
             UnityEngine.Vector3 pos = new UnityEngine.Vector3(x, y, z);
-            
+
             PlayerClasses.BasicNeeds.Instance.transform.position = pos;
         }
     }

@@ -18,12 +18,14 @@ namespace Debugger
         private int commandIterator = 0;// итератор для система управления стрелка вверх и вниз
         private bool isSelected;// выделено ли поле ввода
 
-        public bool Active { get; set; } = true;
+        public bool Active { get; set; } = true;        
         GameObject IDebug.gameObject => gameObject;
 
         private void Awake()
-        {
-            CreateField("Society Console", true);// дефолтная надпись в консоли
+        {            
+            // дефолтные надписи в консоли
+            CreateField("Society Console", true);
+            CreateField("Use 'Help' to get page of help", true, 20);
         }
         private void Update()
         {
@@ -69,7 +71,7 @@ namespace Debugger
         /// </summary>
         /// <param name="value"></param>
         /// <param name="systemNote"></param>
-        private void CreateField(string value, bool systemNote = false)
+        private void CreateField(string value, bool systemNote = false, int fontSize = 25)
         {
             var field = Instantiate(FieldPrefab, EventsContainer);
             var text = field.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -82,6 +84,7 @@ namespace Debugger
                 text.color = Color.cyan;
             }
             text.SetText(value);
+            text.fontSize = fontSize;
         }
         /// <summary>
         /// вызовыватель исполнения команды

@@ -42,6 +42,7 @@ namespace Inventory
         private Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
         private SMG.SMGInventoryCellsEventReceiver SMGICEV;
+        public static bool EndlessBullets;
 
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
@@ -75,7 +76,7 @@ namespace Inventory
             takeAllButton.gameObject.SetActive(false);
             modifiersPage.SetActive(false);
             modPageButton.onClick.AddListener(ModifiersPageChangeActive);
-            
+
             foreach (var m in modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>())
                 m.OnInit(SMGICEV);
         }
@@ -92,7 +93,7 @@ namespace Inventory
             }
             else
                 RewriteSMGCells();
-            
+
             EndDrag();
         }
         public void InsideCursorCell(InventoryCell cell)
@@ -374,9 +375,13 @@ namespace Inventory
             takeAllButton.gameObject.SetActive(true);
         }
 
-        internal void DelItem(ItemStates.ItemsID bulletId, int count)
+        internal void DelItem(ItemStates.ItemsID itemId, int count)
         {
-            var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId);
+            if (EndlessBullets && ItemStates.ItsBullet((int)itemId))
+            {//выход если включены беск. патроны
+                return;
+            }
+            var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)itemId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
 
             if (foundedCell)
@@ -390,16 +395,16 @@ namespace Inventory
                 {
                     count -= foundedCell.Count;
                     foundedCell.DelItem(foundedCell.Count);
-                    DelItem(bulletId, count);
+                    DelItem(itemId, count);
                 }
             }
         }
 
-        internal int Containts(ItemStates.ItemsID bulletId)
+        internal int ContaintsItemId(ItemStates.ItemsID itemId)
         {
             int count = 0;
 
-            inventoryContainer.GetCells().FindAll(c => c.Id == (int)bulletId && (count += c.Count) > -1);
+            inventoryContainer.GetCells().FindAll(c => c.Id == (int)itemId && (count += c.Count) > -1);
             return count;
         }
 

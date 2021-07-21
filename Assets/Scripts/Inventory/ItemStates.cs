@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Inventory
 {
@@ -69,5 +70,6 @@ namespace Inventory
 
         internal static (float health , float radiation) GetMedicalPower(int id) => medicalItems[id];
 
+        internal static bool ItsBullet(int itemId) => (itemId == (int)ItemsID.Bullet_7_62) || (itemId == (int)ItemsID.Bullet_9_27);
     }
 }

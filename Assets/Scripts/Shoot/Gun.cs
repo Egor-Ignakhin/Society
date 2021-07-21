@@ -142,7 +142,7 @@ namespace Shoots
                 return;
 
 
-            int remainingBullets = inventoryEv.Containts(bulletId);
+            int remainingBullets = inventoryEv.ContaintsItemId(bulletId);
 
             if (remainingBullets <= 0)
             {

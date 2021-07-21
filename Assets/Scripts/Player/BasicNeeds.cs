@@ -22,6 +22,8 @@ namespace PlayerClasses
 
             private set
             {
+                if (EndlessHealth)
+                    return;
                 value = Mathf.Clamp(value, 0, MaximumHealth);
                 if (value == 0 && BnInitFlag)
                     Dead();
@@ -48,6 +50,8 @@ namespace PlayerClasses
 
             private set
             {
+                if (EndlessWater)
+                    return;
                 if (value > MaximumThirst)
                     value = MaximumThirst;
                 if (value < 0 && isInitialized)
@@ -66,6 +70,8 @@ namespace PlayerClasses
 
             private set
             {
+                if (EndlessFood)
+                    return;
                 if (value > MaximumFood)
                     value = MaximumFood;
                 if (value < 0 && isInitialized)
@@ -97,7 +103,7 @@ namespace PlayerClasses
 
         private readonly int defaultFood = 200;// изначальное кол-во еды
         private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
-        public int MaximumFood { get; private set; } = 200;// максимум еды
+        public int MaximumFood { get; private set; } = 200;// максимум еды        
 
         private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
         private readonly int MaximumRadiation = 3000;// максимум радиации
@@ -115,6 +121,9 @@ namespace PlayerClasses
         private readonly float DamageFromRadiation = 1;
         private PlayerCollisionChecked playerCollisionChecked;
         private bool allStaminsEnable = true;
+        public static bool EndlessHealth { get; internal set; }
+        public static bool EndlessFood { get; internal set; }
+        public static bool EndlessWater { get; internal set; }
 
         private void Start()
         {
