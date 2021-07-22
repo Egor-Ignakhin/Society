@@ -101,7 +101,11 @@ namespace Inventory
             DropEvent?.Invoke(GunCharacteristics.GetNormalTitleFromTTI(tti), 1);
         }
 
-        public void Hide() => SetEnable(false);
+        public bool Hide()
+        {
+            SetEnable(false);
+            return true;
+        }
 
         public KeyCode HideKey() => KeyCode.Escape;
     }

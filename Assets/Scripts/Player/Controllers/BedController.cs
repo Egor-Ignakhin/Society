@@ -80,11 +80,12 @@ public sealed class BedController : MonoBehaviour, IGameScreen
         }
         fpc.SetPossibleJump(false);
     }
-    public void Hide()
+    public bool Hide()
     {
         if (!PossibleDeoccupied)
-            return;
+            return false;
         SetState(State.unlocked);
+        return true;
     }
 
     public KeyCode HideKey() => KeyCode.Space;

@@ -98,7 +98,7 @@ namespace PlayerClasses
         public float MaximumHealth = 100;// максимальное кол-во здоровья              
 
         private readonly int defaultThirst = 100;// изначальное кол-во воды
-        private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере
+        private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
         public int MaximumThirst { get; private set; } = 100;// максимум еды
 
         private readonly int defaultFood = 200;// изначальное кол-во еды
@@ -124,6 +124,7 @@ namespace PlayerClasses
         public static bool EndlessHealth { get; internal set; }
         public static bool EndlessFood { get; internal set; }
         public static bool EndlessWater { get; internal set; }
+        public bool PossibleDamgeFromCollision { get; private set; } = true;
 
         private void Start()
         {
@@ -230,6 +231,12 @@ namespace PlayerClasses
                 yield return new WaitForSeconds(waitForRadiation);
             }
         }
+        internal void SetPossibleDamgeFromCollision(bool v)
+        {
+            PossibleDamgeFromCollision = v;
+        }
+
+
         #region ForceCommands
 
         internal static void ForceSetHealth(int value)
@@ -284,7 +291,8 @@ namespace PlayerClasses
             if (force > minValue)// если сила больше минимальной для нанесения урона
             {
                 bn.InjurePerson(force / 10);
-                PlayerTakingDamageEvent?.Invoke();
+                if (bn.PossibleDamgeFromCollision)
+                    PlayerTakingDamageEvent?.Invoke();
             }
         }
     }

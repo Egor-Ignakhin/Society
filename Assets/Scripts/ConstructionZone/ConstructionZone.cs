@@ -77,10 +77,10 @@ namespace CampSystem
             ScreensManager.SetScreen(this);
             radialMenu.gameObject.SetActive(true);
         }
-        public void Hide()
-        {
-            ScreensManager.SetScreen(null);
+        public bool Hide()
+        {            
             radialMenu.gameObject.SetActive(false);
+            return true;
         }
 
         public KeyCode HideKey() => KeyCode.Escape;

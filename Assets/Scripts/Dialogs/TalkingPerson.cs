@@ -58,10 +58,14 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
         if (cameraPlace == null)
             Debug.LogError("Camera place is null!");
     }
-    public void Hide()
+    public bool Hide()
     {
         if (canLeaveFromDialog)
+        {
             FinishDialog();
+            return true;
+        }
+        return false;
     }
 
     public KeyCode HideKey() => KeyCode.Escape;

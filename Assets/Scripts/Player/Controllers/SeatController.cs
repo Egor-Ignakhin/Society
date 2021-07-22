@@ -73,9 +73,10 @@ public class SeatController : MonoBehaviour, IGameScreen
             lastChairManager.DeOccupied(lastChairMesh);
     }
 
-    public void Hide()
+    public bool Hide()
     {
         SetState(State.unlocked);
+        return true;
     }
 
     public KeyCode HideKey() => KeyCode.Space;

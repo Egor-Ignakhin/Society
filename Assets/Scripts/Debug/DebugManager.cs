@@ -76,11 +76,11 @@ namespace Debugger
             activeDebugger.Activate();
         }
 
-        public void Hide()
+        public bool Hide()
         {
             isHidden = true;
             isMoving = true;
-            ScreensManager.SetScreen(null);
+            return true;
         }
 
         public KeyCode HideKey() => KeyCode.Escape;

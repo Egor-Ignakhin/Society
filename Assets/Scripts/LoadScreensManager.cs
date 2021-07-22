@@ -73,9 +73,9 @@ public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
             img.sprite = null;
     }
 
-    public void Hide()
+    public bool Hide()
     {
-
+        return false;
     }
 
     public KeyCode HideKey() => KeyCode.Escape;

@@ -16,6 +16,11 @@ static class ScreensManager
         if (slsc)
             SetLockStateCursor();
     }
+    public static void ClearScreen()
+    {
+        currentScreen = null;
+        SetLockStateCursor();
+    }
     private static void SetLockStateCursor()
     {
         Cursor.visible = HasActiveScreen();
@@ -34,8 +39,8 @@ static class ScreensManager
     public static IGameScreen GetActiveScreen() => currentScreen;    
 }
 public interface IGameScreen
-{
-    void Hide();
+{    
+    bool Hide();
     KeyCode HideKey();
 }
 public class ScreenInputReceiver : MonoBehaviour
@@ -56,7 +61,10 @@ public class ScreenInputReceiver : MonoBehaviour
     private void OnInputBackButton()
     {
         if (ScreensManager.HasActiveScreen())
-            ScreensManager.GetActiveScreen().Hide();
+        {
+            if (ScreensManager.GetActiveScreen().Hide())
+                ScreensManager.ClearScreen();
+        }
         else pauseManager.Enable();
     }
 }

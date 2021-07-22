@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Effects
@@ -61,7 +60,7 @@ namespace Effects
             if (additionalNoise > 0)
                 additionalNoise -= 0.5f;
         }
-        private void Draw() => drawingImage.sizeDelta = new Vector2(drawingImage.sizeDelta.x, playerSpeed + additionalNoise);
+        private void Draw() => drawingImage.sizeDelta = new Vector2(drawingImage.sizeDelta.x, Mathf.Clamp(playerSpeed + additionalNoise, 0, 100));
         private IEnumerator CallMonsters()
         {
             while (true)

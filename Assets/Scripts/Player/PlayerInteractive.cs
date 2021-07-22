@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace PlayerClasses
 {
@@ -6,13 +7,14 @@ namespace PlayerClasses
     {
         Camera mainCamera;
         private float interctionDistance = 2;
-        private const float sphereCasterRadius = 0.01f;        
-        public static KeyCode InputInteractive { get; set; } = KeyCode.F;        
+        private const float sphereCasterRadius = 0.01f;
+        public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private bool inputedButton = false;
         private Inventory.DescriptionDrawer descriptionDrawer;
+        private Vector3 lasHitPoint;
         private void Start()
         {
-            mainCamera = Camera.main;            
+            mainCamera = GetComponent<FirstPersonController>().GetCamera();
             descriptionDrawer = Inventory.DescriptionDrawer.Instance;
             descriptionDrawer.SetHint(desc, mainDesc, 0);
         }
@@ -39,7 +41,7 @@ namespace PlayerClasses
                 var components = hit.transform.GetComponents<InteractiveObject>();
                 if (components.Length > 0)
                 {
-
+                    lasHitPoint = hit.point;
                     int i = 0;
                     foreach (var c in components)
                     {
@@ -65,6 +67,7 @@ namespace PlayerClasses
             }
             descriptionDrawer.SetHint(desc, mainDesc, count);
         }
+        internal Vector3 GetHitPoint() => lasHitPoint;
         /*private void OnDrawGizmos()
         {
             try

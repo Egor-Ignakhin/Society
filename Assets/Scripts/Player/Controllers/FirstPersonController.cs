@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -108,7 +109,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private bool isRecumbenting = false;
     private float yVelocity;
 
-    private Rigidbody _fpsRigidbody;
+    private Rigidbody fpcRigidbody;
     public CapsuleCollider GetCollider() => capsule;
     private Vector3 oldPos = Vector3.zero;
     private int CurrentPhysicMaterialIndex;
@@ -125,9 +126,9 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         PlayerCameraTr = PlayerCamera.transform;
         JumpPowerInternal = JumpPower;
         capsule = GetComponent<CapsuleCollider>();
-        _fpsRigidbody = GetComponent<Rigidbody>();
-        _fpsRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
-        _fpsRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        fpcRigidbody = GetComponent<Rigidbody>();
+        fpcRigidbody.interpolation = RigidbodyInterpolation.Extrapolate;
+        fpcRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
         followAngles = targetAngles = transform.localEulerAngles;
         #endregion
@@ -171,7 +172,6 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         stepSoundData = FindObjectOfType<StepSoundData>();
         stepPlayer = new StepFpc(this, stepSoundData);
     }
-
     private void Update()
     {
         #region Look Settings - Update
@@ -236,17 +236,17 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             {
                 MoveDirection = transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal;
                 if (!didJump)
-                    _fpsRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+                    fpcRigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
             else if (Advanced.IsTouchingUpright && !Advanced.IsTouchingWalkable)
             {
-                _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                fpcRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
             }
 
             else
             {
-                _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
-                MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (_fpsRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
+                fpcRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                MoveDirection = (transform.forward * inputXY.y * speed + transform.right * inputXY.x * WalkSpeedInternal) * (fpcRigidbody.velocity.y > 0.01f ? SlopeCheck() : 0.8f);
             }
         }
         else
@@ -271,7 +271,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             inputXY.Normalize();
 
         #region Jump
-        yVelocity = _fpsRigidbody.velocity.y;
+        yVelocity = fpcRigidbody.velocity.y;
 
         if (IsGrounded && Jump && JumpPowerInternal > 0 && !didJump)
         {
@@ -281,11 +281,11 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
                 {
                     didJump = true;
                     Jump = false;
-                    yVelocity += _fpsRigidbody.velocity.y < 0.01f ? JumpPowerInternal : JumpPowerInternal / 3;
+                    yVelocity += fpcRigidbody.velocity.y < 0.01f ? JumpPowerInternal : JumpPowerInternal / 3;
                     Advanced.IsTouchingWalkable = false;
                     Advanced.IsTouchingFlat = false;
                     Advanced.IsTouchingUpright = false;
-                    _fpsRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
+                    fpcRigidbody.constraints = RigidbodyConstraints.None | RigidbodyConstraints.FreezeRotation;
                 }
 
             }
@@ -311,10 +311,10 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         Vector3 newVel = (MoveDirection + (Vector3.up * yVelocity));
         if (newVel.y > 0)
             newVel *= additionalBraking;
-        _fpsRigidbody.velocity = newVel;
+        fpcRigidbody.velocity = newVel;
         capsule.sharedMaterial = inputXY.magnitude > 0 || !IsGrounded ? Advanced.ZeroFrictionMaterial : Advanced.HighFrictionMaterial;
 
-        _fpsRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
+        fpcRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
 
         float capsuleHeightFollowing, capsuleRadiusFollowing;
         if (isCrouching)
@@ -519,19 +519,21 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
             base.OnStep(physicMaterialIndex, movementType);
         }
 
-        public void OnDestroy()
-        {
-            fpc.PlayerStepEvent -= OnStep;
-        }
+        public void OnDestroy() => fpc.PlayerStepEvent -= OnStep;
+
     }
-    internal void SetSensivity(int sensivity)
+    internal void SetSensivity(int sensivity) => Sensitivity = sensivity;
+
+    public float GetPlayerHeight() => capsule.height;
+    internal Transform GetCameraHost() => transform.GetChild(0);
+    internal void ResetRbVelocity()
     {
-        Sensitivity = sensivity;
+        fpcRigidbody.velocity = Vector3.zero;
+        fpcRigidbody.angularVelocity = Vector3.zero;
+        oldPos = transform.position;
     }
-    private void OnDestroy()
-    {
-        stepPlayer.OnDestroy();
-    }
+
+    private void OnDestroy() => stepPlayer.OnDestroy();
 }
 
 #if UNITY_EDITOR

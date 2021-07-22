@@ -39,7 +39,7 @@ namespace MenuScripts
                 LoadData();
             }
             private void Start()
-            {                
+            {
 
                 fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
                 fovText.SetText(currentGameSettings.FOV.ToString());
@@ -123,7 +123,11 @@ namespace MenuScripts
                 File.WriteAllText(pathForSettings, data);
             }
 
-            public void Hide() => menuEventReceiver.Disable();
+            public bool Hide()
+            {
+                menuEventReceiver.Disable();
+                return true;
+            }
 
             public KeyCode HideKey() => KeyCode.Escape;
 

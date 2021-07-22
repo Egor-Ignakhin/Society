@@ -158,14 +158,15 @@ namespace SMG
             EventReceiver.UnequipAllElements();
         }
 
-        public void Hide()
+        public bool Hide()
         {
             if (MSMG.IsActive)
             {
                 SetEnableSMGCam(false);
-                return;
+                return false;
             }
             SetEnable(false);
+            return true;
         }
 
         public KeyCode HideKey() => KeyCode.Escape;
