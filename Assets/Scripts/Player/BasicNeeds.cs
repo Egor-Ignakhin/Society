@@ -290,9 +290,11 @@ namespace PlayerClasses
             force = mass * force * force;
             if (force > minValue)// если сила больше минимальной для нанесения урона
             {
-                bn.InjurePerson(force / 10);
                 if (bn.PossibleDamgeFromCollision)
+                {
+                    bn.InjurePerson(force / 10);
                     PlayerTakingDamageEvent?.Invoke();
+                }
             }
         }
     }

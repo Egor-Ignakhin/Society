@@ -1,36 +1,33 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Parkour
 {
-    sealed class FireEscape : MonoBehaviour, IGameScreen
+    /// <summary>
+    /// Элемент паркура - пожарная лестница
+    /// </summary>
+    sealed class FireEscape : ParkourElement
     {
         [SerializeField] private Transform highestPlace;
-        [SerializeField] private Transform lowestPlace;
-        private Transform cameraTransform;
-        [SerializeField] private Transform animatorParent;
-        private bool isInteract;
-        private FireEscapeInput input;
-        [SerializeField] private float speedClimbing;
+        [SerializeField] private Transform lowestPlace;        
 
         private float playerHeight;
-        private FirstPersonController fpc;
-        private Vector3 posFpcOnStartClimbing;
-        private void Awake()
+        private void Start()
         {
             fpc = FindObjectOfType<FirstPersonController>();
             cameraTransform = fpc.GetCamera().transform;
             playerHeight = fpc.GetPlayerHeight();
-            input = new FireEscapeInput(Climb);
+            input = new FireEscapeInput();
+            input.SetClimbMethod(Climb);
         }
         /// <summary>
         /// Начинает анимацию и перемещает аниматор в стартовую позицию
         /// </summary>        
-        public void Interact(float stepPosY)
+        public override void Interact()
         {
-            if (isInteract)
+            if (isInteracted)
                 return;
             ScreensManager.SetScreen(this, false);
+            float stepPosY = playerInteractive.GetHitPoint().y;
             stepPosY = Mathf.Clamp(stepPosY, lowestPlace.position.y, highestPlace.position.y + playerHeight);
             animatorParent.position = new Vector3(animatorParent.position.x, stepPosY + playerHeight, animatorParent.position.z);
 
@@ -38,12 +35,12 @@ namespace Parkour
             cameraTransform.localScale = Vector3.one;
             posFpcOnStartClimbing = fpc.transform.position;
             PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
-            isInteract = true;
+            isInteracted = true;
         }
 
         public void LateUpdate()
         {
-            if (isInteract)
+            if (isInteracted)
             {
                 LockCameraAndFpcTransform();
                 input.CheckSystemInput();
@@ -79,32 +76,26 @@ namespace Parkour
             fpc.SetPosAndRot(cameraTransform);
             cameraTransform.SetParent(fpc.GetCameraHost());
             cameraTransform.localScale = Vector3.one;
-            isInteract = false;
-            ScreensManager.SetScreen(null);
+            isInteracted = false;
             fpc.SetPossibleJump(false);
             PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
             fpc.ResetRbVelocity();
         }
 
-        public bool Hide()
+        public override bool Hide()
         {
             JumpOff();
             return true;
         }
 
-        public KeyCode HideKey() => KeyCode.Space;
+        public override KeyCode HideKey() => KeyCode.Space;
 
         /// <summary>
         /// Обработчик ввода игрока в режиме лазанья
         /// </summary>
-        public sealed class FireEscapeInput
+        public sealed class FireEscapeInput : ParkoutInput
         {
-            private readonly Action<bool, bool> climbMethod;// метод "лезть"
-            public FireEscapeInput(Action<bool, bool> climbMethod)
-            {
-                this.climbMethod = climbMethod;
-            }
-            public void CheckSystemInput()
+            public override void CheckSystemInput()
             {
                 bool isAcceleration = Input.GetKey(KeyCode.LeftShift);// ускорение
 
