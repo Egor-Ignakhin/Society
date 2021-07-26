@@ -19,6 +19,9 @@ namespace Effects
         }
         private void OnCollisionStay(Collision col)
         {
+            if (!mRb)
+                return;
+
             if (mRb.velocity.magnitude > 0.5f)
             {
                 manager.PlayClip(transform.position, this);
