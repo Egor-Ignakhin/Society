@@ -10,9 +10,12 @@ namespace Inventory
     {
         #region Constants
 
-        public enum ItemsID : int { Default, Axe_1, Makarov, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
-            Lom}
-        public enum GunsID : int { Makarov, TTPistol, Ak_74}
+        public enum ItemsID : int
+        {
+            Default, Axe_1, Makarov, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
+            Lom, WoodBoard, SteelSheet, Brick, Plywood, Rope
+        }
+        public enum GunsID : int { Makarov, TTPistol, Ak_74 }
 
         #endregion
         private static readonly Dictionary<ItemsID, (int maxCount, decimal weight)> items;
@@ -34,14 +37,19 @@ namespace Inventory
                 {ItemsID.Bullet_7_62, (30,0.05m) },
                 {ItemsID.Bullet_9_27, (30,0.05m) },
                 {ItemsID.Tablets_1, (9,1) },
-                {ItemsID.Lom, (1,1) }
+                {ItemsID.Lom, (1,1) },
+                {ItemsID.WoodBoard, (1,1) },
+                {ItemsID.SteelSheet, (1,1) },
+                {ItemsID.Brick, (1,1) },
+                {ItemsID.Plywood, (1,1) },
+                {ItemsID.Rope, (1,1) }
             };
             meatItems = new Dictionary<int, (int food, int water)>
             {
                 {(int)ItemsID.CannedFood,(15,1) },
                 {(int)ItemsID.Milk,(5,19) }
             };
-            medicalItems = new Dictionary<int, (float,float)>
+            medicalItems = new Dictionary<int, (float, float)>
             {
                 { (int)ItemsID.Tablets_1, (0, 10)}
             };
@@ -67,7 +75,7 @@ namespace Inventory
 
         internal static bool ItsMedical(int id) => id == (int)ItemsID.Tablets_1;
 
-        internal static (float health , float radiation) GetMedicalPower(int id) => medicalItems[id];
+        internal static (float health, float radiation) GetMedicalPower(int id) => medicalItems[id];
 
         internal static bool ItsBullet(int itemId) => (itemId == (int)ItemsID.Bullet_7_62) || (itemId == (int)ItemsID.Bullet_9_27);
     }

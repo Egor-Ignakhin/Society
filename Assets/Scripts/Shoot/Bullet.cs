@@ -55,12 +55,13 @@ namespace Shoots
             {
                 mBv.SetSpeed();
 
+                float damage = Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance);
                 if (bulletReceiver != null)
-                    bulletReceiver.OnBulletEnter();
+                    bulletReceiver.OnBulletEnter(target,damage);
 
                 if (enemy)
                 {
-                    enemy.InjureEnemy(Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance));
+                    enemy.InjureEnemy(damage);
                 }
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))

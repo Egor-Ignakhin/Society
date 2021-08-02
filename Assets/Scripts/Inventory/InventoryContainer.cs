@@ -17,7 +17,22 @@ namespace Inventory
         private List<InventoryCell> Cells = new List<InventoryCell>();//слоты инвентаря
         public List<InventoryCell> GetCells() => Cells;
         public readonly List<RectTransform> CellsRect = new List<RectTransform>();
-        public InventoryEventReceiver EventReceiver { get; private set; }
+        private InventoryEventReceiver eventReceiver;
+        public InventoryEventReceiver EventReceiver
+        {
+            get
+            {
+                if (eventReceiver == null)
+                {
+                    inventoryInput = gameObject.AddComponent<InventoryInput>();
+
+                    eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
+                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
+                ModifiersActivator, modifiersPage, FindObjectOfType<SMG.SMGInventoryCellsEventReceiver>());
+                }
+                return eventReceiver;
+            }
+        }
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
         private InventoryEffects inventoryEffects;
@@ -56,7 +71,6 @@ namespace Inventory
         }
         private void Awake()
         {
-            inventoryInput = gameObject.AddComponent<InventoryInput>();
             prefabsData = new PrefabsData();
         }
 
@@ -66,9 +80,6 @@ namespace Inventory
             playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
-            EventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
-                ModifiersActivator, modifiersPage, FindObjectOfType<SMG.SMGInventoryCellsEventReceiver>());
             EventReceiver.OnEnable();
             StartCoroutine(nameof(CellAnimator));
         }

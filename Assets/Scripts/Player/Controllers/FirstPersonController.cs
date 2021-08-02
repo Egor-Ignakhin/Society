@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -392,7 +391,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     }
 
     private void OnCollisionEnter(Collision CollisionData)
-    {
+    {        
         for (int i = 0; i < CollisionData.contactCount; i++)
         {
             ContactPoint currentCp = CollisionData.GetContact(i);

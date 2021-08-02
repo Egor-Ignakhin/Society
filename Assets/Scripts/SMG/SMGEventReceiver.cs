@@ -4,7 +4,9 @@ using System.Linq;
 using UnityEngine;
 namespace SMG
 {
-
+    /// <summary>
+    /// Класс-обработчик событий СМО
+    /// </summary>
     public class SMGEventReceiver
     {
         private readonly List<ModifierCell> ModifiersCells = new List<ModifierCell>();//слоты с модификаторами
@@ -15,9 +17,8 @@ namespace SMG
         private readonly Inventory.InventoryContainer inventoryContainer;// главный обработчик инвентаря                 
         private readonly SMGModifiersData modifiersData;// контейнер под модификации
         private readonly SMGModifiersCellDescription modifiersCellDescription;// динамичное описание для модификаций
-
-        public delegate void GunChangeHandler(Inventory.InventoryCell ic);
-        public event GunChangeHandler ChangeGunEvent;
+        
+        public event Action<Inventory.InventoryCell> ChangeGunEvent;
 
         public delegate void UpdateModifiersHandler(ModifierCell modCell);
         public event UpdateModifiersHandler UpdateModfiersEvent;
@@ -66,6 +67,9 @@ namespace SMG
             ccCandidate = modifiersCell;
             DEA.Show(ReplaceModifier, null, "Установить модификатор?");
         }
+        /// <summary>
+        /// Замена модификатора на выделенном оружии
+        /// </summary>
         private void ReplaceModifier()
         {
             modifiersData.AddModifier(ModifierCharacteristics.SMGTitleTypeIndex.StructFromIcGun(currentGunCell.MGun, ccCandidate.TTI.Type));
@@ -78,12 +82,18 @@ namespace SMG
             ReFillModifiersCells();
         }
 
-        internal bool CurGunCellContAnyMod()
-        {
-            return currentGunCell && ((currentGunCell.MGun.Aim != 0) || (currentGunCell.MGun.Mag != 0) || (currentGunCell.MGun.Silencer != 0));
-        }
+        /// <summary>
+        /// Выделенное оружие содержит хоть один модификатор?
+        /// </summary>
+        /// <returns></returns>
+        internal bool CurGunCellContAnyMod() =>
+             currentGunCell && ((currentGunCell.MGun.Aim != 0) || (currentGunCell.MGun.Mag != 0) || (currentGunCell.MGun.Silencer != 0));
 
-        internal void OnSelectGunsCell(GunCell sMGGunsCell)
+        /// <summary>
+        /// При нажатии на слот с оружием
+        /// </summary>
+        /// <param name="sMGGunsCell"></param>
+        internal void OnClickGunsCell(GunCell sMGGunsCell)
         {
             if (currentGunCell == sMGGunsCell)
                 return;
@@ -103,11 +113,7 @@ namespace SMG
             modifiersAnswer.SetActive(cell);
         }
 
-        public void SetEnable(bool v)
-        {
-            if (v) OnEnable();
-        }
-        private void OnEnable()
+        public void OnEnable()
         {
             ccCandidate = null;
             currentModCell = null;
@@ -116,13 +122,16 @@ namespace SMG
             ReFillGunCells();
             if (!gunsCells[0].IsEmpty())
             {
-                OnSelectGunsCell(gunsCells[0]);
+                OnClickGunsCell(gunsCells[0]);
                 ReFillModifiersCells();
             }
         }
 
         public void OnDeselectModifiersCell() => modifiersAnswer.SetActive(false);
 
+        /// <summary>
+        /// перезапись слотов с оружием
+        /// </summary>
         private void ReFillGunCells()
         {
             List<Inventory.InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Inventory.ItemStates.ItsGun(c.Id));
@@ -135,7 +144,10 @@ namespace SMG
                 gunsCells[i].ChangeItem(cellsContGun[i].Id, cellsContGun[i]);
         }
 
-        internal void UnequipAllElements()
+        /// <summary>
+        /// Снятие всех модификаций с выд. оружия
+        /// </summary>
+        internal void UnequipAllModsFromCurGunCell()
         {
             if (currentGunCell)
             {
@@ -190,7 +202,7 @@ namespace SMG
 
             UpdateModfiersEvent?.Invoke(ModifiersCells[0]);
         }
-        internal void UnequipGunElement(SMGGunElement element)
+        internal void UnequipGunMod(SMGGunElement element)
         {
             currentModCell = null;
 

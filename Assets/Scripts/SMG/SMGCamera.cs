@@ -93,24 +93,12 @@ namespace SMG
                 }
             }
             oldPos = Input.mousePosition;
-
-            if (Input.mouseScrollDelta.y > 0)
-                CameraMove(false);
-            else if (Input.mouseScrollDelta.y < 0)
-                CameraMove(true);
         }
 
         public void SetEnable(bool v)
         {
             ResetGunRotation();
             IsActive = v;
-        }
-
-        private void CameraMove(bool fw)
-        {
-            mCamera.fieldOfView += fw ? cameraScrollStep : -cameraScrollStep;
-
-            mCamera.fieldOfView = Mathf.Clamp(mCamera.fieldOfView, 30, 80);
         }
 
         /// <summary>

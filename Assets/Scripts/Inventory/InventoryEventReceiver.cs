@@ -44,6 +44,7 @@ namespace Inventory
         private readonly SMG.SMGInventoryCellsEventReceiver SMGICEV;        
 
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
+        internal SpriteData SpriteData { get; }
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
          TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage, SMG.SMGInventoryCellsEventReceiver smgicev)
@@ -61,6 +62,7 @@ namespace Inventory
             modPageButton = modbtn;
             modifiersPage = modPage;
             SMGICEV = smgicev;
+            SpriteData = new SpriteData();
         }
         public void OnEnable()
         {
