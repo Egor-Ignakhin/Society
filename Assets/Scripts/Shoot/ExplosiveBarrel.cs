@@ -4,26 +4,47 @@ using UnityEngine;
 
 public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
 {
- 
+    private AudioSource explosionSound;
     [SerializeField] private GameObject explosion;
     [SerializeField] private GameObject barrel;
-    [Range(1, 100)] public float damageRadius;
-    [Range(1, 1000)] public float maxDamage;
+    [Range(0, 100)] public float damageRadius;
+    [Range(0, 1000)] public float maxDamage;
+    [Range(0, 10000)] public float maxImpulse;
+
     private float damageGradient;
+
+    private Rigidbody rb;
+    private float g = 9.8f;
 
     public void OnBulletEnter()
     {
+        g = 0;
         explosion.SetActive(true);
         barrel.SetActive(false);
         DamageEnemies();
+        AddImpulse();
+        explosionSound.Play();
     }
  
     void Start()
     {
         explosion.SetActive(false);
         damageGradient = maxDamage / damageRadius;
+        rb = GetComponent<Rigidbody>();
+        explosionSound = GetComponent<AudioSource>();
     }
-
+    void AddImpulse()
+    {
+        Collider[] collidersInRadius = Physics.OverlapSphere(transform.position, damageRadius);
+        foreach (Collider col in collidersInRadius)
+        {
+            Rigidbody rb = col.gameObject.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(maxImpulse, transform.position, damageRadius, 3.0F, ForceMode.Impulse);
+            }
+        }
+    }
     void DamageEnemies()
     {
         Collider[] collidersInRadius = Physics.OverlapSphere(transform.position, damageRadius);
@@ -31,7 +52,6 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
         foreach (Collider col in collidersInRadius)
         {
             EnemyCollision obj = col.gameObject.GetComponent<EnemyCollision>();
-
             if (obj != null)
             {
                 DamageEnemy(obj);
@@ -44,14 +64,15 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
 
         float dist = (transform.position - enemy.transform.position).magnitude;
         //Крайне упрощенная модель зависимости повреждений от дистанции
-        float damage = damageGradient * dist;
+        float damage = maxDamage - damageGradient * dist;
         enemy.InjureEnemy(damage);
     }
-    /*
-    void Update()
+    
+    void FixedUpdate()
     {
-        DamageEnemies();
+        //Компенсируем гравитаию, отключенную в интересах красоты взрыва:
+        rb.AddForce(0, -rb.mass * g, 0);
     }
-    */
+    
 
 }
