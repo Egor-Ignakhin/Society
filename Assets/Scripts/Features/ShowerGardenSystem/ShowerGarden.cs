@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 namespace Features
 {
     /// <summary>
@@ -11,7 +10,7 @@ namespace Features
         private ShowerExample activeShower;
         private Transform activeShowerTR;
         private PlayerClasses.PlayerInteractive playerInteractive;
-       
+
 
         [SerializeField] private Transform pivot;
         [SerializeField] private float speed = 5;
@@ -23,10 +22,13 @@ namespace Features
         [SerializeField] private Transform maxXPoint;
         [SerializeField] private Transform minZPoint;
         [SerializeField] private Transform maxZPoint;
-        
+
+        [SerializeField] private Transform reloadPoint;
+        [SerializeField] private ShowerLeverOnWall leverOnWall;
+
         private void Awake()
         {
-            playerInteractive = FindObjectOfType<PlayerClasses.PlayerInteractive>();            
+            playerInteractive = FindObjectOfType<PlayerClasses.PlayerInteractive>();
         }
         internal void OnInteract(ShowerExample ashower)
         {
@@ -39,6 +41,7 @@ namespace Features
             if (isDragged)
             {
                 MoveShowerToPlayerPointer();
+                MoveShowerToReloadLever();
                 MoveRopesToShowerCenter();
                 if (!playerInteractive.ObjectIsDirected(activeShower))
                 {
@@ -56,23 +59,42 @@ namespace Features
 
         private void MoveShowerToPlayerPointer()
         {
+            if (activeShower.IsReloading)
+                return;
+
             Vector3 shPos = pivot.position;
             Vector3 target = playerInteractive.GetHitPoint();
             target.y = shPos.y;
             // если расстояние слишком близко
-            if (Vector3.Distance(shPos, target) > 0.05f)
+            if (Vector3.Distance(shPos, target) > 0.1f)
             {
                 Vector3 nextPos = Vector3.LerpUnclamped(shPos, target, Time.deltaTime * speed);
                 nextPos.x = Mathf.Clamp(nextPos.x, minXPoint.position.x, maxXPoint.position.x);
                 nextPos.z = Mathf.Clamp(nextPos.z, minZPoint.position.z, maxZPoint.position.z);
                 pivot.position = nextPos;
+            }
+        }
+        private void MoveShowerToReloadLever()
+        {
+            if (activeShower.IsReloading)
+                return;
 
+            Vector3 shPos = pivot.position;
+            Vector3 target = reloadPoint.position;
+            target.y = shPos.y;
+            if ((leverOnWall.LeverIsOpened) &&
+                (!activeShower.ContentIsFilled) && (Vector3.Distance(shPos, target) < 0.25f))
+            {
+                activeShower.IsReloading = true;
+                var nextpos = reloadPoint.position;
+                nextpos.y = pivot.position.y;
+                pivot.position = nextpos;
             }
         }
         private void MoveRopesToShowerCenter()
         {
             xRope.position = new Vector3(pivot.position.x, xRope.position.y, xRope.position.z);
             zRope.position = new Vector3(zRope.position.x, zRope.position.y, pivot.position.z);
-        }     
+        }
     }
 }

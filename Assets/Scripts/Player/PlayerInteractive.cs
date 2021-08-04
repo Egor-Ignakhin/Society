@@ -77,12 +77,12 @@ namespace PlayerClasses
             descriptionDrawer.SetHint(desc, mainDesc, count);
         }
         internal Vector3 GetHitPoint() => lasHitPoint;
-        /*private void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             try
             {
                 Ray ray = mainCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-                bool isHit = Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer);
+                bool isHit = Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, ~0);
                 if (isHit)
                 {
                     Gizmos.color = Color.red;
@@ -92,6 +92,6 @@ namespace PlayerClasses
             catch
             {
             }
-        }*/
+        }
     }
 }

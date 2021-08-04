@@ -8,6 +8,8 @@ public class ImageFromCameraRender : MonoBehaviour
     [SerializeField] private bool isItem;
     private void Start()
     {
+        if (isItem)
+            g = transform.GetChild(0).gameObject;
         RenderTexture currentRT = RenderTexture.active;
 
         RenderTexture rt = isItem ? new RenderTexture(256, 256, 64) : new RenderTexture(3840, 2160, 4096);
@@ -28,14 +30,14 @@ public class ImageFromCameraRender : MonoBehaviour
 
         // Пишем текстуру в .png файл
         byte[] bytes = image.EncodeToPNG();
-        File.WriteAllBytes(Directory.GetCurrentDirectory()+ "/Assets/ImageFromCameraRender/" + g.name + ".png", bytes);
+        File.WriteAllBytes(Directory.GetCurrentDirectory() + "/Assets/ImageFromCameraRender/" + g.name + ".png", bytes);
 
         // Восстанавливаем рендер таргет
         RenderTexture.active = currentRT;
 
         // Чистим все (при необходимости)
         Destroy(image);
-    //    Destroy(rt);
+        //    Destroy(rt);
 
     }
 }
