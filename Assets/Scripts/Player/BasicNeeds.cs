@@ -155,6 +155,32 @@ namespace PlayerClasses
             Health -= h;
             Radiation += r;
         }
+        public void InjurePerson(float h, float r, float time)
+        {
+            
+            Radiation += r;
+            if (h >= Health)
+            {
+                StartCoroutine(KillSlowly(time, Health));
+            }
+            else
+            {
+                Health -= h;
+            }
+        }
+        IEnumerator KillSlowly(float time, float startHealth)
+        {
+            float frequency = 60;
+            float times = time * frequency - 1;
+            float deltaHealth = startHealth / times;
+            for (int i = 0; i < times; i++)
+            {
+                Health -= deltaHealth;
+                yield return new WaitForSeconds(1/frequency);
+            }
+            Health = 0;
+            yield break;
+        }
         public void AddMeal(int thirst, int food)
         {
             Food += food;

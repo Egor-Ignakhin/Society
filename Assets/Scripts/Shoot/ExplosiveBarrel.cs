@@ -52,7 +52,6 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
     void DamageEnemies()
     {
         Collider[] collidersInRadius = Physics.OverlapSphere(transform.position, damageRadius);
-        Debug.Log(collidersInRadius.Length);
         foreach (Collider col in collidersInRadius)
         {
             EnemyCollision obj = col.gameObject.GetComponent<EnemyCollision>();
@@ -79,9 +78,10 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
         if (dist < damageRadius)
         {
             float damage = maxDamage - damageGradient * dist;
-            player.GetComponent<BasicNeeds>().InjurePerson(damage);
+            player.GetComponent<BasicNeeds>().InjurePerson(damage, 0, 1);
         }
     }
+
 
     void FixedUpdate()
     {

@@ -2108,8 +2108,8 @@ MonoBehaviour:
   barrel: {fileID: 7052356}
   player: {fileID: 916716024}
   damageRadius: 9.1
-  maxDamage: 203
-  maxImpulse: 50
+  maxDamage: 200
+  maxImpulse: 1000
 --- !u!54 &1366311640
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2936,6 +2936,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2147786083578924831, guid: 96ac32e98bc0b254b990455173feb8f2,
+        type: 3}
+      propertyPath: m_Mass
+      value: 70
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96ac32e98bc0b254b990455173feb8f2, type: 3}
