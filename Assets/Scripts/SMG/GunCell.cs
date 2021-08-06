@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SMG
@@ -14,7 +13,7 @@ namespace SMG
         public int Id { get; private set; }
         public Inventory.InventoryCell Ic { get; private set; }
         private TMPro.TextMeshProUGUI mText;
-        public SMGInventoryCellGun MGun => Ic.MGun;
+        public Inventory.SMGInventoryCellGun MGun => Ic.MGun;
         private Inventory.InventoryEventReceiver inventoryEventReceiver;
 
         public bool IsEmpty()

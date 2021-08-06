@@ -33,6 +33,21 @@ namespace Inventory
                 return eventReceiver;
             }
         }
+
+        internal bool ContainsId(ItemStates.ItemsID Itemid)
+        {
+            int id = (int)Itemid;
+            foreach(var cell in Cells)
+            {
+                if (cell.Id == id)
+                    return true;
+            }
+            return false;
+        }
+            
+
+
+
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
         private InventoryEffects inventoryEffects;
