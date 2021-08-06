@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayerClasses;
 
 public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
 {
     private AudioSource explosionSound;
     [SerializeField] private GameObject explosion;
     [SerializeField] private GameObject barrel;
+    [SerializeField] private GameObject player;
     [Range(0, 100)] public float damageRadius;
     [Range(0, 1000)] public float maxDamage;
     [Range(0, 10000)] public float maxImpulse;
+
 
     private float damageGradient;
 
@@ -22,6 +25,7 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
         explosion.SetActive(true);
         barrel.SetActive(false);
         DamageEnemies();
+        DamagePlayer();
         AddImpulse();
         explosionSound.Play();
     }
@@ -67,7 +71,18 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
         float damage = maxDamage - damageGradient * dist;
         enemy.InjureEnemy(damage);
     }
-    
+
+    void DamagePlayer()
+    {
+        float dist = (transform.position - player.transform.position).magnitude;
+        //Крайне упрощенная модель зависимости повреждений от дистанции
+        if (dist < damageRadius)
+        {
+            float damage = maxDamage - damageGradient * dist;
+            player.GetComponent<BasicNeeds>().InjurePerson(damage);
+        }
+    }
+
     void FixedUpdate()
     {
         //Компенсируем гравитаию, отключенную в интересах красоты взрыва:
