@@ -313,7 +313,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         fpcRigidbody.velocity = newVel;
         capsule.sharedMaterial = inputXY.magnitude > 0 || !IsGrounded ? Advanced.ZeroFrictionMaterial : Advanced.HighFrictionMaterial;
 
-        fpcRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1));
+        fpcRigidbody.AddForce(Physics.gravity * (Advanced.GravityMultiplier - 1)*fpcRigidbody.mass);
 
         float capsuleHeightFollowing, capsuleRadiusFollowing;
         if (isCrouching)
@@ -491,7 +491,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         PlayerCameraTr.localPosition = Vector3.MoveTowards(PlayerCameraTr.localPosition, new Vector3(rPos, 0, 0), Time.fixedDeltaTime * 2);
     }
 
-    private float additionalBraking = 1;//добавляемая скорость при перегузе
+    private float additionalBraking = 1;//добавляемая скорость при перегрузе
     public void SetBraking(float b) => additionalBraking = b;
     public class StepFpc : StepPlayer
     {

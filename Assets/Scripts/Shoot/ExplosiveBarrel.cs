@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayerClasses;
 
-public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
+sealed class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
 {
     private AudioSource explosionSound;
     [SerializeField] private GameObject explosion;
     [SerializeField] private GameObject barrel;
-    [SerializeField] private GameObject player;
+    private Transform player;
+    private BasicNeeds playerNeeds;
     [Range(0, 100)] public float damageRadius;
     [Range(0, 1000)] public float maxDamage;
     [Range(0, 10000)] public float maxImpulse;
@@ -36,6 +37,8 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
         damageGradient = maxDamage / damageRadius;
         rb = GetComponent<Rigidbody>();
         explosionSound = GetComponent<AudioSource>();
+        player = FindObjectOfType<FirstPersonController>().transform;
+        playerNeeds = BasicNeeds.Instance;
     }
     void AddImpulse()
     {
@@ -73,12 +76,12 @@ public class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
 
     void DamagePlayer()
     {
-        float dist = (transform.position - player.transform.position).magnitude;
+        float dist = (transform.position - player.position).magnitude;
         //Крайне упрощенная модель зависимости повреждений от дистанции
         if (dist < damageRadius)
         {
             float damage = maxDamage - damageGradient * dist;
-            player.GetComponent<BasicNeeds>().InjurePerson(damage, 0, 1);
+            playerNeeds.InjurePerson(damage, 0, 1);
         }
     }
 

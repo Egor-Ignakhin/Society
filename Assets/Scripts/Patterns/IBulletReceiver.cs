@@ -4,5 +4,5 @@
 /// </summary>
 public interface IBulletReceiver
 {
-    void OnBulletEnter(Vector3 point, float force);
+    void OnBulletEnter();
 }

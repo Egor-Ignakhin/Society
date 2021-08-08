@@ -57,7 +57,7 @@ namespace Shoots
 
                 float damage = Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance);
                 if (bulletReceiver != null)
-                    bulletReceiver.OnBulletEnter(target,damage);
+                    bulletReceiver.OnBulletEnter();
 
                 if (enemy)
                 {
