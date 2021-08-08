@@ -54,7 +54,10 @@ namespace SMG
             MSMG.AddOrRemoveEvents(EventReceiver, v);
             modificationMode.SetActive(IsActive);
             SetEnableCanvasesAndCameras();
-            EventReceiver.SetEnable(IsActive);
+
+            if (IsActive)
+                EventReceiver.OnEnable();
+
             ScreensManager.SetScreen(IsActive ? this : null);
         }
         public void SetEnableSMGCam(bool v)
@@ -119,7 +122,7 @@ namespace SMG
                 return;
             Ray ray = MSMGCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, myLayerMask, QueryTriggerInteraction.Ignore))
-            {                
+            {
                 MeshRenderer currentMesh = hit.transform.GetComponent<MeshRenderer>();
                 if (lastSelectedObj && (currentMesh != lastSelectedObj))
                 {
@@ -128,7 +131,7 @@ namespace SMG
 
                 if (currentMesh != lastSelectedObj)
                 {
-                    currentMesh.material.SetColor("_EmissionColor", selectableColor);         
+                    currentMesh.material.SetColor("_EmissionColor", selectableColor);
                 }
                 lastSelectedObj = currentMesh;
             }
@@ -145,7 +148,7 @@ namespace SMG
         }
         internal void UnequipGunElement()
         {
-            EventReceiver.UnequipGunElement(lastSelectedObj.GetComponent<SMGGunElement>());
+            EventReceiver.UnequipGunMod(lastSelectedObj.GetComponent<SMGGunElement>());
             DeselectGunElement();
         }
         private void UnequipAllElements()
@@ -155,7 +158,7 @@ namespace SMG
                 lastSelectedObj.material.SetColor("_EmissionColor", defColor);
                 lastSelectedObj = null;
             }
-            EventReceiver.UnequipAllElements();
+            EventReceiver.UnequipAllModsFromCurGunCell();
         }
 
         public bool Hide()

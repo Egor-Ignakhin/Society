@@ -27,7 +27,7 @@ namespace Inventory
         public bool IsFilled => MItemContainer.IsFilled;
         #endregion
         public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();// контейнер для возможного оружия
-        private RectTransform mRt;
+        private RectTransform mRt;        
         public sealed class AdditionalSettins
         {
             public readonly Vector3 DefaultScale; // обычный размер
@@ -45,7 +45,7 @@ namespace Inventory
 
         private void Awake()
         {
-            if (additionalSettins is null)
+            if (additionalSettins == null)
                 Init(null);
         }
         public void Init(InventoryContainer ic)
@@ -122,7 +122,7 @@ namespace Inventory
         /// <param name="type"></param>
         public void ChangeSprite()
         {
-            MImage.sprite = InventorySpriteData.GetSprite(Id);
+            MImage.sprite = eventReceiver.SpriteData.GetSprite(Id);
             MImage.color = IsEmpty() ? new Color(1, 1, 1, 0) : Color.white;
             UpdateText();
             ///если контейнер пуст

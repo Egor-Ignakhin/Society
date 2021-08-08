@@ -259,7 +259,9 @@ public abstract class Enemy : MonoBehaviour, IMovableController
                 WaitTarget -= Time.deltaTime;
                 var direction = (possibleTargetPos - transform.position).normalized;
                 direction.y = 0f;
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
+
+                if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
             }
         }
         else if (WaitTarget > 4)

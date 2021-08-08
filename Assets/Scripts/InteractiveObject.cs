@@ -3,6 +3,9 @@
 public abstract class InteractiveObject : MonoBehaviour
 {
     protected PlayerClasses.PlayerInteractive playerInteractive;
+    private string description;
+    public string Description { get => $"{description}{additionalDescription}"; protected set => description = value; }
+    protected string additionalDescription;
     public string Type { get; private set; }
 
     public enum Types { OpenedDoor, ClosedDoor, LockedDoor, Container_1 };
@@ -14,7 +17,6 @@ public abstract class InteractiveObject : MonoBehaviour
     }
 
     public abstract void Interact();
-    public string Description { get; protected set; }
     public string MainDescription { get; protected set; } = string.Empty;
 
     public void SetType(string t)

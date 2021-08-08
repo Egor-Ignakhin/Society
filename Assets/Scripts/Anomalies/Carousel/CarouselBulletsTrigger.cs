@@ -10,7 +10,7 @@ class CarouselBulletsTrigger : MonoBehaviour, IBulletReceiver
     {
         defaultStartSizeM = aura.main.startSpeedMultiplier;
     }
-    public void OnBulletEnter()
+    public void OnBulletEnter(Vector3 point, float force)
     {
         needBlust = true;
         ParticleSystem.MainModule main = aura.main;

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace SMG
@@ -14,7 +13,8 @@ namespace SMG
         public int Id { get; private set; }
         public Inventory.InventoryCell Ic { get; private set; }
         private TMPro.TextMeshProUGUI mText;
-        public SMGInventoryCellGun MGun => Ic.MGun;
+        public Inventory.SMGInventoryCellGun MGun => Ic.MGun;
+        private Inventory.InventoryEventReceiver inventoryEventReceiver;
 
         public bool IsEmpty()
         {
@@ -23,7 +23,7 @@ namespace SMG
         public void ChangeItem(int id, Inventory.InventoryCell gc)
         {
             Ic = gc;
-            MImage.sprite = Inventory.InventorySpriteData.GetSprite(id);
+            MImage.sprite = inventoryEventReceiver.SpriteData.GetSprite(id);
             MImage.color = Color.white;
             Id = id;
             mText.SetText(((Inventory.ItemStates.ItemsID)id).ToString());
@@ -43,13 +43,14 @@ namespace SMG
             eventReceiver = ev;
             MImage = transform.GetChild(0).GetComponent<UnityEngine.UI.Image>();
             mText = GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            inventoryEventReceiver = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (IsEmpty())
                 return;
-            eventReceiver.OnSelectGunsCell(this);
+            eventReceiver.OnClickGunsCell(this);
         }
 
         internal void SetMag(ModifierCharacteristics.ModifierIndex index) => MGun.SetMag(index);

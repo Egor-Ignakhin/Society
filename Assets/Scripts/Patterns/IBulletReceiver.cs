@@ -1,7 +1,8 @@
-﻿/// <summary>
+﻿using UnityEngine;
+/// <summary>
 /// наследники этого интерфейса имеют методы, вызываемые при попадании по ним пулей
 /// </summary>
-public interface IBulletReceiver 
+public interface IBulletReceiver
 {
-    void OnBulletEnter();
+    void OnBulletEnter(Vector3 point, float force);
 }

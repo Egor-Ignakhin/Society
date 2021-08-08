@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace PlayerClasses
@@ -12,6 +13,7 @@ namespace PlayerClasses
         private bool inputedButton = false;
         private Inventory.DescriptionDrawer descriptionDrawer;
         private Vector3 lasHitPoint;
+        private InteractiveObject[] directedObjects = new InteractiveObject[0];
         private void Start()
         {
             mainCamera = GetComponent<FirstPersonController>().GetCamera();
@@ -26,6 +28,12 @@ namespace PlayerClasses
             else if (Input.GetKeyUp(InputInteractive))
                 inputedButton = false;
         }
+
+        internal bool ObjectIsDirected(InteractiveObject io)
+        {
+            return (directedObjects != null) && (directedObjects.Contains(io));
+        }
+
         private void FixedUpdate() => RayThrow();
 
         string desc = string.Empty;
@@ -36,14 +44,15 @@ namespace PlayerClasses
             int count = 1;
             desc = string.Empty;
             mainDesc = string.Empty;
+            directedObjects = null;
             if (Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, ~0))
             {
-                var components = hit.transform.GetComponents<InteractiveObject>();
-                if (components.Length > 0)
+                directedObjects = hit.transform.GetComponents<InteractiveObject>();
+                if (directedObjects.Length > 0)
                 {
                     lasHitPoint = hit.point;
                     int i = 0;
-                    foreach (var c in components)
+                    foreach (var c in directedObjects)
                     {
                         string getDesc = c.Description;
                         string getMainDesc = c.MainDescription;
@@ -59,7 +68,7 @@ namespace PlayerClasses
                         if (inputedButton)
                         {
                             c.Interact();
-                            if (++i == components.Length)
+                            if (++i == directedObjects.Length)
                                 inputedButton = false;
                         }
                     }
@@ -68,12 +77,12 @@ namespace PlayerClasses
             descriptionDrawer.SetHint(desc, mainDesc, count);
         }
         internal Vector3 GetHitPoint() => lasHitPoint;
-        /*private void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             try
             {
                 Ray ray = mainCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
-                bool isHit = Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, interactionLayer);
+                bool isHit = Physics.SphereCast(ray.origin, sphereCasterRadius, ray.direction, out RaycastHit hit, interctionDistance, ~0);
                 if (isHit)
                 {
                     Gizmos.color = Color.red;
@@ -83,6 +92,6 @@ namespace PlayerClasses
             catch
             {
             }
-        }*/
+        }
     }
 }

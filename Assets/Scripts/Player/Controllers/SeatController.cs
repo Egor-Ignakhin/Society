@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 
-public class SeatController : MonoBehaviour, IGameScreen
+public sealed class SeatController : MonoBehaviour, IGameScreen
 {
     private bool isSitting;
     private ChairManager lastChairManager;// активная система стульев
     private ChairMesh lastChairMesh;// активный стул    
     private Transform currentParent;
+    private FirstPersonController fpc;
+    private void Awake()
+    {
+        fpc = FindObjectOfType<FirstPersonController>();
+    }
     private void Start()
     {
         sensitivity = GameSettings.GetSensivity();
@@ -44,6 +49,7 @@ public class SeatController : MonoBehaviour, IGameScreen
                 currentParent = cMesh.GetSeatPlace();
                 break;
         }
+        fpc.SetPossibleJump(false);
     }
 
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventory;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -91,7 +92,7 @@ namespace Missions
             }
             if (currentTask == 8)
             {
-                FindObjectOfType<Inventory.InventoryContainer>().AddItem((int)Inventory.ItemStates.ItemsID.Tablets_1, 10, new SMGInventoryCellGun());
+                FindObjectOfType<InventoryContainer>().AddItem((int)ItemStates.ItemsID.Tablets_1, 10, new SMGInventoryCellGun());
             }
             if (currentTask == 9)
             {
@@ -107,7 +108,7 @@ namespace Missions
             {
                 if (Input.GetKeyDown(FindObjectOfType<BedController>().HideKey()))
                 {
-                    Inventory.DescriptionDrawer.Instance.SetIrremovableHint(null);
+                    DescriptionDrawer.Instance.SetIrremovableHint(null);
                     TaskDrawer.Instance.SetVisible(true);
                 }
             }

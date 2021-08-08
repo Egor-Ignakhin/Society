@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 2252402275435501373}
   - component: {fileID: 4304260595650466125}
   - component: {fileID: 9089963856945909169}
+  - component: {fileID: 493386928}
   m_Layer: 0
   m_Name: golova_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2252402275435501373
 Transform:
@@ -79,6 +80,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &493386928
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6705037142309684691}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4141861108887361521, guid: ed191f03106a0bd4aa6467dd3e06b2d9, type: 3}
 --- !u!1 &7173931242886421098
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,6 +105,7 @@ GameObject:
   - component: {fileID: 7761353769364689274}
   - component: {fileID: 3127371303178873261}
   - component: {fileID: 3727772735727265345}
+  - component: {fileID: 478387988}
   m_Layer: 0
   m_Name: putin_low
   m_TagString: Untagged
@@ -158,6 +174,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &478387988
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7173931242886421098}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9162328008143778682, guid: ed191f03106a0bd4aa6467dd3e06b2d9, type: 3}
 --- !u!1 &8876806912249071508
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,6 +232,7 @@ GameObject:
   - component: {fileID: 7586717923208363100}
   - component: {fileID: 8162468678149993013}
   - component: {fileID: 140921105284998145}
+  - component: {fileID: 750638408}
   m_Layer: 0
   m_Name: granite
   m_TagString: Untagged
@@ -270,3 +301,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &750638408
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9171926605720630138}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5841347395093119567, guid: ed191f03106a0bd4aa6467dd3e06b2d9, type: 3}
