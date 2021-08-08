@@ -1,10 +1,19 @@
 ﻿using Inventory;
+using UnityEngine;
 
 namespace Features.RandomBoxes
 {
     sealed class TrunkExample : RandomlyBox
     {
-        protected override void OnInit() => UnlockItems = new System.Collections.Generic.List<ItemStates.ItemsID> { ItemStates.ItemsID.Lom };
+        protected override void OnInit()
+        {
+            UnlockItems = new System.Collections.Generic.List<(int, bool)> { ((int)ItemStates.ItemsID.Lom, false) };
+            clipsByIT = new System.Collections.Generic.Dictionary<InveractionType, AudioClip[]>
+            {
+                { InveractionType.OnOpened,Resources.LoadAll<AudioClip>("Features\\RandomlyBox\\Opened\\Trunk") },
+                { InveractionType.OnLocked,Resources.LoadAll<AudioClip>("Features\\RandomlyBox\\Locked\\Trunk") }
+            };
+        }
 
         protected override void UpdateType(bool value)
         {

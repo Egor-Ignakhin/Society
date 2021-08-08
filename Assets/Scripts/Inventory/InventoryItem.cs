@@ -2,7 +2,7 @@
 using Inventory;
 using System.Collections.Generic;
 using static SMG.ModifierCharacteristics;
-using System;
+
 
 
 //объект с возможностью положить в инвентарь

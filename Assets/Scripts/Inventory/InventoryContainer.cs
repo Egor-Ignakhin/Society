@@ -2,7 +2,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System;
 using System.Threading.Tasks;
 
 namespace Inventory
@@ -34,13 +33,16 @@ namespace Inventory
             }
         }
 
-        internal bool ContainsId(ItemStates.ItemsID Itemid)
+        internal bool ContainsIds(List<ItemStates.ItemsID> Itemids)
         {
-            int id = (int)Itemid;
-            foreach(var cell in Cells)
+            foreach (var itemid in Itemids)
             {
-                if (cell.Id == id)
-                    return true;
+                int id = (int)itemid;
+                foreach (var cell in Cells)
+                {
+                    if (cell.Id == id)
+                        return true;
+                }
             }
             return false;
         }
