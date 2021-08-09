@@ -24,6 +24,7 @@ class PlayerActionBar : MonoBehaviour
     private void Update() => HealthAnimate();
     private void HealthAnimate()
     {
+        return;
         if ((timeFromLastChangeHP -= Time.deltaTime) > 0)
             return;
 

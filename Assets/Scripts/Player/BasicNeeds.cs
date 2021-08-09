@@ -27,8 +27,8 @@ namespace PlayerClasses
                 value = Mathf.Clamp(value, 0, MaximumHealth);
                 if (value == 0 && BnInitFlag)
                     Dead();
-
-                HealthChangeValue?.Invoke((float)Math.Round(health = value, 0));
+                health = value;
+                HealthChangeValue?.Invoke((float)Math.Round(health, 0));
             }
         }
 

@@ -10,46 +10,48 @@ class PlayerValueDrawer : MonoBehaviour
     [SerializeField] private bool disableOnZero;
     [SerializeField] private bool isSprite;
     [SerializeField] private bool isLine;
+    [ShowIf(nameof(isLine), true)] [SerializeField] private RectTransform separator;
+    [ShowIf(nameof(isLine), true)] [SerializeField] private Image healthpart1, healthpart2;
 
     private enum state { health, thirst, food, radiation };
     [SerializeField] private state mState;
 
     private TextMeshProUGUI mText;
     private Image mImage;
-    private RectTransform mtRtr;
+    private RectTransform mrt;
 
     private void Awake()
     {
         if (isSprite || isLine)
         {
             mImage = GetComponent<Image>();
-            mtRtr = GetComponent<RectTransform>();
         }
         else
             mText = GetComponent<TextMeshProUGUI>();
-           
-            playerBn = FindObjectOfType<BasicNeeds>();        
+
+        playerBn = FindObjectOfType<BasicNeeds>();
+        mrt = GetComponent<RectTransform>();
     }
     private void OnEnable()
     {
         if (mState == state.health)
-            playerBn.HealthChangeValue += OnChangePlayerV;
+            playerBn.HealthChangeValue += OnChangePlayerHealth;
         else if (mState == state.thirst)
-            playerBn.ThirstChangeValue += OnChangePlayerV;
+            playerBn.ThirstChangeValue += OnChangeThirst;
         else if (mState == state.food)
-            playerBn.FoodChangeValue += OnChangePlayerV;
+            playerBn.FoodChangeValue += OnChangePlayerFood;
         else if (mState == state.radiation)
             playerBn.RadiationChangeValue += OnChangePlayerV;
-    }    
+    }
 
     private void OnDisable()
     {
         if (mState == state.health)
-            playerBn.HealthChangeValue -= OnChangePlayerV;
+            playerBn.HealthChangeValue -= OnChangePlayerHealth;
         else if (mState == state.thirst)
-            playerBn.ThirstChangeValue -= OnChangePlayerV;
+            playerBn.ThirstChangeValue -= OnChangeThirst;
         else if (mState == state.food)
-            playerBn.FoodChangeValue -= OnChangePlayerV;
+            playerBn.FoodChangeValue -= OnChangePlayerFood;
         else if (mState == state.radiation)
             playerBn.RadiationChangeValue -= OnChangePlayerV;
     }
@@ -62,22 +64,8 @@ class PlayerValueDrawer : MonoBehaviour
         {
             if (isLine)
             {
-                float max = 0;
-                switch (mState)
-                {
-                    case state.health:
-                        max = playerBn.MaximumHealth;
-                        break;
-                    case state.thirst:
-                        max = playerBn.MaximumThirst;
-                        break;
-                    case state.food:
-                        max = playerBn.MaximumFood;
-                        break;
-                }
-                max = 100 / max;
-                transform.localPosition = new Vector3(max * value - 50, 0);
-                mtRtr.sizeDelta = new Vector2(value * max, 100);
+
+
             }
             else
                 mText.SetText(value.ToString());
@@ -93,5 +81,28 @@ class PlayerValueDrawer : MonoBehaviour
                 mText.SetText(Mathf.Round(value).ToString());
             }
         }
+    }
+    private void OnChangeThirst(float v)
+    {        
+        var nextPos = separator.anchoredPosition;
+        nextPos.x = v * mrt.sizeDelta.x / playerBn.MaximumThirst;
+        separator.anchoredPosition = nextPos;
+        mImage.fillAmount = v / playerBn.MaximumThirst;
+    }
+    private void OnChangePlayerFood(float v)
+    {
+        var nextPos = separator.anchoredPosition;
+        nextPos.x = v * mrt.sizeDelta.x / playerBn.MaximumFood;
+        separator.anchoredPosition = nextPos;
+        mImage.fillAmount = v / playerBn.MaximumFood;
+
+    }
+    private void OnChangePlayerHealth(float v)
+    {
+        var nextPos = separator.anchoredPosition;
+        nextPos.x = v * mrt.sizeDelta.x / playerBn.MaximumHealth;
+        separator.anchoredPosition = nextPos;
+        mImage.fillAmount = v / playerBn.MaximumHealth;
+
     }
 }
