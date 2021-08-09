@@ -300,7 +300,6 @@
     <Compile Include="Assets\Scripts\TaskSystem\TaskChecker.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TaskDrawer.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TriggerTaskChecker.cs" />
-    <Compile Include="Assets\Scripts\Test\TestRotate.cs" />
     <Compile Include="Assets\Scripts\Time\ClockManager.cs" />
     <Compile Include="Assets\Scripts\Time\SunAtTime.cs" />
     <Compile Include="Assets\Scripts\Time\WeatherManager.cs" />
@@ -988,10 +987,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
-      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
-      <Name>Unity.Recorder.Samples.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Toolbox.csproj">
       <Project>{CEEF1589-CF27-627B-D054-27AAAF6A6F59}</Project>
       <Name>Toolbox</Name>
@@ -999,6 +994,10 @@
     <ProjectReference Include="Toolbox-Editor.csproj">
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
+      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
+      <Name>Unity.Recorder.Samples.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
