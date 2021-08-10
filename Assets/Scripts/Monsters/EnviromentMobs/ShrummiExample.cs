@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 namespace EnviromentMobs
 {
-    sealed class Mut : MonoBehaviour
+    sealed class ShrummiExample : PoolableObject
     {
         private Animator mAnim;
         private NavMeshAgent mAgent;
