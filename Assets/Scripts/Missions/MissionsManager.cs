@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Inventory;
+using System.IO;
 using UnityEngine;
 namespace Missions
 {/// <summary>
@@ -8,15 +9,16 @@ namespace Missions
     {
         public static string savePath = Directory.GetCurrentDirectory() + "\\Saves\\State.json";// папка с сохранением    
         private State currentState;// состояние миссий        
-        private void Awake()
-        {
-            Localization.Init();
-        }
-        private void OnEnable()
+        public DescriptionDrawer descriptionDrawer { get; private set; }
+        private void Awake() => Localization.Init();
+
+        private void Start()
         {
             LoadState();
             StartOrContinueMission(currentState.currentMission);
         }
+
+        internal void SetDescriptionDrawer(DescriptionDrawer dD) => descriptionDrawer = dD;
 
         /// <summary>
         /// загрузка состояния миссий

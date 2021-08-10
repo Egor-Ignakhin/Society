@@ -7,12 +7,16 @@ namespace Parkour
     /// </summary>
     sealed class FireEscape : ParkourElement
     {
-        [SerializeField] private Transform highestPlace;
-        [SerializeField] private Transform lowestPlace;        
+        private Vector3 highestPlace;
+        private Vector3 lowestPlace;        
 
         private float playerHeight;
         private void Start()
         {
+            highestPlace = transform.position;
+            lowestPlace = transform.position;
+            highestPlace.y = GetComponent<BoxCollider>().bounds.max.y;
+            lowestPlace.y = GetComponent<BoxCollider>().bounds.min.y;
             fpc = FindObjectOfType<FirstPersonController>();
             cameraTransform = fpc.GetCamera().transform;
             playerHeight = fpc.GetPlayerHeight();
@@ -28,7 +32,7 @@ namespace Parkour
                 return;
             ScreensManager.SetScreen(this, false);
             float stepPosY = playerInteractive.GetHitPoint().y;
-            stepPosY = Mathf.Clamp(stepPosY, lowestPlace.position.y, highestPlace.position.y + playerHeight);
+            stepPosY = Mathf.Clamp(stepPosY, lowestPlace.y, highestPlace.y + playerHeight);
             animatorParent.position = new Vector3(animatorParent.position.x, stepPosY + playerHeight, animatorParent.position.z);
 
             cameraTransform.SetParent(animatorParent);
@@ -64,7 +68,7 @@ namespace Parkour
         {
             float cSpeed = isAcceleration ? speedClimbing * 2 : speedClimbing;
             Vector3 nextPos = (animatorParent.position + new Vector3(0, (isUp ? 1 : -1) * Time.deltaTime * cSpeed, 0));
-            nextPos.y = Mathf.Clamp(nextPos.y, lowestPlace.position.y + playerHeight, highestPlace.position.y + playerHeight);
+            nextPos.y = Mathf.Clamp(nextPos.y, lowestPlace.y + playerHeight, highestPlace.y + playerHeight);
 
             animatorParent.position = nextPos;
         }

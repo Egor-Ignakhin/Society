@@ -25,6 +25,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     protected NavMeshAgent mAgent;
     protected Transform target;
     protected bool interactionTakesPlace;
+    private TaskDrawer taskDrawer;
     protected abstract string PathToClips();
     public override void Interact()
     {
@@ -57,6 +58,8 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     {
         if (cameraPlace == null)
             Debug.LogError("Camera place is null!");
+
+        taskDrawer = FindObjectOfType<TaskDrawer>();
     }
     public bool Hide()
     {
@@ -137,7 +140,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
             {
                 target = null;
                 SetRunningState(false);
-                TaskDrawer.Instance.SetVisible(false);
+                taskDrawer.SetVisible(false);
                 if (currentDialog > 2 && dialogs[currentDialog - 2].IsBreakDialog)
                 {
                     dialogs[currentDialog - 2] = (dialogs[currentDialog - 2].dt, dialogs[currentDialog - 2].screenText, dialogs[currentDialog - 2].answerText, false);

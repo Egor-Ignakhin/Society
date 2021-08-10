@@ -121,6 +121,7 @@
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyPulsation.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\SpawnPositionFinder.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Apiary\ApiaryManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselZone.cs" />
@@ -203,9 +204,6 @@
     <Compile Include="Assets\Scripts\Localization\SerialisableInventoryItem.cs" />
     <Compile Include="Assets\Scripts\LookAtMainCamera.cs" />
     <Compile Include="Assets\Scripts\Maps\CompassController.cs" />
-    <Compile Include="Assets\Scripts\Maps\MapDrawer.cs" />
-    <Compile Include="Assets\Scripts\Maps\MapManager.cs" />
-    <Compile Include="Assets\Scripts\Maps\PointOnMap.cs" />
     <Compile Include="Assets\Scripts\Maps\StreetNameContainer.cs" />
     <Compile Include="Assets\Scripts\Maps\StreetNameRenderer.cs" />
     <Compile Include="Assets\Scripts\MealSpawner.cs" />
@@ -228,7 +226,8 @@
     <Compile Include="Assets\Scripts\Monsters\Enemy.cs" />
     <Compile Include="Assets\Scripts\Monsters\EnemyCollision.cs" />
     <Compile Include="Assets\Scripts\Monsters\EnemyPoint.cs" />
-    <Compile Include="Assets\Scripts\Monsters\EnviromentMobs\Mut.cs" />
+    <Compile Include="Assets\Scripts\Monsters\EnviromentMobs\ShrummiExample.cs" />
+    <Compile Include="Assets\Scripts\Monsters\EnviromentMobs\ShrummiesSpawner.cs" />
     <Compile Include="Assets\Scripts\Monsters\MonstersData.cs" />
     <Compile Include="Assets\Scripts\Music\LocationMusic.cs" />
     <Compile Include="Assets\Scripts\Parkour\FireEscape.cs" />
@@ -300,7 +299,6 @@
     <Compile Include="Assets\Scripts\TaskSystem\TaskChecker.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TaskDrawer.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TriggerTaskChecker.cs" />
-    <Compile Include="Assets\Scripts\Test\TestRotate.cs" />
     <Compile Include="Assets\Scripts\Time\ClockManager.cs" />
     <Compile Include="Assets\Scripts\Time\SunAtTime.cs" />
     <Compile Include="Assets\Scripts\Time\WeatherManager.cs" />
@@ -318,6 +316,7 @@
     <None Include="Assets\Other\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft.shader" />
     <None Include="Assets\Other\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\Other\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft Scroll.shader" />
+    <None Include="Assets\Models\Junkyard models\ReadMe.txt" />
     <None Include="Assets\Other\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Other\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\Other\JMO Assets\WarFX\_Effects\MuzzleFlashes\!MuzzleFlash Differences.txt" />
@@ -330,6 +329,7 @@
     <None Include="Assets\Other\JMO Assets\WarFX\Shaders\WFX_S Add Scroll.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Billboard.hlsl" />
     <None Include="Assets\Other\DBK\Shaders\DBK_Rebar.shader" />
+    <None Include="Assets\Models\Junkyard models\Shaders\UnlitTranparentDoubleSided.shader" />
     <None Include="Assets\Other\JMO Assets\Cartoon FX Easy Editor\CartoonFX Easy Editor Readme.txt" />
     <None Include="Assets\Other\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Bending.hlsl" />
@@ -357,6 +357,7 @@
     <None Include="Assets\Other\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Models\BlackantMasterStudio\The Shed\Shed_Anims.txt" />
     <None Include="Assets\Models\Simple city plain\Read_me.txt" />
+    <None Include="Assets\Models\Junkyard models\Shaders\MobileDiffuseDoubleSided.shader" />
     <None Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Shaders\Includes\CTI URP Inputs.hlsl" />
     <None Include="Assets\Other\JMO Assets\WarFX\Shaders\WFX_S Particle AddSoft A8.shader" />
     <None Include="Assets\Other\JMO Assets\WarFX\!WarFX Readme.txt" />
@@ -988,10 +989,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
-      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
-      <Name>Unity.Recorder.Samples.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Toolbox.csproj">
       <Project>{CEEF1589-CF27-627B-D054-27AAAF6A6F59}</Project>
       <Name>Toolbox</Name>
@@ -999,6 +996,10 @@
     <ProjectReference Include="Toolbox-Editor.csproj">
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
+      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
+      <Name>Unity.Recorder.Samples.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace PlayerClasses
 {
     public sealed class PlayerInteractive : MonoBehaviour
     {
-        Camera mainCamera;
+        private Camera mainCamera;
         private float interctionDistance = 2;
         private const float sphereCasterRadius = 0.01f;
         public static KeyCode InputInteractive { get; set; } = KeyCode.F;
@@ -17,7 +16,7 @@ namespace PlayerClasses
         private void Start()
         {
             mainCamera = GetComponent<FirstPersonController>().GetCamera();
-            descriptionDrawer = Inventory.DescriptionDrawer.Instance;
+            descriptionDrawer = FindObjectOfType<Inventory.DescriptionDrawer>();
             descriptionDrawer.SetHint(desc, mainDesc, 0);
         }
 
@@ -29,10 +28,9 @@ namespace PlayerClasses
                 inputedButton = false;
         }
 
-        internal bool ObjectIsDirected(InteractiveObject io)
-        {
-            return (directedObjects != null) && (directedObjects.Contains(io));
-        }
+        internal bool ObjectIsDirected(InteractiveObject io) =>
+             (directedObjects != null) && directedObjects.Contains(io);
+
 
         private void FixedUpdate() => RayThrow();
 
@@ -77,6 +75,7 @@ namespace PlayerClasses
             descriptionDrawer.SetHint(desc, mainDesc, count);
         }
         internal Vector3 GetHitPoint() => lasHitPoint;
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             try
@@ -93,5 +92,6 @@ namespace PlayerClasses
             {
             }
         }
+#endif
     }
 }

@@ -6,13 +6,16 @@ namespace Missions
     public abstract class Mission : MonoBehaviour
     {
         protected int currentTask = 0;
-        private MissionsManager missionsManager;
+        protected MissionsManager missionsManager;
         protected int missionItems = 0;
-        protected virtual void Awake() =>
-            missionsManager = FindObjectOfType<MissionsManager>();
+        protected TaskDrawer taskDrawer;        
 
-        private void Start() =>
-            OnReportTask(currentTask, true);
+        protected virtual void Start()
+        {
+            missionsManager = FindObjectOfType<MissionsManager>();
+            taskDrawer = FindObjectOfType<TaskDrawer>();
+            OnReportTask(true);
+        }
 
 
         /// <summary>
@@ -33,10 +36,10 @@ namespace Missions
             {
                 missionsManager.ReportTask();
                 SetTask(++currentTask);
-                OnReportTask(currentTask);
+                OnReportTask();
             }
             else                    
-                OnReportTask(currentTask, false, true);            
+                OnReportTask(false, true);            
         }
 
         public abstract int GetMissionNumber();
@@ -54,13 +57,13 @@ namespace Missions
         protected void SetTask(int number)
         {
             string neededContent = Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber(), number);
-
-            TaskDrawer.Instance.DrawNewTask(neededContent);
+            
+            taskDrawer.DrawNewTask(neededContent);
         }
 
         internal int GetCurrentTask() => currentTask;
 
 
-        protected abstract void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false);
+        protected abstract void OnReportTask(bool isLoad = false, bool isMissiomItem = false);
     }
 }
