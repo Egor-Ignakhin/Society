@@ -18,4 +18,8 @@
 - Settings — (Для редактора.)
 - Shaders — (Все кастомные шейдеры)
 
-	![alt text](https://github.com/Mrak701/Society/gitCommitsStyle.png)
+## Как оформлять коммиты:
+
+
+![](Doc/gitCommitsStyle.png "")
+	
