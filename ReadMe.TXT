@@ -18,5 +18,5 @@ Society
 	- Settings — (Для редактора.)
 	- Shaders — (Все кастомные шейдеры)
 
-	Как оформлять коммиты:
-	![](https://drive.google.com/drive/folders/1sok-g2liDfamzkRBWEDJoy7g7-gMQyPi?usp=sharing)
+	Как оформлять коммиты:		
+	![alt text](https://github.com/Mrak701/Society/blob/Egor2/gitCommitsStyle.jpg?raw=true)	
