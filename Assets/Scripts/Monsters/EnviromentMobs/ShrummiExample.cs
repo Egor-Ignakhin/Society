@@ -7,20 +7,21 @@ namespace EnviromentMobs
     {
         private Animator mAnim;
         private NavMeshAgent mAgent;
-        private Transform player;
+        private Transform target;
 
-        private void Start()
+        public void OnInit()
         {
             mAnim = GetComponent<Animator>();
-            mAgent = GetComponent<NavMeshAgent>();
-            player = FindObjectOfType<FirstPersonController>().transform;
+            mAgent = GetComponent<NavMeshAgent>();            
         }
+
         private void FixedUpdate()
         {
+            return;
             mAnim.SetBool("IsMove", mAgent.isOnNavMesh);
             if (mAgent.isOnNavMesh)
             {
-                mAgent.SetDestination(player.position);
+                mAgent.SetDestination(target.position);
             }
             if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
             {

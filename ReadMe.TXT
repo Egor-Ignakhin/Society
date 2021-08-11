@@ -17,3 +17,6 @@ Society
 	- Scripts — (Все файлы скриптов)
 	- Settings — (Для редактора.)
 	- Shaders — (Все кастомные шейдеры)
+
+	Как оформлять коммиты:
+	![](gitCommitsStyle.jpg)
