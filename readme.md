@@ -17,9 +17,6 @@
 - Scripts — (Все файлы скриптов)
 - Settings — (Для редактора.)
 - Shaders — (Все кастомные шейдеры)
+## Как оформлять коммиты
 
-## Как оформлять коммиты:
-
-
-![](Doc/gitCommitsStyle.png "")
-	
+![а](gitCommitsStyle.png)
