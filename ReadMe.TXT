@@ -19,4 +19,4 @@ Society
 	- Shaders — (Все кастомные шейдеры)
 
 	Как оформлять коммиты:		
-	![alt text](https://github.com/Mrak701/Society/blob/Egor2/gitCommitsStyle.jpg?raw=true)	
+	![Screenshot](gitCommitsStyle.jpg)
