@@ -19,4 +19,4 @@ Society
 	- Shaders — (Все кастомные шейдеры)
 
 	Как оформлять коммиты:
-	![](gitCommitsStyle.jpg)
+	![](https://drive.google.com/drive/folders/1sok-g2liDfamzkRBWEDJoy7g7-gMQyPi?usp=sharing)
