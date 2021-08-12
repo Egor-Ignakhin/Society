@@ -1,32 +1,30 @@
 ﻿using Inventory;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 namespace Missions
 {
     public sealed class PrologMission : Mission
     {
-        public override int GetMissionNumber() => 0;
-        [SerializeField] private BedMesh onLoadBedMesh;
-        private readonly List<Action> actions = new List<Action>();
+        public override int GetMissionNumber() => 1;
+        [SerializeField] private BedMesh onLoadBedMesh;        
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
         [SerializeField] private GameObject ilyaObjects;
-        protected override void Start()
+        protected override void StartMission()
         {            
-            actions.Add(() =>
+            OnTaskActions.Add("0",() =>
             {
                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
-                missionsManager.descriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
+                missionsManager.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
             });
-            actions.Add(() =>
+            OnTaskActions.Add("1",() =>
             {
+                missionsManager.FinishMission();
                 ScreensManager.SetScreen(null);
-                SceneManager.LoadScene(ScenesManager.MainMenu);
+                SceneManager.LoadScene(ScenesManager.Map);
             });
-            base.Start();
+            base.StartMission();
         }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
@@ -56,7 +54,7 @@ namespace Missions
                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
                 СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
                 lb.OnInit(6, Color.black);
-                lb.SubsctibeOnFinish(actions[0]);                
+                lb.SubsctibeOnFinish(OnTaskActions["0"]);                
 
                 taskDrawer.SetVisible(false);
 
@@ -98,7 +96,7 @@ namespace Missions
                 taskDrawer.SetVisible(false);
                 DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                 db.OnInit(2, Color.black);
-                db.SubsctibeOnFinish(actions[1]);
+                db.SubsctibeOnFinish(OnTaskActions["1"]);
             }
         }
         private void Update()
@@ -107,7 +105,7 @@ namespace Missions
             {
                 if (Input.GetKeyDown(FindObjectOfType<BedController>().HideKey()))
                 {
-                    missionsManager.descriptionDrawer.SetIrremovableHint(null);
+                    missionsManager.DescriptionDrawer.SetIrremovableHint(null);
                     taskDrawer.SetVisible(true);
                 }
             }

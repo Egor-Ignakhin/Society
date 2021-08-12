@@ -11,4 +11,6 @@ public sealed class ScenesManager : InteractiveObject
         LoadScreensManager.Instance.LoadLevel(nextScene, scene);
 
     public static int MainMenu = 0;
+    public static int Bunker = 2;
+    public static int Map = 3;
 }

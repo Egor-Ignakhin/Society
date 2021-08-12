@@ -1,20 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 namespace Missions
 {/// <summary>
 /// абстрактный класс миссии, содержит общие свойства
 /// </summary>
     public abstract class Mission : MonoBehaviour
     {
+        private bool isInitialized = false;
         protected int currentTask = 0;
         protected MissionsManager missionsManager;
         protected int missionItems = 0;
-        protected TaskDrawer taskDrawer;        
+        protected TaskDrawer taskDrawer;
+        protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
 
-        protected virtual void Start()
+        protected virtual void StartMission()
         {
             missionsManager = FindObjectOfType<MissionsManager>();
             taskDrawer = FindObjectOfType<TaskDrawer>();
             OnReportTask(true);
+            isInitialized = true;
         }
 
 
@@ -38,13 +43,15 @@ namespace Missions
                 SetTask(++currentTask);
                 OnReportTask();
             }
-            else                    
-                OnReportTask(false, true);            
+            else
+                OnReportTask(false, true);
         }
 
         public abstract int GetMissionNumber();
         public void ContinueMission(int skipLength)
         {
+            if (!isInitialized)
+                StartMission();
             currentTask = skipLength;
             SetTask(currentTask);
         }
@@ -57,7 +64,7 @@ namespace Missions
         protected void SetTask(int number)
         {
             string neededContent = Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber(), number);
-            
+
             taskDrawer.DrawNewTask(neededContent);
         }
 

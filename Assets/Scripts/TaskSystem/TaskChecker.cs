@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using UnityEngine;
 namespace Missions
 {
@@ -7,34 +7,22 @@ namespace Missions
     /// </summary>
     public class TaskChecker : InteractiveObject
     {
-        [Flags]
-        public enum MissionFlags
-        {
-            Nothing = 0,
-            M_1 = 1,
-            M_2 = 2,
-            M_3 = 4,
-            M_4 = 8,
-            M_5 = 16,
-            M_6 = 32,
-            M_7 = 64,
-            M_8 = 128,
-            M_9 = 256,
-            Everything = ~0
-        }
-
-        [EnumFlag]
         [SerializeField]
-        private MissionFlags enumFlag = MissionFlags.M_1;
+        [Range(1, MissionsManager.MaxMissions)] private int missionNumber = 1;
+#if UNITY_EDITOR
+        [ReadOnlyField] [SerializeField] private string missionTitle = "N/A";
+#endif
         [SerializeField] private int task;
+#if UNITY_EDITOR
+        [ReadOnlyField] [SerializeField] private string taskTitle = "N/A";
+#endif
         private Mission mMission;
 
         private bool hasInteracted;
 
         protected virtual void Start()
         {
-            if (enumFlag == MissionFlags.M_1)
-                mMission = FindObjectOfType<PrologMission>();
+            mMission = FindObjectsOfType<Mission>().First(m => m.GetMissionNumber() == missionNumber);
         }
         public override void Interact() => Report();
         protected void Report()
@@ -49,8 +37,14 @@ namespace Missions
             mMission.Report();
         }
 
-        internal bool CanInteract() =>
-            (mMission.GetCurrentTask() == (task - 1));
+        internal bool CanInteract() => mMission.GetCurrentTask() == (task - 1);
 
+#if UNITY_EDITOR
+        public void OnValidate()
+        {
+            missionTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(missionNumber);
+            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task);
+        }
+#endif
     }
 }
