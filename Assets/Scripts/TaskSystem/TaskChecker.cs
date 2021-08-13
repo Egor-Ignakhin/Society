@@ -43,7 +43,7 @@ namespace Missions
         public void OnValidate()
         {
             missionTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(missionNumber);
-            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task);
+            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task - 1);
         }
 #endif
     }
