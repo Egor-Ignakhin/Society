@@ -8,7 +8,7 @@ namespace Times
     public sealed class WorldTime : MonoBehaviour
     {
         private static int Time;// добавленное время за такт
-        private int additionalTime = 1;// множитель времени
+        private readonly int additionalTime = 1;// множитель времени
         private static Date currentDate;// текущая дата
         public static Date CurrentDate
         {

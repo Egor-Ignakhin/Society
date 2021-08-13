@@ -71,6 +71,8 @@
     <Compile Include="Assets\Other\JMO Assets\WarFX\Editor\CFX_SpawnSystemEditor.cs" />
     <Compile Include="Assets\Other\MeshCombiner\Editor\MeshCombinerEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIСontainerСontent.cs" />
+    <Compile Include="Assets\Scripts\Editor\PostBuildFilesCreator.cs" />
+    <Compile Include="Assets\Scripts\Editor\ReseterMissions.cs" />
     <Compile Include="Assets\Scripts\Editor\StdFoldersCreator.cs" />
     <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Editor\PackageManagerAssembly\PackageImportList.txt" />
     <Reference Include="UnityEngine">
@@ -272,7 +274,7 @@
       <HintPath>F:/Society/Assets/Shaders/Particles/NotNormal/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>F:/Society/Library/PackageCache/com.unity.render-pipelines.core@7.5.3/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
+      <HintPath>F:/Society/Library/PackageCache/com.unity.render-pipelines.core@7.6.0/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>F:/Society/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
@@ -691,9 +693,6 @@
     <Reference Include="Unity.CollabProxy.Editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
@@ -721,10 +720,6 @@
       <Project>{CFDE963A-6F82-5B5A-4D6F-BA6D6E423693}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
-      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
-      <Name>Unity.Recorder.Samples.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="Toolbox.csproj">
       <Project>{CEEF1589-CF27-627B-D054-27AAAF6A6F59}</Project>
       <Name>Toolbox</Name>
@@ -732,6 +727,10 @@
     <ProjectReference Include="Toolbox-Editor.csproj">
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
+      <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
+      <Name>Unity.Recorder.Samples.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

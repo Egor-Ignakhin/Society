@@ -1,5 +1,4 @@
 ﻿using LocalizationTools;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -21,12 +20,13 @@ public static class Localization
         public const string Default = "Взаимодествовать";
         public const string Item = "Поднять предмет";
     }
-    private static firstMTaskContent taskContent;
+    private static TaskContent taskContent;
     private static firstMDialogsContent dialogContent;
 
     [System.Serializable]
-    public class firstMTaskContent
+    public class TaskContent
     {
+        public string MissionTitle;
         public List<string> Tasks;// пути к задачам
         public string GetTask(int ch) => Tasks[ch];
     }
@@ -38,19 +38,19 @@ public static class Localization
         public string GetTask(int ch) => Dialogs[ch];
     }
 
-    public static void Init()
+    public static void Init(Missions.MissionsManager.State tempState)
     {
         // инициализация путей
         #region SetDialogs
         {
-            string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionDialogs_1.json");
+            string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionDialogs_{tempState.currentMission}.json");
             dialogContent = JsonUtility.FromJson<firstMDialogsContent>(data);
         }
         #endregion
         #region SetTasks
         {
-            string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Missions\\MissionTask_1.json");
-            taskContent = JsonUtility.FromJson<firstMTaskContent>(data);
+            string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionTask_{tempState.currentMission}.json");
+            taskContent = JsonUtility.FromJson<TaskContent>(data);
         }
         #endregion       
 
@@ -80,7 +80,7 @@ public static class Localization
         itemProperties.WeightAndMaxCountItems = new Dictionary<int, (int maxCount, decimal weight)>();
         for (int i = 0; i < itemProperties.Properties.Count; i++)
         {
-            Enum.TryParse($"{itemProperties.Properties[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
+            System.Enum.TryParse($"{itemProperties.Properties[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
             itemProperties.WeightAndMaxCountItems.Add((int)myStatus, (itemProperties.Properties[i].MaxCount, (decimal)itemProperties.Properties[i].Weight));
         }
     }
@@ -91,7 +91,7 @@ public static class Localization
         nutrientItems.FoodWaterItems = new Dictionary<int, (int food, int water)>();
         for (int i = 0; i < nutrientItems.MNutritious.Count; i++)
         {
-            Enum.TryParse($"{nutrientItems.MNutritious[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
+            System.Enum.TryParse($"{nutrientItems.MNutritious[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
             nutrientItems.FoodWaterItems.Add((int)myStatus, (nutrientItems.MNutritious[i].Food, nutrientItems.MNutritious[i].Water));
         }
     }
@@ -102,7 +102,7 @@ public static class Localization
         medicalItems.medItems = new Dictionary<int, (int health, int radiation)>();
         for (int i = 0; i < medicalItems.Items.Count; i++)
         {
-            Enum.TryParse($"{medicalItems.Items[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
+            System.Enum.TryParse($"{medicalItems.Items[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
             medicalItems.medItems.Add((int)myStatus, (medicalItems.Items[i].Health, medicalItems.Items[i].Radiation));
         }
     }

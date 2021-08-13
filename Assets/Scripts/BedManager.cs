@@ -14,15 +14,12 @@ public sealed class BedManager : MonoBehaviour
         playerT = Camera.main.transform;
         bc = FindObjectOfType<BedController>();
     }
-    internal void Interact(BedMesh b)
-    {
-        StraightenBed(b);
-    }
+
     /// <summary>
     /// заправить кровать
     /// </summary>
     /// <param name="b"></param>
-    private void StraightenBed(BedMesh b)
+    public void StraightenBed(BedMesh b)
     {
         if (b.IsOccupied)// если кровать занята
         {

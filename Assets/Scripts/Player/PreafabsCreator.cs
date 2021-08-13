@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-
-class PreafabsCreator : MonoBehaviour
+namespace Tools
 {
-    private void Awake()
+    sealed class PreafabsCreator : MonoBehaviour
     {
-        var parent = GameObject.Find("UI").transform;
-        var prefabs = Resources.LoadAll("Canvases\\");        
-
-        foreach (var c in prefabs)
+        private void Awake()
         {
-            Instantiate(c, parent);
+            var parent = GameObject.Find("UI").transform;
+            var prefabs = Resources.LoadAll("Canvases\\");
+
+            foreach (var c in prefabs)
+            {
+                Instantiate(c, parent);
+            }
+            parent.gameObject.AddComponent<EventSystem>();
+            parent.gameObject.AddComponent<StandaloneInputModule>();
         }
-        parent.gameObject.AddComponent<EventSystem>();
-        parent.gameObject.AddComponent<StandaloneInputModule>();
     }
 }

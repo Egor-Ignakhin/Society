@@ -1,6 +1,4 @@
-﻿using PlayerClasses;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public sealed class BedMesh : InteractiveObject
 {
@@ -10,13 +8,10 @@ public sealed class BedMesh : InteractiveObject
     public bool IsOccupied { get; private set; }
     public override void Interact()
     {
-        mManager.Interact(this);
+        mManager.StraightenBed(this);
         IsOccupied = true;
     }
-    public void SetOccupied(bool value)
-    {
-        IsOccupied = value;
-    }
+    public void SetOccupied(bool value) => IsOccupied = value;
 
     public Transform GetSleepPlace() => SleepPlace;
 }

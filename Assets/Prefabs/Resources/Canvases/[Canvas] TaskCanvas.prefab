@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1558846041}
   - component: {fileID: 1558846040}
   - component: {fileID: 1558846039}
-  - component: {fileID: 1558846042}
   m_Layer: 5
   m_Name: background
   m_TagString: Untagged
@@ -92,19 +91,6 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_EffectDistance: {x: 0.25, y: 0.75}
   m_UseGraphicAlpha: 1
---- !u!114 &1558846042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1558846037}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f3b4e7e1b22c1042bc7137adc0ad4e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 1936926224}
 --- !u!1 &1936926222
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +238,7 @@ GameObject:
   - component: {fileID: 2838260494405087341}
   - component: {fileID: 2838260494405087340}
   - component: {fileID: 2838260494405087343}
+  - component: {fileID: 7602873061489595415}
   m_Layer: 5
   m_Name: '[Canvas] TaskCanvas'
   m_TagString: Untagged
@@ -339,3 +326,16 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7602873061489595415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2838260494405087342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f3b4e7e1b22c1042bc7137adc0ad4e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 1936926224}

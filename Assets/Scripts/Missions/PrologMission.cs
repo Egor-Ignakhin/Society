@@ -1,44 +1,41 @@
 ﻿using Inventory;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 namespace Missions
 {
     public sealed class PrologMission : Mission
     {
-        public override int GetMissionNumber() => 0;
-        [SerializeField] private BedMesh onLoadBedMesh;
-        private readonly List<Action> actions = new List<Action>();
+        public override int GetMissionNumber() => 1;
+        [SerializeField] private BedMesh onLoadBedMesh;        
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
         [SerializeField] private GameObject ilyaObjects;
-        protected override void Awake()
-        {
-            actions.Add(() =>
+        protected override void StartMission()
+        {            
+            OnTaskActions.Add("0",() =>
             {
                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
-                Inventory.DescriptionDrawer.Instance.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
+                missionsManager.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
             });
-            actions.Add(() =>
+            OnTaskActions.Add("1",() =>
             {
+                missionsManager.FinishMission();
                 ScreensManager.SetScreen(null);
-                SceneManager.LoadScene(ScenesManager.MainMenu);
+                SceneManager.LoadScene(ScenesManager.Map);
             });
-            base.Awake();
+            base.StartMission();
         }
-        protected override void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false)
+        protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
             if (isLoad)
             {
                 FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
-                FindObjectOfType<Inventory.InventoryContainer>().SetInteractive(false);
-                FindObjectOfType<Inventory.InventoryContainer>().ClearInventory();
-                FindObjectOfType<PlayerActionBar>().SetVisible(false);
+                FindObjectOfType<InventoryContainer>().SetInteractive(false);
+                FindObjectOfType<InventoryContainer>().ClearInventory();
+                FindObjectOfType<PlayerClasses.PlayerActionBar>().SetVisible(false);
                 PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
-                Times.WorldTime.CurrentDate.ForceSetTime("23:32");
-                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
+                Times.WorldTime.CurrentDate.ForceSetTime("23:32");                
                 FindObjectOfType<FirstPersonController>().SetPossibleSprinting(false);
             }
             if (isMissiomItem)
@@ -54,15 +51,15 @@ namespace Missions
             }
             if (currentTask == 0)
             {
+                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
                 СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
                 lb.OnInit(6, Color.black);
-                lb.SubsctibeOnFinish(actions[0]);
+                lb.SubsctibeOnFinish(OnTaskActions["0"]);                
 
-                FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
+                taskDrawer.SetVisible(false);
 
-                TaskDrawer.Instance.SetVisible(false);
-
-                onLoadBedMesh.Interact();
+              //  onLoadBedMesh.Interact();
+         //       FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
             }
             if (currentTask == 1)
             {
@@ -70,15 +67,15 @@ namespace Missions
             }
             if (currentTask == 2)
             {
-                TaskDrawer.Instance.SetVisible(false);
+                taskDrawer.SetVisible(false);
             }
             if (currentTask == 3)
             {
-                TaskDrawer.Instance.SetVisible(true);
+                taskDrawer.SetVisible(true);
             }
             if (currentTask == 4)
             {
-                TaskDrawer.Instance.SetVisible(false);                
+                taskDrawer.SetVisible(false);                
             }
             if (currentTask == 5)
             {
@@ -96,10 +93,10 @@ namespace Missions
             }
             if (currentTask == 9)
             {
-                TaskDrawer.Instance.SetVisible(false);
+                taskDrawer.SetVisible(false);
                 DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                 db.OnInit(2, Color.black);
-                db.SubsctibeOnFinish(actions[1]);
+                db.SubsctibeOnFinish(OnTaskActions["1"]);
             }
         }
         private void Update()
@@ -108,8 +105,8 @@ namespace Missions
             {
                 if (Input.GetKeyDown(FindObjectOfType<BedController>().HideKey()))
                 {
-                    DescriptionDrawer.Instance.SetIrremovableHint(null);
-                    TaskDrawer.Instance.SetVisible(true);
+                    missionsManager.DescriptionDrawer.SetIrremovableHint(null);
+                    taskDrawer.SetVisible(true);
                 }
             }
         }

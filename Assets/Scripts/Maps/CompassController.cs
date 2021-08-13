@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
-
-/// <summary>
-/// класс-контроллёр для компаса
-/// </summary>
-class CompassController : MonoBehaviour
+namespace Maps
 {
-    [SerializeField] private Maps.MapDrawer mapDrawer;
-    private void OnEnable() => mapDrawer.RotateEvent += Rotate;
-
-    private void Rotate(Vector3 currentRot) => transform.localRotation = Quaternion.Euler(currentRot);
-
-    private void OnDisable() => mapDrawer.RotateEvent -= Rotate;
-
+    /// <summary>
+    /// класс-контроллёр для компаса
+    /// </summary>
+    sealed class CompassController : MonoBehaviour
+    {
+        private Transform player;
+        private void Awake()
+        {
+            player = FindObjectOfType<FirstPersonController>().transform;
+        }
+        private void FixedUpdate()
+        {
+            transform.localEulerAngles = new Vector3(0, 0, player.eulerAngles.y);
+        }
+    }
 }
