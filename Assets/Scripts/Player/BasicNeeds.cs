@@ -13,10 +13,10 @@ namespace PlayerClasses
         private readonly float waitForThirst = 5f;// частота таймера воды
         private readonly float waitForHunger = 3.5f;// частота таймера еды
         private readonly float waitForRadiation = 4;
-        private readonly float waitForRegeneration = 0.15f;
+        private readonly float regenerationSpeed = 3f;
 
-        private float health;
         private bool BnInitFlag = false;
+        private float health;
         public float Health
         {
             get => health;
@@ -28,7 +28,7 @@ namespace PlayerClasses
 
                 if (value < health)// при получении урона
                 {
-                    timeFromLastDamage = 0;                    
+                    timeFromLastDamage = 0;
                 }
 
                 value = Mathf.Clamp(value, 0, MaximumHealth);
@@ -38,16 +38,6 @@ namespace PlayerClasses
                 HealthChangeValue?.Invoke((float)Math.Round(health, 0));
             }
         }
-        public float HealthForFood
-        {
-            get => healthForFood; set
-            {
-                value = Mathf.Clamp(value, 0, MaxHealthForFood);
-                healthForFood = value;
-            }
-        }
-        private float healthForFood;
-        public const float MaxHealthForFood = 25;
 
         internal void Heal(float h, float r)
         {
@@ -57,8 +47,8 @@ namespace PlayerClasses
 
         internal void SetEnableStamins(bool v) => allStaminsEnable = v;
 
-        private int thirst;
-        public int Thirst// вода
+        private float thirst;
+        public float Thirst// вода
         {
             get => thirst;
 
@@ -75,8 +65,8 @@ namespace PlayerClasses
             }
         }
 
-        private int food;
-        public int Food// еда
+        private float food;
+        public float Food// еда
         {
             get => food;
 
@@ -104,19 +94,19 @@ namespace PlayerClasses
             }
         }
 
-        private readonly float defaultHealth = 80;// изначальное здоровья
+        private readonly float defaultHealth = 30;// изначальное здоровья
         public float MaximumHealth = 100;// максимальное кол-во здоровья              
 
-        private readonly int defaultThirst = 100;// изначальное кол-во воды
-        private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
-        public int MaximumThirst { get; private set; } = 100;// максимум еды
+        private readonly float defaultThirst = 100;// изначальное кол-во воды
+        private readonly float thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
+        public float MaximumThirst { get; private set; } = 100;// максимум еды
 
-        private readonly int defaultFood = 200;// изначальное кол-во еды
-        private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
-        public int MaximumFood { get; private set; } = 200;// максимум еды        
+        private readonly float defaultFood = 200;// изначальное кол-во еды
+        private readonly float foodDifference = 1;// количество еды, которое будет отниматься в таймере
+        public float MaximumFood { get; private set; } = 200;// максимум еды        
 
-        private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
-        private readonly int MaximumRadiation = 3000;// максимум радиации
+        private readonly float radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
+        private readonly float MaximumRadiation = 3000;// максимум радиации
         private bool isInsadeRadiationZone;
         private int currentCountOfZones;
 
@@ -264,9 +254,9 @@ namespace PlayerClasses
                 && (Food > 0)
                 && (Radiation <= 0))
             {
-                Heal(1, 0);
-                Thirst--;
-                Food--;
+                Heal(Time.deltaTime * regenerationSpeed, 0);
+                Thirst -= Time.deltaTime;
+                Food -= Time.deltaTime;
             }
         }
 
@@ -309,8 +299,8 @@ namespace PlayerClasses
                     if (timeFromLastDamage > 3)
                         Regeneration();
                 }
-                yield return new WaitForSeconds(waitForRegeneration);
-                timeFromLastDamage += waitForRegeneration;
+                yield return null;
+                timeFromLastDamage += Time.deltaTime;
             }
         }
         internal void SetPossibleDamgeFromCollision(bool v) => PossibleDamgeFromCollision = v;
