@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace PlayerClasses.BasicNeedsReceivers
+namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    public class PlayerThirstDrawer : BasicNeedsReceiver
+    sealed class PlayerThirstDrawer : BasicNeedsEventsReceiver
     {
+        #region Fields
         [SerializeField] private Image mImage;
         [SerializeField] private RectTransform mRt;
         [SerializeField] private RectTransform separator;
+        #endregion
+        #region Подпички-отписки событий
         private void OnEnable() => basicNeeds.ThirstChangeValue += OnChangeThirst;
+        private void OnDisable() => basicNeeds.ThirstChangeValue -= OnChangeThirst;
+        #endregion
 
         private void OnChangeThirst(float value)
         {
@@ -17,6 +22,5 @@ namespace PlayerClasses.BasicNeedsReceivers
             separator.anchoredPosition = nextPos;
             mImage.fillAmount = value / basicNeeds.MaximumThirst;
         }
-        private void OnDisable() => basicNeeds.ThirstChangeValue -= OnChangeThirst;
     }
 }

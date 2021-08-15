@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace PlayerClasses.BasicNeedsReceivers
+namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    sealed class PlayerFoodDrawer : BasicNeedsReceiver
+    sealed class PlayerFoodDrawer : BasicNeedsEventsReceiver
     {
         [SerializeField] private Image mImage;
         [SerializeField] private RectTransform mRt;

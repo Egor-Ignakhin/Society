@@ -1,39 +1,44 @@
 ﻿using UnityEngine;
 
-namespace PlayerClasses.BasicNeedsReceivers
+namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    sealed class FoodThirstLinesQueue : BasicNeedsReceiver
+    /// <summary>
+    /// Класс меняющий местами линии воды и еды в зависимости от большего параметра.
+    /// </summary>
+    sealed class FoodThirstLinesQueue : BasicNeedsEventsReceiver
     {
-        [SerializeField] Transform baseFood;
-        [SerializeField] Transform baseThirst;
+        #region Fields
+        [SerializeField] Transform baseFood;// Ссылка на трансформ еды
+        [SerializeField] Transform baseThirst;// Ссылка на трансформ воды
+
+        private bool foodIsRight = true;
+        #endregion
+        #region Подпички-отписки событий
         private void OnEnable()
         {
             basicNeeds.FoodChangeValue += OnChangeFoodOrThirst;
             basicNeeds.ThirstChangeValue += OnChangeFoodOrThirst;
         }
 
-        private void OnChangeFoodOrThirst(float _)
-        {
-            //Предпочтение всегда отдаётся еде
-            if (basicNeeds.Food == 0)
-            {
-                if (baseFood.GetSiblingIndex() != (transform.childCount - 1))
-                    baseFood.SetAsLastSibling();
-            }
-            if (basicNeeds.Thirst == 0)
-            {
-                if (basicNeeds.Food > 0)
-                {
-                    if (baseThirst.GetSiblingIndex() != (transform.childCount - 1))
-                        baseThirst.SetAsLastSibling();
-                }
-            }
-        }
-
         private void OnDisable()
         {
             basicNeeds.FoodChangeValue -= OnChangeFoodOrThirst;
             basicNeeds.ThirstChangeValue -= OnChangeFoodOrThirst;
+        }
+        #endregion
+
+        private void OnChangeFoodOrThirst(float _)
+        {
+            foodIsRight = basicNeeds.Food != 0;
+
+            ChangePositionLines();
+        }
+        private void ChangePositionLines()
+        {
+            if (foodIsRight)
+                baseFood.SetAsFirstSibling();
+            else
+                baseThirst.SetAsFirstSibling();
         }
     }
 }

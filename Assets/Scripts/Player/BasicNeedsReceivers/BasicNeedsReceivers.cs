@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-namespace PlayerClasses.BasicNeedsReceivers
+namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    public abstract class BasicNeedsReceiver : MonoBehaviour
-    {
+    /// <summary>
+    /// Наследники являются обработчиками событий классы <seealso cref="BasicNeeds"/>
+    /// </summary>
+    public abstract class BasicNeedsEventsReceiver : MonoBehaviour
+    {        
         protected BasicNeeds basicNeeds;
         protected virtual void Awake() => basicNeeds = FindObjectOfType<BasicNeeds>();
     }

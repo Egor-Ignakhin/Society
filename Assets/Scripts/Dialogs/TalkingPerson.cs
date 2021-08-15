@@ -18,7 +18,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     [SerializeField] protected bool canLeaveFromDialog;
     protected bool answerInDialogHasTaked = false;
     protected List<(DialogType dt, string screenText, string answerText, bool IsBreakDialog)> dialogs;
-    protected Missions.TaskChecker mtaskChecker;
+    protected Missions.MissionInteractiveObject mtaskChecker;
     protected int currentDialog = 1;
     protected float clipLingth;
     protected Animator mAnimator;
@@ -49,7 +49,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     protected override void Awake()
     {
         personSource = GetComponent<AudioSource>();
-        mtaskChecker = GetComponent<Missions.TaskChecker>();
+        mtaskChecker = GetComponent<Missions.MissionInteractiveObject>();
         mAnimator = GetComponent<Animator>();
         mAgent = GetComponent<NavMeshAgent>();
         base.Awake();
