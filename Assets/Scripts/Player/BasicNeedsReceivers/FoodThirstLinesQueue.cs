@@ -11,7 +11,10 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         [SerializeField] Transform baseFood;// Ссылка на трансформ еды
         [SerializeField] Transform baseThirst;// Ссылка на трансформ воды
 
+        [SerializeField] private Animator mAnim;
+
         private bool foodIsRight = true;
+        private bool lastStateIsRight = true;
         #endregion
         #region Подпички-отписки событий
         private void OnEnable()
@@ -31,14 +34,14 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         {
             foodIsRight = basicNeeds.Food != 0;
 
-            ChangePositionLines();
+            if (foodIsRight != lastStateIsRight)
+            {              
+                mAnim.SetTrigger("ChangePosition");
+                lastStateIsRight = foodIsRight;
+            }
         }
-        private void ChangePositionLines()
-        {
-            if (foodIsRight)
-                baseFood.SetAsFirstSibling();
-            else
-                baseThirst.SetAsFirstSibling();
-        }
+        public void ChangePositionLines() =>
+            (foodIsRight ? baseFood : baseThirst).SetAsFirstSibling();
+
     }
 }

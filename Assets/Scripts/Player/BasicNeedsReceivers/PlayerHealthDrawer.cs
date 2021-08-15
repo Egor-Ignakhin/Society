@@ -8,9 +8,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
     /// </summary>
     sealed class PlayerHealthDrawer : BasicNeedsEventsReceiver
     {
-        #region Fields
-        [SerializeField] private RectTransform separator;// Разделящая строки здоровья линия
-
+        #region Fields       
         [SerializeField] private Image mImage;// большая левая строка здоровья        
         [SerializeField] private Image additionalHp_1;
         [SerializeField] private Image additionalHp_2;
@@ -30,26 +28,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
             mImage.fillAmount = fillDef;
 
             additionalHp_1.fillAmount = fill_Hp_1;
-            additionalHp_2.fillAmount = fill_Hp_2;
-
-
-            Transform parentSeparator = mImage.fillAmount < 1 ? mImage.transform : (additionalHp_1.fillAmount < 1 ? additionalHp_1.transform : additionalHp_2.transform);
-            float fillAmountSeparator = mImage.fillAmount < 1 ? fillDef : (additionalHp_1.fillAmount < 1 ? fill_Hp_1 : fill_Hp_2);
-            SetSeparatorState(parentSeparator, fillAmountSeparator);
-        }
-
-        /// <summary>
-        /// Установка разделителя в место обрезания линий здоровья
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="fillAmount"></param>
-        private void SetSeparatorState(Transform parent, float fillAmount)
-        {
-            if (separator.parent != parent)
-                separator.SetParent(parent);
-            separator.anchorMin = new Vector2(fillAmount, separator.anchorMin.y);
-            separator.anchorMax = new Vector2(fillAmount, separator.anchorMax.y);
-            separator.anchoredPosition = Vector2.zero;
-        }
+            additionalHp_2.fillAmount = fill_Hp_2;                        
+        }        
     }
 }
