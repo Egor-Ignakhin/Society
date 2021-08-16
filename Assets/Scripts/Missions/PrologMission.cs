@@ -10,17 +10,23 @@ namespace Missions
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
         [SerializeField] private GameObject ilyaObjects;
+        [SerializeField] private Doors.HermeticDoor hermeticDoor;
         protected override void StartMission()
-        {            
-            OnTaskActions.Add("0",() =>
+        {
+            OnTaskActions.Add("0", () =>
+             {
+                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
+                 missionsManager.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
+                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
+             });
+            OnTaskActions.Add("1", () =>
+             {
+                 missionsManager.FinishMission();
+                 hermeticDoor.Interact(true, OnTaskActions["LoadMap"]);
+                 FindObjectOfType<LocationMusic>().SetEnabledMusic(false);
+             });
+            OnTaskActions.Add("LoadMap", () =>
             {
-                FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
-                missionsManager.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
-                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
-            });
-            OnTaskActions.Add("1",() =>
-            {
-                missionsManager.FinishMission();
                 ScreensManager.SetScreen(null);
                 SceneManager.LoadScene(ScenesManager.Map);
             });

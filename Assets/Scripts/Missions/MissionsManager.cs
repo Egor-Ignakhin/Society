@@ -129,7 +129,7 @@ namespace Missions
                     tasks.Add(JsonUtility.FromJson<Localization.TaskContent>(data));
                     infoAboutMissions.Add(i, tasks[tasks.Count - 1]);
                 }
-                foreach (var tc in FindObjectsOfType<TaskChecker>())
+                foreach (var tc in FindObjectsOfType<MissionInteractiveObject>())
                     tc.OnValidate();
 
             }
