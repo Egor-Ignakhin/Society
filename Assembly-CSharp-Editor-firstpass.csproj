@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{FD01DD60-8EC6-8860-B325-FAD98BCAC2E2}</ProjectGuid>
+    <ProjectGuid>{B5EF87EF-1E99-714E-AA82-80DE1A03565D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Assembly-CSharp-Editor-firstpass</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -47,7 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Unity/VSTU</UnityProjectGenerator>
-    <UnityProjectType>Editor:5</UnityProjectType>
+    <UnityProjectType>EditorPlugins:7</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2019.4.28f1</UnityVersion>
   </PropertyGroup>
@@ -63,20 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Scripts\Editor\CTI_URPTransDrawer.cs" />
-    <Compile Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Scripts\Editor\CTI_URPWindDrawer.cs" />
-    <Compile Include="Assets\Other\Conifers [BOTD]\CTI URP\CTI Runtime Components URP\Scripts\Editor\CTI_URP_ShaderGUI.cs" />
-    <Compile Include="Assets\Other\DBK\Editor\DBK_ColorThemeSelectEditor.cs" />
-    <Compile Include="Assets\Other\JMO Assets\Cartoon FX Easy Editor\Editor\CFXEasyEditor.cs" />
-    <Compile Include="Assets\Other\JMO Assets\WarFX\Editor\CFX_SpawnSystemEditor.cs" />
-    <Compile Include="Assets\Other\MeshCombiner\Editor\MeshCombinerEditor.cs" />
-    <Compile Include="Assets\Other\Plugins\MHLab\AutoSaver\Editor\AutoSaver.cs" />
-    <Compile Include="Assets\Other\Plugins\MHLab\AutoSaver\Editor\AutoSaverEditor.cs" />
-    <Compile Include="Assets\Scripts\Editor\GUIСontainerСontent.cs" />
-    <Compile Include="Assets\Scripts\Editor\PostBuildFilesCreator.cs" />
-    <Compile Include="Assets\Scripts\Editor\ReseterMissions.cs" />
-    <Compile Include="Assets\Scripts\Editor\StdFoldersCreator.cs" />
-    <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Editor\PackageManagerAssembly\PackageImportList.txt" />
+    <Compile Include="Assets\Plugins\MHLab\AutoSaver\Editor\AutoSaver.cs" />
+    <Compile Include="Assets\Plugins\MHLab\AutoSaver\Editor\AutoSaverEditor.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.28f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -718,10 +706,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{CFDE963A-6F82-5B5A-4D6F-BA6D6E423693}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
     <ProjectReference Include="Toolbox.csproj">
       <Project>{CEEF1589-CF27-627B-D054-27AAAF6A6F59}</Project>
       <Name>Toolbox</Name>
