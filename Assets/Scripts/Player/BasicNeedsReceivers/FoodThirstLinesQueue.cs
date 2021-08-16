@@ -15,6 +15,9 @@ namespace PlayerClasses.BasicNeedsEventReceivers
 
         private bool foodIsRight = true;
         private bool lastStateIsRight = true;
+        [SerializeField] private PlayerHealthDrawer phd;
+        [SerializeField] private PlayerFoodDrawer playerFoodDrawer;
+        [SerializeField] private PlayerThirstDrawer playerThirstDrawer;
         #endregion
         #region Подпички-отписки событий
         private void OnEnable()
@@ -35,13 +38,15 @@ namespace PlayerClasses.BasicNeedsEventReceivers
             foodIsRight = basicNeeds.Food != 0;
 
             if (foodIsRight != lastStateIsRight)
-            {              
+            {
                 mAnim.SetTrigger("ChangePosition");
                 lastStateIsRight = foodIsRight;
             }
         }
-        public void ChangePositionLines() =>
-            (foodIsRight ? baseFood : baseThirst).SetAsFirstSibling();
+        public void ChangePositionLines()
+        {
+            (foodIsRight ? baseFood : baseThirst).SetAsFirstSibling();           
+        }
 
     }
 }

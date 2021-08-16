@@ -9,9 +9,9 @@ namespace PlayerClasses.BasicNeedsEventReceivers
     sealed class PlayerHealthDrawer : BasicNeedsEventsReceiver
     {
         #region Fields       
-        [SerializeField] private Image mImage;// большая левая строка здоровья        
-        [SerializeField] private Image additionalHp_1;
-        [SerializeField] private Image additionalHp_2;
+        [SerializeField] private Image mImage;// большая левая строка здоровья                
+        [SerializeField] private Image add_hp_food;
+        [SerializeField] private Image add_hp_thirst;
         #endregion
 
         #region Подпички-отписки событий
@@ -23,12 +23,13 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         private void OnChangePlayerHealth(float health)
         {
             float fillDef = health / (basicNeeds.MaximumHealth * 0.5f);
-            float fill_Hp_1 = health > (basicNeeds.MaximumHealth / 2) ? (health - (basicNeeds.MaximumHealth * 0.5f)) / (basicNeeds.MaximumHealth / 4) : 0;
-            float fill_Hp_2 = health > (basicNeeds.MaximumHealth / 1.5f) ? (health - (basicNeeds.MaximumHealth * 0.75f)) / (basicNeeds.MaximumHealth / 4) : 0;
+            float fill_Hp_food = (health > (basicNeeds.MaximumHealth / 2) && basicNeeds.Food > 0) ? (health - (basicNeeds.MaximumHealth * 0.5f)) / (basicNeeds.MaximumHealth / 4) : 0;
+            float fill_Hp_thirst = health > (basicNeeds.MaximumHealth / 1.5f) ? (health - (basicNeeds.MaximumHealth * 0.75f)) / (basicNeeds.MaximumHealth / 4) : 0;
             mImage.fillAmount = fillDef;
 
-            additionalHp_1.fillAmount = fill_Hp_1;
-            additionalHp_2.fillAmount = fill_Hp_2;                        
-        }        
+
+            add_hp_food.fillAmount = fill_Hp_food;
+            add_hp_thirst.fillAmount = fill_Hp_thirst;
+        }
     }
 }
