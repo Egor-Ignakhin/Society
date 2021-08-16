@@ -14,12 +14,17 @@ namespace Features
                 var em = waterEffect.emission;
                 em.enabled = value;
                 SetType(!value ? "ClosedShowerLever" : "OpenedShowerLever");
+                SetEnableWaterAudioEffect(value);
                 leverIsOpened = value;
             }
         }
         [SerializeField] private ParticleSystem waterEffect;
+        [SerializeField] private AudioSource mAudS;
+
+        private AudioClip waterDropClip;
         private void Start()
         {
+            waterDropClip = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
             LeverIsOpened = false;
         }
 
@@ -34,6 +39,19 @@ namespace Features
                 showerExample.AddContentByTime();
             }
         }
+        private void SetEnableWaterAudioEffect(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                mAudS.clip = waterDropClip;
+                mAudS.Play();
+            }
+            else
+            {
+                mAudS.Stop();
+                mAudS.clip = null;
+            }
 
+        }
     }
 }
