@@ -22,7 +22,6 @@ namespace CarouselAnomaly
         [Range(0f, 180f)] [SerializeField] private float degreesPerSecondMax = 90;
         private float degreesPerSec = 0;
         private GameObject player;
-        private GameObject playerContainer;
         private FirstPersonController playerFPC;
         private Vector3 playerAcceleration;
         #endregion
@@ -88,11 +87,6 @@ namespace CarouselAnomaly
         {
             return PointPos;
         }
-        public void SetPlayerContainer()
-        {
-            playerContainer.transform.position = player.transform.position;
-            playerContainer.transform.rotation = player.transform.rotation;
-        }
         public void SetPlayerFPC()
         {
             playerFPC = player.GetComponent<FirstPersonController>();
@@ -106,11 +100,7 @@ namespace CarouselAnomaly
                 playerAcceleration.y += 0.15f * (- player.GetComponent<Rigidbody>().velocity.y) + 0.08f * (playerMaxHeight - player.transform.position.y);
                 player.GetComponent<Rigidbody>().AddForce(playerAcceleration * player.GetComponent<Rigidbody>().mass);
                 //rotate:
-                playerContainer.transform.position = player.transform.position;
-                playerContainer.transform.rotation = player.transform.rotation;
-                playerContainer.transform.Rotate(0, Time.fixedDeltaTime * degreesPerSec, 0);
-                playerFPC.SetPosAndRot(playerContainer.transform);
-
+                playerFPC.AdditionalXMouse = degreesPerSec/500; //не является точным значением в град/сек, ориентировочно
             }
 
         }
@@ -124,6 +114,7 @@ namespace CarouselAnomaly
                 yield return new WaitForSeconds(0.1f);
             }
             degreesPerSec = 0;
+            playerFPC.AdditionalXMouse = 0;
             yield break;
         }
         #endregion
@@ -142,7 +133,6 @@ namespace CarouselAnomaly
         private System.Collections.IEnumerator Start()
         {
             InitBehaviours();
-            playerContainer = new GameObject();
             SetBehaviourByDefault();
             playerAcceleration = new Vector3(0, 0, 0);
             while (true)
@@ -278,7 +268,6 @@ namespace CarouselAnomaly
         public void PlayerDetected(GameObject p) 
         {
             cm.SetPlayer(p);
-            cm.SetPlayerContainer();
             cm.SetPlayerFPC();
             Exit();
         }

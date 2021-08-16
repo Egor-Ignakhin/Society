@@ -15,6 +15,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
     private float Sensitivity = 3;
 
     public float SensivityM { get; set; } = 1;
+    public float AdditionalXMouse {get; set; } = 0;
     private readonly float CameraSmoothing = 5f;
 
     private Camera PlayerCamera;
@@ -178,7 +179,7 @@ public sealed class FirstPersonController : MonoBehaviour, IMovableController
         if (!ScreensManager.HasActiveScreen())
         {
             float mouseYInput = Input.GetAxis("Mouse Y");
-            float mouseXInput = Input.GetAxis("Mouse X");
+            float mouseXInput = Input.GetAxis("Mouse X") + AdditionalXMouse;
 
             if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
             if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
