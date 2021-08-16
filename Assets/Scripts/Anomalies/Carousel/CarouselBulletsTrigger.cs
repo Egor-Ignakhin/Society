@@ -1,20 +1,24 @@
 ﻿using System;
 using UnityEngine;
+using CarouselAnomaly;
 
 class CarouselBulletsTrigger : MonoBehaviour, IBulletReceiver
 {
     private bool needBlust;
     [SerializeField] private ParticleSystem aura;
     private float defaultStartSizeM;
+    private CarouselManager cm;
     private void Awake()
     {
         defaultStartSizeM = aura.main.startSpeedMultiplier;
+        cm = gameObject.transform.parent.parent.gameObject.GetComponent<CarouselManager>();
     }
     public void OnBulletEnter()
     {
         needBlust = true;
         ParticleSystem.MainModule main = aura.main;
         main.startSizeMultiplier += 2;
+        cm.OnBulletEnter();
     }
     private void FixedUpdate()
     {

@@ -11,6 +11,19 @@ namespace CarouselAnomaly
         private Vector3 PointPos;
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
+        [SerializeField] private GameObject explosion;
+        //private int maxHealth;
+        [SerializeField] [Range(1, 10)] private int health;
+        private int Health 
+            {
+            get {return health;}
+            set
+                {
+                    if (value == 0) Die();
+                    health = value;
+                    Debug.Log(health);
+                }
+            }
 
         #region Player Interaction
 
@@ -35,6 +48,15 @@ namespace CarouselAnomaly
 
         #region Methods
 
+        public void OnBulletEnter()
+        {
+            Health--;
+        }
+        private void Die()
+        {
+            explosion.SetActive(true);
+            Destroy(gameObject);
+        }
         #region State Pattern Methods
         private void InitBehaviours()
         {
@@ -132,6 +154,7 @@ namespace CarouselAnomaly
 
         private System.Collections.IEnumerator Start()
         {
+            explosion.SetActive(false);
             InitBehaviours();
             SetBehaviourByDefault();
             playerAcceleration = new Vector3(0, 0, 0);
