@@ -19,4 +19,4 @@
 - Shaders — (Все кастомные шейдеры)
 ## Как оформлять коммиты
 
-![а](gitCommitsStyle.png)
+![](gitCommitsStyle.png)

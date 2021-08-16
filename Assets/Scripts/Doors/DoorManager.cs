@@ -33,10 +33,11 @@ public sealed class DoorManager : MonoBehaviour, IChangeable// класс реа
         mAud = GetComponent<AudioSource>();
         if (!mAud)
         {
-            mAud = gameObject.AddComponent<AudioSource>();
-            mAud.spatialBlend = 1;
-            mAud.rolloffMode = AudioRolloffMode.Linear;
+            mAud = gameObject.AddComponent<AudioSource>();            
         }
+        mAud.spatialBlend = 1;
+        mAud.rolloffMode = AudioRolloffMode.Linear;
+        mAud.volume = 0.2f;
         openCloseClip = Resources.Load<AudioClip>($"DoorClips\\OpenClose\\{openClipType}");
     }
 

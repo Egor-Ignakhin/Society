@@ -14,13 +14,17 @@ namespace Features
             {
                 var emission = waterEffect.emission;
                 emission.enabled = value;
+                SetEnableWaterAudioEffect(value);
                 waterIsEnable = value;
             }
         }
-
         public bool ContentIsFilled => MWaterContent.WaterWeight >= MWaterContent.MaxWaterWeight;
 
         public bool IsReloading { get; internal set; }
+        private AudioClip waterDropClip;
+        private AudioClip moveClip;
+        [SerializeField] private AudioSource mAudS;
+        [SerializeField] private AudioSource movableAudioSource;        
 
         internal bool ChangeEnableWater()
         {
@@ -30,6 +34,8 @@ namespace Features
 
         private void Start()
         {
+            waterDropClip = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
+            moveClip = Resources.Load<AudioClip>("ShowerGarden\\ShowerMove");
             WaterIsEnable = false;
             SetType(nameof(ShowerExample));
             UpdateWaterDesc();
@@ -66,6 +72,31 @@ namespace Features
         }
         private void UpdateWaterDesc() =>
             additionalDescription = $" ({Math.Round(MWaterContent.WaterWeight, 1)}/{MWaterContent.MaxWaterWeight})";
+
+
+        private void SetEnableWaterAudioEffect(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                mAudS.clip = waterDropClip;
+                mAudS.Play();
+            }
+            else
+            {
+                mAudS.Stop();
+                mAudS.clip = null;
+            }
+        }
+        public void OnMove()
+        {            
+            if (movableAudioSource.isPlaying)
+                return;
+
+            movableAudioSource.Stop();
+            movableAudioSource.clip = moveClip;
+            movableAudioSource.Play();            
+        }
+
         public sealed class WaterContent
         {
             public float WaterWeight { get; set; }

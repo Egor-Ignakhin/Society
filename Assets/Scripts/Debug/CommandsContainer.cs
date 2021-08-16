@@ -73,7 +73,8 @@ namespace Debugger
                 {nameof(ENDLESSFOOD),ENDLESSFOOD },
                 {nameof(ENDLESSWATER),ENDLESSWATER },
                 {nameof(ENDLESSAMMO),ENDLESSAMMO },
-                {nameof(HELP),HELP }
+                {nameof(HELP),HELP },
+                {nameof(GET),GET }
             };
         }
         private static void HELP(string c)
@@ -92,6 +93,7 @@ namespace Debugger
             debugConsole.Print($"{++i}. Use 'ENDLESSWATER n' to set the mode to 'Infinite Water'", true, 20);
             debugConsole.Print($"{++i}. Use 'ENDLESSAMMO n' to set the mode to 'Infinite Ammo'", true, 20);
             debugConsole.Print($"{++i}. Use 'HELP' to get help", true, 20);
+            debugConsole.Print($"{++i}. Use 'GET HEALTH' to get info about health ", true, 20);
 
         }
         /// <summary>
@@ -223,6 +225,13 @@ namespace Debugger
             UnityEngine.Vector3 pos = new UnityEngine.Vector3(x, y, z);
 
             PlayerClasses.BasicNeeds.Instance.transform.position = pos;
+        }
+        private static void GET(string args)
+        {
+            if(args == "HEALTH")
+            {
+                debugConsole.Print($"Health is" + PlayerClasses.BasicNeeds.Instance.Health);
+            }
         }
     }
 }

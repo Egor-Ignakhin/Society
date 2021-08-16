@@ -151,6 +151,7 @@
     <Compile Include="Assets\Scripts\Dialogs\TalkingPerson.cs" />
     <Compile Include="Assets\Scripts\Doors\DoorManager.cs" />
     <Compile Include="Assets\Scripts\Doors\DoorMesh.cs" />
+    <Compile Include="Assets\Scripts\Doors\HermeticDoor.cs" />
     <Compile Include="Assets\Scripts\Doors\MedicalDoor.cs" />
     <Compile Include="Assets\Scripts\Doors\MedicalDoorChecker.cs" />
     <Compile Include="Assets\Scripts\EatingObject.cs" />
@@ -238,6 +239,12 @@
     <Compile Include="Assets\Scripts\Patterns\PoolableObject.cs" />
     <Compile Include="Assets\Scripts\Patterns\Singleton.cs" />
     <Compile Include="Assets\Scripts\Player\BasicNeeds.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\BasicNeedsReceivers.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\FoodThirstLinesQueue.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\PlayerFoodDrawer.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\PlayerHealthDrawer.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\PlayerRadiationDrawer.cs" />
+    <Compile Include="Assets\Scripts\Player\BasicNeedsReceivers\PlayerThirstDrawer.cs" />
     <Compile Include="Assets\Scripts\Player\Controllers\BedController.cs" />
     <Compile Include="Assets\Scripts\Player\Controllers\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Player\Controllers\SeatController.cs" />
@@ -248,7 +255,6 @@
     <Compile Include="Assets\Scripts\Player\PlayerSoundEffects.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerSoundsCalculator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStatements.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerValueDrawer.cs" />
     <Compile Include="Assets\Scripts\Player\PreafabsCreator.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector_MaterialData.cs" />
@@ -294,7 +300,7 @@
     <Compile Include="Assets\Scripts\SteelArms\Scrap.cs" />
     <Compile Include="Assets\Scripts\SteelArms\SteelArms.cs" />
     <Compile Include="Assets\Scripts\SteelArms\StellArmsAnimator.cs" />
-    <Compile Include="Assets\Scripts\TaskSystem\TaskChecker.cs" />
+    <Compile Include="Assets\Scripts\TaskSystem\MissionInteractiveObject.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TaskDrawer.cs" />
     <Compile Include="Assets\Scripts\TaskSystem\TriggerTaskChecker.cs" />
     <Compile Include="Assets\Scripts\Time\ClockManager.cs" />
