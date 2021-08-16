@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerClasses
 {
     public sealed partial class BasicNeeds : Singleton<BasicNeeds>
     {
+        #region Fields
         private bool foodWaterMultiply = false;
         public void EnableFoodAndWaterMultiply(bool v) => foodWaterMultiply = v;
 
-        private readonly float waitForThirst = 5;// частота таймера воды
+        private readonly float waitForThirst = 5f;// частота таймера воды
         private readonly float waitForHunger = 3.5f;// частота таймера еды
         private readonly float waitForRadiation = 4;
+        private readonly float regenerationSpeed = 3f;
 
-        private float health;
         private bool BnInitFlag = false;
+        private float health;
         public float Health
         {
             get => health;
@@ -24,11 +25,17 @@ namespace PlayerClasses
             {
                 if (EndlessHealth)
                     return;
+
+                if (value < health)// при получении урона
+                {
+                    timeFromLastDamage = 0;
+                }
+
                 value = Mathf.Clamp(value, 0, MaximumHealth);
                 if (value == 0 && BnInitFlag)
                     Dead();
-
-                HealthChangeValue?.Invoke((float)Math.Round(health = value, 0));
+                health = value;
+                HealthChangeValue?.Invoke((float)Math.Round(health, 0));
             }
         }
 
@@ -38,13 +45,10 @@ namespace PlayerClasses
             Radiation -= r;
         }
 
-        internal void SetEnableStamins(bool v)
-        {
-            allStaminsEnable = v;
-        }
+        internal void SetEnableStamins(bool v) => allStaminsEnable = v;
 
-        private int thirst;
-        public int Thirst// вода
+        private float thirst;
+        public float Thirst// вода
         {
             get => thirst;
 
@@ -55,16 +59,14 @@ namespace PlayerClasses
                 if (value > MaximumThirst)
                     value = MaximumThirst;
                 if (value < 0 && isInitialized)
-                {
-                    InjurePerson(-value);
                     value = 0;
-                }
+
                 ThirstChangeValue?.Invoke(thirst = value);
             }
         }
 
-        private int food;
-        public int Food// еда
+        private float food;
+        public float Food// еда
         {
             get => food;
 
@@ -75,10 +77,8 @@ namespace PlayerClasses
                 if (value > MaximumFood)
                     value = MaximumFood;
                 if (value < 0 && isInitialized)
-                {
-                    InjurePerson(-value);
                     value = 0;
-                }
+
                 FoodChangeValue?.Invoke(food = value);
             }
         }
@@ -94,22 +94,22 @@ namespace PlayerClasses
             }
         }
 
-        private readonly float defaultHealth = 80;// изначальное здоровья
+        private readonly float defaultHealth = 30;// изначальное здоровья
         public float MaximumHealth = 100;// максимальное кол-во здоровья              
 
-        private readonly int defaultThirst = 100;// изначальное кол-во воды
-        private readonly int thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
-        public int MaximumThirst { get; private set; } = 100;// максимум еды
+        private readonly float defaultThirst = 100;// изначальное кол-во воды
+        private readonly float thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
+        public float MaximumThirst { get; private set; } = 100;// максимум еды
 
-        private readonly int defaultFood = 200;// изначальное кол-во еды
-        private readonly int foodDifference = 1;// количество еды, которое будет отниматься в таймере
-        public int MaximumFood { get; private set; } = 200;// максимум еды        
+        private readonly float defaultFood = 200;// изначальное кол-во еды
+        private readonly float foodDifference = 1;// количество еды, которое будет отниматься в таймере
+        public float MaximumFood { get; private set; } = 200;// максимум еды        
 
-        private readonly int radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
-        private readonly int MaximumRadiation = 3000;// максимум радиации
+        private readonly float radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
+        private readonly float MaximumRadiation = 3000;// максимум радиации
         private bool isInsadeRadiationZone;
         private int currentCountOfZones;
-        
+
         public event Action<float> HealthChangeValue;
         public event Action<float> ThirstChangeValue;// событие жажды
         public event Action<float> FoodChangeValue;// событие голодания
@@ -124,7 +124,8 @@ namespace PlayerClasses
         public static bool EndlessFood { get; internal set; }
         public static bool EndlessWater { get; internal set; }
         public bool PossibleDamgeFromCollision { get; private set; } = true;
-
+        private float timeFromLastDamage;
+        #endregion
         private void Start()
         {
             Health = defaultHealth;
@@ -144,19 +145,31 @@ namespace PlayerClasses
             StartCoroutine(nameof(ThirstTimer));
             StartCoroutine(nameof(HungerTimer));
             StartCoroutine(nameof(RadiationTimer));
+            StartCoroutine(nameof(RegenerationTimer));
         }
-        public void InjurePerson(float value)
-        {
-            Health -= value;
-        }
+        /// <summary>
+        /// Ранить игрока
+        /// </summary>
+        /// <param урон="value"></param>
+        public void InjurePerson(float value) => Health -= value;
+        /// <summary>
+        /// ранить игрока и нанести ещё радиации организму
+        /// </summary>
+        /// <param name="h"></param>
+        /// <param name="r"></param>
         public void InjurePerson(float h, float r)
         {
             Health -= h;
             Radiation += r;
         }
+        /// <summary>
+        /// ранить игрока, нанести радиации организму и возможно, плавно убить
+        /// </summary>
+        /// <param name="h"></param>
+        /// <param name="r"></param>
+        /// <param name="time"></param>
         public void InjurePerson(float h, float r, float time)
         {
-            
             Radiation += r;
             if (h >= Health)
             {
@@ -167,7 +180,13 @@ namespace PlayerClasses
                 Health -= h;
             }
         }
-        IEnumerator KillSlowly(float time, float startHealth)
+        /// <summary>
+        /// Постепенное убийство персонажа
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="startHealth"></param>
+        /// <returns></returns>
+        private IEnumerator KillSlowly(float time, float startHealth)
         {
             float frequency = 60;
             float times = time * frequency - 1;
@@ -175,11 +194,17 @@ namespace PlayerClasses
             for (int i = 0; i < times; i++)
             {
                 Health -= deltaHealth;
-                yield return new WaitForSeconds(1/frequency);
+                yield return new WaitForSeconds(1 / frequency);
             }
             Health = 0;
             yield break;
         }
+
+        /// <summary>
+        /// Функция добавления еды/воды организму персонажа
+        /// </summary>
+        /// <param name="thirst"></param>
+        /// <param name="food"></param>
         public void AddMeal(int thirst, int food)
         {
             Food += food;
@@ -217,15 +242,24 @@ namespace PlayerClasses
         /// </summary>
         private void Dead() => deadLine.LoadDeadScene();
 
+        /// <summary>
+        /// Функция регенерации здоровья
+        /// </summary>
         private void Regeneration()
         {
-            if (Thirst > MaximumThirst / 2 && Food > MaximumFood / 2 && Radiation <= 0)
+            if (Mathf.Approximately(Health, MaximumHealth))
+                return;
+            //Воды больше 0 и еды больше 0 и радиации нет
+            if ((Thirst > 0)
+                && (Food > 0)
+                && (Radiation <= 0))
             {
-                Heal(1, 0);
-                Thirst--;
-                Food--;
+                Heal(Time.deltaTime * regenerationSpeed, 0);
+                Thirst -= Time.deltaTime;
+                Food -= Time.deltaTime;
             }
         }
+
         private IEnumerator ThirstTimer()
         {
             while (true)
@@ -233,7 +267,6 @@ namespace PlayerClasses
                 if (allStaminsEnable)
                 {
                     Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
-                    Regeneration();
                 }
                 yield return new WaitForSeconds(waitForThirst);
             }
@@ -256,30 +289,28 @@ namespace PlayerClasses
                 yield return new WaitForSeconds(waitForRadiation);
             }
         }
-        internal void SetPossibleDamgeFromCollision(bool v)
+        private IEnumerator RegenerationTimer()
         {
-            PossibleDamgeFromCollision = v;
-        }
+            while (true)
+            {
 
+                if (allStaminsEnable)
+                {
+                    if (timeFromLastDamage > 3)
+                        Regeneration();
+                }
+                yield return null;
+                timeFromLastDamage += Time.deltaTime;
+            }
+        }
+        internal void SetPossibleDamgeFromCollision(bool v) => PossibleDamgeFromCollision = v;
 
         #region ForceCommands
 
-        internal static void ForceSetHealth(int value)
-        {
-            Instance.Health = value;
-        }
-        internal static void ForceSetFood(int value)
-        {
-            Instance.Food = value;
-        }
-        internal static void ForceSetWater(int value)
-        {
-            Instance.Thirst = value;
-        }
-        internal static void ForceSetRadiation(int value)
-        {
-            Instance.Radiation = value;
-        }
+        internal static void ForceSetHealth(int value) => Instance.Health = value;
+        internal static void ForceSetFood(int value) => Instance.Food = value;
+        internal static void ForceSetWater(int value) => Instance.Thirst = value;
+        internal static void ForceSetRadiation(int value) => Instance.Radiation = value;
 
         #endregion
     }

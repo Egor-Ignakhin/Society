@@ -1,22 +1,31 @@
-﻿using System.IO;
+﻿using Inventory;
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 namespace Missions
-{/// <summary>
-/// Главный за все миссии
-/// </summary>
+{   /// <summary>
+    /// Главный за все миссии
+    /// </summary>    
     public sealed class MissionsManager : MonoBehaviour
     {
-        public static string savePath = Directory.GetCurrentDirectory() + "\\Saves\\State.json";// папка с сохранением    
+        public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\State.json"; // папка с сохранением    
         private State currentState;// состояние миссий        
+        public DescriptionDrawer DescriptionDrawer { get; private set; }
+        public const int MaxMissions = 2;
         private void Awake()
         {
-            Localization.Init();
-        }
-        private void OnEnable()
-        {
             LoadState();
-            StartOrContinueMission(currentState.currentMission);
+            Localization.Init(currentState);
         }
+
+        private void Start()
+        {
+            StartOrContinueMission();
+        }
+
+        internal void SetDescriptionDrawer(DescriptionDrawer dD) => DescriptionDrawer = dD;
 
         /// <summary>
         /// загрузка состояния миссий
@@ -25,14 +34,14 @@ namespace Missions
         {
             try
             {
-                string data = File.ReadAllText(savePath);
+                string data = File.ReadAllText(SavePath);
                 currentState = JsonUtility.FromJson<State>(data);
             }
             catch
             {
                 currentState = new State();
-                if (!File.Exists(savePath))
-                    File.Create(savePath);
+                if (!File.Exists(SavePath))
+                    File.Create(SavePath);
             }
         }
         /// <summary>
@@ -46,20 +55,13 @@ namespace Missions
         private void SaveState()
         {
             string data = JsonUtility.ToJson(currentState, true);
-            File.WriteAllText(savePath, data);
+            File.WriteAllText(SavePath, data);
         }
         /// <summary>
         /// Сбрасывает задачи для активной миссии
         /// </summary>
-        public void ResetTasks() => currentState.currentTask = 0;
-        /// <summary>
-        /// Сообщает при завершении миссии
-        /// </summary>
-        public void ReportMission()
-        {
-            currentState.currentMission++;
-            ResetTasks();
-        }
+        private void ResetTasks() => currentState.currentTask = 0;
+
         /// <summary>
         /// Сообщает при завершении задачи
         /// </summary>
@@ -68,26 +70,84 @@ namespace Missions
         /// Вызывается для начала или продолжения миссии с последней задачи
         /// </summary>
         /// <param name="num"></param>
-        public void StartOrContinueMission(int num)
+        private void StartOrContinueMission()
         {
+            var all = FindObjectsOfType<Mission>();
+
+            if (all.Length == 0)
+                return;
             Mission foundedMission = null;
-            switch (num)
+            foreach (var m in all)
             {
-                case 0:
-                    foundedMission = FindObjectOfType<PrologMission>();
+                if (m.GetMissionNumber() == currentState.currentMission)
+                {
+                    foundedMission = m;
                     break;
+                }
             }
             if (foundedMission)
                 foundedMission.ContinueMission(currentState.currentTask);
         }
         private void OnDisable() => SaveState();
-        public void FinishMission() => ReportMission();
+
+        /// <summary>
+        /// Сообщает при завершении миссии
+        /// </summary>
+        public void FinishMission()
+        {
+            currentState.currentMission++;
+            ResetTasks();
+        }
 
         [System.Serializable]
         public class State
         {
-            public int currentMission = 0;
+            public int currentMission = 1;
             public int currentTask = 0;
+        }
+
+        [ExecuteAlways]
+        public sealed class MissionInfo : MonoBehaviour
+        {
+#if UNITY_EDITOR
+
+            private static System.Collections.Generic.Dictionary<int, Localization.TaskContent> infoAboutMissions = new System.Collections.Generic.Dictionary<int, Localization.TaskContent>();
+
+            [MenuItem("Tools/Update Info About Missions")]
+            private static void UpdateInfoAboutMissions()
+            {
+                if (infoAboutMissions != null)
+                    infoAboutMissions.Clear();
+
+                infoAboutMissions = new System.Collections.Generic.Dictionary<int, Localization.TaskContent>();
+
+                System.Collections.Generic.List<Localization.TaskContent> tasks = new System.Collections.Generic.List<Localization.TaskContent>();
+                for (int i = 1; i <= MaxMissions; i++)
+                {
+                    string path = $"Localization\\Missions\\MissionTask_{i}.json";
+                    string data = File.ReadAllText(path);
+                    tasks.Add(JsonUtility.FromJson<Localization.TaskContent>(data));
+                    infoAboutMissions.Add(i, tasks[tasks.Count - 1]);
+                }
+                foreach (var tc in FindObjectsOfType<MissionInteractiveObject>())
+                    tc.OnValidate();
+
+            }
+            public static string GetMissionTitleByIndex(int index)
+            {
+                if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
+                    UpdateInfoAboutMissions();
+
+                return infoAboutMissions[index].MissionTitle;
+            }
+            public static string GetMissionTaskTitleByIndex(int missionIndex, int taskIndex)
+            {
+                if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
+                    UpdateInfoAboutMissions();
+
+                return infoAboutMissions[missionIndex].Tasks[taskIndex];                
+            }
+#endif
         }
     }
 }

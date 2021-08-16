@@ -1,18 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 namespace Missions
 {/// <summary>
 /// абстрактный класс миссии, содержит общие свойства
 /// </summary>
     public abstract class Mission : MonoBehaviour
     {
+        private bool isInitialized = false;
         protected int currentTask = 0;
-        private MissionsManager missionsManager;
+        protected MissionsManager missionsManager;
         protected int missionItems = 0;
-        protected virtual void Awake() =>
-            missionsManager = FindObjectOfType<MissionsManager>();
+        protected TaskDrawer taskDrawer;
+        protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
 
-        private void Start() =>
-            OnReportTask(currentTask, true);
+        protected virtual void StartMission()
+        {
+            missionsManager = FindObjectOfType<MissionsManager>();
+            taskDrawer = FindObjectOfType<TaskDrawer>();
+            OnReportTask(true);
+            isInitialized = true;
+        }
 
 
         /// <summary>
@@ -33,15 +41,17 @@ namespace Missions
             {
                 missionsManager.ReportTask();
                 SetTask(++currentTask);
-                OnReportTask(currentTask);
+                OnReportTask();
             }
-            else                    
-                OnReportTask(currentTask, false, true);            
+            else
+                OnReportTask(false, true);
         }
 
         public abstract int GetMissionNumber();
         public void ContinueMission(int skipLength)
         {
+            if (!isInitialized)
+                StartMission();
             currentTask = skipLength;
             SetTask(currentTask);
         }
@@ -55,12 +65,12 @@ namespace Missions
         {
             string neededContent = Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber(), number);
 
-            TaskDrawer.Instance.DrawNewTask(neededContent);
+            taskDrawer.DrawNewTask(neededContent);
         }
 
         internal int GetCurrentTask() => currentTask;
 
 
-        protected abstract void OnReportTask(int currentTask, bool isLoad = false, bool isMissiomItem = false);
+        protected abstract void OnReportTask(bool isLoad = false, bool isMissiomItem = false);
     }
 }

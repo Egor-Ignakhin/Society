@@ -18,13 +18,14 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     [SerializeField] protected bool canLeaveFromDialog;
     protected bool answerInDialogHasTaked = false;
     protected List<(DialogType dt, string screenText, string answerText, bool IsBreakDialog)> dialogs;
-    protected Missions.TaskChecker mtaskChecker;
+    protected Missions.MissionInteractiveObject mtaskChecker;
     protected int currentDialog = 1;
     protected float clipLingth;
     protected Animator mAnimator;
     protected NavMeshAgent mAgent;
     protected Transform target;
     protected bool interactionTakesPlace;
+    private TaskDrawer taskDrawer;
     protected abstract string PathToClips();
     public override void Interact()
     {
@@ -48,7 +49,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     protected override void Awake()
     {
         personSource = GetComponent<AudioSource>();
-        mtaskChecker = GetComponent<Missions.TaskChecker>();
+        mtaskChecker = GetComponent<Missions.MissionInteractiveObject>();
         mAnimator = GetComponent<Animator>();
         mAgent = GetComponent<NavMeshAgent>();
         base.Awake();
@@ -57,6 +58,8 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
     {
         if (cameraPlace == null)
             Debug.LogError("Camera place is null!");
+
+        taskDrawer = FindObjectOfType<TaskDrawer>();
     }
     public bool Hide()
     {
@@ -137,7 +140,7 @@ public abstract class TalkingPerson : InteractiveObject, IGameScreen
             {
                 target = null;
                 SetRunningState(false);
-                TaskDrawer.Instance.SetVisible(false);
+                taskDrawer.SetVisible(false);
                 if (currentDialog > 2 && dialogs[currentDialog - 2].IsBreakDialog)
                 {
                     dialogs[currentDialog - 2] = (dialogs[currentDialog - 2].dt, dialogs[currentDialog - 2].screenText, dialogs[currentDialog - 2].answerText, false);

@@ -18,7 +18,7 @@ public sealed class BedController : MonoBehaviour, IGameScreen
     }
     private void Start()
     {
-        sensitivity = GameSettings.GetSensivity();        
+        sensitivity = GameSettings.GetSensivity();
     }
     private void Update()
     {
@@ -36,10 +36,8 @@ public sealed class BedController : MonoBehaviour, IGameScreen
         }
     }
 
-    internal void SetPossibleDeoccupied(bool v)
-    {
-        PossibleDeoccupied = v;
-    }
+    internal void SetPossibleDeoccupied(bool v) => PossibleDeoccupied = v;
+
 
     /// <summary>
     /// запись состояния в контроллёр
