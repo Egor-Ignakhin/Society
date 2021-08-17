@@ -188,12 +188,12 @@ MonoBehaviour:
     maximumLODLevelQualityLevel: 0
     materialQuality: 0
   m_RenderPipelineSettings:
-    supportShadowMask: 1
+    supportShadowMask: 0
     supportSSR: 0
     supportSSAO: 0
     supportSubsurfaceScattering: 1
     increaseSssSampleCount: 0
-    supportVolumetrics: 1
+    supportVolumetrics: 0
     increaseResolutionOfVolumetrics: 0
     supportLightLayers: 0
     lightLayerName0: Light Layer default
@@ -205,53 +205,53 @@ MonoBehaviour:
     lightLayerName6: Light Layer 6
     lightLayerName7: Light Layer 7
     supportDistortion: 1
-    supportTransparentBackface: 1
-    supportTransparentDepthPrepass: 1
-    supportTransparentDepthPostpass: 1
-    colorBufferFormat: 48
+    supportTransparentBackface: 0
+    supportTransparentDepthPrepass: 0
+    supportTransparentDepthPostpass: 0
+    colorBufferFormat: 74
     supportCustomPass: 0
     customBufferFormat: 12
     supportedLitShaderMode: 1
-    supportDecals: 1
-    msaaSampleCount: 4
-    supportMotionVectors: 1
-    supportRuntimeDebugDisplay: 1
-    supportDitheringCrossFade: 1
-    supportTerrainHole: 1
+    supportDecals: 0
+    msaaSampleCount: 1
+    supportMotionVectors: 0
+    supportRuntimeDebugDisplay: 0
+    supportDitheringCrossFade: 0
+    supportTerrainHole: 0
     supportRayTracing: 0
     lightLoopSettings:
-      cookieAtlasSize: 1024
-      cookieFormat: 48
-      pointCookieSize: 128
-      cubeCookieTexArraySize: 16
+      cookieAtlasSize: 64
+      cookieFormat: 74
+      pointCookieSize: 64
+      cubeCookieTexArraySize: 2
       cookieAtlasLastValidMip: 0
       cookieTexArraySize: 1
-      planarReflectionAtlasSize: 1024
+      planarReflectionAtlasSize: 512
       reflectionProbeCacheSize: 64
-      reflectionCubemapSize: 256
+      reflectionCubemapSize: 128
       reflectionCacheCompressed: 1
       planarReflectionCacheCompressed: 1
-      skyReflectionSize: 256
+      skyReflectionSize: 128
       skyLightingOverrideLayerMask:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 8
+      maxDirectionalLightsOnScreen: 2
       maxPunctualLightsOnScreen: 512
-      maxAreaLightsOnScreen: 64
-      maxEnvLightsOnScreen: 64
-      maxDecalsOnScreen: 256
-      maxPlanarReflectionOnScreen: 16
+      maxAreaLightsOnScreen: 32
+      maxEnvLightsOnScreen: 32
+      maxDecalsOnScreen: 128
+      maxPlanarReflectionOnScreen: 8
     hdShadowInitParams:
-      maxShadowRequests: 64
+      maxShadowRequests: 16
       directionalShadowsDepthBits: 16
-      shadowFilteringQuality: 1
+      shadowFilteringQuality: 0
       punctualLightShadowAtlas:
-        shadowAtlasResolution: 2048
-        shadowAtlasDepthBits: 32
-        useDynamicViewportRescale: 1
+        shadowAtlasResolution: 128
+        shadowAtlasDepthBits: 16
+        useDynamicViewportRescale: 0
       areaLightShadowAtlas:
-        shadowAtlasResolution: 2048
+        shadowAtlasResolution: 128
         shadowAtlasDepthBits: 16
         useDynamicViewportRescale: 1
       shadowResolutionDirectional:
@@ -266,20 +266,20 @@ MonoBehaviour:
         m_Values: 00010000000200000004000000080000
         m_SchemaId:
           m_Id: With4Levels
-      maxDirectionalShadowMapResolution: 2048
+      maxDirectionalShadowMapResolution: 256
       maxPunctualShadowMapResolution: 2048
       maxAreaShadowMapResolution: 2048
       supportScreenSpaceShadows: 0
       maxScreenSpaceShadowSlots: 4
       screenSpaceShadowBufferFormat: 48
     decalSettings:
-      drawDistance: 500
+      drawDistance: 100
       atlasWidth: 4096
       atlasHeight: 4096
       perChannelMask: 0
     postProcessSettings:
-      m_LutSize: 32
-      lutFormat: 48
+      m_LutSize: 16
+      lutFormat: 74
       bufferFormat: 74
     dynamicResolutionSettings:
       enabled: 0
@@ -290,7 +290,7 @@ MonoBehaviour:
       forceResolution: 0
       forcedPercentage: 100
     lowresTransparentSettings:
-      enabled: 1
+      enabled: 0
       checkerboardDepthBuffer: 1
       upsampleType: 1
     xrSettings:
@@ -342,7 +342,7 @@ MonoBehaviour:
   enableSRPBatcher: 1
   shaderVariantLogLevel: 0
   availableMaterialQualityLevels: -1
-  m_DefaultMaterialQualityLevel: 2
+  m_DefaultMaterialQualityLevel: 1
   diffusionProfileSettings: {fileID: 0}
   diffusionProfileSettingsList: []
   beforeTransparentCustomPostProcesses: []

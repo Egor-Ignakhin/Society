@@ -19,7 +19,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         [SerializeField] private PlayerFoodDrawer playerFoodDrawer;
         [SerializeField] private PlayerThirstDrawer playerThirstDrawer;
         #endregion
-        #region Подпички-отписки событий
+        #region Подписки-отписки событий
         private void OnEnable()
         {
             basicNeeds.FoodChangeValue += OnChangeFoodOrThirst;
