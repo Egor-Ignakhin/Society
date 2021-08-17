@@ -16,7 +16,7 @@ public sealed class EffectsManager : MonoBehaviour
     private bool NeccecryAnimateCAB = true;
     public void Init()
     {
-        globalVolume = FindObjectsOfType<Volume>().Where(v => v.isGlobal).First();
+        globalVolume = GameObject.Find("Global Volume Real").GetComponent<Volume>();
         if (!globalVolume)
             return;
         globalVolume.profile.TryGet(out volumeDOF);
