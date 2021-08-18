@@ -12,6 +12,8 @@ namespace CarouselAnomaly
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
         [SerializeField] private GameObject explosion;
+        private readonly float explosionImpulse = 20;
+        [SerializeField] private GameObject piece;
         //private int maxHealth;
         [SerializeField] [Range(1, 10)] private int health;
         private int Health 
@@ -54,6 +56,12 @@ namespace CarouselAnomaly
         }
         private void Die()
         {
+            int piecesNum = UnityEngine.Random.Range(1, 4);
+            for (int i = 0; i < piecesNum; i++)
+            {
+                GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
+                p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120*i, Vector3.up) * Vector3.forward*explosionImpulse);
+            }
             explosion.SetActive(true);
             Destroy(gameObject);
         }
