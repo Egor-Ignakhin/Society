@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Missions
 {
-    sealed class TriggerTaskChecker : TaskChecker
+    sealed class TriggerTaskChecker : MissionInteractiveObject
     {
         private Collider playerCollider;
         protected override void Start()

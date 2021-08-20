@@ -8,7 +8,6 @@ namespace Features
     {
         private bool isDragged;
         private ShowerExample activeShower;
-        private Transform activeShowerTR;
         private PlayerClasses.PlayerInteractive playerInteractive;
 
 
@@ -25,6 +24,8 @@ namespace Features
 
         [SerializeField] private Transform reloadPoint;
         [SerializeField] private ShowerLeverOnWall leverOnWall;
+        private Vector3 lastPivotPos;
+
 
         private void Awake()
         {
@@ -34,7 +35,6 @@ namespace Features
         {
             isDragged = true;
             activeShower = ashower;
-            activeShowerTR = activeShower.transform;
         }
         private void Update()
         {
@@ -54,7 +54,6 @@ namespace Features
         {
             isDragged = false;
             activeShower = null;
-            activeShowerTR = null;
         }
 
         private void MoveShowerToPlayerPointer()
@@ -65,13 +64,20 @@ namespace Features
             Vector3 shPos = pivot.position;
             Vector3 target = playerInteractive.GetHitPoint();
             target.y = shPos.y;
+
+            var dist = Vector3.Distance(shPos, target);
             // если расстояние слишком близко
-            if (Vector3.Distance(shPos, target) > 0.1f)
+            if (dist > 0.1f)
             {
                 Vector3 nextPos = Vector3.LerpUnclamped(shPos, target, Time.deltaTime * speed);
                 nextPos.x = Mathf.Clamp(nextPos.x, minXPoint.position.x, maxXPoint.position.x);
                 nextPos.z = Mathf.Clamp(nextPos.z, minZPoint.position.z, maxZPoint.position.z);
                 pivot.position = nextPos;
+
+                if (Vector3.Distance(pivot.position, lastPivotPos) > 0.0075f)
+                    activeShower.OnMove();
+
+                lastPivotPos = pivot.position;
             }
         }
         private void MoveShowerToReloadLever()

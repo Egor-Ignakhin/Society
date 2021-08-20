@@ -11,6 +11,127 @@ namespace CarouselAnomaly
         private Vector3 PointPos;
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
+
+        #region Player Interaction
+
+        #region  Variables
+
+        #region Mechanics
+        [Range(0f, 10f)] [SerializeField] private float interactionTime = 2;
+        [Range(0f, 20f)] [SerializeField] private float playerMaxHeight = 2;
+        [Range(0f, 180f)] [SerializeField] private float degreesPerSecondMax = 90;
+        private float degreesPerSec = 0;
+        private GameObject player;
+        private GameObject playerContainer;
+        private FirstPersonController playerFPC;
+        private Vector3 playerAcceleration;
+        #endregion
+
+        #region State Pattern
+        private Dictionary<Type, ICarouselBehaviour> behavioursMap;
+        private ICarouselBehaviour currentBehaviour;
+        #endregion
+
+        #endregion
+
+        #region Methods
+
+        #region State Pattern Methods
+        private void InitBehaviours()
+        {
+            behavioursMap = new Dictionary<Type, ICarouselBehaviour>();
+            behavioursMap[typeof(SearchPlayer)] = new SearchPlayer(this, interactionTime);
+            behavioursMap[typeof(HoldPlayer)] = new HoldPlayer(this, interactionTime);
+            behavioursMap[typeof(FreePlayer)] = new FreePlayer(this, interactionTime);
+        }
+        private void SetBehaviour(ICarouselBehaviour newBehaviour)
+        {
+            currentBehaviour = newBehaviour;
+            currentBehaviour.Enter();
+        }
+        private ICarouselBehaviour GetBehaviour<T>() where T : ICarouselBehaviour
+        {
+            var type = typeof(T);
+            return behavioursMap[type];
+        }
+        private void SetBehaviourByDefault()
+        {
+            SetBehaviourSearch();
+        }
+        public void SetBehaviourSearch()
+        {
+            var behaviour = GetBehaviour<SearchPlayer>();
+            SetBehaviour (behaviour);
+        }
+        public void SetBehaviourHold()
+        {
+            var behaviour = GetBehaviour<HoldPlayer>();
+            SetBehaviour(behaviour);
+        }
+        public void SetBehaviourFree()
+        {
+            var behaviour = GetBehaviour<FreePlayer>();
+            SetBehaviour(behaviour);
+        }
+        #endregion
+
+        #region Mechanics Methods
+        public void SetPlayer(GameObject player)
+        {
+            this.player = player;
+        }
+        public Transform GetPlayerTransform()
+        {
+            return player.transform;
+        }
+        public Vector3 GetPointPos()
+        {
+            return PointPos;
+        }
+        public void SetPlayerContainer()
+        {
+            playerContainer.transform.position = player.transform.position;
+            playerContainer.transform.rotation = player.transform.rotation;
+        }
+        public void SetPlayerFPC()
+        {
+            playerFPC = player.GetComponent<FirstPersonController>();
+        }
+        public void PlayerFixedUpdate()
+        {
+            if (degreesPerSec == 0) StartCoroutine(DegreesPerSecCalc());
+            if (player != null)
+            {
+                //move:
+                playerAcceleration.y += 0.15f * (- player.GetComponent<Rigidbody>().velocity.y) + 0.08f * (playerMaxHeight - player.transform.position.y);
+                player.GetComponent<Rigidbody>().AddForce(playerAcceleration * player.GetComponent<Rigidbody>().mass);
+                //rotate:
+                playerContainer.transform.position = player.transform.position;
+                playerContainer.transform.rotation = player.transform.rotation;
+                playerContainer.transform.Rotate(0, Time.fixedDeltaTime * degreesPerSec, 0);
+                playerFPC.SetPosAndRot(playerContainer.transform);
+
+            }
+
+        }
+
+        System.Collections.IEnumerator DegreesPerSecCalc()
+        {
+            float times = interactionTime * 10;
+            for (int i = 0; i < times; i++)
+            {
+                degreesPerSec += (degreesPerSecondMax / times);
+                yield return new WaitForSeconds(0.1f);
+            }
+            degreesPerSec = 0;
+            yield break;
+        }
+        #endregion
+
+        #endregion
+
+        #endregion
+
         public void InitCollider(Collider c)
         {
             mCollider = c;
@@ -20,6 +141,10 @@ namespace CarouselAnomaly
 
         private System.Collections.IEnumerator Start()
         {
+            InitBehaviours();
+            playerContainer = new GameObject();
+            SetBehaviourByDefault();
+            playerAcceleration = new Vector3(0, 0, 0);
             while (true)
             {
                 targetPos = CalculateSpawnPosition(zone.transform, zone);
@@ -53,16 +178,25 @@ namespace CarouselAnomaly
             Vector3 itemPos;
             for (int i = 0; i < items.Count; i++)
             {
-                itemPos = items[i].transform.position;
-                float m = Vector3.Distance(PointPos, itemPos);
-                m *= 1 / m;
-                items[i].AddForce((PointPos - itemPos).normalized * m, ForceMode.VelocityChange);
-                items[i].angularVelocity += new Vector3(5, 0, 0) * Time.deltaTime;
-                if (itemPos.y > (PointPos.y - 1))
+                if (items[i].gameObject.GetComponent<FirstPersonController>()!=null)
                 {
-                    items[i].AddForce(-(PointPos - itemPos).normalized * m * 100, ForceMode.VelocityChange);
+                    if (player == null) currentBehaviour.PlayerDetected(items[i].gameObject);
                 }
+                else
+                {
+                    itemPos = items[i].transform.position;
+                    float m = Vector3.Distance(PointPos, itemPos);
+                    m *= 1 / m;
+                    items[i].AddForce((PointPos - itemPos).normalized * m, ForceMode.VelocityChange);
+                    items[i].angularVelocity += new Vector3(5, 0, 0) * Time.fixedDeltaTime;
+                    if (itemPos.y > (PointPos.y - 1))
+                    {
+                        items[i].AddForce(-(PointPos - itemPos).normalized * m * 100, ForceMode.VelocityChange);
+                    }
+                }
+
             }
+            currentBehaviour.Update();
             MoveToTarget();
         }
         private void MoveToTarget()
@@ -70,4 +204,100 @@ namespace CarouselAnomaly
             transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.fixedDeltaTime);
         }
     }
+    #region State classes
+    public interface ICarouselBehaviour
+    {
+        void Enter();
+        void Exit();
+        void Update();
+        void PlayerDetected(GameObject p);
+    }
+
+    public class HoldPlayer : ICarouselBehaviour
+    {
+        private CarouselManager cm;
+        private float t;
+        public void PlayerDetected(GameObject p) {/*do nothing*/}
+        public HoldPlayer(CarouselManager cm, float t)
+        {
+            this.cm = cm;
+            this.t = t;
+        }
+        public void Enter()
+        {
+            cm.StartCoroutine(Timer());
+        }
+        public void Exit()
+        {
+            cm.SetBehaviourFree();
+        }
+        public void Update()
+        {
+            cm.PlayerFixedUpdate();
+        }
+        System.Collections.IEnumerator Timer()
+        {
+            yield return new WaitForSeconds(t);
+            Exit();
+            yield break;
+        }
+    }
+    public class FreePlayer : ICarouselBehaviour
+    {
+        private CarouselManager cm;
+        private float t;
+        public void PlayerDetected(GameObject p) {/*do nothing*/}
+        public FreePlayer(CarouselManager cm, float t)
+        {
+            this.cm = cm;
+            this.t = t;
+        }
+        public void Enter()
+        {
+            cm.SetPlayer(null);
+            cm.StartCoroutine(Timer());
+        }
+        public void Exit()
+        {
+            cm.SetBehaviourSearch();
+        }
+        public void Update()
+        {
+
+        }
+        System.Collections.IEnumerator Timer()
+        {
+            yield return new WaitForSeconds(t);
+            Exit();
+            yield break;
+        }
+    }
+    public class SearchPlayer : ICarouselBehaviour
+    {
+        private CarouselManager cm;
+        public void PlayerDetected(GameObject p) 
+        {
+            cm.SetPlayer(p);
+            cm.SetPlayerContainer();
+            cm.SetPlayerFPC();
+            Exit();
+        }
+        public SearchPlayer(CarouselManager cm, float t)
+        {
+            this.cm = cm;
+        }
+        public void Enter()
+        {
+
+        }
+        public void Exit()
+        {
+            cm.SetBehaviourHold();
+        }
+        public void Update()
+        {
+
+        }
+    }
+    #endregion
 }

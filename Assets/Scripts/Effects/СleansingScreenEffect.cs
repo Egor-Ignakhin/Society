@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public sealed class СleansingScreenEffect : MonoBehaviour
 {
     private Image mImage;
-    private float braking = 1;
+    private double braking = 1;
     private Color startColor = Color.white;
     public event Action FinishEvent;
-    public void OnInit(float b, Color sc)
+    public void OnInit(double b, Color sc)
     {
         braking = b;
-        startColor = sc;        
+        startColor = sc;
     }
 
     public void SubsctibeOnFinish(Action method) => FinishEvent += method;
@@ -28,8 +28,10 @@ public sealed class СleansingScreenEffect : MonoBehaviour
 
     private void LerpColor()
     {
-        mImage.color -= new Color(0, 0, 0, Time.deltaTime / braking);
-        if (mImage.color.a <= 0)
+        var color = mImage.color;
+        color.a = Mathf.MoveTowards(color.a, 0, (float)(Time.deltaTime / braking));
+        mImage.color = color;
+        if (mImage.color.a == 0)
         {
             FinishEvent?.Invoke();
             FinishEvent = null;
