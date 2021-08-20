@@ -23,7 +23,6 @@ namespace CarouselAnomaly
                 {
                     if (value == 0) Die();
                     health = value;
-                    Debug.Log(health);
                 }
             }
 
@@ -62,7 +61,7 @@ namespace CarouselAnomaly
                 GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
                 p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120*i, Vector3.up) * Vector3.forward*explosionImpulse);
             }
-            explosion.SetActive(true);
+            Instantiate(explosion, PointPos, Quaternion.identity);
             Destroy(gameObject);
         }
         #region State Pattern Methods
@@ -162,7 +161,6 @@ namespace CarouselAnomaly
 
         private System.Collections.IEnumerator Start()
         {
-            explosion.SetActive(false);
             InitBehaviours();
             SetBehaviourByDefault();
             playerAcceleration = new Vector3(0, 0, 0);
