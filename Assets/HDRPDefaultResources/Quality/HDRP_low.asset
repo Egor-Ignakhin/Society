@@ -236,8 +236,8 @@ MonoBehaviour:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 2
-      maxPunctualLightsOnScreen: 512
+      maxDirectionalLightsOnScreen: 1
+      maxPunctualLightsOnScreen: 16
       maxAreaLightsOnScreen: 32
       maxEnvLightsOnScreen: 32
       maxDecalsOnScreen: 128
@@ -331,13 +331,13 @@ MonoBehaviour:
       m_SchemaId:
         m_Id: With3Levels
     lightingQualitySettings:
-      AOStepCount: 040000000600000010000000
+      AOStepCount: 010000000200000003000000
       AOFullRes: 000001
-      AOMaximumRadiusPixels: 200000002800000050000000
+      AOMaximumRadiusPixels: 100000001400000028000000
       AOBilateralUpsample: 000101
       AODirectionCount: 010000000200000004000000
-      ContactShadowSampleCount: 060000000a00000010000000
-      SSRMaxRaySteps: 020000002000000040000000
+      ContactShadowSampleCount: 010000000200000003000000
+      SSRMaxRaySteps: 010000000200000003000000
   allowShaderVariantStripping: 1
   enableSRPBatcher: 1
   shaderVariantLogLevel: 0

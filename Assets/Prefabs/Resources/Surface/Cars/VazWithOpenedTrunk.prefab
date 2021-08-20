@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6774947249037063552}
   - component: {fileID: 6652876335636398410}
   - component: {fileID: 784467030091552016}
+  - component: {fileID: 1520020457027344445}
   m_Layer: 0
   m_Name: Object.002_low
   m_TagString: Untagged
@@ -80,6 +81,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &1520020457027344445
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2188043033160763496}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6554783835400971848, guid: f29148e095dea3748a0d9aa4465caf0f, type: 3}
 --- !u!1 &2464340560716234163
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,7 +104,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2988358265649473289}
-  - component: {fileID: 1143688484}
   m_Layer: 0
   m_Name: VazWithOpenedTrunk
   m_TagString: Untagged
@@ -113,20 +127,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: 0}
---- !u!64 &1143688484
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2464340560716234163}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &7598700657499961919
 GameObject:
   m_ObjectHideFlags: 0
