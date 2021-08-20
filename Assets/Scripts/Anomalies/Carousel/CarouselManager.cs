@@ -14,15 +14,14 @@ namespace CarouselAnomaly
         [SerializeField] private GameObject explosion;
         private readonly float explosionImpulse = 20;
         [SerializeField] private GameObject piece;
-        //private int maxHealth;
         [SerializeField] [Range(1, 10)] private int health;
         private int Health 
             {
             get {return health;}
             set
                 {
+                    health = value;                    
                     if (value == 0) Die();
-                    health = value;
                 }
             }
 
@@ -62,7 +61,7 @@ namespace CarouselAnomaly
                 p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120*i, Vector3.up) * Vector3.forward*explosionImpulse);
             }
             Instantiate(explosion, PointPos, Quaternion.identity);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         #region State Pattern Methods
         private void InitBehaviours()

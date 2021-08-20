@@ -25,7 +25,7 @@ public class CarouselePiece : MonoBehaviour
     void FixedUpdate()
     {
         dragDirection = - rb.velocity.normalized;
-        dragMagnitude = rb.velocity.sqrMagnitude;
+        dragMagnitude = rb.velocity.sqrMagnitude*drag;
         rb.AddForce(dragMagnitude*dragDirection);
     }
 }
