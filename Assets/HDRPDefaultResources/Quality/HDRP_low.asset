@@ -195,9 +195,9 @@ MonoBehaviour:
     increaseSssSampleCount: 0
     supportVolumetrics: 0
     increaseResolutionOfVolumetrics: 0
-    supportLightLayers: 0
+    supportLightLayers: 1
     lightLayerName0: Light Layer default
-    lightLayerName1: Light Layer 1
+    lightLayerName1: Lamp
     lightLayerName2: Light Layer 2
     lightLayerName3: Light Layer 3
     lightLayerName4: Light Layer 4
@@ -337,7 +337,7 @@ MonoBehaviour:
       AOBilateralUpsample: 000101
       AODirectionCount: 010000000200000004000000
       ContactShadowSampleCount: 060000000a00000010000000
-      SSRMaxRaySteps: 100000002000000040000000
+      SSRMaxRaySteps: 020000002000000040000000
   allowShaderVariantStripping: 1
   enableSRPBatcher: 1
   shaderVariantLogLevel: 0
