@@ -24,7 +24,8 @@ namespace Features
         private AudioClip waterDropClip;
         private AudioClip moveClip;
         [SerializeField] private AudioSource mAudS;
-        [SerializeField] private AudioSource movableAudioSource;        
+        [SerializeField] private AudioSource movableAudioSource;
+        [SerializeField] private Transform weightArrow;
 
         internal bool ChangeEnableWater()
         {
@@ -39,6 +40,7 @@ namespace Features
             WaterIsEnable = false;
             SetType(nameof(ShowerExample));
             UpdateWaterDesc();
+            MWaterContent.ChangeWaterWeightEvent += OnChangeWaterWeight;
         }
 
         internal void AddContentByTime()
@@ -73,6 +75,14 @@ namespace Features
         private void UpdateWaterDesc() =>
             additionalDescription = $" ({Math.Round(MWaterContent.WaterWeight, 1)}/{MWaterContent.MaxWaterWeight})";
 
+        private void OnChangeWaterWeight(float v)
+        {
+            var angles = weightArrow.localEulerAngles;            
+            float maxAngle = 220;
+            angles.y = maxAngle * v / MWaterContent.MaxWaterWeight;
+            weightArrow.localRotation = Quaternion.Euler(angles);
+        }
+
 
         private void SetEnableWaterAudioEffect(bool isEnabled)
         {
@@ -88,22 +98,37 @@ namespace Features
             }
         }
         public void OnMove()
-        {            
+        {
             if (movableAudioSource.isPlaying)
                 return;
 
             movableAudioSource.Stop();
             movableAudioSource.clip = moveClip;
-            movableAudioSource.Play();            
+            movableAudioSource.Play();
         }
 
         public sealed class WaterContent
         {
-            public float WaterWeight { get; set; }
+            public event Action<float> ChangeWaterWeightEvent;
+            private float waterWeight;
+
+            public float WaterWeight
+            {
+                get => waterWeight;
+                set
+                {
+                    ChangeWaterWeightEvent?.Invoke(value);
+                    waterWeight = value;
+                }
+            }
             public float MaxWaterWeight { get; set; } = 20;
             public WaterContent()
             {
                 WaterWeight = MaxWaterWeight;
+            }
+            ~WaterContent()
+            {
+                ChangeWaterWeightEvent = null;
             }
         }
     }
