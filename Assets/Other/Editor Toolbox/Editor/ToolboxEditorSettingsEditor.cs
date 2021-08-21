@@ -13,6 +13,10 @@ namespace Toolbox.Editor
     [CanEditMultipleObjects, InitializeOnLoad]
     internal class ToolboxEditorSettingsEditor : ToolboxEditor
     {
+        static ToolboxEditorSettingsEditor()
+        {
+        }
+
         private ToolboxEditorSettings currentTarget;
 
         private AnimBool hierarchyAnimBool;

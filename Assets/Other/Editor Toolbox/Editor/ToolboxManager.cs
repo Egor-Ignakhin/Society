@@ -8,6 +8,11 @@ namespace Toolbox.Editor
     [InitializeOnLoad]
     internal static class ToolboxManager
     {
+        static ToolboxManager
+        ()
+        {
+        }
+
         private const string settingsType = nameof(ToolboxEditorSettings);
 
         private static Editor globalSettingsEditor;

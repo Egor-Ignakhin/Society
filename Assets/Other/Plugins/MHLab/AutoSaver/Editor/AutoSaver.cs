@@ -78,7 +78,7 @@ public class AutoSaver
         }
     }
 
-    private static void OnEnterInPlayMode()
+    private static void OnEnterInPlayMode(PlayModeStateChange state)
     {
         if (SaveOnPlay && !EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode)
             SaveScene();
@@ -103,7 +103,7 @@ public class AutoSaver
     {
         _lastAutosaveTime = DateTime.Now;
         EditorApplication.update += OnUpdate;
-        EditorApplication.playmodeStateChanged += OnEnterInPlayMode;
+        EditorApplication.playModeStateChanged += OnEnterInPlayMode;        
         IsEnabled = true;
         if (IsDebugEnabled) Debug.Log("AutoSaver: ON");
     }
@@ -114,7 +114,7 @@ public class AutoSaver
     public static void DeactivateAutosaver()
     {
         EditorApplication.update -= OnUpdate;
-        EditorApplication.playmodeStateChanged -= OnEnterInPlayMode;
+        EditorApplication.playModeStateChanged -= OnEnterInPlayMode;
         IsEnabled = false;
         if (IsDebugEnabled) Debug.Log("AutoSaver: OFF");
     }

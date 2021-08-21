@@ -7,7 +7,7 @@ namespace EnviromentMobs
     {
         private Animator mAnim;
         private NavMeshAgent mAgent;
-        private Transform target;
+        private readonly Transform target;
 
         public void OnInit()
         {
