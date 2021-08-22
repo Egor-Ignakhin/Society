@@ -1,36 +1,60 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace EnviromentMobs
+namespace Society.Monsters.EnviromentMobs
 {
-    sealed class ShrummiExample : PoolableObject
+    public sealed class ShrummiExample : MonoBehaviour
     {
-        private Animator mAnim;
+        private Vector3 targetPosition;
+        private ShrummiesManager shrummiesManager;
         private NavMeshAgent mAgent;
-        private readonly Transform target;
+        private AudioSource mAudioSource;
+        private AudioClip stepClip;
 
-        public void OnInit()
+        private void Awake()
         {
-            mAnim = GetComponent<Animator>();
-            mAgent = GetComponent<NavMeshAgent>();            
+            mAgent = GetComponent<NavMeshAgent>();
+            mAudioSource = GetComponent<AudioSource>();
+            transform.root.TryGetComponent(out shrummiesManager);
+            shrummiesManager.AddFreeExample(this);
+            stepClip = Resources.Load<AudioClip>("Enemyes\\Shrummie\\Shrummie_walk");
+        }
+        internal void OnInit(Vector3 spawnedPosition, Vector3 targetPosition, ShrummiesManager shrummiesManager)
+        {
+            this.transform.position = spawnedPosition;
+            this.targetPosition = targetPosition;
+            this.shrummiesManager = shrummiesManager;
         }
 
         private void FixedUpdate()
         {
-            return;
-            mAnim.SetBool("IsMove", mAgent.isOnNavMesh);
-            if (mAgent.isOnNavMesh)
-            {
-                mAgent.SetDestination(target.position);
-            }
+            MoveToTarget();
+        }
+        private void MoveToTarget()
+        {
+            if (!mAgent.isOnNavMesh)
+                return;
+
+            mAgent.SetDestination(targetPosition);
+            var direction = (targetPosition - transform.position).normalized;
+            direction.y = 0f;
             if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
-            {
-                var targetRotation = Quaternion.LookRotation(mAgent.steeringTarget - transform.position, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2.0f);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
 
-                transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
-            }
+            if (mAgent.pathPending)
+                return;
 
+            if (Vector3.Distance(mAgent.pathEndPosition, transform.position) >= mAgent.stoppingDistance)
+                return;
+
+            if (mAgent.hasPath && mAgent.velocity.sqrMagnitude != 0f)
+                return;
+
+            shrummiesManager.HideExample(this);
+        }
+        public void StepEvent()
+        {
+            mAudioSource.PlayOneShot(stepClip);
         }
     }
 }

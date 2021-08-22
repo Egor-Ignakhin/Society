@@ -4,53 +4,63 @@ namespace Features
 {
     sealed class ShowerExample : InteractiveObject
     {
-        [SerializeField] private ShowerGarden showerGarden;
-        private WaterContent MWaterContent { get; set; } = new WaterContent();
-        [SerializeField] private ParticleSystem waterEffect;
-        private bool waterIsEnable;
-        public bool WaterIsEnable
-        {
-            get => waterIsEnable; set
-            {
-                var emission = waterEffect.emission;
-                emission.enabled = value;
-                SetEnableWaterAudioEffect(value);
-                waterIsEnable = value;
-            }
-        }
-        public bool ContentIsFilled => MWaterContent.WaterWeight >= MWaterContent.MaxWaterWeight;
-
-        public bool IsReloading { get; internal set; }
-        private AudioClip waterDropClip;
-        private AudioClip moveClip;
+        [SerializeField] private ShowerManager showerGarden;
         [SerializeField] private AudioSource mAudS;
         [SerializeField] private AudioSource movableAudioSource;
         [SerializeField] private Transform weightArrow;
+        [SerializeField] private ParticleSystem waterParticleSystem;
 
-        internal bool ChangeEnableWater()
+        private AudioClip waterAudio;
+        private AudioClip moveAudio;
+
+        public bool IsFull;// => waterContent.WaterWeight >= waterContent.MaxWaterWeight; 
+
+        public bool GetIsFull() => IsFull;
+        public void SetIsFull(bool v) => IsFull = v;
+
+        private bool isWaterOpen;
+
+        public event Action<float> ChangeWaterVolumeEvent;
+
+        private float waterVolume;
+        public float MaxWaterVolume { get; set; } = 20;
+
+        public float GetWaterVolume()
         {
-            WaterIsEnable = !WaterIsEnable;
-            return WaterIsEnable;
+            return waterVolume;
+        }
+
+        public void SetWaterVolume(float value)
+        {
+            ChangeWaterVolumeEvent?.Invoke(value);
+            waterVolume = value;
+        }
+
+        private void SetIsWaterOpen(bool value)
+        {
+            isWaterOpen = value;
+
+            var waterEmission = waterParticleSystem.emission;
+            waterEmission.enabled = value;
+            SetEnableWaterAudioEffect(value);
+        }
+
+        internal bool ChangeIsWaterOpen()
+        {
+            SetIsWaterOpen(!isWaterOpen);
+            return isWaterOpen;
         }
 
         private void Start()
         {
-            waterDropClip = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
-            moveClip = Resources.Load<AudioClip>("ShowerGarden\\ShowerMove");
-            WaterIsEnable = false;
-            SetType(nameof(ShowerExample));
-            UpdateWaterDesc();
-            MWaterContent.ChangeWaterWeightEvent += OnChangeWaterWeight;
-        }
+            waterAudio = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
+            moveAudio = Resources.Load<AudioClip>("ShowerGarden\\ShowerMove");
+            SetIsWaterOpen(false);
+            SetType(nameof(ShowerExample));            
+            ChangeWaterVolumeEvent += OnChangeWaterWeight;
 
-        internal void AddContentByTime()
-        {
-            MWaterContent.WaterWeight += Time.deltaTime;
-            if (ContentIsFilled)
-            {
-                IsReloading = false;
-            }
-            UpdateWaterDesc();
+            SetWaterVolume(MaxWaterVolume);
+
         }
 
         public override void Interact()
@@ -59,27 +69,20 @@ namespace Features
         }
         private void Update()
         {
-            if (WaterIsEnable)
+            if (isWaterOpen)
             {
-                if (MWaterContent.WaterWeight >= 0)
-                    PourOutWater();
-                else WaterIsEnable = false;
+                if (GetWaterVolume() >= 0)
+                    SetWaterVolume(GetWaterVolume() - Time.deltaTime);
+                else
+                    SetIsWaterOpen(false);
             }
-        }
-        private void PourOutWater()
-        {
-            MWaterContent.WaterWeight -= Time.deltaTime;
-
-            UpdateWaterDesc();
-        }
-        private void UpdateWaterDesc() =>
-            additionalDescription = $" ({Math.Round(MWaterContent.WaterWeight, 1)}/{MWaterContent.MaxWaterWeight})";
+        }     
 
         private void OnChangeWaterWeight(float v)
         {
-            var angles = weightArrow.localEulerAngles;            
+            var angles = weightArrow.localEulerAngles;
             float maxAngle = 220;
-            angles.y = maxAngle * v / MWaterContent.MaxWaterWeight;
+            angles.y = maxAngle * v / MaxWaterVolume;
             weightArrow.localRotation = Quaternion.Euler(angles);
         }
 
@@ -88,7 +91,7 @@ namespace Features
         {
             if (isEnabled)
             {
-                mAudS.clip = waterDropClip;
+                mAudS.clip = waterAudio;
                 mAudS.Play();
             }
             else
@@ -103,33 +106,12 @@ namespace Features
                 return;
 
             movableAudioSource.Stop();
-            movableAudioSource.clip = moveClip;
+            movableAudioSource.clip = moveAudio;
             movableAudioSource.Play();
         }
 
-        public sealed class WaterContent
-        {
-            public event Action<float> ChangeWaterWeightEvent;
-            private float waterWeight;
+        private void OnDisable() =>
+            ChangeWaterVolumeEvent = null;
 
-            public float WaterWeight
-            {
-                get => waterWeight;
-                set
-                {
-                    ChangeWaterWeightEvent?.Invoke(value);
-                    waterWeight = value;
-                }
-            }
-            public float MaxWaterWeight { get; set; } = 20;
-            public WaterContent()
-            {
-                WaterWeight = MaxWaterWeight;
-            }
-            ~WaterContent()
-            {
-                ChangeWaterWeightEvent = null;
-            }
-        }
     }
 }
