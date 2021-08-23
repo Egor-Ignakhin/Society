@@ -981,6 +981,14 @@
       <Project>{27C03352-97F7-A6EE-02BA-DA951EA0B871}</Project>
       <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
     </ProjectReference>
+    <ProjectReference Include="TexturePacker.Editor.csproj">
+      <Project>{39781871-EA67-0A98-1DC1-729FDAD019B6}</Project>
+      <Name>TexturePacker.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="TexturePacker.Runtime.csproj">
+      <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
+      <Name>TexturePacker.Runtime</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
