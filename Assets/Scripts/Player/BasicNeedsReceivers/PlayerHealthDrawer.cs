@@ -12,24 +12,69 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         [SerializeField] private Image mImage;// большая левая строка здоровья                
         [SerializeField] private Image add_hp_food;
         [SerializeField] private Image add_hp_thirst;
+
+
         #endregion
 
         #region Подпички-отписки событий
-        private void OnEnable() => basicNeeds.HealthChangeValue += OnChangePlayerHealth;
+        private void OnEnable()
+        {
+            basicNeeds.HealthChangeValue += OnChangePlayerHealth;
+            basicNeeds.FoodChangeValue += OnChangeFoodOrThirst;
+            basicNeeds.ThirstChangeValue += OnChangeFoodOrThirst;
+        }
 
-        private void OnDisable() => basicNeeds.HealthChangeValue -= OnChangePlayerHealth;
+        private void OnDisable()
+        {
+            basicNeeds.HealthChangeValue -= OnChangePlayerHealth;
+            basicNeeds.FoodChangeValue -= OnChangeFoodOrThirst;
+            basicNeeds.ThirstChangeValue -= OnChangeFoodOrThirst;
+        }
         #endregion
 
         private void OnChangePlayerHealth(float health)
         {
             float fillDef = health / (basicNeeds.MaximumHealth * 0.5f);
-            float fill_Hp_food = (health > (basicNeeds.MaximumHealth / 2) && basicNeeds.Food > 0) ? (health - (basicNeeds.MaximumHealth * 0.5f)) / (basicNeeds.MaximumHealth / 4) : 0;
-            float fill_Hp_thirst = health > (basicNeeds.MaximumHealth / 1.5f) ? (health - (basicNeeds.MaximumHealth * 0.75f)) / (basicNeeds.MaximumHealth / 4) : 0;
+            float fill_Hp_food = (basicNeeds.Food > 0 || (basicNeeds.Thirst > 0)) && (health > (basicNeeds.MaximumHealth / 2)) ? ((health - (basicNeeds.MaximumHealth * 0.5f)) / (basicNeeds.MaximumHealth / 4)) : 0;
+            float fill_Hp_thirst = (basicNeeds.Food > 0) && (health > (basicNeeds.MaximumHealth / 1.5f)) ? ((health - (basicNeeds.MaximumHealth * 0.75f)) / (basicNeeds.MaximumHealth / 4)) : 0;
             mImage.fillAmount = fillDef;
 
 
             add_hp_food.fillAmount = fill_Hp_food;
             add_hp_thirst.fillAmount = fill_Hp_thirst;
+        }
+
+        private void OnChangeFoodOrThirst(float _)
+        {
+            if (basicNeeds.Food == 0)
+            {
+                if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
+                {
+                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.75f));
+                }
+                if (basicNeeds.Thirst == 0)
+                {
+                    if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.5f)
+                    {
+                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.5f));
+                    }
+                }
+            }
+            if (basicNeeds.Thirst == 0)
+            {
+                if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
+                {
+                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.75f));
+                }
+                if (basicNeeds.Food == 0)
+                {
+                    if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.5f)
+                    {
+                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.5f));
+                    }
+                }
+            }
+            OnChangePlayerHealth(basicNeeds.Health);
         }
     }
 }

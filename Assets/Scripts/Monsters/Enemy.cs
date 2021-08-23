@@ -284,11 +284,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         {
             SetAnimationClip();
         }
-    }
-    /// <summary>
-    /// функция поворота к цели
-    /// </summary>
-    protected abstract void LookOnTarget();
+    }    
     /// <summary>
     /// функция задачи анимаций
     /// </summary>

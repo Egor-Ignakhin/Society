@@ -4,46 +4,46 @@ namespace Features
 {
     sealed class ShowerLeverOnWall : InteractiveObject
     {
-        private bool leverIsOpened = false;
         [SerializeField] private ShowerExample showerExample;
-
-        public bool LeverIsOpened
-        {
-            get => leverIsOpened; set
-            {
-                var em = waterEffect.emission;
-                em.enabled = value;
-                SetType(!value ? "ClosedShowerLever" : "OpenedShowerLever");
-                SetEnableWaterAudioEffect(value);
-                leverIsOpened = value;
-            }
-        }
-        [SerializeField] private ParticleSystem waterEffect;
+        [SerializeField] private ParticleSystem waterParticleSystem;
         [SerializeField] private AudioSource mAudS;
 
-        private AudioClip waterDropClip;
+
+        public bool IsLeverOpen { get; private set; }
+
+        public void SetIsLeverOpen(bool value)
+        {
+            IsLeverOpen = value;
+
+            var em = waterParticleSystem.emission;
+            em.enabled = value;
+            SetType(!value ? "ClosedShowerLever" : "OpenedShowerLever");
+            SetEnableWaterAudioEffect(value);
+        }
+
+        private AudioClip waterAudio;
         private void Start()
         {
-            waterDropClip = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
-            LeverIsOpened = false;
+            waterAudio = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
+            SetIsLeverOpen(false);
         }
 
         public override void Interact()
         {
-            LeverIsOpened = !LeverIsOpened;
+            SetIsLeverOpen(!IsLeverOpen);
         }
         private void Update()
         {
-            if (LeverIsOpened && showerExample.IsReloading)
-            {
-                showerExample.AddContentByTime();
+            if (IsLeverOpen && (!showerExample.GetIsFull()))
+            {                
+                showerExample.SetWaterVolume(showerExample.GetWaterVolume() + Time.deltaTime);
             }
         }
         private void SetEnableWaterAudioEffect(bool isEnabled)
         {
             if (isEnabled)
             {
-                mAudS.clip = waterDropClip;
+                mAudS.clip = waterAudio;
                 mAudS.Play();
             }
             else

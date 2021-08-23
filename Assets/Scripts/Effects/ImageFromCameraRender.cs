@@ -1,15 +1,17 @@
 ﻿using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
-public class ImageFromCameraRender : MonoBehaviour
+sealed class ImageFromCameraRender : MonoBehaviour
 {
-    [SerializeField] private Camera cam;
-    [SerializeField] private GameObject g;
+#if UNITY_EDITOR
+    private Camera cam;    
     [SerializeField] private bool isItem;
     private void Start()
     {
-        if (isItem)
-            g = transform.GetChild(0).gameObject;
+        cam = GetComponent<Camera>();
         RenderTexture currentRT = RenderTexture.active;
 
         RenderTexture rt = isItem ? new RenderTexture(256, 256, 64) : new RenderTexture(3840, 2160, 4096);
@@ -30,14 +32,22 @@ public class ImageFromCameraRender : MonoBehaviour
 
         // Пишем текстуру в .png файл
         byte[] bytes = image.EncodeToPNG();
-        File.WriteAllBytes(Directory.GetCurrentDirectory() + "/Assets/ImageFromCameraRender/" + g.name + ".png", bytes);
+        File.WriteAllBytes(Directory.GetCurrentDirectory() + "/Assets/NormalImages/ImageFromCameraRender/" + "render" + ".png", bytes);
 
         // Восстанавливаем рендер таргет
         RenderTexture.active = currentRT;
 
         // Чистим все (при необходимости)
-        Destroy(image);
-        //    Destroy(rt);
-
+        Destroy(image);   
     }
+
+    [MenuItem("Tools/Create Render Camera")]
+    private static void CreateCamera()
+    {
+        var cgm = Instantiate(Resources.Load<ImageFromCameraRender>("Editor\\ImageFromCameraRender"));
+        cgm.transform.rotation = SceneView.lastActiveSceneView.rotation;
+
+        Selection.activeObject = cgm;
+    }
+#endif
 }

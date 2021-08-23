@@ -161,7 +161,7 @@ namespace Toolbox.Editor.Hierarchy
                 }
             }
 
-            private GUIContent GetTooltip(Rect rect)
+            private GUIContent GetTooltip()
             {
                 var componentsCount = cachedComponents.Count;
                 var tooltipBuilder = new StringBuilder();
@@ -215,8 +215,8 @@ namespace Toolbox.Editor.Hierarchy
                     summWidth = baseWidth;
                 }
 
-                componentIcon = componentIcon ?? EditorGUIUtility.IconContent("cs Script Icon").image;
-                transformIcon = transformIcon ?? EditorGUIUtility.IconContent("Transform Icon").image;
+                componentIcon = componentIcon != null ? componentIcon : EditorGUIUtility.IconContent("cs Script Icon").image;
+                transformIcon = transformIcon != null ? transformIcon : EditorGUIUtility.IconContent("Transform Icon").image;
             }
 
             public override float GetWidth()
@@ -237,7 +237,7 @@ namespace Toolbox.Editor.Hierarchy
                     if (componentsCount > 1)
                     {
                         //draw tooltip based on all available components
-                        GUI.Label(rect, GetTooltip(rect));
+                        GUI.Label(rect, GetTooltip());
 
                         rect.xMin -= baseWidth * (componentsCount - 2);
 

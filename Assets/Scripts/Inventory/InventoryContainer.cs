@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using System;
 
 namespace Inventory
 {
@@ -23,36 +24,17 @@ namespace Inventory
             {
                 if (eventReceiver == null)
                 {
-                    inventoryInput = gameObject.AddComponent<InventoryInput>();
-
                     eventReceiver = new InventoryEventReceiver(mainParent, FindObjectOfType<FirstPersonController>(), freeCellsContainer,
-                busyCellsContainer, this, ItemsLabelDescription, inventoryInput, inventoryDrawer, weightText, takeAllButton,
+                busyCellsContainer, this, ItemsLabelDescription, MInventoryInput, inventoryDrawer, weightText, takeAllButton,
                 ModifiersActivator, modifiersPage, FindObjectOfType<SMG.SMGInventoryCellsEventReceiver>());
                 }
                 return eventReceiver;
             }
         }
 
-        internal bool ContainsIds(List<ItemStates.ItemsID> Itemids)
-        {
-            foreach (var itemid in Itemids)
-            {
-                int id = (int)itemid;
-                foreach (var cell in Cells)
-                {
-                    if (cell.Id == id)
-                        return true;
-                }
-            }
-            return false;
-        }
-            
-
-
-
         private readonly List<InventoryCell> HotCells = new List<InventoryCell>();
         public List<InventoryCell> GetHotCells() => HotCells;
-        private InventoryEffects inventoryEffects;
+        private InventorySoundEffects inventorySoundEffects;
 
         private readonly InventorySaver inventorySaver = new InventorySaver();
         [SerializeField] private Transform freeCellsContainer;
@@ -64,7 +46,19 @@ namespace Inventory
         [SerializeField] private Button ModifiersActivator;
         [SerializeField] private GameObject modifiersPage;
         [SerializeField] private Button takeAllButton;// кнопка у слотов контейнеров, забирает всё, что можно        
-        public InventoryInput inventoryInput { get; private set; }
+
+        private InventoryInput inventoryInput;
+        public InventoryInput MInventoryInput
+        {
+            get
+            {
+                if (inventoryInput == null)
+                    inventoryInput = gameObject.AddComponent<InventoryInput>();
+                return inventoryInput;
+            }
+            private set => inventoryInput = value;
+        }
+
         private InventoryDrawer inventoryDrawer;
 
         public delegate void InteractiveHandler(int id, int count);
@@ -75,25 +69,24 @@ namespace Inventory
         public delegate void AnimationHandler();
         public event AnimationHandler CellAnimationEvent;
         private bool canInteractive;
+
         internal async void SetInteractive(bool v)
         {
             await Task.Delay(100);
             canInteractive = v;
 
 
-            inventoryInput.SetInteractive(v);
+            MInventoryInput.SetInteractive(v);
             inventoryDrawer.GetSupportContainer().gameObject.SetActive(v);
 
 
         }
-        private void Awake()
-        {
-            prefabsData = new PrefabsData();
-        }
+        private void Awake() => prefabsData = new PrefabsData();
+
 
         private void OnEnable()
         {
-            inventoryEffects = new InventoryEffects(gameObject);
+            inventorySoundEffects = new InventorySoundEffects(MInventoryInput);
             playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
@@ -149,7 +142,7 @@ namespace Inventory
             if (Cells.FindAll(c => c.IsEmpty()).Count == 0)// если не нашлись свободные слоты
             {
                 //выбрасывание предмета обратно
-                inventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
+                MInventoryInput.DropItem(GetItemPrefab(id), id, count, gun);
                 return;
             }
 
@@ -171,7 +164,7 @@ namespace Inventory
             if (!isRecursion)
                 TakeItemEvent?.Invoke(id, count);
         }
-        public void SpendOnCell() => inventoryEffects.PlaySpendClip();
+        public void SpendOnCell() => inventorySoundEffects.PlaySpendClip();
         internal void ClearInventory()
         {
             foreach (var c in Cells)
@@ -188,6 +181,7 @@ namespace Inventory
         {
             Save(Cells);
             EventReceiver.OnDisable();
+            inventorySoundEffects.OnDisable();
             StopCoroutine(nameof(CellAnimator));
         }
         /// <summary>
@@ -206,17 +200,45 @@ namespace Inventory
                 yield return null;
             }
         }
-        public class InventoryEffects
+        public sealed class InventorySoundEffects
         {
             private readonly AudioClip spendOnCellClip;// звук при наведении на слот
+
+            private readonly AudioClip openInventoryClip;
+            private readonly AudioClip closeInventoryClip;
+
             private readonly AudioSource inventorySpeaker;
-            public InventoryEffects(GameObject main)
+            private readonly InventoryInput inventoryInput;
+
+            private bool isInitialize;
+            public InventorySoundEffects(InventoryInput input)
             {
                 spendOnCellClip = Resources.Load<AudioClip>("Inventory\\tic_2");
-                inventorySpeaker = main.AddComponent<AudioSource>();
-                inventorySpeaker.volume = 0.2f;
+                closeInventoryClip = Resources.Load<AudioClip>("Inventory\\CloseInventory");
+                openInventoryClip = Resources.Load<AudioClip>("Inventory\\OpenInventory");
+
+                inventorySpeaker = new GameObject(nameof(inventorySpeaker)).AddComponent<AudioSource>();
+
+                inventorySpeaker.transform.SetParent(GameObject.Find("Common").transform);
+
+
+                inventoryInput = input;
+                inventoryInput.ChangeActiveEvent += PlayEnableClip;
             }
+
             public void PlaySpendClip() => inventorySpeaker.PlayOneShot(spendOnCellClip);
+
+            private void PlayEnableClip(bool value)
+            {
+                if (!isInitialize)
+                {
+                    isInitialize = true;
+                    return;
+                }
+                inventorySpeaker.PlayOneShot(value ? openInventoryClip : closeInventoryClip);
+            }
+
+            public void OnDisable() => inventoryInput.ChangeActiveEvent -= PlayEnableClip;
         }
     }
 }
