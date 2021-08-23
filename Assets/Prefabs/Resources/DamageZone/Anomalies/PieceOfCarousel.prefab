@@ -121,6 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6333947027392172706}
   - component: {fileID: 809739009249835399}
+  - component: {fileID: 5633859533591684987}
   m_Layer: 0
   m_Name: PieceOfCarousel
   m_TagString: Untagged
@@ -157,6 +158,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 6333947026673858070}
   drag: 0.25
+--- !u!114 &5633859533591684987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6333947027392172707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f00ce01cd09d14792965f64f45e639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 1
+  startItem: 23
+  itsGun: 0
+  titleGun: 0
+  mags: []
+  magIndex: 0
+  silencers: []
+  silencerIndex: 0
+  aims: []
+  aimIndex: 0
+  ammoCount: 0
 --- !u!1 &7719271338446571547
 GameObject:
   m_ObjectHideFlags: 0
