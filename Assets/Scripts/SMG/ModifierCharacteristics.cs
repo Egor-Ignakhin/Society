@@ -1,7 +1,7 @@
 ﻿using Inventory;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
 
 namespace SMG
@@ -12,7 +12,7 @@ namespace SMG
         public enum ModifierTypes { None, Silencer, Mag, Aim }
         public enum ModifierIndex { None, _1, _2, _3 }
 
-        private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions;            
+        private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions;
 
         //доступ по имени оружия, типу мода и индксу мода и возврат всех возможных характеристик
         public static readonly Dictionary<SMGTitleTypeIndex, SMGModifierItem> modifiersCharacteristics = new Dictionary<SMGTitleTypeIndex, SMGModifierItem>();
@@ -33,22 +33,11 @@ namespace SMG
 
                         int index = modifiersCharacteristics.Count;
                         modifiersCharacteristics.Add(ttis[index], new SMGModifierItem(ttis[index], GunCharacteristics.GetBulletsCountFromTTI(ttis[index])));
-                        modsDescrtiptions.Add(ttis[index], (GunCharacteristics.GetNormalTitleFromTTI(ttis[index]), 
+                        modsDescrtiptions.Add(ttis[index], (GunCharacteristics.GetNormalTitleFromTTI(ttis[index]),
                             GunCharacteristics.GetNormalDescriptionFromTTI(ttis[index]), modifiersCharacteristics[ttis[0]].sprite));
                     }
                 }
-            }            
-        }
-
-        internal static GunTitles GetGunIdFromInvId(int id)
-        {
-            if (id == (int)ItemStates.ItemsID.Makarov)
-                return GunTitles.Makarov;
-            if (id == (int)ItemStates.ItemsID.TTPistol)
-                return GunTitles.TT_Pistol;
-            if (id == (int)ItemStates.ItemsID.Ak_74)
-                return GunTitles.Ak_74;
-            return GunTitles.None;
+            }
         }
 
         internal static (string title, string description, Sprite sprite) GetTitleDescSprite(SMGTitleTypeIndex tti)
@@ -92,9 +81,9 @@ namespace SMG
             /// <returns></returns>
             internal static SMGTitleTypeIndex StructFromIcGun(SMGInventoryCellGun gun, ModifierTypes type)
             {
-                return new SMGTitleTypeIndex((GunTitles)gun.Title, type, type == ModifierTypes.Mag? 
-                    (ModifierIndex)gun.Mag : (type == ModifierTypes.Silencer? (ModifierIndex)gun.Silencer : (ModifierIndex)gun.Aim));
-            }            
+                return new SMGTitleTypeIndex((GunTitles)gun.Title, type, type == ModifierTypes.Mag ?
+                    (ModifierIndex)gun.Mag : (type == ModifierTypes.Silencer ? (ModifierIndex)gun.Silencer : (ModifierIndex)gun.Aim));
+            }
         }
         /// <summary>
         /// контейнер содержащий спрайт модификатора и его характеристики
@@ -107,7 +96,7 @@ namespace SMG
             {
                 sprite = Resources.Load<Sprite>($"SMGModifiers\\{tti.Title}\\{tti.Type}\\{tti.Index}");
                 ammoCount = aC;
-            }            
+            }
         }
     }
 }

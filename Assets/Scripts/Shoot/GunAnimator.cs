@@ -140,9 +140,6 @@ namespace Shoots
 
             switch (id)
             {
-                case (int)ItemStates.ItemsID.Makarov:
-                    currentActiveGunI = 0;
-                    break;
                 case (int)ItemStates.ItemsID.TTPistol:
                     currentActiveGunI = 1;
                     break;

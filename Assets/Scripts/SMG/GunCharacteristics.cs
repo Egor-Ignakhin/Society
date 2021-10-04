@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using static Inventory.ItemStates;
 
 namespace SMG
@@ -15,7 +16,6 @@ namespace SMG
             LoadGuns();
             guns = new Dictionary<ItemsID, GunDescription.Gun>
             {
-                {ItemsID.Makarov, gunDescription.Data[GunsID.Makarov]},
                 {ItemsID.TTPistol, gunDescription.Data[GunsID.TTPistol]},
                 {ItemsID.Ak_74, gunDescription.Data[GunsID.Ak_74]}
             };
