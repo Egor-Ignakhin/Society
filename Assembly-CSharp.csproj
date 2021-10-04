@@ -243,7 +243,7 @@
     <Compile Include="Assets\Scripts\Player\PlayerSoundEffects.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerSoundsCalculator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStatements.cs" />
-    <Compile Include="Assets\Scripts\Player\PreafabsCreator.cs" />
+    <Compile Include="Assets\Scripts\Player\PrefabsCreator.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector.cs" />
     <Compile Include="Assets\Scripts\Player\TerrainDetector_MaterialData.cs" />
     <Compile Include="Assets\Scripts\Player\ToolExample.cs" />
@@ -932,9 +932,6 @@
     <Reference Include="Unity.Recorder.Base">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Recorder.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime">
-      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.RenderPipelines.HighDefinition.Config.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VisualEffectGraph.Editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.VisualEffectGraph.Editor.dll</HintPath>
     </Reference>
@@ -977,6 +974,10 @@
     <ProjectReference Include="TexturePacker.Runtime.csproj">
       <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
       <Name>TexturePacker.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
+      <Project>{27C03352-97F7-A6EE-02BA-DA951EA0B871}</Project>
+      <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@ namespace SMG
 {
     public static class ModifierCharacteristics
     {
-        public enum GunTitles { None, Makarov, TT_Pistol, Ak_74 }
+        public enum GunTitles { None, TT_Pistol, Ak_74 }
         public enum ModifierTypes { None, Silencer, Mag, Aim }
         public enum ModifierIndex { None, _1, _2, _3 }
 
@@ -21,7 +21,7 @@ namespace SMG
             modsDescrtiptions = new Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)>();
             List<SMGTitleTypeIndex> ttis = new List<SMGTitleTypeIndex>();
 
-            var gunsCount = 3;
+            var gunsCount = 2;
             for (int g = 1; g <= gunsCount; g++)
             {
                 GunTitles gun = (GunTitles)g;

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using static SMG.ModifierCharacteristics;
 
 
-
 //объект с возможностью положить в инвентарь
 public sealed class InventoryItem : InteractiveObject
 {
@@ -12,10 +11,9 @@ public sealed class InventoryItem : InteractiveObject
     private InventoryContainer inventoryContainer;
     [SerializeField] private ItemStates.ItemsID startItem;
     public int Id { get; private set; }
-    [SerializeField] private bool itsGun;
+    [HideInInspector] [SerializeField] private bool itsGun;
 
     private SMGInventoryCellGun possibleGun = new SMGInventoryCellGun();
-    [ShowIf(nameof(itsGun), true)] [SerializeField] private GunTitles titleGun = GunTitles.None;
 
     [ShowIf(nameof(itsGun), true)]
     [SerializeField] private List<GameObject> mags = new List<GameObject>();
@@ -48,13 +46,22 @@ public sealed class InventoryItem : InteractiveObject
 
     private void Start()
     {
+        ///Функция преобразующая тип <see cref="ItemStates.ItemsID"/> в тип <see cref="ItemStates.GunsID"> для индекса данного предмета.
+        int GetGunIdFromItemId()
+        {
+            string nameSI = startItem.ToString();
+            int retV = (int)System.Enum.Parse(typeof(ItemStates.GunsID), nameSI);
+
+            return retV;
+        }
+
         inventoryContainer = FindObjectOfType<InventoryContainer>();
         MainDescription = Localization.MainTypes.Item;
 
         SetId((int)startItem);
         SetType(startItem.ToString());
         if (!isDroppedGun)
-            possibleGun.Reload((int)titleGun, (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex);
+            possibleGun.Reload(GetGunIdFromItemId(), (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex);
 
         gameObject.AddComponent<Effects.InvItemCollision>().OnInit(this, GetComponent<Rigidbody>());
     }
@@ -83,6 +90,12 @@ public sealed class InventoryItem : InteractiveObject
     }
     private void OnValidate()
     {
+        itsGun = ItemStates.ItsGun((int)startItem);
+        print(itsGun);
+
+        if (!itsGun)
+            return;
+
         SetEnableActiveMod(silencers, (int)silencerIndex);
         SetEnableActiveMod(aims, (int)aimIndex);
         SetEnableActiveMod(mags, (int)magIndex);
@@ -90,7 +103,7 @@ public sealed class InventoryItem : InteractiveObject
     private void SetEnableActiveMod(List<GameObject> mods, int index)
     {
         for (int i = 0; i < mods.Count; i++)
-            mods[i].SetActive(i == (int)index);
+            mods[i].SetActive(i == index);
     }
 
     internal void SetCount(int c) => count = c;

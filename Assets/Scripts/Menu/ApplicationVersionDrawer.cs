@@ -4,7 +4,7 @@ using UnityEditor.Callbacks;
 #endif
 using UnityEngine;
 
-namespace Tools
+namespace Society.Tools
 {
     sealed class ApplicationVersionDrawer : MonoBehaviour
     {

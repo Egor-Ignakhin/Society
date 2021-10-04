@@ -74,11 +74,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 1
-  startItem: 12
+  startItem: 11
   itsGun: 0
   titleGun: 0
+  mags: []
   magIndex: 0
+  silencers: []
   silencerIndex: 0
+  aims: []
+  aimIndex: 0
   ammoCount: 0
 --- !u!1001 &4942437314559478978
 PrefabInstance:
@@ -165,7 +169,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6d9648bf31d3b03479ad9fab3a549a54,
         type: 3}
       propertyPath: m_Name
-      value: Lom_Item_1
+      value: Lom
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6d9648bf31d3b03479ad9fab3a549a54,
         type: 3}

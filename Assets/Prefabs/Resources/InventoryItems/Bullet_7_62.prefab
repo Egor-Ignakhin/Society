@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 9026500246201047761}
   - component: {fileID: 4285937502670452149}
   m_Layer: 8
-  m_Name: 7.62 bullet_Item_1
+  m_Name: Bullet_7_62
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,11 +93,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 1
-  startItem: 9
+  startItem: 8
   itsGun: 0
   titleGun: 0
+  mags: []
   magIndex: 0
+  silencers: []
   silencerIndex: 0
+  aims: []
+  aimIndex: 0
   ammoCount: 0
 --- !u!1 &4610526911978551238
 GameObject:

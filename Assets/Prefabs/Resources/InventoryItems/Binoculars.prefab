@@ -29,11 +29,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 1
-  startItem: 7
+  startItem: 6
   itsGun: 0
   titleGun: 0
+  mags: []
   magIndex: 0
+  silencers: []
   silencerIndex: 0
+  aims: []
+  aimIndex: 0
   ammoCount: 0
 --- !u!1 &4801385024823758460
 GameObject:
@@ -164,7 +168,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f13ac3230bc60964cb7f16d49ff14022,
         type: 3}
       propertyPath: m_Name
-      value: Binoculars_item_1
+      value: Binoculars
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f13ac3230bc60964cb7f16d49ff14022,
         type: 3}

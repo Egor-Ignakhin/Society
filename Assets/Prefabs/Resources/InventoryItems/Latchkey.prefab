@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3299856197748720877}
   - component: {fileID: 1901832062480943944}
   - component: {fileID: 4431644729501876098}
-  - component: {fileID: 919132147773903601}
   - component: {fileID: 919132147773903602}
   - component: {fileID: 7460352498707650704}
+  - component: {fileID: 919132147773903601}
   m_Layer: 9
   m_Name: Latchkey
   m_TagString: Untagged
@@ -82,29 +82,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &919132147773903601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2774394490182393431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f00ce01cd09d14792965f64f45e639, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  count: 1
-  startItem: 22
-  itsGun: 0
-  titleGun: 0
-  mags: []
-  magIndex: 0
-  silencers: []
-  silencerIndex: 0
-  aims: []
-  aimIndex: 0
-  ammoCount: 0
 --- !u!65 &919132147773903602
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -134,3 +111,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &919132147773903601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2774394490182393431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f00ce01cd09d14792965f64f45e639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 1
+  startItem: 21
+  itsGun: 0
+  titleGun: 0
+  mags: []
+  magIndex: 0
+  silencers: []
+  silencerIndex: 0
+  aims: []
+  aimIndex: 0
+  ammoCount: 0
