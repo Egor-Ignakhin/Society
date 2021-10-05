@@ -7,4 +7,16 @@ public sealed class DogEnemy : Enemy
         base.Start();
         deathClip = Resources.LoadAll<AudioClip>("Enemyes\\Death\\BloodDog\\");
     }
+    protected override void Death(float health)
+    {
+        if (health > UniqueVariables.MinHealth)
+            return;
+        mAgent.enabled = false;
+        SetAnimationClip();
+        mAnim.applyRootMotion = true;
+        enabled = false;
+        DeathEvent.Invoke();
+        MonstersData.RemoveEnemy(this);
+        PlayDeathClip();
+    }
 }

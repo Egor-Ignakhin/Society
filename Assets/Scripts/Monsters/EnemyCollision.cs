@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyCollision : MonoBehaviour
 {
@@ -21,5 +20,9 @@ public class EnemyCollision : MonoBehaviour
     private void OnDisable()
     {
         mParent.DeathEvent -= Death;
+    }
+    internal void SetEnemyParent(Enemy eParent)
+    {
+        mParent = eParent;
     }
 }

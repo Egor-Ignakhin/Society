@@ -61,7 +61,7 @@ namespace Shoots
 
                 if (enemy)
                 {
-                    enemy.InjureEnemy(damage);
+                    enemy.InjureEnemy(damage);                    
                 }
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))

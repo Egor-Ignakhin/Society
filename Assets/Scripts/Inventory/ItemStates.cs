@@ -12,7 +12,7 @@
             Default, Axe_1, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
             Lom, WoodBoard, SteelSheet, Brick, Plywood, Rope, Magazine_1, Magazine_2, Magazine_3, Magazine_4, Latchkey, Item
         }
-        public enum GunsID : int { Makarov, TTPistol, Ak_74 }
+        public enum GunsID : int { TTPistol, Ak_74 }
 
         #endregion
 

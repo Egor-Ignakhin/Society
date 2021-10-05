@@ -1,6 +1,7 @@
 ﻿using PlayerClasses;
-using System.Linq;
+
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -62,7 +63,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
 
     protected BasicNeeds enemy;// текущий противник
 
-    public event System.Action DeathEvent;
+    public System.Action DeathEvent;
 
     private float WaitTarget;// время которое монстр будет выжидать на последней замеченной позиции игрока    
 
@@ -99,8 +100,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     }
     protected class AnimationsContainer
     {
-        public const string MoveToPerson = "MoveToPerson";
-        public const string Death = "Death";
+        public const string MoveToPerson = "MoveToPerson";        
         public const string Attack = "Attack";
     }
 
@@ -200,21 +200,8 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     /// <summary>
     /// функция смерти
     /// </summary>
-    private void Death(float health)
-    {
-        if (health > UniqueVariables.MinHealth)
-            return;
-        mAgent.enabled = false;
-        SetAnimationClip();
-        mAnim.Play($"death_{Random.Range(1, 3)}");
-        mAnim.SetBool(AnimationsContainer.Death, true);
-        mAnim.applyRootMotion = true;
-        enabled = false;
-        DeathEvent.Invoke();
-        MonstersData.RemoveEnemy(this);
-        PlayDeathClip();
-    }
-    private void PlayDeathClip()
+    protected abstract void Death(float health);    
+    protected void PlayDeathClip()
     {
         stepEnemy.PlayDeathClip(deathClip);
     }
@@ -284,7 +271,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
         {
             SetAnimationClip();
         }
-    }    
+    }
     /// <summary>
     /// функция задачи анимаций
     /// </summary>
@@ -292,8 +279,7 @@ public abstract class Enemy : MonoBehaviour, IMovableController
     /// <param name="value"></param>
     protected void SetAnimationClip(string state = "", bool value = true)
     {
-        mAnim.SetBool(AnimationsContainer.MoveToPerson, false);
-        mAnim.SetBool(AnimationsContainer.Death, false);
+        mAnim.SetBool(AnimationsContainer.MoveToPerson, false);        
         mAnim.SetBool(AnimationsContainer.Attack, false);
         if (state != string.Empty)
             mAnim.SetBool(state, value);

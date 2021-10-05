@@ -141,10 +141,10 @@ namespace Shoots
             switch (id)
             {
                 case (int)ItemStates.ItemsID.TTPistol:
-                    currentActiveGunI = 1;
+                    currentActiveGunI = 0;
                     break;
                 case (int)ItemStates.ItemsID.Ak_74:
-                    currentActiveGunI = 2;
+                    currentActiveGunI = 1;
                     break;
                 default:
                     currentActiveGunI = -1;

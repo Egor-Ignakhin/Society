@@ -49,10 +49,14 @@ public sealed class InventoryItem : InteractiveObject
         ///Функция преобразующая тип <see cref="ItemStates.ItemsID"/> в тип <see cref="ItemStates.GunsID"> для индекса данного предмета.
         int GetGunIdFromItemId()
         {
-            string nameSI = startItem.ToString();
-            int retV = (int)System.Enum.Parse(typeof(ItemStates.GunsID), nameSI);
+            if (itsGun)
+            {
+                string nameSI = startItem.ToString();
+                int retV = (int)System.Enum.Parse(typeof(ItemStates.GunsID), nameSI);
 
-            return retV;
+                return retV;
+            }
+            return Id;
         }
 
         inventoryContainer = FindObjectOfType<InventoryContainer>();
@@ -91,7 +95,7 @@ public sealed class InventoryItem : InteractiveObject
     private void OnValidate()
     {
         itsGun = ItemStates.ItsGun((int)startItem);
-        print(itsGun);
+
 
         if (!itsGun)
             return;
