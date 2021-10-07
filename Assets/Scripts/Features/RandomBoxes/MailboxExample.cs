@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Society.Inventory;
+
+using UnityEngine;
 
 namespace Features.RandomBoxes
 {
@@ -8,8 +10,8 @@ namespace Features.RandomBoxes
         {
             UnlockItems = new System.Collections.Generic.List<(int, bool)>
             {
-                ((int)Inventory.ItemStates.ItemsID.Lom, false),
-                ((int)Inventory.ItemStates.ItemsID.Latchkey, true)
+                ((int)ItemStates.ItemsID.Lom, false),
+                ((int)ItemStates.ItemsID.Latchkey, true)
             };
             clipsByIT = new System.Collections.Generic.Dictionary<InveractionType, AudioClip[]>
             {

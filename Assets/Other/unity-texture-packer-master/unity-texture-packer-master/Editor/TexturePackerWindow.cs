@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using UnityEditor;
+
 using UnityEngine;
 
 namespace TexPacker
@@ -38,7 +40,7 @@ namespace TexPacker
             minSize = _windowSize;
             titleContent = new GUIContent(_windowTitle);
 
-            for(int i = _textureSupportedResolutionMin; i <= _textureSupportedResolutionMax; i *= 2)
+            for (int i = _textureSupportedResolutionMin; i <= _textureSupportedResolutionMax; i *= 2)
             {
                 _textureResolutions.Add(i);
                 _textureResolutionsNames.Add(i.ToString());
@@ -53,7 +55,7 @@ namespace TexPacker
             if (_items.Count == 0)
                 return;
 
-            var toDeleteItems = _items.Where(x => x.toDelete==true).ToList();
+            var toDeleteItems = _items.Where(x => x.toDelete == true).ToList();
             foreach (var item in toDeleteItems)
             {
                 _texturePacker.Remove(item.input);
@@ -113,9 +115,9 @@ namespace TexPacker
                 {
                     Texture2D output = _texturePacker.Create();
 
-                    if(_textureFormat == TextureFormat.JPG)
+                    if (_textureFormat == TextureFormat.JPG)
                         File.WriteAllBytes(savePath, output.EncodeToJPG());
-                    else if(_textureFormat == TextureFormat.PNG)
+                    else if (_textureFormat == TextureFormat.PNG)
                         File.WriteAllBytes(savePath, output.EncodeToPNG());
                     else
                         File.WriteAllBytes(savePath, output.EncodeToEXR());

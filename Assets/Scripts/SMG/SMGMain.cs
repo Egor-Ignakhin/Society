@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Society.Effects;
+using Society.GameScreens;
+using Society.Inventory;
+using Society.Player.Controllers;
+
 using UnityEngine;
 
-namespace SMG
+namespace Society.SMG
 {
     public class SMGMain : MonoBehaviour, IGameScreen
     {
@@ -42,7 +46,7 @@ namespace SMG
         {
             effectsManager = FindObjectOfType<EffectsManager>();
             EventReceiver = new SMGEventReceiver(GunsCellsData, modifiersAnswer,
-                FindObjectOfType<Inventory.InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer, DEA);
+                FindObjectOfType<InventoryContainer>(), FindObjectOfType<SMGModifiersData>(), modifiersCellDescription, additionCellsForModifiers, activeModifiersContainer, DEA);
             MSMGCamera = MSMG.GetComponent<Camera>();
             mCanvas = GetComponent<Canvas>();
             SetEnable(false);

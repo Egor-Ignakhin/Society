@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
-namespace SMG
+namespace Society.SMG
 {/// <summary>
 /// класс отвечающий за отображение установленных модификаций
 /// </summary>
@@ -14,10 +15,10 @@ namespace SMG
         [SerializeField] private ModifierCharacteristics.ModifierIndex silencerIndex;
         private void UpdateModifiers()
         {
-            for (int i = 0; i < mags.Count; i++)            
+            for (int i = 0; i < mags.Count; i++)
                 mags[i].SetActive(i == (int)magIndex);
-            
-            for (int i = 0; i < aims.Count; i++)            
+
+            for (int i = 0; i < aims.Count; i++)
                 aims[i].SetActive(i == (int)aimIndex);
 
             for (int i = 0; i < silencers.Count; i++)

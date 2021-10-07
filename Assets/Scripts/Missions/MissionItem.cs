@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-namespace Missions
+﻿using Society.Patterns;
+
+using UnityEngine;
+namespace Society.Missions
 {
     sealed class MissionItem : InteractiveObject
     {

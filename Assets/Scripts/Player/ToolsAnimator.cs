@@ -1,11 +1,13 @@
-﻿using Inventory;
-using System;
+﻿using Society.Effects.MapOfWorldCanvasEffects;
+using Society.Inventory;
+
 using System.Collections.Generic;
+
 using UnityEngine;
 
 class ToolsAnimator : MonoBehaviour
 {
-    private readonly Dictionary<int, ToolExample> Tools = new Dictionary<int, ToolExample>();    
+    private readonly Dictionary<int, ToolExample> Tools = new Dictionary<int, ToolExample>();
     private int currentActiveToolIt = -1;
     private MapOfWorldCanvas mapOfWorldCanvas;
     private void Start()
@@ -30,7 +32,7 @@ class ToolsAnimator : MonoBehaviour
     }
     private void DisableTools(ItemStates.ItemsID itemId = ItemStates.ItemsID.Default)
     {
-        foreach(var t in Tools)
+        foreach (var t in Tools)
         {
             t.Value.gameObject.SetActive((t.Value.GetID() == currentActiveToolIt) && (((ItemStates.ItemsID)t.Value.GetID()) != itemId));
         }

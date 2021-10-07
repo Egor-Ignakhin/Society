@@ -1,31 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using UnityEngine;
-
-public class MapOfWorldCanvas : MonoBehaviour
+namespace Society.Effects.MapOfWorldCanvasEffects
 {
-    [SerializeField] private List<MonoBehaviour> renderers = new List<MonoBehaviour>();
-    [SerializeField] private List<MonoBehaviour> binoculeRenderers = new List<MonoBehaviour>();
-
-    internal void EnableAllWithoutBunocule()
+    sealed class MapOfWorldCanvas : MonoBehaviour
     {
-        foreach (var r in renderers)
-            r.enabled = true;
-    }
+        [SerializeField] private List<MonoBehaviour> renderers = new List<MonoBehaviour>();
+        [SerializeField] private List<MonoBehaviour> binoculeRenderers = new List<MonoBehaviour>();
 
-    internal void DisableAllWithoutBunocule()
-    {
-        foreach (var r in renderers)
-            r.enabled = false;
-    }
-
-    internal void SetVisible(bool v)
-    {
-        foreach (var r in renderers)
-            r.enabled = v;
-        foreach (var br in binoculeRenderers)
+        internal void EnableAllWithoutBunocule()
         {
-            br.enabled = v;
+            foreach (var r in renderers)
+                r.enabled = true;
+        }
+
+        internal void DisableAllWithoutBunocule()
+        {
+            foreach (var r in renderers)
+                r.enabled = false;
+        }
+
+        internal void SetVisible(bool v)
+        {
+            foreach (var r in renderers)
+                r.enabled = v;
+            foreach (var br in binoculeRenderers)
+            {
+                br.enabled = v;
+            }
         }
     }
 }

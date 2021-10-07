@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
-using static SMG.ModifierCharacteristics;
-namespace SMG
+
+using static Society.SMG.ModifierCharacteristics;
+namespace Society.SMG
 {
     static class ModifiersPrefabsData
     {
@@ -14,7 +16,7 @@ namespace SMG
                 {
                     for (int i = 1; i < 3; i++)
                     {
-                        modPrefabs.Add(new SMGTitleTypeIndex((GunTitles)g, (ModifierTypes)t, (ModifierIndex)i), Resources.Load<GunModifier>($"SMG\\{(GunTitles)g}_{(ModifierTypes)t}{(ModifierIndex)i}"));
+                        modPrefabs.Add(new SMGTitleTypeIndex((GunTitles)g, (ModifierTypes)t, (ModifierIndex)i), Resources.Load<GunModifier>($"Society.SMG\\{(GunTitles)g}_{(ModifierTypes)t}{(ModifierIndex)i}"));
                     }
                 }
             }

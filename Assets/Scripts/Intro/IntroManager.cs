@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace IntroScripts
+namespace Society.Intro
 {
     sealed class IntroManager : MonoBehaviour// класс отвечающий за интро-сцену
     {
@@ -55,7 +56,7 @@ namespace IntroScripts
         }
         private void StartGame()
         {
-            FindObjectOfType<ScenesManager>().LoadNextScene();
+            FindObjectOfType<Society.GameScreens.ScenesManager>().LoadNextScene();
         }
     }
 }

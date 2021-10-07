@@ -1,52 +1,55 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+namespace Society.Patterns
 {
-    protected bool isInitialized = false;
-    private static bool wasDestroyed = false;
-    private static T instance;
-    public static T Instance
+    public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        get
+        protected bool isInitialized = false;
+        private static bool wasDestroyed = false;
+        private static T instance;
+        public static T Instance
         {
-            if (wasDestroyed)
-                return null;
-
-            if (instance == null)
+            get
             {
-                instance = FindObjectOfType<T>();
+                if (wasDestroyed)
+                    return null;
+
                 if (instance == null)
                 {
-                    GameObject singleton = new GameObject(typeof(T).ToString());
+                    instance = FindObjectOfType<T>();
+                    if (instance == null)
+                    {
+                        GameObject singleton = new GameObject(typeof(T).ToString());
 
-                    instance = singleton.AddComponent<T>();
+                        instance = singleton.AddComponent<T>();
+                    }
                 }
+                var heir = instance as Singleton<T>;
+                if (!heir.isInitialized)
+                    heir.Init();
+                return instance;
             }
-            var heir = instance as Singleton<T>;
-            if (!heir.isInitialized)
-                heir.Init();
-            return instance;
+            protected set
+            {
+                instance = value;
+            }
+
         }
-        protected set
+        public virtual void Init()
         {
-            instance = value;
+            isInitialized = true;
+            SceneManager.sceneLoaded += OnLevelLoad;
         }
+        private void OnLevelLoad(Scene scene, LoadSceneMode mode)
+        {
+            wasDestroyed = false;
+        }
+        protected void OnDestroy()
+        {
+            if (!isInitialized)
+                Init();
+            wasDestroyed = true;
+        }
+    }
 
-    }
-    public virtual void Init()
-    {
-        isInitialized = true;
-        SceneManager.sceneLoaded += OnLevelLoad;
-    }
-    private void OnLevelLoad(Scene scene, LoadSceneMode mode)
-    {
-        wasDestroyed = false;
-    }
-    protected void OnDestroy()
-    {
-        if (!isInitialized)
-            Init();
-        wasDestroyed = true;
-    }
 }
-

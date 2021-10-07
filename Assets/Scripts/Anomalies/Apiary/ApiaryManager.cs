@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-namespace ApiaryAnomaly
+namespace Society.Anomalies.ApiaryAnomaly
 {
-    public sealed class ApiaryManager : MonoBehaviour
+    sealed class ApiaryManager : MonoBehaviour
     {
         private void Update()
         {

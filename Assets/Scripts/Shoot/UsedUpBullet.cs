@@ -1,3 +1,7 @@
-﻿public class UsedUpBullet : PoolableObject
+﻿using Society.Patterns;
+namespace Society.Shoot
 {
+    public class UsedUpBullet : PoolableObject
+    {
+    }
 }

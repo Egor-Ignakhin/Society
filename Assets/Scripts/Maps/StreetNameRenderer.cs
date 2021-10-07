@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-namespace Maps
+namespace Society.Maps
 {
-    public class StreetNameRenderer : MonoBehaviour
+    sealed class StreetNameRenderer : MonoBehaviour
     {
         [SerializeField] private TMPro.TextMeshProUGUI textRenderer;
         internal void SetName(string streetName)

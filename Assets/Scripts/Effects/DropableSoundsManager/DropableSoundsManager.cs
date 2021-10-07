@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Effects
+namespace Society.Effects.DropableSoundsManager
 {
     public class DropableSoundsManager : MonoBehaviour
     {

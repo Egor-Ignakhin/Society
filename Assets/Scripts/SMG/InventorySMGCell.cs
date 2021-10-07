@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using Society.Patterns;
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SMG.ModifierCharacteristics;
 
-namespace SMG
+using static Society.SMG.ModifierCharacteristics;
+
+namespace Society.SMG
 {/// <summary>
 /// класс - слот с модификацией для оружия
 /// </summary>
@@ -16,10 +19,10 @@ namespace SMG
         {
             return TTI.Equals(SMGTitleTypeIndex.None);
         }
-        public void OnInit(SMGInventoryCellsEventReceiver smgicev)
+        public void OnInit(SMGInventoryCellsEventReceiver SMGicev)
         {
             mImage = GetComponent<Image>();
-            SMGICEV = smgicev;
+            SMGICEV = SMGicev;
         }
 
         public void Clear()

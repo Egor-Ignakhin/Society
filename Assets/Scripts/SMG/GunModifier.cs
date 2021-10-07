@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using PlayerClasses;
+﻿using Society.Patterns;
 
-namespace SMG
+using UnityEngine;
+
+namespace Society.SMG
 {
     /// <summary>
     /// навешивается на модификацию, которую можно подобрать в реальном мире

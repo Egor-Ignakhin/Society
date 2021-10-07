@@ -1,327 +1,331 @@
-﻿using MenuScripts.PauseMenu;
+﻿using Society.Effects;
+using Society.GameScreens;
+using Society.Menu.PauseMenu;
+using Society.Player.Controllers;
+
 using System.Collections.Generic;
 using System.IO;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace MenuScripts
+namespace Society.Menu.PauseMenu
 {
-    namespace PauseMenu
+    /// <summary>
+    /// класс - управлящий меню паузой
+    /// </summary>
+    sealed class MenuPauseManager : MonoBehaviour, IGameScreen
     {
-        /// <summary>
-        /// класс - управлящий меню паузой
-        /// </summary>
-        sealed class MenuPauseManager : MonoBehaviour, IGameScreen
+        private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
+        [SerializeField] private Transform mainParent;// контейнер сод. кнопки
+        [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
+        [SerializeField] private GameObject SettingsObj;// меню настроек     
+        [SerializeField] private Slider fovSlider;
+        [SerializeField] private TextMeshProUGUI fovText;
+        private FirstPersonController fpc;// контроллёр игрока
+        private static CurrentGameSettings currentGameSettings;
+        public static CurrentGameSettings GetCurrentGameSettings() => currentGameSettings;
+        private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
+        private EffectsManager effectsManager;
+        [SerializeField] private Toggle bloomToggle;
+
+        [SerializeField] private TextMeshProUGUI sensivityText;
+        [SerializeField] private Slider sensivitySlider;
+        [SerializeField] private Toggle reloadCABToggle;
+        private void Awake()
         {
-            private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
-            [SerializeField] private Transform mainParent;// контейнер сод. кнопки
-            [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
-            [SerializeField] private GameObject SettingsObj;// меню настроек     
-            [SerializeField] private Slider fovSlider;
-            [SerializeField] private TextMeshProUGUI fovText;
-            private FirstPersonController fpc;// контроллёр игрока
-            private static CurrentGameSettings currentGameSettings;
-            public static CurrentGameSettings GetCurrentGameSettings() => currentGameSettings;
-            private readonly string pathForSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
-            private EffectsManager effectsManager;
-            [SerializeField] private Toggle bloomToggle;
+            fpc = FindObjectOfType<FirstPersonController>();
+            effectsManager = FindObjectOfType<EffectsManager>();
+            menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, SettingsObj, this, effectsManager);
+            LoadData();
+        }
+        private void Start()
+        {
 
-            [SerializeField] private TextMeshProUGUI sensivityText;
-            [SerializeField] private Slider sensivitySlider;
-            [SerializeField] private Toggle reloadCABToggle;
-            private void Awake()
+            fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
+            fovText.SetText(currentGameSettings.FOV.ToString());
+            Camera.main.fieldOfView = currentGameSettings.FOV;
+
+            sensivitySlider.value = (float)currentGameSettings.Sensivity / 10;
+            sensivityText.SetText(currentGameSettings.Sensivity.ToString());
+
+            effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
+            effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled);
+            bloomToggle.isOn = currentGameSettings.BloomEnabled;
+            reloadCABToggle.isOn = currentGameSettings.reloadEffectEnabled;
+            SettingsObj.SetActive(false);
+            sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
+            fovSlider.onValueChanged.AddListener(ChangeFovSlider);
+
+            SetSensivityToFPC();
+        }
+
+        public void Enable() => menuEventReceiver.Enable();
+
+        private void SetSensivityToFPC()
+        {
+            fpc.SetSensivity(currentGameSettings.Sensivity);
+        }
+
+        /// <summary>
+        /// смена активности bloom'а
+        /// </summary>
+        /// <param name="t"></param>
+        public void SetActiveGlobalBloom()
+        {
+            if (effectsManager)
+                effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
+        }
+        public void SetActiveReloadCAB()
+        {
+            if (effectsManager)
+                effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled = reloadCABToggle.isOn);
+        }
+        public void ChangeFovSlider(float v)
+        {
+            currentGameSettings.FOV = currentGameSettings.minFov + ((currentGameSettings.maxFov - currentGameSettings.minFov) * v);
+
+            currentGameSettings.FOV = (float)System.Math.Round(currentGameSettings.FOV, 1);// округление до нормальных значений
+
+            fovText.SetText(currentGameSettings.FOV.ToString());
+            Camera.main.fieldOfView = currentGameSettings.FOV;
+        }
+        public void ChangeSensivitySlider(float v)
+        {
+            currentGameSettings.Sensivity = (int)(v * 10);
+
+            sensivityText.SetText(currentGameSettings.Sensivity.ToString());
+            SetSensivityToFPC();
+        }
+        private void LoadData()
+        {
+            try
             {
-                fpc = FindObjectOfType<FirstPersonController>();
-                effectsManager = FindObjectOfType<EffectsManager>();
-                menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, SettingsObj, this, effectsManager);
-                LoadData();
+                string data = File.ReadAllText(pathForSettings);
+                currentGameSettings = JsonUtility.FromJson<CurrentGameSettings>(data);
             }
-            private void Start()
+            catch
             {
+                currentGameSettings = new CurrentGameSettings();
+            }
+            if (currentGameSettings == null)
+                currentGameSettings = new CurrentGameSettings();
+        }
+        private void OnDisable()
+        {
+            SaveData();
+            sensivitySlider.onValueChanged.RemoveListener(ChangeSensivitySlider);
+            fovSlider.onValueChanged.RemoveListener(ChangeFovSlider);
+        }
 
-                fovSlider.value = (currentGameSettings.FOV - currentGameSettings.minFov) / (currentGameSettings.maxFov - currentGameSettings.minFov);
-                fovText.SetText(currentGameSettings.FOV.ToString());
-                Camera.main.fieldOfView = currentGameSettings.FOV;
+        private void SaveData()
+        {
+            string data = JsonUtility.ToJson(currentGameSettings, true);
+            File.WriteAllText(pathForSettings, data);
+        }
 
-                sensivitySlider.value = (float)currentGameSettings.Sensivity / 10;
-                sensivityText.SetText(currentGameSettings.Sensivity.ToString());
+        public bool Hide()
+        {
+            menuEventReceiver.Disable();
+            return true;
+        }
 
-                effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
-                effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled);
-                bloomToggle.isOn = currentGameSettings.BloomEnabled;
-                reloadCABToggle.isOn = currentGameSettings.reloadEffectEnabled;
+        public KeyCode HideKey() => KeyCode.Escape;
+
+        class MenuEventReceiver
+        {
+            private readonly GameObject menuUI;
+            private readonly GameObject SettingsObj;
+            private readonly CommandContainer commandContainer = new CommandContainer();
+            private readonly AdvancedSettings advanced = new AdvancedSettings();
+            private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
+            private readonly MenuPauseManager menuPauseManager;
+            private readonly EffectsManager effectsManager;
+            public class AdvancedSettings
+            {
+                public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
+                public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
+                public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
+            }
+            public MenuEventReceiver(GameObject menu, Transform mainParent, GameObject stn, MenuPauseManager mpm, EffectsManager em)
+            {
+                menuUI = menu;
+                SettingsObj = stn;
+                for (int i = 0; i < mainParent.childCount; i++)
+                {
+                    var c = mainParent.GetChild(i).GetChild(0).GetComponent<EventTrigger>();
+
+                    EventTrigger.Entry entry = new EventTrigger.Entry
+                    {
+                        eventID = EventTriggerType.PointerEnter
+                    };
+                    entry.callback.AddListener((data) => { IntersectMouse(c.gameObject); });
+                    c.triggers.Add(entry);
+
+                    EventTrigger.Entry down = new EventTrigger.Entry
+                    {
+                        eventID = EventTriggerType.PointerDown
+                    };
+                    down.callback.AddListener((data) => { Down(c.gameObject); });
+                    c.triggers.Add(down);
+
+                    EventTrigger.Entry up = new EventTrigger.Entry
+                    {
+                        eventID = EventTriggerType.PointerUp
+                    };
+                    up.callback.AddListener((data) => { Up(c.gameObject); });
+                    c.triggers.Add(up);
+
+                    btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
+                }
+                DisableAllTriggers();
+                menuPauseManager = mpm;
+                effectsManager = em;
+                Disable();
+            }
+
+            public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager);
+            public void Disable()
+            {
+                commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                 SettingsObj.SetActive(false);
-                sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
-                fovSlider.onValueChanged.AddListener(ChangeFovSlider);
-
-                SetSensivityToFPC();
-            }
-
-            public void Enable() => menuEventReceiver.Enable();
-
-            private void SetSensivityToFPC()
-            {
-                fpc.SetSensivity(currentGameSettings.Sensivity);
             }
 
             /// <summary>
-            /// смена активности bloom'а
+            /// наведение на кнопку
             /// </summary>
-            /// <param name="t"></param>
-            public void SetActiveGlobalBloom()
+            /// <param name="sender"></param>
+            public void IntersectMouse(GameObject sender)
             {
-                if (effectsManager)
-                    effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
+                DisableAllTriggers();
+                btns[sender].image.color = advanced.SelectedColor;
+                btns[sender].text.color = Color.white;
             }
-            public void SetActiveReloadCAB()
+            /// <summary>
+            /// нажатие на кнопку
+            /// </summary>
+            /// <param name="sender"></param>
+            public void Down(GameObject sender)
             {
-                if (effectsManager)
-                    effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled = reloadCABToggle.isOn);
+                btns[sender].image.color = advanced.PressedColor;
+                btns[sender].text.color = Color.white;
+                Doing(btns[sender].index);
             }
-            public void ChangeFovSlider(float v)
+            //отжатие кнопки
+            public void Up(GameObject sender)
             {
-                currentGameSettings.FOV = currentGameSettings.minFov + ((currentGameSettings.maxFov - currentGameSettings.minFov) * v);
-
-                currentGameSettings.FOV = (float)System.Math.Round(currentGameSettings.FOV, 1);// округление до нормальных значений
-
-                fovText.SetText(currentGameSettings.FOV.ToString());
-                Camera.main.fieldOfView = currentGameSettings.FOV;
+                DisableAllTriggers();
+                btns[sender].image.color = advanced.SelectedColor;
+                btns[sender].text.color = Color.white;
             }
-            public void ChangeSensivitySlider(float v)
+            /// <summary>
+            /// выключение видимости всех кнопок
+            /// </summary>
+            public void DisableAllTriggers()
             {
-                currentGameSettings.Sensivity = (int)(v * 10);
-
-                sensivityText.SetText(currentGameSettings.Sensivity.ToString());
-                SetSensivityToFPC();
-            }
-            private void LoadData()
-            {
-                try
+                foreach (var obj in btns)
                 {
-                    string data = File.ReadAllText(pathForSettings);
-                    currentGameSettings = JsonUtility.FromJson<CurrentGameSettings>(data);
-                }
-                catch
-                {
-                    currentGameSettings = new CurrentGameSettings();
-                }
-                if (currentGameSettings == null)
-                    currentGameSettings = new CurrentGameSettings();
-            }
-            private void OnDisable()
-            {
-                SaveData();
-                sensivitySlider.onValueChanged.RemoveListener(ChangeSensivitySlider);
-                fovSlider.onValueChanged.RemoveListener(ChangeFovSlider);
-            }
-
-            private void SaveData()
-            {
-                string data = JsonUtility.ToJson(currentGameSettings, true);
-                File.WriteAllText(pathForSettings, data);
-            }
-
-            public bool Hide()
-            {
-                menuEventReceiver.Disable();
-                return true;
-            }
-
-            public KeyCode HideKey() => KeyCode.Escape;
-
-            class MenuEventReceiver
-            {
-                private readonly GameObject menuUI;
-                private readonly GameObject SettingsObj;
-                private readonly CommandContainer commandContainer = new CommandContainer();
-                private readonly AdvancedSettings advanced = new AdvancedSettings();
-                private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
-                private readonly MenuPauseManager menuPauseManager;
-                private readonly EffectsManager effectsManager;
-                public class AdvancedSettings
-                {
-                    public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
-                    public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
-                    public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
-                }
-                public MenuEventReceiver(GameObject menu, Transform mainParent, GameObject stn, MenuPauseManager mpm, EffectsManager em)
-                {
-                    menuUI = menu;
-                    SettingsObj = stn;
-                    for (int i = 0; i < mainParent.childCount; i++)
-                    {
-                        var c = mainParent.GetChild(i).GetChild(0).GetComponent<EventTrigger>();
-
-                        EventTrigger.Entry entry = new EventTrigger.Entry
-                        {
-                            eventID = EventTriggerType.PointerEnter
-                        };
-                        entry.callback.AddListener((data) => { IntersectMouse(c.gameObject); });
-                        c.triggers.Add(entry);
-
-                        EventTrigger.Entry down = new EventTrigger.Entry
-                        {
-                            eventID = EventTriggerType.PointerDown
-                        };
-                        down.callback.AddListener((data) => { Down(c.gameObject); });
-                        c.triggers.Add(down);
-
-                        EventTrigger.Entry up = new EventTrigger.Entry
-                        {
-                            eventID = EventTriggerType.PointerUp
-                        };
-                        up.callback.AddListener((data) => { Up(c.gameObject); });
-                        c.triggers.Add(up);
-
-                        btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
-                    }
-                    DisableAllTriggers();
-                    menuPauseManager = mpm;
-                    effectsManager = em;
-                    Disable();
-                }
-
-                public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager);
-                public void Disable()
-                {
-                    commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
-                    SettingsObj.SetActive(false);
-                }
-
-                /// <summary>
-                /// наведение на кнопку
-                /// </summary>
-                /// <param name="sender"></param>
-                public void IntersectMouse(GameObject sender)
-                {
-                    DisableAllTriggers();
-                    btns[sender].image.color = advanced.SelectedColor;
-                    btns[sender].text.color = Color.white;
-                }
-                /// <summary>
-                /// нажатие на кнопку
-                /// </summary>
-                /// <param name="sender"></param>
-                public void Down(GameObject sender)
-                {
-                    btns[sender].image.color = advanced.PressedColor;
-                    btns[sender].text.color = Color.white;
-                    Doing(btns[sender].index);
-                }
-                //отжатие кнопки
-                public void Up(GameObject sender)
-                {
-                    DisableAllTriggers();
-                    btns[sender].image.color = advanced.SelectedColor;
-                    btns[sender].text.color = Color.white;
-                }
-                /// <summary>
-                /// выключение видимости всех кнопок
-                /// </summary>
-                public void DisableAllTriggers()
-                {
-                    foreach (var obj in btns)
-                    {
-                        obj.Value.image.color = advanced.DefaultColor;
-                        obj.Value.text.color = Color.black;
-                    }
-                }
-                public void Doing(int index)
-                {
-                    switch (index)
-                    {
-                        case 0:
-                            commandContainer.FastLoad();
-                            break;
-                        case 1:
-                            commandContainer.LoadLastCheckpoint();
-                            break;
-                        case 2:
-                            commandContainer.NoteBook();
-                            break;
-                        case 3:
-                            commandContainer.Hints();
-                            break;
-                        case 4:
-                            commandContainer.PhotoMode();
-                            break;
-                        case 5:
-                            commandContainer.Settings(SettingsObj);
-                            break;
-                        case 6:
-                            commandContainer.ExitToMainMenu();
-                            break;
-                        case 7:
-                            commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
-                            break;
-                    }
+                    obj.Value.image.color = advanced.DefaultColor;
+                    obj.Value.text.color = Color.black;
                 }
             }
-            public sealed class CommandContainer
+            public void Doing(int index)
             {
-                public void FastLoad()
+                switch (index)
                 {
-                    Debug.Log("TODO:FASTLOAD");
-                }
-                public void LoadLastCheckpoint()
-                {
-                    Debug.Log("TODO:LOADLASTCHECKPOINT");
-                }
-                public void NoteBook()
-                {
-                    Debug.Log("TODO:NOTEBOOK");
-                }
-                public void Hints()
-                {
-                    Debug.Log("TODO:HINTS");
-                }
-                public void PhotoMode()
-                {
-                    Debug.Log("TODO:PHOTOMODE");
-                }
-                public void Settings(GameObject SettingsObj)
-                {
-                    SettingsObj.SetActive(!SettingsObj.activeInHierarchy);
-                }
-                public void ExitToMainMenu()
-                {
-                    UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
-                }
-                public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
-                {
-                    menu.SetActive(v);
-                    // пауза при открытии инвентаря                                                        
-                    if (!v)
-                    {
-                        ScreensManager.SetScreen(null);
-                    }
-                    else
-                    {
-                        ScreensManager.SetScreen(mpm);
-                    }
-                    effectsManager.SetEnableSimpleDOF(v);
+                    case 0:
+                        commandContainer.FastLoad();
+                        break;
+                    case 1:
+                        commandContainer.LoadLastCheckpoint();
+                        break;
+                    case 2:
+                        commandContainer.NoteBook();
+                        break;
+                    case 3:
+                        commandContainer.Hints();
+                        break;
+                    case 4:
+                        commandContainer.PhotoMode();
+                        break;
+                    case 5:
+                        commandContainer.Settings(SettingsObj);
+                        break;
+                    case 6:
+                        commandContainer.ExitToMainMenu();
+                        break;
+                    case 7:
+                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
+                        break;
                 }
             }
         }
-        [System.Serializable]
-        public class CurrentGameSettings
+        public sealed class CommandContainer
         {
-            public float minFov = 60;
-            public float FOV = 70;
-            public float maxFov = 80;
-
-            public bool BloomEnabled = true;
-
-            public int MinSensivity = 0;
-            public int Sensivity = 3;
-            public int MaxSensivity = 10;
-
-            public bool reloadEffectEnabled = true;
+            public void FastLoad()
+            {
+                Debug.Log("TODO:FASTLOAD");
+            }
+            public void LoadLastCheckpoint()
+            {
+                Debug.Log("TODO:LOADLASTCHECKPOINT");
+            }
+            public void NoteBook()
+            {
+                Debug.Log("TODO:NOTEBOOK");
+            }
+            public void Hints()
+            {
+                Debug.Log("TODO:HINTS");
+            }
+            public void PhotoMode()
+            {
+                Debug.Log("TODO:PHOTOMODE");
+            }
+            public void Settings(GameObject SettingsObj)
+            {
+                SettingsObj.SetActive(!SettingsObj.activeInHierarchy);
+            }
+            public void ExitToMainMenu()
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
+            }
+            public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
+            {
+                menu.SetActive(v);
+                // пауза при открытии инвентаря                                                        
+                if (!v)
+                {
+                    ScreensManager.SetScreen(null);
+                }
+                else
+                {
+                    ScreensManager.SetScreen(mpm);
+                }
+                effectsManager.SetEnableSimpleDOF(v);
+            }
         }
     }
+    [System.Serializable]
+    public class CurrentGameSettings
+    {
+        public float minFov = 60;
+        public float FOV = 70;
+        public float maxFov = 80;
+
+        public bool BloomEnabled = true;
+
+        public int MinSensivity = 0;
+        public int Sensivity = 3;
+        public int MaxSensivity = 10;
+
+        public bool reloadEffectEnabled = true;
+    }
 }
+
 class GameSettings
 {
     public static float MinFov() => MenuPauseManager.GetCurrentGameSettings().minFov;

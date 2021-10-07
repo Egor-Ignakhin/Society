@@ -1,12 +1,18 @@
 ﻿using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 using UnityEngine;
-using Inventory;
+
 using System.Collections.Generic;
 using System.Linq;
-namespace Tools
+
+using Society.Inventory;
+using Society.Inventory.Other;
+
+namespace Society.Editor
 {
     sealed class GUIСontainerСontent : EditorWindow
     {
@@ -88,11 +94,11 @@ namespace Tools
         }
         private void DrawItemEditButtons(ItemsContainer container, List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers)
         {
-            void DrawSMGMode(string title, GUILayoutOption smgwidth, ref List<int> mod, Action<int, int> setter)
+            void DrawSMGMode(string title, GUILayoutOption SMGwidth, ref List<int> mod, Action<int, int> setter)
             {
                 GUILayout.BeginVertical();
-                GUILayout.Label(title, smgwidth);
-                string newSMGV = GUILayout.TextField(mod[item].ToString(), smgwidth);
+                GUILayout.Label(title, SMGwidth);
+                string newSMGV = GUILayout.TextField(mod[item].ToString(), SMGwidth);
                 if (!string.IsNullOrEmpty(newSMGV))
                     setter(item, Convert.ToInt32(newSMGV));
                 else

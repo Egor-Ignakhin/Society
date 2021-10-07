@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using static SMG.ModifierCharacteristics;
-namespace Inventory
+﻿using static Society.SMG.ModifierCharacteristics;
+namespace Society.Inventory
 {
     [System.Serializable]
     public class SMGInventoryCellGun

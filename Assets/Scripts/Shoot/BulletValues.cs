@@ -1,7 +1,8 @@
-﻿namespace Shoots
-{/// <summary>
-/// значения для пуль
-/// </summary>
+﻿namespace Society.Shoot
+{
+    /// <summary>
+    /// значения для пуль
+    /// </summary>
     public struct BulletValues
     {
         public float CoveredDistance { get; private set; }// пройденная дистанция

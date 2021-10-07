@@ -45,7 +45,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         }
         public void ChangePositionLines()
         {
-            (foodIsRight ? baseFood : baseThirst).SetAsFirstSibling();           
+            (foodIsRight ? baseFood : baseThirst).SetAsFirstSibling();
         }
 
     }

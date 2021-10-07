@@ -1,28 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Society.Player.Controllers;
 
-public class RadioZone : MonoBehaviour
+using UnityEngine;
+namespace Society.Effects.RadioZone
 {
-    private Collider playerCol;
-    [SerializeField] private AudioSource radio;
-    private void Start()
+    public class RadioZone : MonoBehaviour
     {
-        playerCol = FindObjectOfType<FirstPersonController>().GetCollider();
-        radio.volume = 0;
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other == playerCol)
+        private Collider playerCol;
+        [SerializeField] private AudioSource radio;
+        private void Start()
         {
-            radio.volume = 1;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other == playerCol)
-        {
+            playerCol = FindObjectOfType<FirstPersonController>().GetCollider();
             radio.volume = 0;
+        }
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other == playerCol)
+            {
+                radio.volume = 1;
+            }
+        }
+        private void OnTriggerExit(Collider other)
+        {
+            if (other == playerCol)
+            {
+                radio.volume = 0;
+            }
         }
     }
 }

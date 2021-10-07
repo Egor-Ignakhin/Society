@@ -2,8 +2,9 @@
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
+
 using UnityEngine;
-namespace Times
+namespace Society.Times
 {
     public sealed class WorldTime : MonoBehaviour
     {

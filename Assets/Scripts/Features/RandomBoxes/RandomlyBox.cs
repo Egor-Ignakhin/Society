@@ -1,5 +1,8 @@
-﻿using Inventory;
+﻿using Society.Inventory;
+using Society.Patterns;
+
 using System.Collections.Generic;
+
 using UnityEngine;
 namespace Features.RandomBoxes
 {

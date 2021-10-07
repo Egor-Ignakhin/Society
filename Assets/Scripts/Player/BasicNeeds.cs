@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
+
 using UnityEngine;
 
-namespace PlayerClasses
+namespace Society.Player
 {
-    public sealed partial class BasicNeeds : Singleton<BasicNeeds>
+    public sealed partial class BasicNeeds : Patterns.Singleton<BasicNeeds>
     {
         #region Fields
         private bool foodWaterMultiply = false;

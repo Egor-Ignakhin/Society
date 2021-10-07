@@ -1,5 +1,4 @@
-﻿using Inventory;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Features.RandomBoxes
 {
@@ -7,7 +6,7 @@ namespace Features.RandomBoxes
     {
         protected override void OnInit()
         {
-            UnlockItems = new System.Collections.Generic.List<(int, bool)> { ((int)ItemStates.ItemsID.Lom, false) };
+            UnlockItems = new System.Collections.Generic.List<(int, bool)> { ((int)Society.Inventory.ItemStates.ItemsID.Lom, false) };
             clipsByIT = new System.Collections.Generic.Dictionary<InveractionType, AudioClip[]>
             {
                 { InveractionType.OnOpened,Resources.LoadAll<AudioClip>("Features\\RandomlyBox\\Opened\\Trunk") },

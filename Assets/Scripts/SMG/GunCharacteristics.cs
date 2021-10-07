@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using static Inventory.ItemStates;
+using static Society.Inventory.ItemStates;
 
-namespace SMG
+namespace Society.SMG
 {
     static class GunCharacteristics
     {
@@ -20,6 +20,7 @@ namespace SMG
                 {ItemsID.Ak_74, gunDescription.Data[GunsID.Ak_74]}
             };
         }
+
         private static void LoadGMD()
         {
             string dataJson = System.IO.File.ReadAllText("Localization\\SMGDescriptions.json");
@@ -29,6 +30,7 @@ namespace SMG
                 modDescriptions.Data.Add(modDescriptions.Modifiers[i].TTI, (modDescriptions.Modifiers[i].BulletsCount, modDescriptions.Modifiers[i].Title, modDescriptions.Modifiers[i].Description));
             }
         }
+
         private static void LoadGuns()
         {
             string dataJson = System.IO.File.ReadAllText("Localization\\GunsDescriptions.json");

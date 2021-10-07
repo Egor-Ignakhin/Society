@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+
 using TMPro;
 
-namespace Inventory
+using UnityEngine;
+
+namespace Society.Inventory.Other
 {
     sealed class ItemsLogger : MonoBehaviour
     {
@@ -26,7 +28,7 @@ namespace Inventory
             }
             inventoryContainer = FindObjectOfType<InventoryContainer>();
             inventoryContainer.TakeItemEvent += DrawNewItem;
-            inventoryContainer.ActivateItemEvent += DrawUsedItem;            
+            inventoryContainer.ActivateItemEvent += DrawUsedItem;
             inventoryContainer.MInventoryInput.DropEvent += DropItem;
         }
         private void Update()
@@ -52,7 +54,7 @@ namespace Inventory
                 return;
 
             var lg = AddNewLogger();
-            lg.SetText($"Добавлено: {Localization.GetHint(id)}  x{count}");
+            lg.SetText($"Добавлено: {Localization.LocalizationManager.GetHint(id)}  x{count}");
             lg.color = Color.green;
         }
         private TextMeshProUGUI AddNewLogger()
@@ -82,7 +84,7 @@ namespace Inventory
             if (!inventoryContainer.IsInitialized)
                 return;
             var lg = AddNewLogger();
-            lg.SetText($"Использовано: {Localization.GetHint(id)}  x{count}");
+            lg.SetText($"Использовано: {Localization.LocalizationManager.GetHint(id)}  x{count}");
             lg.color = Color.white;
         }
         private void DropItem(string title, int count)
@@ -97,7 +99,7 @@ namespace Inventory
         private void OnDisable()
         {
             inventoryContainer.TakeItemEvent -= DrawNewItem;
-            inventoryContainer.ActivateItemEvent -= DrawUsedItem;            
+            inventoryContainer.ActivateItemEvent -= DrawUsedItem;
             inventoryContainer.MInventoryInput.DropEvent -= DropItem;
             disabledloggers = null;
             activeLoggers = null;

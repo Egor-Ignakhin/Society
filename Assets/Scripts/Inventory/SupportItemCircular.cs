@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Inventory
+namespace Society.Inventory
 {
     public sealed class SupportItemCircular : MonoBehaviour
     {

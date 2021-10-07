@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
-
-class EffectsCanvas : MonoBehaviour
+namespace Society.Effects
 {
+    sealed class EffectsCanvas : MonoBehaviour
+    {
+    }
 }

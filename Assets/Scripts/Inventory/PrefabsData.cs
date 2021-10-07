@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using static Inventory.ItemStates;
 
-namespace Inventory
+using UnityEngine;
+
+using static Society.Inventory.ItemStates;
+
+namespace Society.Inventory
 {
     public class PrefabsData
     {

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Society.Inventory;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// Класс-обработчик событий СМО
@@ -14,11 +17,11 @@ namespace SMG
         private readonly GameObject modifiersAnswer;// подсказка о модификаторе        
         private ModifierCell currentModCell;//активный слот под модификации
         private GunCell currentGunCell;
-        private readonly Inventory.InventoryContainer inventoryContainer;// главный обработчик инвентаря                 
+        private readonly InventoryContainer inventoryContainer;// главный обработчик инвентаря                 
         private readonly SMGModifiersData modifiersData;// контейнер под модификации
         private readonly SMGModifiersCellDescription modifiersCellDescription;// динамичное описание для модификаций
-        
-        public event Action<Inventory.InventoryCell> ChangeGunEvent;
+
+        public event Action<InventoryCell> ChangeGunEvent;
 
         public delegate void UpdateModifiersHandler(ModifierCell modCell);
         public event UpdateModifiersHandler UpdateModfiersEvent;
@@ -26,7 +29,7 @@ namespace SMG
         private readonly Transform additionCellsForModifiers;
         private readonly Transform activeModifiersContainer;
         private readonly DynamicalElementsAnswer DEA;
-        public SMGEventReceiver(Transform gsData, GameObject ma, Inventory.InventoryContainer ic,
+        public SMGEventReceiver(Transform gsData, GameObject ma, InventoryContainer ic,
             SMGModifiersData mD, SMGModifiersCellDescription mcd, Transform acfm, Transform acmc, DynamicalElementsAnswer dea)
         {
             activeModifiersContainer = acmc;
@@ -92,13 +95,13 @@ namespace SMG
         /// <summary>
         /// При нажатии на слот с оружием
         /// </summary>
-        /// <param name="sMGGunsCell"></param>
-        internal void OnClickGunsCell(GunCell sMGGunsCell)
+        /// <param name="Society.SMGGunsCell"></param>
+        internal void OnClickGunsCell(GunCell SMGGunsCell)
         {
-            if (currentGunCell == sMGGunsCell)
+            if (currentGunCell == SMGGunsCell)
                 return;
 
-            currentGunCell = sMGGunsCell;
+            currentGunCell = SMGGunsCell;
             ChangeGunEvent?.Invoke(currentGunCell.Ic);
             ReFillModifiersCells();
         }
@@ -134,7 +137,7 @@ namespace SMG
         /// </summary>
         private void ReFillGunCells()
         {
-            List<Inventory.InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Inventory.ItemStates.ItsGun(c.Id));
+            List<InventoryCell> cellsContGun = inventoryContainer.GetCells().FindAll(c => Society.Inventory.ItemStates.ItsGun(c.Id));
             //сначала очистка всех слотов
             for (int i = 0; i < gunsCells.Count; i++)
                 gunsCells[i].Clear();

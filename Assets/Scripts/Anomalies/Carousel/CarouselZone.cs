@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace CarouselAnomaly
+﻿using UnityEngine;
+namespace Society.Anomalies.Carousel
 {
     class CarouselZone : MonoBehaviour
     {

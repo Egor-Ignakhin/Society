@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-namespace Maps
+﻿using Society.Player.Controllers;
+
+using UnityEngine;
+namespace Society.Maps
 {
-    class StreetNameContainer : MonoBehaviour
+    sealed class StreetNameContainer : MonoBehaviour
     {
         private Collider playerCollider;
         private StreetNameRenderer streetNameRenderer;
@@ -12,9 +14,9 @@ namespace Maps
             streetNameRenderer = FindObjectOfType<StreetNameRenderer>();
         }
         private void OnTriggerEnter(Collider other)
-        {            
+        {
             if (other == playerCollider)
-            {                
+            {
                 SendStreetName();
             }
         }

@@ -1,8 +1,11 @@
-﻿/// <summary>
-/// наследники - слоты инвентарей
-/// </summary>
-interface ICellable
+﻿namespace Society.Patterns
 {
-    bool IsEmpty();
-    void Clear();    
+    /// <summary>
+    /// наследники - слоты инвентарей
+    /// </summary>
+    interface ICellable
+    {
+        bool IsEmpty();
+        void Clear();
+    }
 }

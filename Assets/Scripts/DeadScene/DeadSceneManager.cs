@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DeadSceneScripts
+namespace Society.DeadScene
 {
     sealed class DeadSceneManager : MonoBehaviour// класс отвечающий за сцена смерти
     {

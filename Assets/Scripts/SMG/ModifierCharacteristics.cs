@@ -1,15 +1,24 @@
-﻿using Inventory;
+﻿using Society.Inventory;
 
 using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace SMG
+namespace Society.SMG
 {
     public static class ModifierCharacteristics
     {
+        /// <summary>
+        /// Названия оружий
+        /// </summary>
         public enum GunTitles { None, TT_Pistol, Ak_74 }
+        /// <summary>
+        /// Типа модификаций
+        /// </summary>
         public enum ModifierTypes { None, Silencer, Mag, Aim }
+        /// <summary>
+        /// Уровни модификаций
+        /// </summary>
         public enum ModifierIndex { None, _1, _2, _3 }
 
         private static readonly Dictionary<SMGTitleTypeIndex, (string title, string description, Sprite sprite)> modsDescrtiptions;
@@ -24,12 +33,11 @@ namespace SMG
             var gunsCount = 2;
             for (int g = 1; g <= gunsCount; g++)
             {
-                GunTitles gun = (GunTitles)g;
-                for (int t = 1; t < 4; t++)
+                for (int modifierType = 1; modifierType < 4; modifierType++)
                 {
-                    for (int i = 1; i < 3; i++)
+                    for (int modifierIndex = 1; modifierIndex < 3; modifierIndex++)
                     {
-                        ttis.Add(new SMGTitleTypeIndex(gun, (ModifierTypes)t, (ModifierIndex)i));
+                        ttis.Add(new SMGTitleTypeIndex((GunTitles)g, (ModifierTypes)modifierType, (ModifierIndex)modifierIndex));
 
                         int index = modifiersCharacteristics.Count;
                         modifiersCharacteristics.Add(ttis[index], new SMGModifierItem(ttis[index], GunCharacteristics.GetBulletsCountFromTTI(ttis[index])));
@@ -40,15 +48,12 @@ namespace SMG
             }
         }
 
-        internal static (string title, string description, Sprite sprite) GetTitleDescSprite(SMGTitleTypeIndex tti)
-        {
-            return modsDescrtiptions[tti];
-        }
+        internal static (string title, string description, Sprite sprite) GetTitleDescSprite(SMGTitleTypeIndex tti) => modsDescrtiptions[tti];
         internal static int GetAmmoCountFromDispenser(int title, int dispenserLevel)
         {
             var key = new SMGTitleTypeIndex((GunTitles)title, ModifierTypes.Mag, (ModifierIndex)dispenserLevel);
             if (modifiersCharacteristics.ContainsKey(key))
-                return modifiersCharacteristics[new SMGTitleTypeIndex((GunTitles)title, ModifierTypes.Mag, (ModifierIndex)dispenserLevel)].ammoCount;
+                return modifiersCharacteristics[key].ammoCount;
             else return 0;
         }
         internal static Sprite GetSprite(SMGTitleTypeIndex modState)
@@ -59,11 +64,12 @@ namespace SMG
         }
 
         /// <summary>
-        /// контейнер сод. информацию о типе оружия, типе модификации и качеству модификации
+        /// контейнер сод. информацию о <see cref="GunTitles"/>, <see cref="ModifierTypes"/> и <see cref="ModifierIndex"/>
         /// </summary>
         public struct SMGTitleTypeIndex
         {
             public static SMGTitleTypeIndex None { get; } = new SMGTitleTypeIndex(GunTitles.None, ModifierTypes.None, ModifierIndex.None);
+
             public readonly GunTitles Title;
             public readonly ModifierTypes Type;
             public readonly ModifierIndex Index;

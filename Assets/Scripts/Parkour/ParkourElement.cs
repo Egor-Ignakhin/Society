@@ -1,7 +1,12 @@
-﻿using System;
+﻿using Society.GameScreens;
+using Society.Patterns;
+using Society.Player.Controllers;
+
+using System;
+
 using UnityEngine;
 
-namespace Parkour
+namespace Society.Parkour
 {
     /// <summary>
     /// базовый класс для всех элементов паркура
@@ -24,7 +29,7 @@ namespace Parkour
         public abstract class ParkoutInput
         {
             protected Action<bool, bool> climbMethod;
-            public void SetClimbMethod(Action<bool,bool> mth) => climbMethod = mth;
+            public void SetClimbMethod(Action<bool, bool> mth) => climbMethod = mth;
             public abstract void CheckSystemInput();
         }
     }

@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using Society.Inventory;
+using Society.Player;
 
-namespace Effects
+using UnityEngine;
+
+namespace Society.Effects.DropableSoundsManager
 {
     /// <summary>
     /// класс вызывает шум падения предмета при его столкновении

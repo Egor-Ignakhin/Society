@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Society.Effects;
+using Society.GameScreens;
+
+using System.Threading.Tasks;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Missions
+namespace Society.Missions
 {
     sealed class SecondMission : Mission
     {
@@ -29,7 +33,7 @@ namespace Missions
                 ScreensManager.SetScreen(null);
                 SceneManager.LoadScene(ScenesManager.Bunker);
             });
-            base.StartMission();                                   
+            base.StartMission();
         }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {

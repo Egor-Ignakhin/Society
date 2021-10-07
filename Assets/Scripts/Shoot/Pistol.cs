@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Shoots
+namespace Society.Shoot
 {
     class Pistol : Gun
     {
@@ -32,7 +32,7 @@ namespace Shoots
         protected override void PlayFlashEffect()
         {
             flashEffect.Play();
-        }        
+        }
         public override float GetRecoilPower()
         {
             return 0.125f;

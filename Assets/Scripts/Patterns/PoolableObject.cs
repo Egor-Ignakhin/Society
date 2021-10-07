@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
-
-public class PoolableObject : MonoBehaviour
+namespace Society.Patterns
 {
-    protected ObjectPool mPool;
-    public void OnInit(ObjectPool op) => mPool = op;
 
-    public void DifferenceLifeTime() => mPool.ReturnToPool(this, false);
+    public class PoolableObject : MonoBehaviour
+    {
+        protected ObjectPool mPool;
+        public void OnInit(ObjectPool op) => mPool = op;
+
+        public void DifferenceLifeTime() => mPool.ReturnToPool(this, false);
+    }
 }

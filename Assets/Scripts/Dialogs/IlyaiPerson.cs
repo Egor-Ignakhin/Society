@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-
-public class IlyaiPerson : TalkingPerson
+namespace Society.Dialogs
 {
-    protected override string PathToClips() => "Dialogs\\Other\\IlyaDialogs\\Ilya_";
-    protected override void Awake()
+    public class IlyaiPerson : TalkingPerson
     {
-        base.Awake();
+        protected override string PathToClips() => "Dialogs\\Other\\IlyaDialogs\\Ilya_";
+        protected override void Awake()
+        {
+            base.Awake();
 
-        dialogs = new List<(DialogType, string, string, bool IsBreakDialog)>
+            dialogs = new List<(DialogType, string, string, bool IsBreakDialog)>
     {
         ( DialogType.Player,"Привет, Илюх. Где Гриша?",null,false ),
         (DialogType.Opponent,"Отошёл набить брюхо. А ты по какому поводу? Ужин ещё только через полчаса.", null,false),
@@ -24,51 +26,52 @@ public class IlyaiPerson : TalkingPerson
         "Не хочу конечно, помирать никому не охота, да надо. ",false),
         (DialogType.Opponent, "Ну в таком случае… Вот тебе противогаз, химза и антирад. Береги себя, Дим.", null,true)
     };
-    }
+        }
 
-    protected override IEnumerator DialogsTraker()
-    {
-        while (true)
+        protected override IEnumerator DialogsTraker()
         {
-            //если говорит дима то звук 2д иначе 3д
-            if ((currentDialog > 1) && dialogs[currentDialog - 2].IsBreakDialog)
+            while (true)
             {
-                FinishDialog();
-                break;
-            }
-
-            if ((dialogs[currentDialog - 1].dt == DialogType.Player) && (currentDialog != 1))
-            {
-                Dialogs.DialogDrawer drawer = FindObjectOfType<Dialogs.DialogDrawer>();
-                drawer.SetAnswers((dialogs[currentDialog - 1].answerText, TakeAnswerInDialog), (string.Empty, null), (string.Empty, null));
-                answerInDialogHasTaked = false;
-                while (!answerInDialogHasTaked)
+                //если говорит дима то звук 2д иначе 3д
+                if ((currentDialog > 1) && dialogs[currentDialog - 2].IsBreakDialog)
                 {
-                    yield return null;
+                    FinishDialog();
+                    break;
                 }
-            }
-            personSource.spatialBlend = (dialogs[currentDialog - 1].dt == DialogType.Player ? 0 : 1);
-            var clip = Resources.Load<AudioClip>($"{PathToClips()}{currentDialog}");
-            personSource.PlayOneShot(clip);
-            var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
-            string pName = (dialogs[currentDialog - 1].dt == DialogType.Player ? "Вы" : personName);
-            ddrawer.DrawPersonDialog(pName, dialogs[currentDialog - 1].screenText);
-            clipLingth = clip.length;
-            currentDialog++;
 
-            while (clipLingth > 0)
-            {
-                clipLingth -= Time.deltaTime;
-                if (Input.GetKeyDown(KeyCode.Space))
+                if ((dialogs[currentDialog - 1].dt == DialogType.Player) && (currentDialog != 1))
                 {
-                    if (clipLingth > 0)
+                    Dialogs.DialogDrawer drawer = FindObjectOfType<Dialogs.DialogDrawer>();
+                    drawer.SetAnswers((dialogs[currentDialog - 1].answerText, TakeAnswerInDialog), (string.Empty, null), (string.Empty, null));
+                    answerInDialogHasTaked = false;
+                    while (!answerInDialogHasTaked)
                     {
-                        //SKIP
-                        personSource.Stop();
-                        clipLingth = 0;
+                        yield return null;
                     }
                 }
-                yield return null;
+                personSource.spatialBlend = (dialogs[currentDialog - 1].dt == DialogType.Player ? 0 : 1);
+                var clip = Resources.Load<AudioClip>($"{PathToClips()}{currentDialog}");
+                personSource.PlayOneShot(clip);
+                var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
+                string pName = (dialogs[currentDialog - 1].dt == DialogType.Player ? "Вы" : personName);
+                ddrawer.DrawPersonDialog(pName, dialogs[currentDialog - 1].screenText);
+                clipLingth = clip.length;
+                currentDialog++;
+
+                while (clipLingth > 0)
+                {
+                    clipLingth -= Time.deltaTime;
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        if (clipLingth > 0)
+                        {
+                            //SKIP
+                            personSource.Stop();
+                            clipLingth = 0;
+                        }
+                    }
+                    yield return null;
+                }
             }
         }
     }

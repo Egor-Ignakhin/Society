@@ -1,13 +1,16 @@
-﻿using System.Collections;
+﻿using Society.Patterns;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Inventory
-{/// <summary>
-/// класс - слота в инвентаре
-/// </summary>
+namespace Society.Inventory
+{
+    /// <summary>
+    /// класс - слота в инвентаре
+    /// </summary>
     public sealed class InventoryCell : MonoBehaviour, IPointerEnterHandler,
         IPointerExitHandler, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerClickHandler, ICellable
     {
@@ -23,11 +26,11 @@ namespace Inventory
         #region fast Access to mContainer
         public int Id => MItemContainer.Id;
         public int Count => MItemContainer.Count;
-        public bool IsEmpty()=> MItemContainer.IsEmpty;        
+        public bool IsEmpty() => MItemContainer.IsEmpty;
         public bool IsFilled => MItemContainer.IsFilled;
         #endregion
         public SMGInventoryCellGun MGun { get; private set; } = new SMGInventoryCellGun();// контейнер для возможного оружия
-        private RectTransform mRt;        
+        private RectTransform mRt;
         public sealed class AdditionalSettins
         {
             public readonly Vector3 DefaultScale; // обычный размер

@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using Society.Patterns;
+
+using System.Collections;
+
 using UnityEngine;
 
-namespace Anomaly_1
+namespace Society.Anomalies.Anomaly_1
 {
-    class AnomalyLifetime : ObjectPool
+    sealed class AnomalyLifetime : ObjectPool
     {
         [SerializeField] private float timeForDestroyInSeconds;
         private AnomalyPulsation anomalyPulsation;

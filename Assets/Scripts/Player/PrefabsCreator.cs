@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-namespace Society.Tools
+namespace Society.Player
 {
     sealed class PrefabsCreator : MonoBehaviour
     {

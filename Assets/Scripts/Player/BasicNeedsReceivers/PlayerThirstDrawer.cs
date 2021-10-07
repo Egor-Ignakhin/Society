@@ -7,7 +7,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
     {
         #region Fields
         [SerializeField] private Image mImage;
-        [SerializeField] private RectTransform mRt;        
+        [SerializeField] private RectTransform mRt;
 
         #endregion
         #region Подпички-отписки событий
@@ -15,6 +15,6 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         private void OnDisable() => basicNeeds.ThirstChangeValue -= OnChangeThirst;
         #endregion
 
-        private void OnChangeThirst(float value) => mImage.fillAmount = value / basicNeeds.MaximumThirst;        
+        private void OnChangeThirst(float value) => mImage.fillAmount = value / basicNeeds.MaximumThirst;
     }
 }

@@ -1,7 +1,13 @@
-﻿using System.Linq;
+﻿using Society.Inventory;
+using Society.Inventory.Other;
+using Society.Patterns;
+using Society.Player.Controllers;
+
+using System.Linq;
+
 using UnityEngine;
 
-namespace PlayerClasses
+namespace Society.Player
 {
     public sealed class PlayerInteractive : MonoBehaviour
     {
@@ -11,18 +17,18 @@ namespace PlayerClasses
         private const float sphSCastRadiusMultiply = 10;
         public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private bool inputedButton = false;
-        private Inventory.DescriptionDrawer descriptionDrawer;
+        private DescriptionDrawer descriptionDrawer;
         private Vector3 lasHitPoint;
         private InteractiveObject[] directedObjects = new InteractiveObject[0];
-        private Inventory.SupportItemCircular supportItemCircular;
+        private SupportItemCircular supportItemCircular;
         private Ray tempRay;
         private Vector3 tempInteractionPoint;
         private void Start()
         {
             mainCamera = GetComponent<FirstPersonController>().GetCamera();
-            descriptionDrawer = FindObjectOfType<Inventory.DescriptionDrawer>();
+            descriptionDrawer = FindObjectOfType<DescriptionDrawer>();
             descriptionDrawer.SetHint(desc, mainDesc, 0);
-            supportItemCircular = FindObjectOfType<Inventory.SupportItemCircular>();
+            supportItemCircular = FindObjectOfType<SupportItemCircular>();
         }
 
         private void Update()

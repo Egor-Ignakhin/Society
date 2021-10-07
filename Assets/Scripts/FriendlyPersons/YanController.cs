@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace FriendlyPersons
+namespace Society.FriendlyPersons
 {
     public class YanController : MonoBehaviour
     {
@@ -48,7 +48,7 @@ namespace FriendlyPersons
             Ray ray = new Ray(mAgent.transform.position, mAgent.transform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, 1, ~0, QueryTriggerInteraction.Ignore))
             {
-                if (hit.transform.TryGetComponent<DoorMesh>(out var door))
+                if (hit.transform.TryGetComponent<Society.Enviroment.Doors.DoorMesh>(out var door))
                 {
                     door.Interact();
                 }

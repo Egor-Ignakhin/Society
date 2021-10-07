@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+
+using UnityEngine;
 
 namespace TexPacker
 {
@@ -26,7 +27,7 @@ namespace TexPacker
             Texture2D preview = texPacker.Create();
             preview.alphaIsTransparency = true;
 
-            if(toolbarItem == 0)
+            if (toolbarItem == 0)
                 EditorGUI.DrawPreviewTexture(alphaRect, preview);
             else
                 EditorGUI.DrawTextureAlpha(alphaRect, preview);

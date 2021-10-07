@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-namespace Maps
+﻿using Society.Player.Controllers;
+
+using UnityEngine;
+namespace Society.Maps
 {
     /// <summary>
     /// класс-контроллёр для компаса

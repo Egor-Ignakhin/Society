@@ -1,7 +1,8 @@
 ﻿using System.IO;
+
 using UnityEngine;
 
-namespace MenuScripts
+namespace Society.Menu
 {
     sealed class MenuClock : MonoBehaviour
     {

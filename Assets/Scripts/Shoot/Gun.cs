@@ -1,8 +1,16 @@
-﻿using System;
+﻿using Society.Effects;
+using Society.Enemies;
+using Society.GameScreens;
+using Society.Inventory;
+using Society.Patterns;
+using Society.Player;
+
+using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace Shoots
+namespace Society.Shoot
 {
     /// <summary>
     /// оружие
@@ -33,22 +41,22 @@ namespace Shoots
         [SerializeField] protected Transform droppingPlace;// затвор
         protected LayerMask layerMask;
         [SerializeField] protected Transform spawnBulletPlace;// место появление патрона
-        [SerializeField] protected Inventory.ItemStates.ItemsID bulletId;
+        [SerializeField] protected ItemStates.ItemsID bulletId;
 
         protected AudioClip fireClip;
         protected AudioClip startReloadClip;
         protected AudioClip reloadClip;
         protected AudioClip lastReloadClip;
         protected AudioClip nullBulletsClip;
-        private Effects.PlayerSoundsCalculator playerSoundsCalculator;
+        private PlayerSoundsCalculator playerSoundsCalculator;
 
         private bool isAutomatic;// автоматическое ли оружие
-        protected Inventory.InventoryEventReceiver inventoryEv;
-        private Inventory.InventoryContainer InventoryContainer;
+        protected InventoryEventReceiver inventoryEv;
+        private InventoryContainer InventoryContainer;
 
         private GunAnimator gunAnimator;
         private EffectsManager effectsManager;
-        private SMG.GunModifiersActiveManager gunModifiersActiveManager;
+        private Society.SMG.GunModifiersActiveManager gunModifiersActiveManager;
         private UsedUpBulletsDropper ubp;
         private ShootedBulletPool sbp;
         private AudioClip reflectSound;
@@ -56,15 +64,15 @@ namespace Shoots
         public static bool EndlessBullets { get; set; }
         private void Awake()
         {
-            gunModifiersActiveManager = GetComponent<SMG.GunModifiersActiveManager>();
+            gunModifiersActiveManager = GetComponent<Society.SMG.GunModifiersActiveManager>();
             reflectSound = Resources.Load<AudioClip>("Guns\\BulletReflect");
             reflectSource = new GameObject($"ReflectSource_{GetType()}").AddComponent<AudioSource>();
         }
         private void Start()
         {
             effectsManager = FindObjectOfType<EffectsManager>();
-            playerSoundsCalculator = FindObjectOfType<Effects.PlayerSoundsCalculator>();
-            InventoryContainer = FindObjectOfType<Inventory.InventoryContainer>();
+            playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
+            InventoryContainer = FindObjectOfType<InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
 
             dispenser = new Dispenser(inventoryEv);
@@ -77,7 +85,7 @@ namespace Shoots
             layerMask = interactableLayers;
             gunAnimator = gAnim;
         }
-        public Inventory.ItemStates.ItemsID GetBulletId() => bulletId;
+        public ItemStates.ItemsID GetBulletId() => bulletId;
         protected abstract void LoadAssets();
         protected virtual bool Shoot()
         {
@@ -166,7 +174,7 @@ namespace Shoots
                 dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().MGun.AmmoCount);
                 if (dispenser.CountBullets > dispenser.MaxBullets)
                 {
-                    InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets, null);
+                    InventoryContainer.AddItem((int)bullet.Id - 1, dispenser.CountBullets - dispenser.MaxBullets, null);
                     dispenser.Reload(dispenser.MaxBullets);
                 }
                 currentReloadTime = 0;
@@ -176,9 +184,9 @@ namespace Shoots
 
         public void UpdateModifiers(int magIndex, int aimIndex, int silIndex)
         {
-            gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)magIndex);
-            gunModifiersActiveManager.SetAim((SMG.ModifierCharacteristics.ModifierIndex)aimIndex);
-            gunModifiersActiveManager.SetSilencer((SMG.ModifierCharacteristics.ModifierIndex)silIndex);
+            gunModifiersActiveManager.SetMag((Society.SMG.ModifierCharacteristics.ModifierIndex)magIndex);
+            gunModifiersActiveManager.SetAim((Society.SMG.ModifierCharacteristics.ModifierIndex)aimIndex);
+            gunModifiersActiveManager.SetSilencer((Society.SMG.ModifierCharacteristics.ModifierIndex)silIndex);
         }
 
         /// <summary>
@@ -240,14 +248,8 @@ namespace Shoots
                 return bullet as Bullet;
             }
 
-            protected override int PreLoadedCount()
-            {
-                return 5;
-            }
-            protected override bool UnityScale()
-            {
-                return false;
-            }
+            protected override int PreLoadedCount() => 5;
+            protected override bool UnityScale() => false;
         }
         public class UsedUpBulletsDropper : ObjectPool
         {
@@ -268,19 +270,10 @@ namespace Shoots
                     rb.AddForce(-droppingPlace.forward * 2, ForceMode.Impulse);
                 }
             }
-            public override void SetPrefabAsset(PoolableObject instance)
-            {
-                prefabAsset = instance;
-            }
-            protected override bool UnityScale()
-            {
-                return false;
-            }
+            public override void SetPrefabAsset(PoolableObject instance) => prefabAsset = instance;
+            protected override bool UnityScale() => false;
 
-            protected override int PreLoadedCount()
-            {
-                return 30;
-            }
+            protected override int PreLoadedCount() => 30;
         }
         protected abstract void PlayFlashEffect();
         protected void CreateBullet()
@@ -318,19 +311,19 @@ namespace Shoots
         protected class Dispenser
         {
             public int CountBullets { get; private set; } = 0;
-            private readonly Inventory.InventoryEventReceiver inventoryEv;
+            private readonly InventoryEventReceiver inventoryEv;
             public int MaxBullets
             {
                 get
                 {
                     var sc = inventoryEv.GetSelectedCell();
-                    if (sc && Inventory.ItemStates.ItsGun(sc.Id))
-                        return SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Mag);
+                    if (sc && ItemStates.ItsGun(sc.Id))
+                        return Society.SMG.ModifierCharacteristics.GetAmmoCountFromDispenser(sc.MGun.Title, sc.MGun.Mag);
                     return 0;
                 }
             }
 
-            public Dispenser(Inventory.InventoryEventReceiver iEv) => inventoryEv = iEv;
+            public Dispenser(InventoryEventReceiver iEv) => inventoryEv = iEv;
 
             public void Dispens()
             {
@@ -346,7 +339,10 @@ namespace Shoots
 
         public static class ImpactsData
         {
-            public static Dictionary<string, GameObject> Impacts = new Dictionary<string, GameObject> {// эффекты столкновений
+            /// <summary>
+            /// эффекты столкновений
+            /// </summary>
+            public static Dictionary<string, GameObject> Impacts = new Dictionary<string, GameObject> {
             { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
             { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
             };

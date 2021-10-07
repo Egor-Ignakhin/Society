@@ -1,28 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Inventory;
+﻿using Society.Inventory;
+using Society.Player.Controllers;
 
-namespace Shoots
+using System;
+using System.Collections.Generic;
+
+using UnityEngine;
+
+namespace Society.Shoot
 {
     /// <summary>
     /// аниматор оружия
     /// </summary>
     class GunAnimator : MonoBehaviour
     {
-        private List<GameObject> gunsContainers = new List<GameObject>();
-        private List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
+        /// <summary>
+        /// Пустышки содержащие <see cref="Gun"/> и Hang/Aim places
+        /// </summary>
+        [SerializeField] private List<GameObject> gunContainers = new List<GameObject>();
+        [SerializeField] private List<PlayerGun> guns = new List<PlayerGun>();// список для оружия, и их точек стрельбы; переноса
+        [Serializable]
         public class PlayerGun
         {
-            public Gun MGun { get; }
-            public Transform HangPlace { get; }
-            public Transform AimPlace { get; }
-            public PlayerGun(Gun g, Transform hp, Transform ap)
-            {
-                MGun = g;
-                HangPlace = hp;
-                AimPlace = ap;
-            }
+            public Gun MGun;
+            public Transform HangPlace;
+            public Transform AimPlace;
         }
 
         private FirstPersonController fps;
@@ -39,36 +40,11 @@ namespace Shoots
         private AudioSource unitAudioSource;
         private InventoryContainer inventoryContainer;
         private InventoryEventReceiver InventoryEventReceiver;
-        private SMG.SMGEventReceiver SMGEventReceiver;
-        private SMG.SMGMain SMGMain;
+        private Society.SMG.SMGEventReceiver SMGEventReceiver;
+        private Society.SMG.SMGMain SMGMain;
 
         private void Start()
         {
-            for (int i = 0; i < transform.childCount; i++)
-                gunsContainers.Add(transform.GetChild(i).gameObject);
-
-            for (int i = 0; i < gunsContainers.Count; i++)
-            {
-                Gun gun = null;
-                Transform hangPlace = null;
-                Transform aimPlace = null;
-                for (int k = 0; k < gunsContainers[i].transform.childCount; k++)
-                {
-                    var cg = gunsContainers[i].transform.GetChild(k);
-                    if (cg.name == "HangPlace")
-                    {
-                        hangPlace = cg.transform;
-                    }
-                    else if (cg.name == "AimPlace")
-                    {
-                        aimPlace = cg.transform;
-                    }
-                    else
-                        gun = cg.GetComponent<Gun>();
-                }
-                guns.Add(new PlayerGun(gun, hangPlace, aimPlace));
-            }
-
             DisableGuns();
             advanced = new AdvancedSettings();
 
@@ -88,7 +64,7 @@ namespace Shoots
         }
         private void OnDisable()
         {
-            gunsContainers = null;
+            gunContainers = null;
             guns = null;
             advanced = null;
             fps = null;
@@ -160,7 +136,7 @@ namespace Shoots
             guns[currentActiveGunI].MGun.UpdateModifiers(sc.MGun.Mag, sc.MGun.Aim, sc.MGun.Silencer);
         }
 
-        public void UpdateGunModifiers(SMG.ModifierCell _)
+        public void UpdateGunModifiers(Society.SMG.ModifierCell _)
         {
             var ic = InventoryEventReceiver.GetSelectedCell();
             if (!ic)
@@ -177,7 +153,7 @@ namespace Shoots
         {
             for (int i = 0; i < guns.Count; i++)
             {
-                gunsContainers[i].SetActive(i == currentActiveGunI);
+                gunContainers[i].SetActive(i == currentActiveGunI);
             }
         }
         private double lastAngle = 0;
@@ -199,12 +175,12 @@ namespace Shoots
         public class AdvancedSettings
         {
             public float BaseCamFOV { get => GameSettings.FOV(); }
-            public float FOVKickAmount { get; } = 7.5f;
+            public const float FOVAim = 22.5f;
             public float fovRef;
         }
         private void Animate()
         {
-            if (ScreensManager.HasActiveScreen())
+            if (Society.GameScreens.ScreensManager.HasActiveScreen())
                 return;
             if (currentActiveGunI == -1)// if item isn't gun
                 return;
@@ -220,7 +196,7 @@ namespace Shoots
             fps.SensivityM = IsAiming ? 0.25f : 1;
 
             float targetFOV = IsAiming && !gun.IsReload ?// анимирование угла обзора
-                  advanced.BaseCamFOV - (advanced.FOVKickAmount * 3) : advanced.BaseCamFOV;
+                  advanced.BaseCamFOV - (AdvancedSettings.FOVAim) : advanced.BaseCamFOV;
             foreach (var c in cameras)
             {
                 c.fieldOfView = Mathf.SmoothDamp(c.fieldOfView, targetFOV, ref advanced.fovRef, lerpSpeed);

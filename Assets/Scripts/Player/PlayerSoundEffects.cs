@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-namespace PlayerClasses
+namespace Society.Player
 {
-    public sealed partial class BasicNeeds : Singleton<BasicNeeds>
+    public sealed partial class BasicNeeds : Patterns.Singleton<BasicNeeds>
     {
         sealed class PlayerSoundEffects : MonoBehaviour
         {

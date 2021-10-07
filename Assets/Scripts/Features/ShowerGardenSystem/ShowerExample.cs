@@ -1,8 +1,9 @@
 ﻿using System;
+
 using UnityEngine;
 namespace Features
 {
-    sealed class ShowerExample : InteractiveObject
+    sealed class ShowerExample : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerManager showerGarden;
         [SerializeField] private AudioSource mAudS;
@@ -56,7 +57,7 @@ namespace Features
             waterAudio = Resources.Load<AudioClip>("ShowerGarden\\WaterDrop");
             moveAudio = Resources.Load<AudioClip>("ShowerGarden\\ShowerMove");
             SetIsWaterOpen(false);
-            SetType(nameof(ShowerExample));            
+            SetType(nameof(ShowerExample));
             ChangeWaterVolumeEvent += OnChangeWaterWeight;
 
             SetWaterVolume(MaxWaterVolume);
@@ -76,7 +77,7 @@ namespace Features
                 else
                     SetIsWaterOpen(false);
             }
-        }     
+        }
 
         private void OnChangeWaterWeight(float v)
         {

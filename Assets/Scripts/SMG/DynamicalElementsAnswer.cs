@@ -1,7 +1,9 @@
 ﻿using System;
+
 using TMPro;
+
 using UnityEngine;
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// экая подсказка для помощи игроку. Снять снарягу или надеть.

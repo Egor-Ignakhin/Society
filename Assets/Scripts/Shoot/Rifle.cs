@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Shoots
+namespace Society.Shoot
 {
     class Rifle : Gun
     {
@@ -29,7 +29,7 @@ namespace Shoots
             DropUsedBullet();
             CallRecoilEvent();
             return canShoot;
-        }        
+        }
 
         protected override void PlayFlashEffect()
         {
@@ -39,6 +39,6 @@ namespace Shoots
         public override float GetRecoilPower()
         {
             return 0.125f;
-        }        
+        }
     }
 }

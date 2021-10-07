@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using TMPro;
-using System;
+﻿using TMPro;
 
-namespace SMG
+using UnityEngine;
+
+namespace Society.SMG
 {
     /// <summary>
     /// класс - рисовщик хар. об оружии

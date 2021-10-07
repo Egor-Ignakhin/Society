@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Society.GameScreens;
+
+using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace Society.Debugger

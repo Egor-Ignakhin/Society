@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Society.Player;
+
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace PlayerClasses.BasicNeedsEventReceivers

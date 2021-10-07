@@ -1,7 +1,12 @@
-﻿using System.Collections;
+﻿using Society.Enemies;
+using Society.Inventory;
+using Society.Player.Controllers;
+
+using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-namespace Effects
+namespace Society.Player
 {
     /// <summary>
     /// класс который отвечает за привлечение тварей к шумным местам
@@ -14,7 +19,7 @@ namespace Effects
         private Transform player;
 
         private float playerSpeed;// шум от ходьбы персонажа        
-        private static PlayerClasses.BasicNeeds basicNeeds;
+        private static BasicNeeds basicNeeds;
         public void AddNoise(float v)
         {
             additionalNoise += v;
@@ -26,7 +31,7 @@ namespace Effects
         private IEnumerator Start()
         {
             player = FindObjectOfType<FirstPersonController>().transform;
-            basicNeeds = PlayerClasses.BasicNeeds.Instance;
+            basicNeeds = BasicNeeds.Instance;
             StartCoroutine(nameof(CallMonsters));
             while (true)
             {
@@ -38,9 +43,9 @@ namespace Effects
 
         internal static void AddItemSound(InventoryItem item)
         {
-            decimal wight = Inventory.ItemStates.GetWeightItem(item.Id);
+            decimal wight = ItemStates.GetWeightItem(item.Id);
             Vector3 itemPos = item.transform.position;
-            var startedCollection = MonstersData.GetCollection();//все монстры на локации
+            var startedCollection = EnemiesData.GetCollection();//все монстры на локации
             startedCollection.RemoveAll(e => e == null);
 
             for (int i = 0; i < startedCollection.Count; i++)// проходимся по всем позициям монстров
@@ -51,7 +56,7 @@ namespace Effects
                 if (Vector3.Distance(itemPos, startedCollection[i].transform.position) < startedCollection[i].GetDistanceToTarget())// если дистанция между позицией игрока и позицией монстра > шум от ходьбы игрока + добавляемый шум
                 {
                     startedCollection[i].SetEnemy(basicNeeds, true, item.transform);
-                }                
+                }
             }
         }
 
@@ -72,7 +77,7 @@ namespace Effects
         private void OnDestroy() => StopAllCoroutines();
         private void FindMonsters()
         {
-            var startedCollection = MonstersData.GetCollection();//все монстры на локации
+            var startedCollection = EnemiesData.GetCollection();//все монстры на локации
             startedCollection.RemoveAll(e => e == null);
             var montsterPoses = new List<Vector3>();// лист позиций монстров
             foreach (var e in startedCollection)//добавление в лист позиций все позиции монстров

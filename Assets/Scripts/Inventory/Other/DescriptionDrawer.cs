@@ -1,6 +1,9 @@
-﻿using TMPro;
+﻿using Society.Player;
+
+using TMPro;
+
 using UnityEngine;
-namespace Inventory
+namespace Society.Inventory.Other
 {
     /// <summary>
     /// класс отрисовывающий описание объектов
@@ -24,12 +27,12 @@ namespace Inventory
             if (!gameObject.activeSelf)
                 return;
             textDesc.SetText(str + countStr);
-            textTakeKey.SetText(Localization.GetUpKeyDescription(mainType, PlayerClasses.PlayerInteractive.InputInteractive));
+            textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, PlayerInteractive.InputInteractive));
         }
 
         internal void SetIrremovableHint(string v)
         {
-            textTakeKey.SetText(v);            
+            textTakeKey.SetText(v);
             canChangeHint = string.IsNullOrEmpty(v);
             textDesc.SetText(string.Empty);
             gameObject.SetActive(!canChangeHint);

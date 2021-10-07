@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using Society.Effects;
 
-namespace Inventory
+using UnityEngine;
+
+namespace Society.Inventory.Other
 {
     public sealed class InventoryDrawer : MonoBehaviour
     {
@@ -29,7 +31,7 @@ namespace Inventory
         /// </summary>
         public bool ChangeActiveMainField(bool value)
         {
-            MainFieldEnabled = !ScreensManager.HasActiveScreen() && value;
+            MainFieldEnabled = !Society.GameScreens.ScreensManager.HasActiveScreen() && value;
             mainField.SetActive(MainFieldEnabled);
             effectsManager.SetEnableSimpleDOF(MainFieldEnabled);
             return MainFieldEnabled;

@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using Society.Patterns;
+
+using System.Collections;
+
 using UnityEngine;
 
-namespace Anomaly_1
+namespace Society.Anomalies.Anomaly_1
 {
-    class AnomalyScheduler : MonoBehaviour
+    sealed class AnomalyScheduler : MonoBehaviour
     {
         [SerializeField] private float lowerTimeLimitInSeconds; // Минимальное время до появление аномалии
         [SerializeField] private float upperTimeLimitInSeconds;

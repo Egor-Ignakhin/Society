@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using TMPro;
+
 using UnityEngine;
-namespace Dialogs
-{/// <summary>
-/// класс отвечающий за отрисовку диалогов
-/// </summary>
+namespace Society.Dialogs
+{
+    /// <summary>
+    /// класс отвечающий за отрисовку диалогов
+    /// </summary>
     public sealed class DialogDrawer : MonoBehaviour
     {
         private float delayToDimming;

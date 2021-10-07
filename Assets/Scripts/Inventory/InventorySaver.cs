@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using UnityEngine;
 
 
-namespace Inventory
+namespace Society.Inventory
 {
     /// <summary>
     /// класс отвечающий за сохранение инвентаря

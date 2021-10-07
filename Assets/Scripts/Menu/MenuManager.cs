@@ -1,7 +1,8 @@
 ﻿using System.IO;
+
 using UnityEngine;
 
-namespace MenuScripts
+namespace Society.Menu
 {
     public sealed class MenuManager : MonoBehaviour
     {
@@ -33,7 +34,7 @@ namespace MenuScripts
         }
         public void LoadGame()
         {
-            FindObjectOfType<ScenesManager>().LoadNextScene();
+            FindObjectOfType<Society.GameScreens.ScenesManager>().LoadNextScene();
         }
         internal void OnButtonEnter()
         {

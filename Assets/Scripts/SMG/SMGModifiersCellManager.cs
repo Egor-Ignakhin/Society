@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// класс обрабатывает события обновления модификаторов и оружия, соответственно ставит подсказку на актуальный мод
@@ -10,11 +10,11 @@ namespace SMG
         [SerializeField] private RectTransform selectedModifier;// р-т актуального мода
         [SerializeField] private SMGMain main;
         private SMGEventReceiver eventReceiver;
-        [SerializeField] private ScrollBarController scrollBarController;
+        [SerializeField] private Effects.ScrollBarController scrollBarController;
         private void OnEnable()
         {
             eventReceiver = main.EventReceiver;
-            eventReceiver.UpdateModfiersEvent += OnChangeModfierCell;            
+            eventReceiver.UpdateModfiersEvent += OnChangeModfierCell;
         }
         private void OnChangeModfierCell(ModifierCell cell)
         {
@@ -38,7 +38,7 @@ namespace SMG
         {
             if (eventReceiver != null)
             {
-                eventReceiver.UpdateModfiersEvent -= OnChangeModfierCell;                
+                eventReceiver.UpdateModfiersEvent -= OnChangeModfierCell;
             }
         }
     }

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace PlayerClasses
+namespace Society.Player
 {
     /// <summary>
     /// аниматор полоски здоровья(утрата)

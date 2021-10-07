@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-namespace TexPacker
+﻿namespace TexPacker
 {
     public enum TextureChannel
     {

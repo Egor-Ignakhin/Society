@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using Society.Player;
+using Society.Player.Controllers;
 
-namespace Parkour
+using UnityEngine;
+
+namespace Society.Parkour
 {
     /// <summary>
     /// Элемент паркура - пожарная лестница
@@ -8,7 +11,7 @@ namespace Parkour
     sealed class FireEscape : ParkourElement
     {
         private Vector3 highestPlace;
-        private Vector3 lowestPlace;        
+        private Vector3 lowestPlace;
 
         private float playerHeight;
         private void Start()
@@ -30,7 +33,7 @@ namespace Parkour
         {
             if (isInteracted)
                 return;
-            ScreensManager.SetScreen(this, false);
+            Society.GameScreens.ScreensManager.SetScreen(this, false);
             float stepPosY = playerInteractive.GetHitPoint().y;
             stepPosY = Mathf.Clamp(stepPosY, lowestPlace.y, highestPlace.y + playerHeight);
             animatorParent.position = new Vector3(animatorParent.position.x, stepPosY + playerHeight, animatorParent.position.z);
@@ -38,7 +41,7 @@ namespace Parkour
             cameraTransform.SetParent(animatorParent);
             cameraTransform.localScale = Vector3.one;
             posFpcOnStartClimbing = fpc.transform.position;
-            PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
+            BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
             isInteracted = true;
         }
 
@@ -82,7 +85,7 @@ namespace Parkour
             cameraTransform.localScale = Vector3.one;
             isInteracted = false;
             fpc.SetPossibleJump(false);
-            PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
+            BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
             fpc.ResetRbVelocity();
         }
 

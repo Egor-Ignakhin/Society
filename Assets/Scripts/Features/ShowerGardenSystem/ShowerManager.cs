@@ -1,13 +1,15 @@
-﻿using UnityEngine;
+﻿using Society.Player;
+
+using UnityEngine;
 namespace Features
 {
     /// <summary>
     /// Класс душа. Душом можно управлять: двигать по 2 осям и поливать пол.
     /// </summary>
     public sealed class ShowerManager : MonoBehaviour
-    {        
+    {
         private ShowerExample shower;
-        private PlayerClasses.PlayerInteractive playerInteractive;
+        private PlayerInteractive playerInteractive;
 
 
         [SerializeField] private Transform xzCenter;
@@ -28,10 +30,10 @@ namespace Features
 
         private void Awake()
         {
-            playerInteractive = FindObjectOfType<PlayerClasses.PlayerInteractive>();
+            playerInteractive = FindObjectOfType<PlayerInteractive>();
         }
         internal void OnInteract(ShowerExample shower)
-        {            
+        {
             this.shower = shower;
         }
         private void Update()
@@ -49,12 +51,12 @@ namespace Features
         }
 
         private void ClearReferences()
-        {            
+        {
             shower = null;
         }
 
         private void MoveShowerToPlayerPointer()
-        {           
+        {
             Vector3 shPos = xzCenter.position;
             Vector3 target = playerInteractive.GetHitPoint();
             target.y = shPos.y;

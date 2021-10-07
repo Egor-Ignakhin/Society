@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using Society.Inventory;
 
-namespace SMG
+using UnityEngine;
+
+namespace Society.SMG
 {
     /// <summary>
     /// локальный обработчик для слотов с модами в инвентаре
@@ -12,13 +10,13 @@ namespace SMG
     public class SMGInventoryCellsEventReceiver : MonoBehaviour
     {
         [SerializeField] private DynamicalElementsAnswer Answer;
-        private Inventory.InventoryInput inventoryInput;
+        private InventoryInput inventoryInput;
         private ModifierCharacteristics.SMGTitleTypeIndex SelectedTTI;
         private SMGModifiersData modifiersData;
-        private Inventory.InventoryEventReceiver inventoryEventReceiver;
+        private InventoryEventReceiver inventoryEventReceiver;
         private void Start()
         {
-            var icon = FindObjectOfType<Inventory.InventoryContainer>();
+            var icon = FindObjectOfType<InventoryContainer>();
             inventoryInput = icon.MInventoryInput;
             inventoryEventReceiver = icon.EventReceiver;
             modifiersData = FindObjectOfType<SMGModifiersData>();

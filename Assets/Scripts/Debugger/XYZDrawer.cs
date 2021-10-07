@@ -1,4 +1,6 @@
 
+using Society.Player.Controllers;
+
 using UnityEngine;
 
 namespace Society.Debugger

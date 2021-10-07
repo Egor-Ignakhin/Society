@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using static SMG.ModifierCharacteristics;
+﻿using Society.Inventory;
 
-namespace SMG
+using System.Collections.Generic;
+
+using UnityEngine;
+
+using static Society.SMG.ModifierCharacteristics;
+
+namespace Society.SMG
 {
     public class SMGModifiersData : MonoBehaviour
     {
         private List<SMGTitleTypeIndex> data = new List<SMGTitleTypeIndex>();
 
         private SMGSaver saver;
-        private readonly string savingPath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\SMGSave.json";
+        private readonly string savingPath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\Society.SMGSave.json";
         private const int maxDataCount = 20;
-        private Inventory.InventoryInput inventoryInput;
+        private InventoryInput inventoryInput;
         private void OnEnable()
         {
-            inventoryInput = FindObjectOfType<Inventory.InventoryContainer>().MInventoryInput;
+            inventoryInput = FindObjectOfType<InventoryContainer>().MInventoryInput;
             saver = new SMGSaver();
             saver.Load(ref data, savingPath);
         }
@@ -23,7 +27,7 @@ namespace SMG
         internal void AddModifier(SMGTitleTypeIndex tti)
         {
             if (tti.Index != ModifierIndex.None)
-            {                
+            {
                 if (data.Count < maxDataCount)//если в контейнере есть место
                     data.Add(tti);
                 else

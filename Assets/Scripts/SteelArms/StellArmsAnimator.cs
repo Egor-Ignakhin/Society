@@ -1,21 +1,23 @@
-﻿using Inventory;
-using System;
-using System.Collections;
+﻿using Society.Enemies;
+using Society.Inventory;
+using Society.Player.Controllers;
+
 using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace S.A
+namespace Society.SteelArms
 {
     public class StellArmsAnimator : MonoBehaviour
     {
-        private Dictionary<int, SteelArms> guns = new Dictionary<int, SteelArms>();
+        private Dictionary<int, SteelArmsGeneric> guns = new Dictionary<int, SteelArmsGeneric>();
         private int ActiveItemId = -1;
         private Transform fpc;
         private void Start()
         {
             for (int i = 0; i < transform.childCount; i++)
             {
-                var gun = transform.GetChild(i).GetComponent<SteelArms>();
+                var gun = transform.GetChild(i).GetComponent<SteelArmsGeneric>();
                 guns.Add(gun.GetID(), gun);
             }
 

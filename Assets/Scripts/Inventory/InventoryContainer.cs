@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using System.Threading.Tasks;
-using System;
+﻿using Society.Inventory.Other;
+using Society.Player;
+using Society.Player.Controllers;
 
-namespace Inventory
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using TMPro;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Society.Inventory
 {
     /// <summary>
     /// главный контейнер инвентаря
@@ -40,7 +45,7 @@ namespace Inventory
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
-        private PlayerClasses.PlayerStatements playerStatements;
+        private PlayerStatements playerStatements;
         [SerializeField] private GameObject ItemsLabelDescription;
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private Button ModifiersActivator;
@@ -87,7 +92,7 @@ namespace Inventory
         private void OnEnable()
         {
             inventorySoundEffects = new InventorySoundEffects(MInventoryInput);
-            playerStatements = FindObjectOfType<PlayerClasses.PlayerStatements>();
+            playerStatements = FindObjectOfType<PlayerStatements>();
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver.OnEnable();
@@ -130,7 +135,7 @@ namespace Inventory
 
             IsInitialized = true;
 
-            EventReceiver.SetSMGData(FindObjectOfType<SMG.SMGModifiersData>());
+            EventReceiver.SetSMGData(FindObjectOfType<Society.SMG.SMGModifiersData>());
         }
 
         /// <summary>

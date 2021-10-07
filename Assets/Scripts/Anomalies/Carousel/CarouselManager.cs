@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Society.Player.Controllers;
+
+using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace CarouselAnomaly
+namespace Society.Anomalies.Carousel
 {
     public class CarouselManager : MonoBehaviour
     {
@@ -15,15 +18,15 @@ namespace CarouselAnomaly
         private readonly float explosionImpulse = 20;
         [SerializeField] private GameObject piece;
         [SerializeField] [Range(1, 10)] private int health;
-        private int Health 
-            {
-            get {return health;}
+        private int Health
+        {
+            get { return health; }
             set
-                {
-                    health = value;                    
-                    if (value == 0) Die();
-                }
+            {
+                health = value;
+                if (value == 0) Die();
             }
+        }
 
         #region Player Interaction
 
@@ -58,7 +61,7 @@ namespace CarouselAnomaly
             for (int i = 0; i < piecesNum; i++)
             {
                 GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
-                p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120*i, Vector3.up) * Vector3.forward*explosionImpulse);
+                p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
             }
             Instantiate(explosion, PointPos, Quaternion.identity);
             gameObject.SetActive(false);
@@ -88,7 +91,7 @@ namespace CarouselAnomaly
         public void SetBehaviourSearch()
         {
             var behaviour = GetBehaviour<SearchPlayer>();
-            SetBehaviour (behaviour);
+            SetBehaviour(behaviour);
         }
         public void SetBehaviourHold()
         {
@@ -125,10 +128,10 @@ namespace CarouselAnomaly
             if (player != null)
             {
                 //move:
-                playerAcceleration.y += 0.15f * (- player.GetComponent<Rigidbody>().velocity.y) + 0.08f * (playerMaxHeight - player.transform.position.y);
+                playerAcceleration.y += 0.15f * (-player.GetComponent<Rigidbody>().velocity.y) + 0.08f * (playerMaxHeight - player.transform.position.y);
                 player.GetComponent<Rigidbody>().AddForce(playerAcceleration * player.GetComponent<Rigidbody>().mass);
                 //rotate:
-                playerFPC.AdditionalXMouse = degreesPerSec/500; //не является точным значением в град/сек, ориентировочно
+                playerFPC.AdditionalXMouse = degreesPerSec / 500; //не является точным значением в град/сек, ориентировочно
             }
 
         }
@@ -196,7 +199,7 @@ namespace CarouselAnomaly
             Vector3 itemPos;
             for (int i = 0; i < items.Count; i++)
             {
-                if (items[i].gameObject.GetComponent<FirstPersonController>()!=null)
+                if (items[i].gameObject.GetComponent<FirstPersonController>() != null)
                 {
                     if (player == null) currentBehaviour.PlayerDetected(items[i].gameObject);
                 }
@@ -293,7 +296,7 @@ namespace CarouselAnomaly
     public class SearchPlayer : ICarouselBehaviour
     {
         private CarouselManager cm;
-        public void PlayerDetected(GameObject p) 
+        public void PlayerDetected(GameObject p)
         {
             cm.SetPlayer(p);
             cm.SetPlayerFPC();

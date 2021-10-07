@@ -2,7 +2,7 @@
 
 namespace Features
 {
-    sealed class ShowerLeverOnWall : InteractiveObject
+    sealed class ShowerLeverOnWall : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerExample showerExample;
         [SerializeField] private ParticleSystem waterParticleSystem;
@@ -35,7 +35,7 @@ namespace Features
         private void Update()
         {
             if (IsLeverOpen && (!showerExample.GetIsFull()))
-            {                
+            {
                 showerExample.SetWaterVolume(showerExample.GetWaterVolume() + Time.deltaTime);
             }
         }

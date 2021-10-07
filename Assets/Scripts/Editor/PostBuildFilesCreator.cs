@@ -1,10 +1,12 @@
 ﻿using System.IO;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEditor.Callbacks;
+
 using UnityEngine;
-namespace Tools
+namespace Society.Editor
 {
     /// <summary>
     /// Класс копирует нужные данные в папку с билдом из папки проекта

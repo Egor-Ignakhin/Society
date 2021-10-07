@@ -26,12 +26,6 @@ MonoBehaviour:
     hdr: 1
     showAlpha: 0
     showEyeDropper: 1
-  tint:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-    hdr: 1
-    showAlpha: 0
-    showEyeDropper: 1
   maxFogDistance:
     m_OverrideState: 0
     m_Value: 5000
@@ -124,8 +118,8 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 1
   skyAmbientMode:
-    m_OverrideState: 1
-    m_Value: 1
+    m_OverrideState: 0
+    m_Value: 0
   fogType:
     m_OverrideState: 1
     m_Value: 3
@@ -153,7 +147,7 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 10
   multiplier:
     m_OverrideState: 0
     m_Value: 1

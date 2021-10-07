@@ -1,8 +1,13 @@
-﻿using UnityEngine;
-namespace Shoots
-{/// <summary>
-/// патрон для оружия
-/// </summary>
+﻿using Society.Enemies;
+using Society.Inventory;
+using Society.Patterns;
+
+using UnityEngine;
+namespace Society.Shoot
+{
+    /// <summary>
+    /// патрон для оружия
+    /// </summary>
     public class Bullet : PoolableObject
     {
         private Vector3 target;//точка назначения
@@ -16,7 +21,7 @@ namespace Shoots
 
         BulletValues mBv;
 
-        public Inventory.ItemStates.ItemsID Id;
+        public ItemStates.ItemsID Id;
         private AudioClip reflectSound;
         private AudioSource reflectSource;
         private IBulletReceiver bulletReceiver;
@@ -61,7 +66,7 @@ namespace Shoots
 
                 if (enemy)
                 {
-                    enemy.InjureEnemy(damage);                    
+                    enemy.InjureEnemy(damage);
                 }
                 else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
                     && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
@@ -78,6 +83,11 @@ namespace Shoots
                 }
 
                 impactEffect.transform.position = target;
+
+                //Если попали во врага - прикрепляем декаль к нему
+                if (enemy)
+                    impactEffect.transform.SetParent(enemy.transform);
+
                 impactEffect.SetActive(true);
             }
             mPool.ReturnToPool(this);

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CarouselAnomaly
+namespace Society.Anomalies.Carousel
 {
     class TriggerReceiver : MonoBehaviour
     {

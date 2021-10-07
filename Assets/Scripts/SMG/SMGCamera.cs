@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Society.Inventory;
+
+using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// камера которая рендерит оружия на верстаке, а также она отвечает за режим предпросмотра
@@ -13,7 +16,7 @@ namespace SMG
         /// </summary>
 
         [SerializeField] private List<Transform> guns = new List<Transform>(3);//оружия
-        private readonly List<GunModifiersActiveManager> gunsModsMgs = new List<GunModifiersActiveManager>(3);// менеджеры модификаций на оружиях
+        private readonly List<GunModifiersActiveManager> gunsModSMGs = new List<GunModifiersActiveManager>(3);// менеджеры модификаций на оружиях
 
         private const int cameraScrollStep = 5;// сила приближения-отдаления камеры
         private float defCamFov;// стандартное приближение камеры
@@ -35,14 +38,14 @@ namespace SMG
             {
                 DefGunsDefRot.Add(g, g.rotation);
                 g.gameObject.SetActive(false);
-                gunsModsMgs.Add(g.GetComponentInChildren<GunModifiersActiveManager>());
+                gunsModSMGs.Add(g.GetComponentInChildren<GunModifiersActiveManager>());
             }
 
             activeGun = guns[0];
-            activeManager = gunsModsMgs[0];
+            activeManager = gunsModSMGs[0];
             SetEnable(false);
         }
-        public void SetActiveGun(Inventory.InventoryCell ic)
+        public void SetActiveGun(InventoryCell ic)
         {
             activeGun.gameObject.SetActive(false);
             int index = -1;
@@ -59,7 +62,7 @@ namespace SMG
                     break;
             }
             activeGun = guns[index];
-            activeManager = gunsModsMgs[index];
+            activeManager = gunsModSMGs[index];
             activeGun.gameObject.SetActive(true);
         }
 
@@ -68,7 +71,7 @@ namespace SMG
             if (v)
             {
                 ev.UpdateModfiersEvent += SetModifiersToActiveGun;
-                ev.ChangeGunEvent += SetActiveGun;                
+                ev.ChangeGunEvent += SetActiveGun;
             }
             else
             {

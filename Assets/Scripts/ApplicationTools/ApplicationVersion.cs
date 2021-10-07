@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Society.Tools
+namespace Society.ApplicationTools
 {
     [CreateAssetMenu(fileName = "ApplicationVersion", menuName = "Tools/ApplicationVersion", order = 1)]
     sealed class ApplicationVersion : ScriptableObject

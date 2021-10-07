@@ -1,4 +1,6 @@
-﻿namespace Inventory
+﻿using Society.Localization;
+
+namespace Society.Inventory
 {
     /// <summary>
     /// класс содержащий статы предметов
@@ -28,14 +30,14 @@
         /// </summary>
         /// <param id="id"></param>
         /// <returns></returns>
-        public static int GetMaxCount(int id) => Localization.GetMaxCountItem(id);
-        public static decimal GetWeightItem(int id) => Localization.GetWeightItem(id);
-        public static (int food, int water) GetMeatNutrition(int id) => Localization.GetNutrition(id);
+        public static int GetMaxCount(int id) => LocalizationManager.GetMaxCountItem(id);
+        public static decimal GetWeightItem(int id) => LocalizationManager.GetWeightItem(id);
+        public static (int food, int water) GetMeatNutrition(int id) => LocalizationManager.GetNutrition(id);
 
         internal static bool ItsMeal(int id) => id == (int)ItemsID.CannedFood || id == (int)ItemsID.Milk;
 
         internal static bool ItsMedical(int id) => id == (int)ItemsID.Tablets_1;
 
-        internal static (float health, float radiation) GetMedicalPower(int id) => Localization.GetMedicalProperties(id);
+        internal static (float health, float radiation) GetMedicalPower(int id) => LocalizationManager.GetMedicalProperties(id);
     }
 }

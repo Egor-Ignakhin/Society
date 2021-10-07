@@ -1,7 +1,3 @@
-
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace TexPacker
 {
     public class TextureChannelInput

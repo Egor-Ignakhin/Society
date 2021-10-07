@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using static SMG.ModifierCharacteristics;
 
-namespace SMG
+using UnityEngine;
+
+using static Society.SMG.ModifierCharacteristics;
+
+namespace Society.SMG
 {
     public class SMGSaver
     {

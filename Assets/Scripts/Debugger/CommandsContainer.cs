@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Society.Player;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -103,7 +105,7 @@ namespace Society.Debugger
         private static void ENDLESSHEALTH(string c)
         {
             int v = Convert.ToInt32(c);
-            PlayerClasses.BasicNeeds.EndlessHealth = (v == 1);// если 1 то беск. хп
+            BasicNeeds.EndlessHealth = (v == 1);// если 1 то беск. хп
         }
         /// <summary>
         /// бесконечная еда
@@ -112,7 +114,7 @@ namespace Society.Debugger
         private static void ENDLESSFOOD(string c)
         {
             int v = Convert.ToInt32(c);
-            PlayerClasses.BasicNeeds.EndlessFood = (v == 1);// если 1 то беск. хп
+            BasicNeeds.EndlessFood = (v == 1);// если 1 то беск. хп
         }
         /// <summary>
         /// бесконечная вода
@@ -121,14 +123,14 @@ namespace Society.Debugger
         private static void ENDLESSWATER(string c)
         {
             int v = Convert.ToInt32(c);
-            PlayerClasses.BasicNeeds.EndlessWater = (v == 1);// если 1 то беск. хп
+            BasicNeeds.EndlessWater = (v == 1);// если 1 то беск. хп
         }
         private static void ENDLESSAMMO(string c)
         {
             try
             {
                 int v = Convert.ToInt32(c);
-                Shoots.Gun.EndlessBullets = (v == 1);// если 1 то беск. хп
+                Shoot.Gun.EndlessBullets = (v == 1);// если 1 то беск. хп
             }
             catch
             {
@@ -169,7 +171,7 @@ namespace Society.Debugger
         private static void SETHEALTH(string command)
         {
             int.TryParse(command, out int value);
-            PlayerClasses.BasicNeeds.ForceSetHealth(value);
+            BasicNeeds.ForceSetHealth(value);
         }
         /// <summary>
         /// установка еды
@@ -178,7 +180,7 @@ namespace Society.Debugger
         private static void SETFOOD(string command)
         {
             int.TryParse(command, out int value);
-            PlayerClasses.BasicNeeds.ForceSetFood(value);
+            BasicNeeds.ForceSetFood(value);
         }
         /// <summary>
         /// установка воды
@@ -187,7 +189,7 @@ namespace Society.Debugger
         private static void SETWATER(string command)
         {
             int.TryParse(command, out int value);
-            PlayerClasses.BasicNeeds.ForceSetWater(value);
+            BasicNeeds.ForceSetWater(value);
         }
         /// <summary>
         /// установка радиационного излучения
@@ -196,7 +198,7 @@ namespace Society.Debugger
         private static void SETRADIATION(string command)
         {
             int.TryParse(command, out int value);
-            PlayerClasses.BasicNeeds.ForceSetRadiation(value);
+            BasicNeeds.ForceSetRadiation(value);
         }
         /// <summary>
         /// полное восстановление все необходимых для жизни стамин
@@ -224,13 +226,13 @@ namespace Society.Debugger
             int.TryParse(ss[2], out int z);
             UnityEngine.Vector3 pos = new UnityEngine.Vector3(x, y, z);
 
-            PlayerClasses.BasicNeeds.Instance.transform.position = pos;
+            BasicNeeds.Instance.transform.position = pos;
         }
         private static void GET(string args)
         {
-            if(args == "HEALTH")
+            if (args == "HEALTH")
             {
-                debugConsole.Print($"Health is" + PlayerClasses.BasicNeeds.Instance.Health);
+                debugConsole.Print($"Health is" + BasicNeeds.Instance.Health);
             }
         }
     }

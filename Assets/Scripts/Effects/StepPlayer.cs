@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
 
-public abstract class StepPlayer
+namespace Society.Effects
 {
-    protected StepSoundData stepSoundData;    
-    protected AudioSource stepPlayerSource;        
-    public virtual void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
-    {        
-        var key = (movementType, physicMaterialIndex);
-        if (stepSoundData.ContainsKey(key))
+    public abstract class StepPlayer
+    {
+        protected StepSoundData stepSoundData;
+        protected AudioSource stepPlayerSource;
+        public virtual void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
         {
-            if (!stepPlayerSource.isPlaying || (movementType == StepSoundData.TypeOfMovement.JumpLand))
+            var key = (movementType, physicMaterialIndex);
+            if (stepSoundData.ContainsKey(key))
             {
-                stepPlayerSource.clip = stepSoundData.GetClipFromIndex(key);
-                stepPlayerSource.Play();
+                if (!stepPlayerSource.isPlaying || (movementType == StepSoundData.TypeOfMovement.JumpLand))
+                {
+                    stepPlayerSource.clip = stepSoundData.GetClipFromIndex(key);
+                    stepPlayerSource.Play();
+                }
             }
         }
     }
-}
-public interface IMovableController
-{
-    bool StepEventIsEnabled { get; set; }    
+    public interface IMovableController
+    {
+        bool StepEventIsEnabled { get; set; }
+    }
 }

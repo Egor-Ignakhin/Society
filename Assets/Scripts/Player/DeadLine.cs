@@ -1,5 +1,4 @@
-﻿
-namespace PlayerClasses
+﻿namespace Society.Player
 {
     public class DeadLine
     {

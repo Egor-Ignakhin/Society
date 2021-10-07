@@ -11,7 +11,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
 
         private void OnChangeFood(float value)
         {
-            
+
             mImage.fillAmount = value / basicNeeds.MaximumFood;
         }
 

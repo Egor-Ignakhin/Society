@@ -1,16 +1,21 @@
-﻿using System.Collections;
+﻿using Society.Enemies;
+using Society.Player;
+using Society.Player.Controllers;
+
+using System.Collections;
+
 using UnityEngine;
 
-namespace Anomaly_1
+namespace Society.Anomalies.Anomaly_1
 {
-    class AnomalyPulsation : MonoBehaviour
+    sealed class AnomalyPulsation : MonoBehaviour
     {
         [SerializeField] private float lightningStartDelay; // "StartDelay" из Lightning (ParticleSystem).
         [SerializeField] private float anomalyBoxSide; // Сторона куба опасной зоны аномалии.
         [SerializeField] private float damagePower;
         [SerializeField] private float radiationPower;
         private Collider playerCollider;
-        private PlayerClasses.BasicNeeds playerBasicNeeds;
+        private BasicNeeds playerBasicNeeds;
         private AudioSource mAud;
         private AudioClip PulsateClip;
 
@@ -25,7 +30,7 @@ namespace Anomaly_1
         public void Pulsate(Vector3 spawnPosition)
         {
             mAud.PlayOneShot(PulsateClip);
-            StartCoroutine(PrepareForPulsation(spawnPosition));            
+            StartCoroutine(PrepareForPulsation(spawnPosition));
         }
 
         private IEnumerator PrepareForPulsation(Vector3 spawnPosition)
@@ -41,7 +46,7 @@ namespace Anomaly_1
             {
                 if (collider.Equals(playerCollider))
                     playerBasicNeeds.InjurePerson(GetRandomPower(damagePower), GetRandomPower(radiationPower));
-                else if(collider.TryGetComponent<EnemyCollision>(out var ec))
+                else if (collider.TryGetComponent<EnemyCollision>(out var ec))
                 {
                     ec.InjureEnemy(GetRandomPower(damagePower), false);
                 }

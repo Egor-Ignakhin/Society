@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using TMPro;
+﻿using TMPro;
+
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace PlayerClasses.BasicNeedsEventReceivers
@@ -20,6 +21,6 @@ namespace PlayerClasses.BasicNeedsEventReceivers
             mImage.enabled = value > 1;
             text.enabled = value > 1;
             text.SetText(Mathf.Round(value).ToString());
-        }        
+        }
     }
 }

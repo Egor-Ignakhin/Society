@@ -1,9 +1,11 @@
 ﻿using System;
+
 using TMPro;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Dialogs
+namespace Society.Dialogs
 {
     public class DialogAnswer : MonoBehaviour, IPointerClickHandler
     {

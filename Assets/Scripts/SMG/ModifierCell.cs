@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using Society.Inventory;
+using Society.Patterns;
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static SMG.ModifierCharacteristics;
 
-namespace SMG
+using static Society.SMG.ModifierCharacteristics;
+
+namespace Society.SMG
 {/// <summary>
 /// класс - слот с модификацией
 /// </summary>
@@ -12,7 +16,7 @@ namespace SMG
         private SMGEventReceiver eventReceiver;// обработчик событий СМО
         private Image mImage;
         private Sprite defSprite;// спрайт для пустого слота
-        public Inventory.InventoryCell Ic { get; set; }
+        public InventoryCell Ic { get; set; }
         /// <summary>
         /// название оружия - тип модификации - индекс модификации
         /// </summary>
@@ -33,7 +37,7 @@ namespace SMG
         /// </summary>
         /// <param name="modState"></param>
         /// <param name="icell"></param>
-        public void ChangeModifier(SMGTitleTypeIndex modState, Inventory.InventoryCell icell)
+        public void ChangeModifier(SMGTitleTypeIndex modState, InventoryCell icell)
         {
             if (!(mImage.sprite = GetSprite(TTI = modState)))
                 Clear();

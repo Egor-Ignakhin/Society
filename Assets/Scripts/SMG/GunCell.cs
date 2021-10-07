@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using Society.Inventory;
+using Society.Patterns;
+
+using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// слот под оружие на верстаке
@@ -11,22 +14,22 @@ namespace SMG
         private SMGEventReceiver eventReceiver;
         public UnityEngine.UI.Image MImage { get; private set; }
         public int Id { get; private set; }
-        public Inventory.InventoryCell Ic { get; private set; }
+        public InventoryCell Ic { get; private set; }
         private TMPro.TextMeshProUGUI mText;
-        public Inventory.SMGInventoryCellGun MGun => Ic.MGun;
-        private Inventory.InventoryEventReceiver inventoryEventReceiver;
+        public SMGInventoryCellGun MGun => Ic.MGun;
+        private InventoryEventReceiver inventoryEventReceiver;
 
         public bool IsEmpty()
         {
             return Id == 0;
         }
-        public void ChangeItem(int id, Inventory.InventoryCell gc)
+        public void ChangeItem(int id, InventoryCell gc)
         {
             Ic = gc;
             MImage.sprite = inventoryEventReceiver.SpriteData.GetSprite(id);
             MImage.color = Color.white;
             Id = id;
-            mText.SetText(((Inventory.ItemStates.ItemsID)id).ToString());
+            mText.SetText(((ItemStates.ItemsID)id).ToString());
         }
 
         public void Clear()
@@ -43,7 +46,7 @@ namespace SMG
             eventReceiver = ev;
             MImage = transform.GetChild(0).GetComponent<UnityEngine.UI.Image>();
             mText = GetComponentInChildren<TMPro.TextMeshProUGUI>();
-            inventoryEventReceiver = FindObjectOfType<Inventory.InventoryContainer>().EventReceiver;
+            inventoryEventReceiver = FindObjectOfType<InventoryContainer>().EventReceiver;
         }
 
         public void OnPointerClick(PointerEventData eventData)

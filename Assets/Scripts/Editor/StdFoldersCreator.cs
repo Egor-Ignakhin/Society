@@ -1,8 +1,9 @@
 ﻿#if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 using UnityEngine;
-namespace Tools
+namespace Society.Editor
 {
     /// <summary>
     /// класс при вызове создаёт необходимую иерарихю папок

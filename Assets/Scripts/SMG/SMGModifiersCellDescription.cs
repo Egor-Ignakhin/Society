@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using TMPro;
-namespace SMG
+﻿using TMPro;
+
+using UnityEngine;
+namespace Society.SMG
 {
     /// <summary>
     /// рисовщик информации о модификаторе

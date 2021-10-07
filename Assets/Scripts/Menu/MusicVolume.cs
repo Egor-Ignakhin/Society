@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using Society.Music;
+
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace MenuScripts
+namespace Society.Menu
 {
-    public sealed class MusicVolume : MonoBehaviour
+    sealed class MusicVolume : MonoBehaviour
     {
         private LocationMusic locationMusic;
         private void Start()

@@ -1,4 +1,5 @@
-﻿using Inventory;
+﻿using Society.Inventory;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,10 +29,10 @@ namespace Society.Debugger
                 var itemGun = new SMGInventoryCellGun();
                 itemGun.Reload(
                     i - 1,
-                    SMG.GunCharacteristics.GetMaxMagFromID(i),
-                    SMG.GunCharacteristics.GetMaxSilencerFromID(i),
+                    Society.SMG.GunCharacteristics.GetMaxMagFromID(i),
+                    Society.SMG.GunCharacteristics.GetMaxSilencerFromID(i),
                     0,
-                    SMG.GunCharacteristics.GetMaxAimFromID(i));
+                    Society.SMG.GunCharacteristics.GetMaxAimFromID(i));
 
                 itemButton.GetComponent<InventoryItem>().SetGun(itemGun);
 

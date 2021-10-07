@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using System.IO;
+﻿using System.IO;
+
 using UnityEditor;
+
+using UnityEngine;
 
 namespace Extensions.Editor
 {

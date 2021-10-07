@@ -1,10 +1,15 @@
-﻿using Inventory;
+﻿
+using Society.Inventory.Other;
+using Society.Localization;
+
 using System.IO;
+
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 using UnityEngine;
-namespace Missions
+namespace Society.Missions
 {   /// <summary>
     /// Главный за все миссии
     /// </summary>    
@@ -17,7 +22,7 @@ namespace Missions
         private void Awake()
         {
             LoadState();
-            Localization.Init(currentState);
+            LocalizationManager.Init(currentState);
         }
 
         private void Start()
@@ -111,7 +116,7 @@ namespace Missions
         {
 #if UNITY_EDITOR
 
-            private static System.Collections.Generic.Dictionary<int, Localization.TaskContent> infoAboutMissions = new System.Collections.Generic.Dictionary<int, Localization.TaskContent>();
+            private static System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent> infoAboutMissions = new System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent>();
 
             [MenuItem("Tools/Update Info About Missions")]
             private static void UpdateInfoAboutMissions()
@@ -119,14 +124,14 @@ namespace Missions
                 if (infoAboutMissions != null)
                     infoAboutMissions.Clear();
 
-                infoAboutMissions = new System.Collections.Generic.Dictionary<int, Localization.TaskContent>();
+                infoAboutMissions = new System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent>();
 
-                System.Collections.Generic.List<Localization.TaskContent> tasks = new System.Collections.Generic.List<Localization.TaskContent>();
+                System.Collections.Generic.List<LocalizationManager.TaskContent> tasks = new System.Collections.Generic.List<LocalizationManager.TaskContent>();
                 for (int i = 1; i <= MaxMissions; i++)
                 {
                     string path = $"Localization\\Missions\\MissionTask_{i}.json";
                     string data = File.ReadAllText(path);
-                    tasks.Add(JsonUtility.FromJson<Localization.TaskContent>(data));
+                    tasks.Add(JsonUtility.FromJson<LocalizationManager.TaskContent>(data));
                     infoAboutMissions.Add(i, tasks[tasks.Count - 1]);
                 }
                 foreach (var tc in FindObjectsOfType<MissionInteractiveObject>())
@@ -145,7 +150,7 @@ namespace Missions
                 if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
                     UpdateInfoAboutMissions();
 
-                return infoAboutMissions[missionIndex].Tasks[taskIndex];                
+                return infoAboutMissions[missionIndex].Tasks[taskIndex];
             }
 #endif
         }

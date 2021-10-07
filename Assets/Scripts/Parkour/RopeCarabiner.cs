@@ -1,13 +1,16 @@
-﻿using UnityEngine;
+﻿using Society.Player;
+using Society.Player.Controllers;
 
-namespace Parkour
+using UnityEngine;
+
+namespace Society.Parkour
 {   /// <summary>
     /// Элемент паркура - верёвка с карабином
     /// </summary>
     sealed class RopeCarabiner : ParkourElement
     {
         [SerializeField] private Transform highestPlace;
-        [SerializeField] private Transform lowestPlace;        
+        [SerializeField] private Transform lowestPlace;
         private readonly float minimumVert = -45.0f;
         private readonly float maximumVert = 45.0f;
 
@@ -22,14 +25,14 @@ namespace Parkour
         {
             if (isInteracted)
                 return;
-            ScreensManager.SetScreen(this, false);
+            Society.GameScreens.ScreensManager.SetScreen(this, false);
             float startPosY = Mathf.Clamp(playerInteractive.GetHitPoint().y, lowestPlace.position.y, highestPlace.position.y);
             animatorParent.position = new Vector3(animatorParent.position.x, startPosY, animatorParent.position.z);
 
             cameraTransform.SetParent(animatorParent);
             cameraTransform.localScale = Vector3.one;
             posFpcOnStartClimbing = fpc.transform.position;
-            PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
+            BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
 
             isInteracted = true;
         }
@@ -82,7 +85,7 @@ namespace Parkour
             cameraTransform.localScale = Vector3.one;
             isInteracted = false;
             fpc.SetPossibleJump(false);
-            PlayerClasses.BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
+            BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
             fpc.ResetRbVelocity();
         }
         public override bool Hide()
@@ -94,7 +97,7 @@ namespace Parkour
         public override KeyCode HideKey() => KeyCode.Space;
 
         public class RopeCarabinerInput : ParkoutInput
-        {            
+        {
             public override void CheckSystemInput()
             {
                 if (Input.GetKey(KeyCode.W))// вверх

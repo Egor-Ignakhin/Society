@@ -1,11 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using System;
+﻿using Society.Inventory.Other;
+using Society.Player.Controllers;
+using Society.SMG;
 
-namespace Inventory
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using TMPro;
+
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Society.Inventory
 {
     /// <summary>
     /// класс - обработчик событий инвентаря
@@ -17,7 +23,7 @@ namespace Inventory
         private static bool ScrollEventLocked = false;
 
         private readonly Transform mainParent;
-        private readonly FirstPersonController fps;
+        private readonly Player.Controllers.FirstPersonController fps;
         private readonly Transform busyCellsContainer;
         private readonly Transform freeCellsContainer;
         private readonly GameObject ItemsLabelDescription;
@@ -41,13 +47,13 @@ namespace Inventory
         private readonly GameObject modifiersPage;
         private readonly Button modPageButton;
         private SMG.SMGModifiersData modifiersData;
-        private readonly SMG.SMGInventoryCellsEventReceiver SMGICEV;        
+        private readonly SMGInventoryCellsEventReceiver SMGICEV;
 
         private bool canFastMoveSelCell = false;//можно ли перемещать слоты в инвентаре на быстрый доступ если нажат шифт
         internal SpriteData SpriteData { get; }
         public InventoryEventReceiver(Transform mp, FirstPersonController controller, Transform fCC, Transform bCC,
          InventoryContainer ic, GameObject itemsLabelDescription, InventoryInput input, InventoryDrawer iDrawer,
-         TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage, SMG.SMGInventoryCellsEventReceiver smgicev)
+         TextMeshProUGUI weightText, Button taB, Button modbtn, GameObject modPage, SMGInventoryCellsEventReceiver SMGicev)
         {
             mainParent = mp;
             fps = controller;
@@ -61,7 +67,7 @@ namespace Inventory
             takeAllButton = taB;
             modPageButton = modbtn;
             modifiersPage = modPage;
-            SMGICEV = smgicev;
+            SMGICEV = SMGicev;
             SpriteData = new SpriteData();
         }
         public void OnEnable()
@@ -78,7 +84,7 @@ namespace Inventory
             modifiersPage.SetActive(false);
             modPageButton.onClick.AddListener(ModifiersPageChangeActive);
 
-            foreach (var m in modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>())
+            foreach (var m in modifiersPage.GetComponentsInChildren<Society.SMG.InventorySMGCell>())
                 m.OnInit(SMGICEV);
         }
         internal static void LockScrollEvent(bool isActive) => ScrollEventLocked = isActive;
@@ -132,7 +138,7 @@ namespace Inventory
             draggedItem.SetParent(mainParent);
         }
 
-        internal void SetSMGData(SMG.SMGModifiersData sMGModifiersData) => modifiersData = sMGModifiersData;
+        internal void SetSMGData(SMGModifiersData SMGModifiersData) => modifiersData = SMGModifiersData;
 
 
         public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
@@ -377,7 +383,7 @@ namespace Inventory
         }
 
         internal void DelItem(ItemStates.ItemsID itemId, int count)
-        {            
+        {
             var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)itemId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
 
@@ -430,13 +436,13 @@ namespace Inventory
         }
         public void RewriteSMGCells()
         {
-            var smgCells = modifiersPage.GetComponentsInChildren<SMG.InventorySMGCell>();
+            var SMGCells = modifiersPage.GetComponentsInChildren<InventorySMGCell>();
             var modData = modifiersData.GetModifiersData();
-            foreach (var c in smgCells)
+            foreach (var c in SMGCells)
                 c.Clear();
             for (int i = 0; i < modData.Count; i++)
             {
-                smgCells[i].RewriteSprite(modData[i]);
+                SMGCells[i].RewriteSprite(modData[i]);
             }
         }
         public void OnDisable()

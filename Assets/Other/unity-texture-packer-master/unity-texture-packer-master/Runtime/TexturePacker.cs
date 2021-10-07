@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace TexPacker
@@ -9,7 +10,8 @@ namespace TexPacker
         private Material _material;
 
         private List<TextureInput> _texInputs = new List<TextureInput>();
-        public List<TextureInput> texInputs {
+        public List<TextureInput> texInputs
+        {
             get { return _texInputs; }
         }
 
@@ -92,7 +94,7 @@ namespace TexPacker
         public Texture2D Create()
         {
             int idx = 0;
-            foreach(var input in _texInputs)
+            foreach (var input in _texInputs)
             {
                 var Tex = input.texture;
                 _material.SetTexture(GetPropertyName(idx, "Tex"), Tex);

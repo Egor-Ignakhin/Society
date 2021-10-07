@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Society.Inventory;
+
 using UnityEngine;
 
 public class ToolExample : MonoBehaviour
 {
-    [SerializeField] private Inventory.ItemStates.ItemsID id;
+    [SerializeField] private ItemStates.ItemsID id;
 
     internal int GetID()
     {

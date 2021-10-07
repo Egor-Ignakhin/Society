@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PlayerClasses
+namespace Society.Player
 {
     public sealed class PlayerStatements : MonoBehaviour
     {

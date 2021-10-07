@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using Society.Patterns;
+using Society.Player.Controllers;
 
-namespace SMG
+using UnityEngine;
+
+namespace Society.SMG
 {
     /// <summary>
     /// класс отвечающий за верстак
@@ -18,11 +21,11 @@ namespace SMG
         }
         public override void Interact()
         {
-            if (!ScreensManager.HasActiveScreen())
+            if (!Society.GameScreens.ScreensManager.HasActiveScreen())
             {
                 main.SetEnable(true);
                 var camTr = FindObjectOfType<FirstPersonController>().GetCamera().transform;
-                camTr.SetParent(cameraPoint);                
+                camTr.SetParent(cameraPoint);
                 camTr.localPosition = Vector3.zero;
                 camTr.localRotation = Quaternion.identity;
             }

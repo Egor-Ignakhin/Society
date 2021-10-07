@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using TMPro;
+
 using UnityEngine;
 
 namespace Society.Debugger

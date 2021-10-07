@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-namespace Anomaly_1
+namespace Society.Anomalies.Anomaly_1
 {
-    class SpawnPositionFinder : MonoBehaviour
+    sealed class SpawnPositionFinder : MonoBehaviour
     {
         [SerializeField] private float yLowestLimit; // Ниже это высоты аномалия не будет появляться.
 

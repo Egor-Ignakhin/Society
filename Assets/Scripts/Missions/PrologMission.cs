@@ -1,16 +1,25 @@
-﻿using Inventory;
+﻿using Society.Dialogs;
+using Society.Effects;
+using Society.Effects.MapOfWorldCanvasEffects;
+using Society.Enviroment.Bed;
+using Society.GameScreens;
+using Society.Inventory;
+using Society.Music;
+using Society.Player;
+using Society.Player.Controllers;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace Missions
+namespace Society.Missions
 {
     public sealed class PrologMission : Mission
     {
         public override int GetMissionNumber() => 1;
-        [SerializeField] private BedMesh onLoadBedMesh;        
+        [SerializeField] private BedMesh onLoadBedMesh;
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
         [SerializeField] private GameObject ilyaObjects;
-        [SerializeField] private Doors.HermeticDoor hermeticDoor;
+        [SerializeField] private Society.Enviroment.Doors.HermeticDoor hermeticDoor;
         protected override void StartMission()
         {
             OnTaskActions.Add("0", () =>
@@ -39,9 +48,9 @@ namespace Missions
                 FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
                 FindObjectOfType<InventoryContainer>().SetInteractive(false);
                 FindObjectOfType<InventoryContainer>().ClearInventory();
-                FindObjectOfType<PlayerClasses.PlayerActionBar>().SetVisible(false);
-                PlayerClasses.BasicNeeds.Instance.SetEnableStamins(false);
-                Times.WorldTime.CurrentDate.ForceSetTime("23:32");                
+                FindObjectOfType<PlayerActionBar>().SetVisible(false);
+                BasicNeeds.Instance.SetEnableStamins(false);
+                Times.WorldTime.CurrentDate.ForceSetTime("23:32");
                 FindObjectOfType<FirstPersonController>().SetPossibleSprinting(false);
             }
             if (isMissiomItem)
@@ -60,12 +69,12 @@ namespace Missions
                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
                 СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
                 lb.OnInit(6, Color.black);
-                lb.SubsctibeOnFinish(OnTaskActions["0"]);                
+                lb.SubsctibeOnFinish(OnTaskActions["0"]);
 
                 taskDrawer.SetVisible(false);
 
-              //  onLoadBedMesh.Interact();
-         //       FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
+                //  onLoadBedMesh.Interact();
+                //       FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
             }
             if (currentTask == 1)
             {
@@ -81,7 +90,7 @@ namespace Missions
             }
             if (currentTask == 4)
             {
-                taskDrawer.SetVisible(false);                
+                taskDrawer.SetVisible(false);
             }
             if (currentTask == 5)
             {

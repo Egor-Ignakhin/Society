@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace MenuScripts
+namespace Society.Menu
 {
     class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

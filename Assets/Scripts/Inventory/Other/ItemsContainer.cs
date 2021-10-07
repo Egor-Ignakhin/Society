@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Society.Patterns;
+
+using System.Collections.Generic;
+
 using UnityEngine;
 
-namespace Inventory
+namespace Society.Inventory.Other
 {
     /// <summary>
     /// класс-контейнер (сундук, ящик и тп)
@@ -18,7 +21,7 @@ namespace Inventory
         [HideInInspector] public List<int> StartedItems = new List<int>();
         [HideInInspector] public List<int> StartedCount = new List<int>();
 
-        #region SMG
+        #region Society.SMG
         [HideInInspector] public List<int> Aims = new List<int>();
         [HideInInspector] public List<int> Mags = new List<int>();
         [HideInInspector] public List<int> Silencers = new List<int>();
@@ -140,13 +143,13 @@ namespace Inventory
         }
 
         public void SetStartedSilencerIndex(int index, int newValue) =>
-            Silencers[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.GetMaxSilencerFromID(StartedItems[index]));
+            Silencers[index] = Mathf.Clamp(newValue, 0, Society.SMG.GunCharacteristics.GetMaxSilencerFromID(StartedItems[index]));
 
         public void SetStartedMagIndex(int index, int newValue) =>
-            Mags[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.GetMaxMagFromID(StartedItems[index]));
+            Mags[index] = Mathf.Clamp(newValue, 0, Society.SMG.GunCharacteristics.GetMaxMagFromID(StartedItems[index]));
 
         public void SetStartedAimIndex(int index, int newValue) =>
-            Aims[index] = Mathf.Clamp(newValue, 0, SMG.GunCharacteristics.GetMaxAimFromID(StartedItems[index]));
+            Aims[index] = Mathf.Clamp(newValue, 0, Society.SMG.GunCharacteristics.GetMaxAimFromID(StartedItems[index]));
 
 
         public void AddStartedItem(int itemID)

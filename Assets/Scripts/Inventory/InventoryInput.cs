@@ -1,7 +1,12 @@
-﻿using SMG;
+﻿using Society.GameScreens;
+using Society.Localization;
+using Society.Player.Controllers;
+using Society.SMG;
+
 using System;
+
 using UnityEngine;
-namespace Inventory
+namespace Society.Inventory
 {
     /// <summary>
     /// класс отвечающий за считывание ввода пользователя и передачи её управляющему классу
@@ -23,12 +28,12 @@ namespace Inventory
         private const KeyCode dropCode = KeyCode.BackQuote;
         private bool isEnabled;
         private FirstPersonController fps;
-        private Shoots.GunAnimator gunAnimator;
+        private Shoot.GunAnimator gunAnimator;
         private bool canInteractive = true;
         private void Awake()
         {
             fps = FindObjectOfType<FirstPersonController>();
-            gunAnimator = FindObjectOfType<Shoots.GunAnimator>();
+            gunAnimator = FindObjectOfType<Shoot.GunAnimator>();
         }
 
         internal void SetInteractive(bool v) => canInteractive = v;
@@ -87,7 +92,7 @@ namespace Inventory
             var powerForce = 5;
             item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
 
-            DropEvent?.Invoke(Localization.GetHint(id), count);
+            DropEvent?.Invoke(LocalizationManager.GetHint(id), count);
         }
 
         internal void DropModifier(ModifierCharacteristics.SMGTitleTypeIndex tti)

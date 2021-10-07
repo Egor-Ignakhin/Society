@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-namespace S.A
+﻿namespace Society.SteelArms
 {
-    public class Scrap : SteelArms
+    public class Scrap : SteelArmsGeneric
     {
     }
 }

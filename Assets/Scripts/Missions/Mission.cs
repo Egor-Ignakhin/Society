@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Society.Missions.TaskSystem;
+
+using System;
 using System.Collections.Generic;
+
 using UnityEngine;
-namespace Missions
-{/// <summary>
-/// абстрактный класс миссии, содержит общие свойства
-/// </summary>
+namespace Society.Missions
+{
+    /// <summary>
+    /// абстрактный класс миссии, содержит общие свойства
+    /// </summary>
     public abstract class Mission : MonoBehaviour
     {
         private bool isInitialized = false;
@@ -63,7 +67,7 @@ namespace Missions
         }
         protected void SetTask(int number)
         {
-            string neededContent = Localization.PathToCurrentLanguageContent(Localization.Type.Tasks, GetMissionNumber(), number);
+            string neededContent = Society.Localization.LocalizationManager.PathToCurrentLanguageContent(Society.Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
 
             taskDrawer.DrawNewTask(neededContent);
         }

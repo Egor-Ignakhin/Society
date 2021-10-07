@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace SMG
+namespace Society.SMG
 {
     /// <summary>
     /// вешается на модифицируемый элемент оружия на верстаке
