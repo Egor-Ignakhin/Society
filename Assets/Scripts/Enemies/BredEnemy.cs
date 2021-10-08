@@ -23,7 +23,7 @@ namespace Society.Enemies
             enabled = false;
             DeathEvent.Invoke();
             EnemiesData.RemoveEnemy(this);
-            PlayDeathClip();
+            stepEnemy.PlayDeathClip(deathClip);
         }
         private void MakePhysical(bool v)
         {
@@ -40,6 +40,15 @@ namespace Society.Enemies
             {
                 allJoints.Add(c.GetComponent<Rigidbody>());
             }
+        }
+
+        protected override void RotateBodyToTarget()
+        {
+            var direction = (possibleTargetPos - transform.position).normalized;
+            direction.y = 0f;
+
+            if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Society.Player
         private SupportItemCircular supportItemCircular;
         private Ray tempRay;
         private Vector3 tempInteractionPoint;
+        [SerializeField] private LayerMask interactionLayers;
         private void Start()
         {
             mainCamera = GetComponent<FirstPersonController>().GetCamera();
@@ -58,7 +59,8 @@ namespace Society.Player
             desc = string.Empty;
             mainDesc = string.Empty;
             directedObjects = null;
-            if (Physics.SphereCast(tempRay.origin, sphereCasterRadius, tempRay.direction, out RaycastHit hit, interctionDistance, ~0))
+            if (Physics.SphereCast(tempRay.origin, sphereCasterRadius,
+                tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers,QueryTriggerInteraction.Ignore))
             {
                 directedObjects = hit.transform.GetComponents<InteractiveObject>();
                 if (directedObjects.Length > 0)
@@ -98,7 +100,8 @@ namespace Society.Player
         {
             float tempOpacity = 0;
             //float max            
-            if (Physics.SphereCast(tempRay.origin, sphereCasterRadius * sphSCastRadiusMultiply, tempRay.direction, out RaycastHit hit, interctionDistance, ~0))// Бросок сфера удвоенного радиуса
+            if (Physics.SphereCast(tempRay.origin, sphereCasterRadius * sphSCastRadiusMultiply,
+                tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers, QueryTriggerInteraction.Ignore))// Бросок сфера удвоенного радиуса
             {
                 if (hit.transform.GetComponent<InteractiveObject>())
                 {
@@ -115,7 +118,7 @@ namespace Society.Player
             #region drawSphereForDefaultInteraction
             try
             {
-                bool isHit = Physics.SphereCast(tempRay.origin, sphereCasterRadius, tempRay.direction, out RaycastHit hit, interctionDistance, ~0);
+                bool isHit = Physics.SphereCast(tempRay.origin, sphereCasterRadius, tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers);
                 if (isHit)
                 {
                     Gizmos.color = Color.red;
@@ -129,7 +132,7 @@ namespace Society.Player
             #region DrawSphereForSPCircularInteraction
             try
             {
-                bool isHit = Physics.SphereCast(tempRay.origin, sphereCasterRadius * sphSCastRadiusMultiply, tempRay.direction, out RaycastHit hit, interctionDistance, ~0);
+                bool isHit = Physics.SphereCast(tempRay.origin, sphereCasterRadius * sphSCastRadiusMultiply, tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers);
                 if (isHit)
                 {
                     Gizmos.color = Color.yellow;

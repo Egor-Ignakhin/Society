@@ -1,7 +1,7 @@
-﻿
-using Society.Effects;
+﻿using Society.Effects;
 using Society.Player;
 
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -55,10 +55,11 @@ namespace Society.Enemies
         protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
 
         internal bool HasEnemy() => enemy != null;
+        internal float GetAttackDistance() => attackDistance;
 
         protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)
 
-        internal float GetDistanceToTarget() => enemy ? CalculateDistance(target.position) : 100000;
+        internal float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
 
         protected NavMeshAgent mAgent;
         protected Animator mAnim;
@@ -77,18 +78,14 @@ namespace Society.Enemies
         private StepSoundData stepSoundData;
         private int CurrentPhysicMaterialIndex;
         private Vector3 oldPos = Vector3.zero;
-        private StepEnemy stepEnemy;
+        protected StepEnemy stepEnemy;
         protected AudioClip[] deathClip;
         private TargetPointsManager tpm;
         [SerializeField] private Transform targetPointsParent;
         public bool StepEventIsEnabled { get; set; } = true;
         protected virtual void Start()
         {
-            OnInit(attackDistance, power, seeDistance, health);
-        }
-        private void OnInit(float distanceForAttack, float powerInjure, float seeDistance, float health)
-        {
-            UVariables = new UniqueVariables(distanceForAttack, powerInjure, seeDistance, health);
+            UVariables = new UniqueVariables(attackDistance, power, seeDistance, health);
             mAgent = GetComponent<NavMeshAgent>();
             mAnim = GetComponent<Animator>();
             stepSoundData = FindObjectOfType<StepSoundData>();
@@ -104,6 +101,7 @@ namespace Society.Enemies
         }
         protected class AnimationsContainer
         {
+            public const string None = "";
             public const string MoveToPerson = "MoveToPerson";
             public const string Attack = "Attack";
         }
@@ -113,7 +111,17 @@ namespace Society.Enemies
             RayCastToEnemy();
             SetPhysMaterial();
             CallStepEvent();
+            RotateBodyToTarget();
         }
+
+        /// <summary>
+        /// Поворот тела врага к цели
+        /// </summary>
+        protected abstract void RotateBodyToTarget();        
+
+        /// <summary>
+        /// Вызов звука шага
+        /// </summary>
         private void CallStepEvent()
         {
             Vector2 to = new Vector2(transform.position.x, transform.position.z);
@@ -128,12 +136,13 @@ namespace Society.Enemies
             EnemyStepEvent?.Invoke(CurrentPhysicMaterialIndex, type);
             oldPos = transform.position;
         }
+
         /// <summary>
         /// тут вычисляется путь до цели (по корнерам карты)
         /// </summary>
         /// <param name="pos"></param>
-        /// <returns></returns>
-        private float CalculateDistance(Vector3 pos)
+        /// <returns></returns>        
+        public float CalculateRemainingDistance(Vector3 pos)
         {
             NavMeshPath path = new NavMeshPath();
             float dist = float.PositiveInfinity;
@@ -145,6 +154,7 @@ namespace Society.Enemies
             }
             return dist;
         }
+
         /// <summary>
         /// тут вычисляется угол обзора по отношению к заданной позиции
         /// </summary>
@@ -162,9 +172,10 @@ namespace Society.Enemies
             return isIntersected;
 
         }
+
         /// <summary>
         /// бросок линии и возможная схватка с врагом
-        /// </summary>
+        /// </summary>        
         private void RayCastToEnemy()
         {
             Vector3 pos = BasicNeeds.Instance.transform.position;
@@ -172,7 +183,7 @@ namespace Society.Enemies
             {
                 if (Physics.Linecast(e.position, pos, out RaycastHit hit, layerMasks, QueryTriggerInteraction.Ignore))
                 {
-                    if (CalculateDistance(pos) >= UVariables.SeeDistance)
+                    if (CalculateRemainingDistance(pos) >= UVariables.SeeDistance)
                         continue;
                     if (!CalculateAngle(pos))
                         continue;
@@ -186,10 +197,15 @@ namespace Society.Enemies
             }
             SetEnemy(null);
         }
+
         /// <summary>
         /// функция нанесения урона монстром
-        /// </summary>
-        protected void Attack() => enemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
+        /// </summary>        
+        protected void Attack()
+        {
+            enemy.InjurePerson(UVariables.PowerInjure * Time.deltaTime);
+            SetAnimationClip(AnimationsContainer.Attack);
+        }
 
         /// <summary>
         /// функция получения урона монстром
@@ -201,14 +217,11 @@ namespace Society.Enemies
                 SetEnemy(BasicNeeds.Instance, true);
             UVariables.Health -= value;
         }
+
         /// <summary>
         /// функция смерти
         /// </summary>
         protected abstract void Death(float health);
-        protected void PlayDeathClip()
-        {
-            stepEnemy.PlayDeathClip(deathClip);
-        }
 
         /// <summary>
         /// функция установки противника
@@ -227,6 +240,7 @@ namespace Society.Enemies
                     SetTarget(noiseTarget);
             }
         }
+
         /// <summary>
         /// функция установки цели
         /// </summary>
@@ -234,59 +248,64 @@ namespace Society.Enemies
         public virtual void SetTarget(Transform t)
         {
             target = t;
-            bool possibleMove = CalculateDistance(lastTargetPos) <= UVariables.SeeDistance;
-            if (enemy)//враг не потерян
+
+            if (enemy)//Если враг обнаружен
             {
-                lastTargetPos = enemy.transform.position;// запись в последнюю известную точку                         
+                lastTargetPos = enemy.transform.position;//Запись в последнюю известную точку позицию врага                  
             }
-            else if ((mAgent.isOnNavMesh && mAgent.remainingDistance < mAgent.stoppingDistance) || !possibleMove)
+
+            float remainingDistance = CalculateRemainingDistance(lastTargetPos);//Дистанция до цели    
+            bool canAttack = CanAttack(CalculateRemainingDistance(lastTargetPos));
+            bool targetIsSight = remainingDistance <= UVariables.SeeDistance;//Цель в поле зрения монстра?
+
+
+            //Если агент находится не на навигационной сетке 
+            if (!mAgent.isOnNavMesh)
+                return;//Прервать
+
+            //Если можно атаковать или цель не в поле зрения
+            else if (canAttack || (!targetIsSight))
             {
-                if (WaitTarget < 0 || !possibleMove)
+                //Если время поиска врага < 0 или цель не в поле зрения
+                if (WaitTarget < 0 || (!targetIsSight))
                 {
                     lastTargetPos = tpm.GetCurrentTarget(this).position;
                 }
                 else
                 {
                     WaitTarget -= Time.deltaTime;
-                    var direction = (possibleTargetPos - transform.position).normalized;
-                    direction.y = 0f;
-
-                    if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
                 }
             }
             else if (WaitTarget > 4)
             {
                 possibleTargetPos = target.position;
             }
-            if (mAgent.isOnNavMesh)
-                mAgent.SetDestination(lastTargetPos);
+            mAgent.SetDestination(lastTargetPos);
 
-            if (mAgent.isOnNavMesh && mAgent.remainingDistance > mAgent.stoppingDistance)// если до цели не дошёл агент
-            {
-                SetAnimationClip(AnimationsContainer.MoveToPerson);// идти к цели
-            }
-            else if (mAgent.hasPath && mAgent.remainingDistance <= mAgent.stoppingDistance && enemy)// если дошёл
-            {//атаковать
-                SetAnimationClip(AnimationsContainer.Attack);
+            if (canAttack)//Если цель можно атаковать
                 Attack();
-            }
-            else
-            {
-                SetAnimationClip();
-            }
+
+            else//Иначе идти к цели
+                SetAnimationClip(AnimationsContainer.MoveToPerson);
         }
+
+        private bool CanAttack(float remainingDistance)
+        {
+            return (remainingDistance <= mAgent.stoppingDistance)
+                && mAgent.hasPath && enemy;
+        }
+
         /// <summary>
         /// функция задачи анимаций
         /// </summary>
         /// <param name="state"></param>
         /// <param name="value"></param>
-        protected void SetAnimationClip(string state = "", bool value = true)
+        protected void SetAnimationClip(string state, bool value = true)
         {
             mAnim.SetBool(AnimationsContainer.MoveToPerson, false);
             mAnim.SetBool(AnimationsContainer.Attack, false);
-            if (state != string.Empty)
-                mAnim.SetBool(state, value);
+
+            mAnim.SetBool(state, value);
         }
 
         private void SetPhysMaterial()
@@ -301,67 +320,6 @@ namespace Society.Enemies
         {
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
-        }
-
-        public class StepEnemy : StepPlayer
-        {
-            private Enemy enemy;
-            public StepEnemy(IMovableController e, StepSoundData ssd)
-            {
-                stepSoundData = ssd;
-
-                enemy = (Enemy)e;
-                enemy.EnemyStepEvent += OnStep;
-
-                stepPlayerSource = enemy.gameObject.AddComponent<AudioSource>();
-                stepPlayerSource.priority = 129;
-                stepPlayerSource.spatialBlend = 1;
-                stepPlayerSource.pitch = Random.Range(0.95f, 1.05f);
-            }
-            public void OnDestroy()
-            {
-                enemy.EnemyStepEvent -= OnStep;
-            }
-
-            internal void PlayDeathClip(AudioClip[] deathClip)
-            {
-                int index = Random.Range(0, deathClip.Length);
-                stepPlayerSource.PlayOneShot(deathClip[index]);
-            }
-        }
-        public class TargetPointsManager
-        {
-            private readonly List<EnemyPoint> points = new List<EnemyPoint>();
-            private int currentPointIt = 0;
-
-            public TargetPointsManager(Transform pointsParent)
-            {
-                points.AddRange(pointsParent.GetComponentsInChildren<EnemyPoint>());
-            }
-            private void CalculateNextPoint()
-            {
-                if (points[currentPointIt].GetDelay() > 0)
-                    return;
-                else
-                {
-                    points[currentPointIt].ResetDelay();
-                }
-                currentPointIt++;
-                if (currentPointIt >= points.Count)
-                    currentPointIt = 0;
-            }
-            public Transform GetCurrentTarget(Enemy e)
-            {
-                if (points.Count > 0)
-                {
-                    var dist = e.CalculateDistance(points[currentPointIt].transform.position);
-                    if (dist < e.attackDistance * 1.5f)
-                        CalculateNextPoint();
-
-                    return points[currentPointIt].transform;
-                }
-                else return e.transform;
-            }
         }
     }
 }

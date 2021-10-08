@@ -7,11 +7,14 @@ namespace Society.Anomalies.Carousel
         [Range(0f, 1f)] [SerializeField] private float drag = 0.5f;
         private Vector3 dragDirection = Vector3.zero;
         private float dragMagnitude = 0;
-
+        private bool instantiateByAnomaly = false;
+        [SerializeField] private GameObject particleEffects;
 
         protected override void Awake()
         {
             rb = GetComponent<Rigidbody>();
+
+            particleEffects.SetActive(instantiateByAnomaly);
 
             base.Awake();
         }
@@ -24,9 +27,16 @@ namespace Society.Anomalies.Carousel
 
         private void FixedUpdate()
         {
+            if (!instantiateByAnomaly)
+                return;
+
             dragDirection = -rb.velocity.normalized;
             dragMagnitude = rb.velocity.sqrMagnitude * drag;
             rb.AddForce(dragMagnitude * dragDirection);
+        }
+        public void SetInstantiateState(bool insByAnomaly)
+        {
+            instantiateByAnomaly = insByAnomaly;
         }
     }
 }

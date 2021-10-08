@@ -13,12 +13,21 @@ namespace Society.Enemies
             if (health > UniqueVariables.MinHealth)
                 return;
             mAgent.enabled = false;
-            SetAnimationClip();
+            SetAnimationClip(AnimationsContainer.None);
             mAnim.applyRootMotion = true;
             enabled = false;
             DeathEvent.Invoke();
             EnemiesData.RemoveEnemy(this);
-            PlayDeathClip();
+            stepEnemy.PlayDeathClip(deathClip);
+        }
+
+        protected override void RotateBodyToTarget()
+        {
+            var direction = (possibleTargetPos - transform.position).normalized;
+            direction.y = 0f;
+
+            if ((mAgent.steeringTarget - transform.position) != Vector3.zero)
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), 1);
         }
     }
 }

@@ -59,7 +59,9 @@ namespace Society.Anomalies.Carousel
             for (int i = 0; i < piecesNum; i++)
             {
                 GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
-                p.GetComponent<CarouselePieceII>().AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
+                var cpII = p.GetComponent<CarouselePieceII>();
+                cpII.AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
+                cpII.SetInstantiateState(true);
             }
             Instantiate(explosion, PointPos, Quaternion.identity);
             gameObject.SetActive(false);

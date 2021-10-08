@@ -183,6 +183,7 @@ MonoBehaviour:
   aims: []
   ammoCount: 0
   drag: 0.25
+  particleEffects: {fileID: 2495495428306324558}
 --- !u!54 &4090932223521925001
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -292,6 +293,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21f6aea0c9b788c4b9b6275efc33d0f9, type: 3}
+--- !u!1 &2495495428306324558 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: 21f6aea0c9b788c4b9b6275efc33d0f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2495495428306291436}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2495495428305899630 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 21f6aea0c9b788c4b9b6275efc33d0f9,
