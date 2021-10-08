@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Carousel
 {
-    public class CarouselManager : MonoBehaviour
+    public sealed class CarouselManager : MonoBehaviour
     {
         private readonly List<Rigidbody> items = new List<Rigidbody>();
         private Collider mCollider;
@@ -18,14 +18,12 @@ namespace Society.Anomalies.Carousel
         private readonly float explosionImpulse = 20;
         [SerializeField] private GameObject piece;
         [SerializeField] [Range(1, 10)] private int health;
-        private int Health
+
+        private int GetHealth() => health;
+        private void SetHealth(int value)
         {
-            get { return health; }
-            set
-            {
-                health = value;
-                if (value == 0) Die();
-            }
+            health = value;
+            if (value == 0) Die();
         }
 
         #region Player Interaction
@@ -53,7 +51,7 @@ namespace Society.Anomalies.Carousel
 
         public void OnBulletEnter()
         {
-            Health--;
+            SetHealth(GetHealth() - 1);
         }
         private void Die()
         {
@@ -61,7 +59,7 @@ namespace Society.Anomalies.Carousel
             for (int i = 0; i < piecesNum; i++)
             {
                 GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
-                p.GetComponent<CarouselePiece>().AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
+                p.GetComponent<CarouselePieceII>().AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
             }
             Instantiate(explosion, PointPos, Quaternion.identity);
             gameObject.SetActive(false);

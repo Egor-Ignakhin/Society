@@ -10,7 +10,7 @@ namespace Society.Inventory
     /// <summary>
     /// Объект с возможностью положить в инвентарь
     /// </summary>
-    public sealed class InventoryItem : InteractiveObject
+    public class InventoryItem : InteractiveObject
     {
         [SerializeField] private int count = 1;
         private InventoryContainer inventoryContainer;
@@ -26,7 +26,7 @@ namespace Society.Inventory
         [SerializeField]
         private ModifierIndex magIndex = ModifierIndex.None;
 #if UNITY_EDITOR
-        [ReadOnlyField] [SerializeField] private string magVolume;
+        [ShowIf(nameof(itsGun), true)] [ReadOnlyField] [SerializeField] private string magVolume;
 #endif
 
         [Space(5)]
