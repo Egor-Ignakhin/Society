@@ -14,11 +14,13 @@ namespace Society.Anomalies.Carousel
         private Vector3 PointPos;
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
-        [SerializeField] private GameObject explosion;
         private readonly float explosionImpulse = 20;
         [SerializeField] private GameObject piece;
         [SerializeField] [Range(1, 10)] private int health;
+        [SerializeField] private GameObject explosion;
+        [SerializeField] private CarouselDieHandler carouselDeathHandler;
 
+        [SerializeField] private Transform explosionPoint;
         private int GetHealth() => health;
         private void SetHealth(int value)
         {
@@ -56,15 +58,19 @@ namespace Society.Anomalies.Carousel
         private void Die()
         {
             int piecesNum = UnityEngine.Random.Range(1, 4);
-            for (int i = 0; i < piecesNum; i++)
-            {
-                GameObject p = Instantiate(piece, PointPos, Quaternion.identity);
-                var cpII = p.GetComponent<CarouselePieceII>();
-                cpII.AddImpulse(Quaternion.AngleAxis(120 * i, Vector3.up) * Vector3.forward * explosionImpulse);
-                cpII.SetInstantiateState(true);
-            }
-            Instantiate(explosion, PointPos, Quaternion.identity);
-            gameObject.SetActive(false);
+            explosion.SetActive(true);
+
+            enabled = false;
+
+            carouselDeathHandler.OnDie(piecesNum, explosionPoint.position, explosionImpulse, piece);
+        }
+        public void DropPiece()
+        {
+            carouselDeathHandler.DropPiece();
+        }
+        public void DisableAnomaly()
+        {
+            gameObject.SetActive(true);
         }
         #region State Pattern Methods
         private void InitBehaviours()
@@ -207,13 +213,16 @@ namespace Society.Anomalies.Carousel
                 {
                     itemPos = items[i].transform.position;
                     float m = Vector3.Distance(PointPos, itemPos);
-                    m *= 1 / m;
-                    items[i].AddForce((PointPos - itemPos).normalized * m, ForceMode.VelocityChange);
-                    items[i].angularVelocity += new Vector3(5, 0, 0) * Time.fixedDeltaTime;
-                    if (itemPos.y > (PointPos.y - 1))
+                    if (itemPos.y < (PointPos.y - 1))
                     {
-                        items[i].AddForce(-(PointPos - itemPos).normalized * m * 100, ForceMode.VelocityChange);
+                        items[i].AddForce((PointPos - itemPos).normalized * items[i].mass * Time.fixedDeltaTime * 1.33f, ForceMode.VelocityChange);
                     }
+                    else
+                    {
+                        items[i].transform.position = Vector3.MoveTowards(items[i].transform.position, PointPos, 1);
+                        items[i].transform.localEulerAngles *= 1.01f;
+                    }
+                    items[i].AddRelativeTorque(new Vector3(0, 36, 0) * Time.fixedDeltaTime * items[i].mass, ForceMode.VelocityChange);
                 }
 
             }
@@ -222,7 +231,7 @@ namespace Society.Anomalies.Carousel
         }
         private void MoveToTarget()
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.fixedDeltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.fixedDeltaTime / 10);
         }
     }
     #region State classes

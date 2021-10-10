@@ -106,12 +106,14 @@
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Movie Recorder Sample\MovieRecorderExample.cs" />
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Multiple Recordings Sample\MultipleRecordingsExample.cs" />
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Screenshot Capture Sample\CaptureScreenShotExample.cs" />
+    <Compile Include="Assets\Scenes\PreviewAnomaly\Gm.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyLifetime.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyPulsation.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\SpawnPositionFinder.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Apiary\ApiaryManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselDieHandler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselZone.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselePieceII.cs" />
@@ -947,6 +949,9 @@
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Cinemachine">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
@@ -991,6 +996,9 @@
     </Reference>
     <Reference Include="Unity.Recorder.Base">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Recorder.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.cinemachine.editor">
+      <HintPath>F:/Society/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualEffectGraph.Editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.VisualEffectGraph.Editor.dll</HintPath>

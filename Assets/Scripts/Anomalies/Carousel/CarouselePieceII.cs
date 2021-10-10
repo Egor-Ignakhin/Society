@@ -12,9 +12,7 @@ namespace Society.Anomalies.Carousel
 
         protected override void Awake()
         {
-            rb = GetComponent<Rigidbody>();
-
-            particleEffects.SetActive(instantiateByAnomaly);
+            rb = GetComponent<Rigidbody>();            
 
             base.Awake();
         }
@@ -34,9 +32,10 @@ namespace Society.Anomalies.Carousel
             dragMagnitude = rb.velocity.sqrMagnitude * drag;
             rb.AddForce(dragMagnitude * dragDirection);
         }
-        public void SetInstantiateState(bool insByAnomaly)
+        public void EnableParticleEffect()
         {
-            instantiateByAnomaly = insByAnomaly;
+            instantiateByAnomaly = true;
+            particleEffects.SetActive(true);
         }
     }
 }
