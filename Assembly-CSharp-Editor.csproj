@@ -68,9 +68,9 @@
     <Compile Include="Assets\Other\MeshCombiner\Editor\MeshCombinerEditor.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\AssetCreateMenuItems.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\ScriptModificationProcessor.cs" />
+    <Compile Include="Assets\Scripts\Editor\GUIMissionsHelper.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIСontainerСontent.cs" />
     <Compile Include="Assets\Scripts\Editor\PostBuildFilesCreator.cs" />
-    <Compile Include="Assets\Scripts\Editor\ReseterMissions.cs" />
     <Compile Include="Assets\Scripts\Editor\StdFoldersCreator.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Editor\ImageEffects\BloomEditor.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\Bloom\Editor\BloomEditor.cs" />
@@ -277,6 +277,21 @@
     </Reference>
     <Reference Include="PackageManagerAssembly">
       <HintPath>F:/Society/Assets/Shaders/Particles/NotNormal/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Advertisements">
+      <HintPath>F:/Society/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Editor">
+      <HintPath>F:/Society/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.StandardEvents">
+      <HintPath>F:/Society/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Tracker">
+      <HintPath>F:/Society/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Purchasing">
+      <HintPath>F:/Society/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>F:/Society/Library/PackageCache/com.unity.render-pipelines.core@7.6.0/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
@@ -689,6 +704,9 @@
     <Reference Include="Unity.Timeline">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.CollabProxy.Editor">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
     </Reference>
@@ -718,6 +736,9 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.DataPrivacy">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>F:/Society/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>

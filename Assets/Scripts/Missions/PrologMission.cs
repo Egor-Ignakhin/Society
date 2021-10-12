@@ -19,7 +19,7 @@ namespace Society.Missions
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
         [SerializeField] private GameObject ilyaObjects;
-        [SerializeField] private Society.Enviroment.Doors.HermeticDoor hermeticDoor;
+        [SerializeField] private Enviroment.Doors.HermeticDoor hermeticDoor;
         protected override void StartMission()
         {
             OnTaskActions.Add("0", () =>

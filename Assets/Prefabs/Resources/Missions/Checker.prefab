@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4521416894447733285}
   - component: {fileID: 4521416894447733307}
-  - component: {fileID: 4521416894447733284}
+  - component: {fileID: 4649112478802217584}
   m_Layer: 0
   m_Name: Checker
   m_TagString: Untagged
@@ -45,7 +45,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.761078, y: 1, z: 1}
   m_Center: {x: -1.380539, y: 0, z: 0}
---- !u!114 &4521416894447733284
+--- !u!114 &4649112478802217584
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -54,8 +54,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4521416894447733286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0d05a6fe60b0d49b47112e32ae0625, type: 3}
+  m_Script: {fileID: 11500000, guid: 508008c79d182c64ebb6d2f878c6e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mMission: {fileID: 0}
-  target: {fileID: 0}
+  missionNumber: 1
+  missionTitle: Prologue
+  task: 0
+  taskTitle: N/A

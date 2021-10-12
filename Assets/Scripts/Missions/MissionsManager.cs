@@ -2,6 +2,7 @@
 using Society.Inventory.Other;
 using Society.Localization;
 
+using System;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -18,10 +19,13 @@ namespace Society.Missions
         public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\State.json"; // папка с сохранением    
         private State currentState;// состояние миссий        
         public DescriptionDrawer DescriptionDrawer { get; private set; }
-        public const int MaxMissions = 2;
+        public const int MinMissions = 1;
+
+        public const int MaxMissions = 4;
+        
         private void Awake()
         {
-            LoadState();
+            currentState = LoadState();
             LocalizationManager.Init(currentState);
         }
 
@@ -35,19 +39,22 @@ namespace Society.Missions
         /// <summary>
         /// загрузка состояния миссий
         /// </summary>
-        private void LoadState()
+        public static State LoadState()
         {
+            State reState;
             try
             {
                 string data = File.ReadAllText(SavePath);
-                currentState = JsonUtility.FromJson<State>(data);
+                reState = JsonUtility.FromJson<State>(data);
             }
             catch
             {
-                currentState = new State();
+                reState = new State();
                 if (!File.Exists(SavePath))
                     File.Create(SavePath);
             }
+
+            return reState;
         }
         /// <summary>
         /// возвращает активную миссию
@@ -57,9 +64,9 @@ namespace Society.Missions
         /// <summary>
         /// Сохранение миссий
         /// </summary>
-        private void SaveState()
+        public static void SaveState(State state)
         {
-            string data = JsonUtility.ToJson(currentState, true);
+            string data = JsonUtility.ToJson(state, true);
             File.WriteAllText(SavePath, data);
         }
         /// <summary>
@@ -83,17 +90,19 @@ namespace Society.Missions
                 return;
             Mission foundedMission = null;
             foreach (var m in all)
-            {
+            {                
                 if (m.GetMissionNumber() == currentState.currentMission)
                 {
                     foundedMission = m;
                     break;
                 }
+
             }
             if (foundedMission)
                 foundedMission.ContinueMission(currentState.currentTask);
+            
         }
-        private void OnDisable() => SaveState();
+        private void OnDisable() => SaveState(currentState);
 
         /// <summary>
         /// Сообщает при завершении миссии
@@ -119,7 +128,7 @@ namespace Society.Missions
             private static System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent> infoAboutMissions = new System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent>();
 
             [MenuItem("Tools/Update Info About Missions")]
-            private static void UpdateInfoAboutMissions()
+            public static void UpdateInfoAboutMissions()
             {
                 if (infoAboutMissions != null)
                     infoAboutMissions.Clear();
@@ -143,14 +152,32 @@ namespace Society.Missions
                 if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
                     UpdateInfoAboutMissions();
 
-                return infoAboutMissions[index].MissionTitle;
+                try
+                {
+                    return infoAboutMissions[index].MissionTitle;
+                }
+                catch
+                {
+                    throw new Exception("Invalid index = " + index);
+                }
             }
             public static string GetMissionTaskTitleByIndex(int missionIndex, int taskIndex)
             {
                 if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
                     UpdateInfoAboutMissions();
+                try
+                {
+                    return infoAboutMissions[missionIndex].Tasks[taskIndex];
+                }
+                catch
+                {
+                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");
+                }
+            }
 
-                return infoAboutMissions[missionIndex].Tasks[taskIndex];
+            public static int GetMaxTasksByIndex(int missionIndex)
+            {
+                return infoAboutMissions[missionIndex].Tasks.Count;
             }
 #endif
         }
