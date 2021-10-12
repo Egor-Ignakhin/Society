@@ -46,7 +46,7 @@ namespace Society.Missions
         public void OnValidate()
         {
             missionTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(missionNumber);
-            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task - 1);
+            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task);
         }
 #endif
     }

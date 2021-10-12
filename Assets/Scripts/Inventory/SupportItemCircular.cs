@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Society.Patterns;
+
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Society.Inventory
@@ -15,6 +17,20 @@ namespace Society.Inventory
             var tempColor = mCircular.color;
             tempColor.a = v;
             mCircular.color = tempColor;
+        }
+        public void SetColorByTypeOfInteractiveObject(InteractiveObject[] ios)
+        {
+            foreach (var io in ios)
+            {                
+                if (io is Missions.MissionInteractiveObject)
+                {                    
+                    mCircular.color = Color.green;
+                    print(1);
+                    return;
+                }
+                else
+                    mCircular.color = Color.white;
+            }
         }
     }
 }

@@ -51,8 +51,8 @@ namespace Society.Player
             RayThrowForActivateSuppurtCurcular();
         }
 
-        string desc = string.Empty;
-        string mainDesc = string.Empty;
+        private string desc = string.Empty;
+        private string mainDesc = string.Empty;
         private void RayThrow()
         {
             int count = 1;
@@ -60,7 +60,7 @@ namespace Society.Player
             mainDesc = string.Empty;
             directedObjects = null;
             if (Physics.SphereCast(tempRay.origin, sphereCasterRadius,
-                tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers,QueryTriggerInteraction.Ignore))
+                tempRay.direction, out RaycastHit hit, interctionDistance, interactionLayers, QueryTriggerInteraction.Ignore))
             {
                 directedObjects = hit.transform.GetComponents<InteractiveObject>();
                 if (directedObjects.Length > 0)
@@ -109,6 +109,8 @@ namespace Society.Player
                 }
             }
 
+            if (directedObjects != null && (directedObjects.Length > 0))
+                 supportItemCircular.SetColorByTypeOfInteractiveObject(directedObjects);
             supportItemCircular.SetSpriteOpacity(tempOpacity);
         }
         internal Vector3 GetHitPoint() => lasHitPoint;
