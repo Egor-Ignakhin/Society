@@ -41,7 +41,7 @@ namespace Society.Localization
             public string GetTask(int ch) => Dialogs[ch];
         }
 
-        public static void Init(Missions.MissionsManager.State tempState)
+        public static void InitDialogsTasks(Missions.MissionsManager.State tempState)
         {
             // инициализация путей
             #region SetDialogs

@@ -28,7 +28,7 @@ namespace Society.Missions
         private void Awake()
         {
             currentState = LoadState();
-            LocalizationManager.Init(currentState);
+            LocalizationManager.InitDialogsTasks(currentState);
         }
 
         private void Start()
@@ -100,7 +100,6 @@ namespace Society.Missions
                     foundedMission = m;
                     break;
                 }
-
             }
             if (foundedMission)
                 foundedMission.ContinueMission(currentState.currentTask);
@@ -115,6 +114,8 @@ namespace Society.Missions
         {
             currentState.currentMission++;
             ResetTasks();
+
+            LocalizationManager.InitDialogsTasks(currentState);
 
             StartOrContinueMission();
         }

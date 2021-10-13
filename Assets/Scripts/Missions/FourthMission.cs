@@ -4,21 +4,29 @@ using UnityEngine;
 
 namespace Society.Missions
 {
-    sealed class FourthMission : Mission
+    internal sealed class FourthMission : Mission
     {
         public override int GetMissionNumber() => 4;
 
+        protected override void StartMission()
+        {
+            OnTaskActions.Add("OnFinish", () =>
+           {               
+               FinishMission();
+           });
+
+            base.StartMission();
+        }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
             if (currentTask == 1)
             {
-                
                 DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                 db.OnInit(2, Color.black);
-
-                FinishMission();
-
+                db.SubsctibeOnFinish(OnTaskActions["OnFinish"]);
                 Destroy(db.gameObject, 3);
+
+                taskDrawer.SetVisible(false);
             }
         }
     }

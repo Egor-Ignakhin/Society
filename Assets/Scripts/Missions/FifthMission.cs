@@ -23,12 +23,24 @@ namespace Society.Missions
 
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
-            if (currentTask == 1)
+            if (isLoad)
+                taskDrawer.SetVisible(true);
+            switch (currentTask)
             {
-                taskDrawer.SetVisible(false);
-                DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
-                db.OnInit(2, Color.black);
-                db.SubsctibeOnFinish(OnTaskActions["exitToMenu"]);
+                case 0:
+                    SetTask(currentTask);
+                    print(currentTask);
+                    break;
+
+                case 1:
+                    taskDrawer.SetVisible(false);
+                    DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
+                    db.OnInit(2, Color.black);
+                    db.SubsctibeOnFinish(OnTaskActions["exitToMenu"]);
+                    break;
+
+                default:
+                    break;
             }
         }
     }
