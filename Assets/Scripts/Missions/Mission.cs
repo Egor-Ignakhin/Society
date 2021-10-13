@@ -21,7 +21,7 @@ namespace Society.Missions
         protected virtual void StartMission()
         {
             missionsManager = FindObjectOfType<MissionsManager>();
-            taskDrawer = FindObjectOfType<TaskDrawer>();
+            taskDrawer = missionsManager.GetTaskDrawer();
             OnReportTask(true);
             isInitialized = true;
         }
@@ -60,14 +60,14 @@ namespace Society.Missions
             SetTask(currentTask);
         }
 
-        public void FinishMission()
+        protected void FinishMission()
         {
             missionsManager.FinishMission();
             gameObject.SetActive(false);
         }
         protected void SetTask(int number)
         {
-            string neededContent = Society.Localization.LocalizationManager.PathToCurrentLanguageContent(Society.Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
+            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
 
             taskDrawer.DrawNewTask(neededContent);
         }

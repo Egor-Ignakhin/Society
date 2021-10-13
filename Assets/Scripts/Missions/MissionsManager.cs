@@ -21,7 +21,9 @@ namespace Society.Missions
         public DescriptionDrawer DescriptionDrawer { get; private set; }
         public const int MinMissions = 1;
 
-        public const int MaxMissions = 4;
+        public const int MaxMissions = 5;
+        private TaskSystem.TaskDrawer taskDrawer;
+        internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
         
         private void Awake()
         {
@@ -31,6 +33,8 @@ namespace Society.Missions
 
         private void Start()
         {
+            taskDrawer = FindObjectOfType<TaskSystem.TaskDrawer>();
+
             StartOrContinueMission();
         }
 
@@ -111,6 +115,8 @@ namespace Society.Missions
         {
             currentState.currentMission++;
             ResetTasks();
+
+            StartOrContinueMission();
         }
 
         [System.Serializable]
@@ -171,14 +177,11 @@ namespace Society.Missions
                 }
                 catch
                 {
-                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");
+                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");                    
                 }
             }
 
-            public static int GetMaxTasksByIndex(int missionIndex)
-            {
-                return infoAboutMissions[missionIndex].Tasks.Count;
-            }
+            public static int GetMaxTasksByIndex(int missionIndex) => infoAboutMissions[missionIndex].Tasks.Count;
 #endif
         }
     }
