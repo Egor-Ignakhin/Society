@@ -15,7 +15,8 @@ namespace Society.Missions
 #if UNITY_EDITOR
         [ReadOnlyField] [SerializeField] private string missionTitle = "N/A";
 #endif
-        [SerializeField] private int task;
+
+        [SerializeField, Range(0, 10)] private int task;
 #if UNITY_EDITOR
         [ReadOnlyField] [SerializeField] private string taskTitle = "N/A";
 #endif
@@ -48,6 +49,6 @@ namespace Society.Missions
             missionTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(missionNumber);
             taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task);
         }
-#endif
+#endif        
     }
 }

@@ -26,11 +26,7 @@ namespace Society.Missions
             if (isLoad)
                 taskDrawer.SetVisible(true);
             switch (currentTask)
-            {
-                case 0:
-                    SetTask(currentTask);
-                    print(currentTask);
-                    break;
+            {               
 
                 case 1:
                     taskDrawer.SetVisible(false);
