@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Society.Shoot
 {
-    class Pistol : Gun
+    internal class Pistol : Gun
     {
         protected override void LoadAssets()
         {

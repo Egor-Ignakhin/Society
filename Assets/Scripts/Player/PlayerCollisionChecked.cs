@@ -5,7 +5,7 @@ namespace Society.Player
     {    /// <summary>
          /// класс отвечающий за столкновения с объектами
          /// </summary>    
-        sealed class PlayerCollisionChecked : MonoBehaviour
+        private sealed class PlayerCollisionChecked : MonoBehaviour
         {
             private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
             private BasicNeeds bn;

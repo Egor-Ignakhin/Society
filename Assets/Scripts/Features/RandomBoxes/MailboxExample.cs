@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Features.RandomBoxes
 {
-    sealed class MailboxExample : RandomlyBox
+    internal sealed class MailboxExample : RandomlyBox
     {
         protected override void OnInit()
         {

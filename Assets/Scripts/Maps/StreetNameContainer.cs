@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Maps
 {
-    sealed class StreetNameContainer : MonoBehaviour
+    internal sealed class StreetNameContainer : MonoBehaviour
     {
         private Collider playerCollider;
         private StreetNameRenderer streetNameRenderer;

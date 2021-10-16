@@ -110,7 +110,7 @@ namespace Society.Player
             }
 
             if (directedObjects != null && (directedObjects.Length > 0))
-                 supportItemCircular.SetColorByTypeOfInteractiveObject(directedObjects);
+                supportItemCircular.SetColorByTypeOfInteractiveObject(directedObjects);
             supportItemCircular.SetSpriteOpacity(tempOpacity);
         }
         internal Vector3 GetHitPoint() => lasHitPoint;

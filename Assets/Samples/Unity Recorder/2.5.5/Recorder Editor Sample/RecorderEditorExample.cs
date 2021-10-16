@@ -9,14 +9,14 @@ namespace UnityEditor.Recorder.Examples
     public static class RecorderEditorExample
     {
         [MenuItem(RecorderWindow.MenuRoot + "Examples/Start Recording", false, RecorderWindow.MenuRootIndex + 100)]
-        static void StartRecording()
+        private static void StartRecording()
         {
             var recorderWindow = EditorWindow.GetWindow<RecorderWindow>();
             recorderWindow.StartRecording();
         }
 
         [MenuItem(RecorderWindow.MenuRoot + "Examples/Stop Recording", false, RecorderWindow.MenuRootIndex + 100)]
-        static void StopRecording()
+        private static void StopRecording()
         {
             var recorderWindow = EditorWindow.GetWindow<RecorderWindow>();
             recorderWindow.StopRecording();

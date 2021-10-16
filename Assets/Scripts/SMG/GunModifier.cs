@@ -7,7 +7,7 @@ namespace Society.SMG
     /// <summary>
     /// навешивается на модификацию, которую можно подобрать в реальном мире
     /// </summary>
-    class GunModifier : InteractiveObject
+    internal class GunModifier : InteractiveObject
     {
         [SerializeField] private ModifierCharacteristics.GunTitles modifiableGun;
         [HideIf(nameof(modifiableGun), 0)] [SerializeField] private ModifierCharacteristics.ModifierTypes type;

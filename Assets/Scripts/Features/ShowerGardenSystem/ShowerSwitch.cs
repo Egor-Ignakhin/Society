@@ -5,7 +5,7 @@ namespace Features
     /// <summary>
     /// рычаг подачи воды для душа
     /// </summary>
-    sealed class ShowerSwitch : Society.Patterns.InteractiveObject
+    internal sealed class ShowerSwitch : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerExample showerExp;
         private void Start() => SetType("ClosedShowerLever");

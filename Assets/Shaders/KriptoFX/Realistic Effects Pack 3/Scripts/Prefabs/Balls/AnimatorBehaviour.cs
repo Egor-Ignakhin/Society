@@ -19,8 +19,9 @@ public class AnimatorBehaviour : MonoBehaviour
                 GetEffectSettingsComponent(parent.transform);
         }
     }
+
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         oldSpeed = anim.speed;
         GetEffectSettingsComponent(transform);
@@ -30,18 +31,18 @@ public class AnimatorBehaviour : MonoBehaviour
         isInitialized = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) anim.speed = oldSpeed;
     }
 
-    void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         anim.speed = 0;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

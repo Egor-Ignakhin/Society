@@ -18,7 +18,7 @@ public class LineProjectileCollisionBehaviour : MonoBehaviour
     private ParticleSystem[] effectOnHitParticles;
     private EffectSettings effectSettingsInstance;
 
-    void GetEffectSettingsComponent(Transform tr)
+    private void GetEffectSettingsComponent(Transform tr)
     {
         var parent = tr.parent;
         if (parent != null)
@@ -47,12 +47,12 @@ public class LineProjectileCollisionBehaviour : MonoBehaviour
         isInitializedOnStart = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitializedOnStart) InitializeDefault();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         CollisionLeave();
     }
@@ -133,7 +133,7 @@ public class LineProjectileCollisionBehaviour : MonoBehaviour
             {
                 var hitGO = hit.transform;
                 var renderer = hitGO.GetComponentInChildren<Renderer>();
-                var effect = Instantiate(EffectOnHitObject) as GameObject;
+                var effect = Instantiate(EffectOnHitObject);
                 effect.transform.parent = renderer.transform;
                 effect.transform.localPosition = Vector3.zero;
                 effect.GetComponent<AddMaterialOnHit>().UpdateMaterial(hit);
@@ -143,7 +143,7 @@ public class LineProjectileCollisionBehaviour : MonoBehaviour
         effectSettings.OnCollisionHandler(new CollisionInfo { Hit = hit });
     }
 
-    void CollisionLeave()
+    private void CollisionLeave()
     {
         if (effectSettingsInstance != null)
         {

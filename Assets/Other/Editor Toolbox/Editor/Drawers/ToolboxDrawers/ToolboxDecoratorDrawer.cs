@@ -17,12 +17,12 @@ namespace Toolbox.Editor.Drawers
         { }
 
 
-        public override sealed void OnGuiBegin(ToolboxAttribute attribute)
+        public sealed override void OnGuiBegin(ToolboxAttribute attribute)
         {
             OnGuiBegin(attribute as T);
         }
 
-        public override sealed void OnGuiClose(ToolboxAttribute attribute)
+        public sealed override void OnGuiClose(ToolboxAttribute attribute)
         {
             OnGuiClose(attribute as T);
         }

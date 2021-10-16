@@ -8,8 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace Society.Menu
 {
-
-    sealed class SettingsMain : MonoBehaviour
+    internal sealed class SettingsMain : MonoBehaviour
     {
         [SerializeField] private Slider fovSlider;
         [SerializeField] private TextMeshProUGUI fovText;

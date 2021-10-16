@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Society.Menu
 {
-    sealed class MusicToggle : MonoBehaviour
+    internal sealed class MusicToggle : MonoBehaviour
     {
         private LocationMusic locationMusic;
         private void Start()

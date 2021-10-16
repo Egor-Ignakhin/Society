@@ -10,12 +10,12 @@ public class GunAim : MonoBehaviour
     private Camera parentCamera;
     private bool isOutOfBounds;
 
-    void Start()
+    private void Start()
     {
         parentCamera = GetComponentInParent<Camera>();
     }
 
-    void Update()
+    private void Update()
     {
         float mouseX = Input.mousePosition.x;
         float mouseY = Input.mousePosition.y;

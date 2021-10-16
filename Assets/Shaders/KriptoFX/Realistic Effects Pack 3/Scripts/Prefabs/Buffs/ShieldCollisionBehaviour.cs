@@ -16,7 +16,7 @@ public class ShieldCollisionBehaviour : MonoBehaviour
         {
             if (IsWaterInstance)
             {
-                var go = Instantiate(ExplosionOnHit) as GameObject;
+                var go = Instantiate(ExplosionOnHit);
                 var t = go.transform;
                 t.parent = transform;
                 var scale = transform.localScale.x * ScaleWave;
@@ -32,7 +32,7 @@ public class ShieldCollisionBehaviour : MonoBehaviour
                     {
                         var hitGO = e.Hit.transform;
                         var renderer = hitGO.GetComponentInChildren<Renderer>();
-                        var effectInstance = Instantiate(EffectOnHit) as GameObject;
+                        var effectInstance = Instantiate(EffectOnHit);
                         effectInstance.transform.parent = renderer.transform;
                         effectInstance.transform.localPosition = Vector3.zero;
                         var addMat = effectInstance.GetComponent<AddMaterialOnHit>();
@@ -41,7 +41,7 @@ public class ShieldCollisionBehaviour : MonoBehaviour
                     }
                     else
                     {
-                        var effectInstance = Instantiate(EffectOnHit) as GameObject;
+                        var effectInstance = Instantiate(EffectOnHit);
                         var tr = effectInstance.transform;
                         tr.parent = GetComponent<Renderer>().transform;
                         tr.localPosition = Vector3.zero;
@@ -56,7 +56,7 @@ public class ShieldCollisionBehaviour : MonoBehaviour
 
                 if (ExplosionOnHit != null)
                 {
-                    var inst2 = Instantiate(ExplosionOnHit, e.Hit.point, new Quaternion()) as GameObject;
+                    var inst2 = Instantiate(ExplosionOnHit, e.Hit.point, new Quaternion());
                     inst2.transform.parent = transform;
                 }
             }
@@ -66,7 +66,7 @@ public class ShieldCollisionBehaviour : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

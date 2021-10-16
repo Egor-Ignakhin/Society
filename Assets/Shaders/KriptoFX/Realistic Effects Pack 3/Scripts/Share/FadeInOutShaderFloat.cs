@@ -105,8 +105,7 @@ public class FadeInOutShaderFloat : MonoBehaviour
         if (!isIn && FadeOutAfterCollision) Invoke("SetupFadeOutDelay", FadeOutDelay);
     }
 
-
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) InitDefaultVariables();
     }

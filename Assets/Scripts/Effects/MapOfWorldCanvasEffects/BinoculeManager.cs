@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Society.Effects.MapOfWorldCanvasEffects
 {
-    sealed class BinoculeManager : MonoBehaviour
+    internal sealed class BinoculeManager : MonoBehaviour
     {
         [SerializeField] private GameObject bin;
         private bool possibleActive;
@@ -19,7 +19,7 @@ namespace Society.Effects.MapOfWorldCanvasEffects
 
         private FirstPersonController fps;
         private Vector3 oldMousePos;
-        Vector3 camAnglesAdditional = Vector3.zero;
+        private Vector3 camAnglesAdditional = Vector3.zero;
         private ToolsAnimator toolsAnimator;
         [SerializeField] private RectTransform focusPoint;
         [SerializeField] private List<RectTransform> pointsData = new List<RectTransform>();
@@ -77,9 +77,10 @@ namespace Society.Effects.MapOfWorldCanvasEffects
             }
             oldMousePos = Input.mousePosition;
         }
-        float time = 0;
-        float x = 0;
-        float y = 0;
+
+        private float time = 0;
+        private float x = 0;
+        private float y = 0;
         private void Animate()
         {
             float targetFov = isActive ? GameSettings.FOV() + additionalFov * iterator : GameSettings.FOV();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Society.Dialogs
 {
-    sealed class SanSanychPerson : TalkingPerson
+    internal sealed class SanSanychPerson : TalkingPerson
     {
         protected override string PathToClips() => "Dialogs\\Other\\SanSanych\\";
         protected override void Awake()

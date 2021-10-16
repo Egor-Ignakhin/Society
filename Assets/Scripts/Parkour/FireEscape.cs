@@ -8,7 +8,7 @@ namespace Society.Parkour
     /// <summary>
     /// Элемент паркура - пожарная лестница
     /// </summary>
-    sealed class FireEscape : ParkourElement
+    internal sealed class FireEscape : ParkourElement
     {
         private Vector3 highestPlace;
         private Vector3 lowestPlace;

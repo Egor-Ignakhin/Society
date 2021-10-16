@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    sealed class PlayerFoodDrawer : BasicNeedsEventsReceiver
+    internal sealed class PlayerFoodDrawer : BasicNeedsEventsReceiver
     {
         [SerializeField] private Image mImage;
         [SerializeField] private RectTransform mRt;

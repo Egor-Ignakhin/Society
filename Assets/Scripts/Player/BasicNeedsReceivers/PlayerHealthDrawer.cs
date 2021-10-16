@@ -8,7 +8,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
     /// <summary>
     /// Класс отображает текущее здоровье в виде: полоса(0.5)-полоса(0.25)-полоса(0.25) + разделитель
     /// </summary>
-    sealed class PlayerHealthDrawer : BasicNeedsEventsReceiver
+    internal sealed class PlayerHealthDrawer : BasicNeedsEventsReceiver
     {
         #region Fields       
         [SerializeField] private Image mImage;// большая левая строка здоровья                

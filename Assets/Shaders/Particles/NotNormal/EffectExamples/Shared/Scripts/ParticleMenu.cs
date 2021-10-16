@@ -25,7 +25,7 @@ public class ParticleMenu : MonoBehaviour
     public Text navigationDetails;
 
     // setting up the first menu item and resetting the currentIndex to ensure it's at zero
-    void Start()
+    private void Start()
     {
         Navigate(0);
         currentIndex = 0;
@@ -44,7 +44,7 @@ public class ParticleMenu : MonoBehaviour
             Destroy(currentGO);
 
         // ..spawn the relevant game object based on the array of potential game objects, according to the current index (position in the array)
-        currentGO = Instantiate(particleSystems[currentIndex].particleSystemGO, spawnLocation.position + particleSystems[currentIndex].particlePosition, Quaternion.Euler(particleSystems[currentIndex].particleRotation)) as GameObject;
+        currentGO = Instantiate(particleSystems[currentIndex].particleSystemGO, spawnLocation.position + particleSystems[currentIndex].particlePosition, Quaternion.Euler(particleSystems[currentIndex].particleRotation));
 
         // only activate the gun GameObject if the current effect is a weapon effect
         gunGameObject.SetActive(particleSystems[currentIndex].isWeaponEffect);

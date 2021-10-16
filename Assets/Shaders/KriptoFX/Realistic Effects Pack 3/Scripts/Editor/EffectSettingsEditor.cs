@@ -22,7 +22,7 @@ public class EffectSettingsEditor : Editor
       DestroyTimeDelayProp,
       LayerMaskProp;
 
-    void OnEnable()
+    private void OnEnable()
     {
         EffectTypeProp = serializedObject.FindProperty("EffectType");
         ColliderRadiusProp = serializedObject.FindProperty("ColliderRadius");

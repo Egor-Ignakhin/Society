@@ -4,7 +4,7 @@ public class IceOffsetBehaviour : MonoBehaviour
 {
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         var fiof = GetComponent<FadeInOutShaderFloat>();
         if (fiof == null) return;
@@ -34,7 +34,7 @@ public class IceOffsetBehaviour : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

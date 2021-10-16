@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Society.Times
 {
-    sealed class ClockManager : MonoBehaviour
+    internal sealed class ClockManager : MonoBehaviour
     {
         [SerializeField] private TMPro.TextMeshPro text;
         [SerializeField] private bool isElectronicClock;
@@ -17,7 +17,8 @@ namespace Society.Times
             else
                 worldTime.ChangeTimeEventInNumbers += RenderOnPointers;
         }
-        int delayAfterLastAnim;
+
+        private int delayAfterLastAnim;
         private void RenderOnText(string value)
         {
             if ((++delayAfterLastAnim) > 1)

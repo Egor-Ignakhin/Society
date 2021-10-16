@@ -5,7 +5,7 @@ namespace Society.SMG
     /// <summary>
     /// класс обрабатывает события обновления модификаторов и оружия, соответственно ставит подсказку на актуальный мод
     /// </summary>
-    class SMGModifiersCellManager : MonoBehaviour
+    internal class SMGModifiersCellManager : MonoBehaviour
     {
         [SerializeField] private RectTransform selectedModifier;// р-т актуального мода
         [SerializeField] private SMGMain main;

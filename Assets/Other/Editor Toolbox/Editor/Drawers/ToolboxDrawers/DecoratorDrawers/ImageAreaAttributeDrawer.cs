@@ -12,7 +12,7 @@ namespace Toolbox.Editor.Drawers
 {
     public class ImageAreaAttributeDrawer : ToolboxDecoratorDrawer<ImageAreaAttribute>
     {
-        private readonly static Dictionary<string, DownloadedTexture> textures = new Dictionary<string, DownloadedTexture>();
+        private static readonly Dictionary<string, DownloadedTexture> textures = new Dictionary<string, DownloadedTexture>();
 
 
         protected override void OnGuiBeginSafe(ImageAreaAttribute attribute)

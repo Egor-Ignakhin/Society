@@ -63,7 +63,7 @@ namespace Society.Missions
         protected void FinishMission()
         {
             missionsManager.FinishMission();
-            gameObject.SetActive(false);            
+            gameObject.SetActive(false);
         }
         protected void SetTask(int number)
         {

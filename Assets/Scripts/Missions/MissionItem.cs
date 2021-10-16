@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Missions
 {
-    sealed class MissionItem : InteractiveObject
+    internal sealed class MissionItem : InteractiveObject
     {
         [SerializeField] private string startedType;
         private void Start() => SetType(startedType);

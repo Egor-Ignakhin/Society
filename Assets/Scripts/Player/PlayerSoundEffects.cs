@@ -6,7 +6,7 @@ namespace Society.Player
 {
     public sealed partial class BasicNeeds : Patterns.Singleton<BasicNeeds>
     {
-        sealed class PlayerSoundEffects : MonoBehaviour
+        private sealed class PlayerSoundEffects : MonoBehaviour
         {
             private const float minHealthForNoise = 20;
             private BasicNeeds basicNeeds;

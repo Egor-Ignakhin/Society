@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Society.Anomalies.Carousel
 {
-    class CarouselZone : MonoBehaviour
+    internal class CarouselZone : MonoBehaviour
     {
         [SerializeField] private CarouselManager carousel;
         [SerializeField] private BoxCollider mCollider;

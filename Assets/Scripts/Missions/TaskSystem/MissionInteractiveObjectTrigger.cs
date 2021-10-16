@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Missions.TaskSystem
 {
-    sealed class MissionInteractiveObjectTrigger : MissionInteractiveObject
+    internal sealed class MissionInteractiveObjectTrigger : MissionInteractiveObject
     {
         private Collider playerCollider;
         protected override void Start()

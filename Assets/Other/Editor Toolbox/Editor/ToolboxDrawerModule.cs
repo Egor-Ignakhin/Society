@@ -20,20 +20,20 @@ namespace Toolbox.Editor
         }
 
 
-        private readonly static Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
-        private readonly static Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
-        private readonly static Type selfPropertyDrawerBase = typeof(ToolboxSelfPropertyDrawer<>);
-        private readonly static Type listPropertyDrawerBase = typeof(ToolboxListPropertyDrawer<>);
+        private static readonly Type decoratorDrawerBase = typeof(ToolboxDecoratorDrawer<>);
+        private static readonly Type conditionDrawerBase = typeof(ToolboxConditionDrawer<>);
+        private static readonly Type selfPropertyDrawerBase = typeof(ToolboxSelfPropertyDrawer<>);
+        private static readonly Type listPropertyDrawerBase = typeof(ToolboxListPropertyDrawer<>);
 
-        private readonly static Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
-        private readonly static Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
-        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> selfPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
-        private readonly static Dictionary<Type, ToolboxPropertyDrawerBase> listPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+        private static readonly Dictionary<Type, ToolboxDecoratorDrawerBase> decoratorDrawers = new Dictionary<Type, ToolboxDecoratorDrawerBase>();
+        private static readonly Dictionary<Type, ToolboxConditionDrawerBase> conditionDrawers = new Dictionary<Type, ToolboxConditionDrawerBase>();
+        private static readonly Dictionary<Type, ToolboxPropertyDrawerBase> selfPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
+        private static readonly Dictionary<Type, ToolboxPropertyDrawerBase> listPropertyDrawers = new Dictionary<Type, ToolboxPropertyDrawerBase>();
 
         /// <summary>
         /// Collection of specific drawers associated to particular <see cref="object"/> types.
         /// </summary>
-        private readonly static Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
+        private static readonly Dictionary<Type, ToolboxTargetTypeDrawer> targetTypeDrawers = new Dictionary<Type, ToolboxTargetTypeDrawer>();
 
         /// <summary>
         /// Collection of currently cached handlers associated to special key.
@@ -412,7 +412,7 @@ namespace Toolbox.Editor
 
         //TODO:
         //NOTE: unfortunately there is no valid, non-reflection way to check if property has a custom native drawer
-        private readonly static MethodInfo getDrawerTypeForTypeMethod =
+        private static readonly MethodInfo getDrawerTypeForTypeMethod =
             ReflectionUtility.GetEditorMethod("UnityEditor.ScriptAttributeUtility", "GetDrawerTypeForType",
                 BindingFlags.NonPublic | BindingFlags.Static);
     }

@@ -9,7 +9,8 @@ public class AnimationSpeedDebuff : MonoBehaviour
     private Transform root;
     private float oldSpeed;
     private float time;
-    void GetAnimatorOnParent(Transform t)
+
+    private void GetAnimatorOnParent(Transform t)
     {
         var anim = t.parent.GetComponent<Animator>();
         if (anim == null)
@@ -22,7 +23,7 @@ public class AnimationSpeedDebuff : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         root = transform.root;
         GetAnimatorOnParent(transform);
@@ -31,7 +32,7 @@ public class AnimationSpeedDebuff : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (myAnimator == null || AnimationSpeenOnTime.length == 0) return;
         time += Time.deltaTime;

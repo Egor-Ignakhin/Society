@@ -54,7 +54,7 @@ namespace Society.Anomalies.Carousel
             carouselAuraAnimator.enabled = true;
         }
         public void DropPiece()
-        {            
+        {
             for (int i = 0; i < piecesNum; i++)
             {
                 GameObject p = Instantiate(Piece, PointPos, Quaternion.identity);

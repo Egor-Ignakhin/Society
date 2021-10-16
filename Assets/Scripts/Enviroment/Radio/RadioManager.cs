@@ -21,7 +21,7 @@ namespace Society.Enviroment.Radio
         private float additionalInterference = 0.05f;// добавляемые шумы (есть всегда)
         private MediaContainer mMediaContainer;
 
-        class MediaContainer
+        private class MediaContainer
         {
             public List<decimal> FrequencyList { get; set; } = new List<decimal>();// частотный лист
             public List<AudioClip> Clips { get; set; } = new List<AudioClip>();// клипы

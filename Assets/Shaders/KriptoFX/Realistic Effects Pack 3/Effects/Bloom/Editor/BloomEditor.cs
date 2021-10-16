@@ -13,16 +13,15 @@ namespace UnityStandardAssets.CinematicEffects
     {
         [NonSerialized]
         private List<SerializedProperty> m_Properties = new List<SerializedProperty>();
+        private BloomGraphDrawer _graph;
 
-        BloomGraphDrawer _graph;
-
-        bool CheckHdr(Bloom target)
+        private bool CheckHdr(Bloom target)
         {
             var camera = target.GetComponent<Camera>();
             return camera != null && camera.allowHDR;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             var settings = FieldFinder<Bloom>.GetField(x => x.settings);
             foreach (var setting in settings.FieldType.GetFields())

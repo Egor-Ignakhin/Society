@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Effects
 {
-    sealed class LookAtMainCamera : MonoBehaviour
+    internal sealed class LookAtMainCamera : MonoBehaviour
     {
         private Transform mainCamT;
         private void Awake()

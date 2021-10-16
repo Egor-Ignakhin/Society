@@ -368,7 +368,7 @@ namespace Toolbox.Editor
             internal const float smallFolderIconXPaddingDefault = 0.15f;
             internal const float smallFolderIconYPaddingDefault = 0.15f;
 
-            internal readonly static List<HierarchyObjectDataType> rowDataTypes = new List<HierarchyObjectDataType>()
+            internal static readonly List<HierarchyObjectDataType> rowDataTypes = new List<HierarchyObjectDataType>()
             {
                 HierarchyObjectDataType.Icon,
                 HierarchyObjectDataType.Toggle,

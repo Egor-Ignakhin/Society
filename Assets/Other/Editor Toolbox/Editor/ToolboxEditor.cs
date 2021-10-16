@@ -17,7 +17,7 @@ namespace Toolbox.Editor
         /// <summary>
         /// Inspector GUI re-draw call.
         /// </summary>
-        public override sealed void OnInspectorGUI()
+        public sealed override void OnInspectorGUI()
         {
             try
             {

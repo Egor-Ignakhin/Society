@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Enemies
 {
-    sealed class DogLairChecker : MonoBehaviour
+    internal sealed class DogLairChecker : MonoBehaviour
     {
         [SerializeField] private BloodDogsLair lair;
         private CapsuleCollider playerCollider;

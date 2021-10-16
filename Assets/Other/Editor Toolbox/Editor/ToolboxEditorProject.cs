@@ -25,11 +25,11 @@ namespace Toolbox.Editor
         /// <summary>
         /// All custom folders linked to a path.
         /// </summary>
-        private readonly static Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
+        private static readonly Dictionary<string, FolderData> pathBasedFoldersData = new Dictionary<string, FolderData>();
         /// <summary>
         /// All custom folders linked to a name.
         /// </summary>
-        private readonly static Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
+        private static readonly Dictionary<string, FolderData> nameBasedFoldersData = new Dictionary<string, FolderData>();
 
 
         /// <summary>

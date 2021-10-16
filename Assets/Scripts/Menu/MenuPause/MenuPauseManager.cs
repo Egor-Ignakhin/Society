@@ -17,11 +17,11 @@ namespace Society.Menu.PauseMenu
     /// <summary>
     /// класс - управлящий меню паузой
     /// </summary>
-    sealed class MenuPauseManager : MonoBehaviour, IGameScreen
+    internal sealed class MenuPauseManager : MonoBehaviour, IGameScreen
     {
         private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
         [SerializeField] private Transform mainParent;// контейнер сод. кнопки
-        [SerializeField] GameObject MenuUI;// главный бэкграунд и носитель кнопок
+        [SerializeField] private GameObject MenuUI;// главный бэкграунд и носитель кнопок
         [SerializeField] private GameObject SettingsObj;// меню настроек     
         [SerializeField] private Slider fovSlider;
         [SerializeField] private TextMeshProUGUI fovText;
@@ -135,7 +135,7 @@ namespace Society.Menu.PauseMenu
 
         public KeyCode HideKey() => KeyCode.Escape;
 
-        class MenuEventReceiver
+        private class MenuEventReceiver
         {
             private readonly GameObject menuUI;
             private readonly GameObject SettingsObj;
@@ -326,7 +326,7 @@ namespace Society.Menu.PauseMenu
     }
 }
 
-class GameSettings
+internal class GameSettings
 {
     public static float MinFov() => MenuPauseManager.GetCurrentGameSettings().minFov;
     public static float FOV() => MenuPauseManager.GetCurrentGameSettings().FOV;

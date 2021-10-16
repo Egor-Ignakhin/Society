@@ -389,7 +389,8 @@ namespace Society.Player.Controllers
             PlayerStepEvent?.Invoke(CurrentPhysicMaterialIndex, type);
             oldPos = transform.position;
         }
-        float SlopeCheck()
+
+        private float SlopeCheck()
         {
             Advanced.LastKnownSlopeAngle = Mathf.MoveTowards(Advanced.LastKnownSlopeAngle, Vector3.Angle(Advanced.CurntGroundNormal, Vector3.up), 5f);
 
@@ -545,8 +546,8 @@ namespace Society.Player.Controllers
     [CustomEditor(typeof(FirstPersonController)), InitializeOnLoad]
     public sealed class FirstPersonController_Editor : Editor
     {
-        FirstPersonController t;
-        SerializedObject SerT;
+        private FirstPersonController t;
+        private SerializedObject SerT;
         private static bool showCrouchMods = false;
 
         private void OnEnable()

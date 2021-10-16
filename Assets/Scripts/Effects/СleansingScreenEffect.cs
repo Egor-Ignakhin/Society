@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace Society.Effects
 {
-    sealed class СleansingScreenEffect : MonoBehaviour
+    internal sealed class СleansingScreenEffect : MonoBehaviour
     {
         private Image mImage;
         private double braking = 1;

@@ -2,7 +2,7 @@
 
 namespace Society.Anomalies.Carousel
 {
-    class TriggerReceiver : MonoBehaviour
+    internal class TriggerReceiver : MonoBehaviour
     {
         [SerializeField] private CarouselManager manager;
         private void Start() => manager.InitCollider(GetComponent<Collider>());

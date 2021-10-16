@@ -5,38 +5,32 @@ using UnityEngine;
 namespace UnityStandardAssets.ImageEffects
 {
     [CustomEditor(typeof(Bloom))]
-    class BloomEditor : Editor
+    internal class BloomEditor : Editor
     {
-        SerializedProperty tweakMode;
-        SerializedProperty screenBlendMode;
+        private SerializedProperty tweakMode;
+        private SerializedProperty screenBlendMode;
+        private SerializedObject serObj;
+        private SerializedProperty hdr;
+        private SerializedProperty quality;
+        private SerializedProperty sepBlurSpread;
+        private SerializedProperty bloomIntensity;
+        private SerializedProperty bloomThresholdColor;
+        private SerializedProperty bloomThreshold;
+        private SerializedProperty bloomBlurIterations;
+        private SerializedProperty hollywoodFlareBlurIterations;
+        private SerializedProperty lensflareMode;
+        private SerializedProperty hollyStretchWidth;
+        private SerializedProperty lensflareIntensity;
+        private SerializedProperty flareRotation;
+        private SerializedProperty lensFlareSaturation;
+        private SerializedProperty lensflareThreshold;
+        private SerializedProperty flareColorA;
+        private SerializedProperty flareColorB;
+        private SerializedProperty flareColorC;
+        private SerializedProperty flareColorD;
+        private SerializedProperty lensFlareVignetteMask;
 
-        SerializedObject serObj;
-
-        SerializedProperty hdr;
-        SerializedProperty quality;
-        SerializedProperty sepBlurSpread;
-
-        SerializedProperty bloomIntensity;
-        SerializedProperty bloomThresholdColor;
-        SerializedProperty bloomThreshold;
-        SerializedProperty bloomBlurIterations;
-
-        SerializedProperty hollywoodFlareBlurIterations;
-
-        SerializedProperty lensflareMode;
-        SerializedProperty hollyStretchWidth;
-        SerializedProperty lensflareIntensity;
-        SerializedProperty flareRotation;
-        SerializedProperty lensFlareSaturation;
-        SerializedProperty lensflareThreshold;
-        SerializedProperty flareColorA;
-        SerializedProperty flareColorB;
-        SerializedProperty flareColorC;
-        SerializedProperty flareColorD;
-
-        SerializedProperty lensFlareVignetteMask;
-
-        void OnEnable()
+        private void OnEnable()
         {
             serObj = new SerializedObject(target);
 

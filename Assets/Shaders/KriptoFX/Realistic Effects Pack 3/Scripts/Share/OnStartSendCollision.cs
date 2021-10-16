@@ -16,14 +16,15 @@ public class OnStartSendCollision : MonoBehaviour
                 GetEffectSettingsComponent(parent.transform);
         }
     }
-    void Start()
+
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
         effectSettings.OnCollisionHandler(new CollisionInfo());
         isInitialized = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) effectSettings.OnCollisionHandler(new CollisionInfo());
     }

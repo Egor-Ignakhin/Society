@@ -12,7 +12,7 @@ namespace Society.Anomalies.Carousel
 
         protected override void Awake()
         {
-            rb = GetComponent<Rigidbody>();            
+            rb = GetComponent<Rigidbody>();
 
             base.Awake();
         }

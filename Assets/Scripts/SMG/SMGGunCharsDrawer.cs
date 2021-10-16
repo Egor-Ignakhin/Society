@@ -7,7 +7,7 @@ namespace Society.SMG
     /// <summary>
     /// класс - рисовщик хар. об оружии
     /// </summary>
-    class SMGGunCharsDrawer : MonoBehaviour
+    internal class SMGGunCharsDrawer : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI gunDescriptionText;
         [SerializeField] private TextMeshProUGUI titleTextDrawing;

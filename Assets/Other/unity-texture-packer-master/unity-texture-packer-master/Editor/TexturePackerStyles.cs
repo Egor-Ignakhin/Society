@@ -6,8 +6,7 @@ namespace TexPacker
 {
     public class TexturePackerStyles
     {
-
-        static GUIStyle heading = null;
+        private static GUIStyle heading = null;
         public static GUIStyle Heading
         {
             get
@@ -29,7 +28,7 @@ namespace TexPacker
             }
         }
 
-        static GUIStyle midBox;
+        private static GUIStyle midBox;
         public static GUIStyle MidBox
         {
             get
@@ -56,7 +55,7 @@ namespace TexPacker
             }
         }
 
-        static GUIStyle section = null;
+        private static GUIStyle section = null;
         public static GUIStyle Section
         {
             get
@@ -111,7 +110,7 @@ namespace TexPacker
             }
         }
 
-        static Texture2D GetBorderedTexture(Color border, Color centre)
+        private static Texture2D GetBorderedTexture(Color border, Color centre)
         {
             Texture2D returnTex = new Texture2D(3, 3);
             returnTex.filterMode = FilterMode.Point;

@@ -113,6 +113,7 @@
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\SpawnPositionFinder.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Apiary\ApiaryBee.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Apiary\ApiaryBulletReceiver.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Apiary\ApiaryManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselDieHandler.cs" />
@@ -139,8 +140,6 @@
     <Compile Include="Assets\Scripts\Dialogs\SanSanychPerson.cs" />
     <Compile Include="Assets\Scripts\Dialogs\TalkingPerson.cs" />
     <Compile Include="Assets\Scripts\Effects\DirtyingScreenEffect.cs" />
-    <Compile Include="Assets\Scripts\Effects\DropableSoundsManager\DropableSoundsManager.cs" />
-    <Compile Include="Assets\Scripts\Effects\DropableSoundsManager\InvItemCollision.cs" />
     <Compile Include="Assets\Scripts\Effects\EffectsCanvas.cs" />
     <Compile Include="Assets\Scripts\Effects\EffectsManager.cs" />
     <Compile Include="Assets\Scripts\Effects\ImageFromCameraRender.cs" />
@@ -157,7 +156,6 @@
     <Compile Include="Assets\Scripts\Enemies\BredEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\DogEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\DogLairChecker.cs" />
-    <Compile Include="Assets\Scripts\Enemies\EnemiesData.cs" />
     <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyCollision.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyCollisionAdder.cs" />
@@ -165,6 +163,8 @@
     <Compile Include="Assets\Scripts\Enemies\EnviromentMobs\ShrummiExample.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnviromentMobs\ShrummieSpawnPoint.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnviromentMobs\ShrummiesManager.cs" />
+    <Compile Include="Assets\Scripts\Enemies\IPlayerSoundReceiver.cs" />
+    <Compile Include="Assets\Scripts\Enemies\PlayerSoundReceiversCollection.cs" />
     <Compile Include="Assets\Scripts\Enemies\StepEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\TargetPointsManager.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Bed\BedManager.cs" />

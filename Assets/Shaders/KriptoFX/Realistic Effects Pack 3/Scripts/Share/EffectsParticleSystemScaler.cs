@@ -8,15 +8,14 @@ using UnityEditor;
 public class EffectsParticleSystemScaler : MonoBehaviour
 {
     public float particlesScale = 1.0f;
+    private float oldScale;
 
-    float oldScale;
-
-    void Start()
+    private void Start()
     {
         oldScale = particlesScale;
     }
 
-    void Update()
+    private void Update()
     {
 #if UNITY_EDITOR
         if (Mathf.Abs(oldScale - particlesScale) > 0.0001f && particlesScale > 0)

@@ -1,12 +1,15 @@
 
+using System;
+
 using UnityEngine;
-namespace Society.Anomalies.ApiaryAnomaly
+namespace Society.Anomalies.Apiary
 {
 
     public sealed class ApiaryBee : MonoBehaviour
     {
         private Vector3 targetPosition;
         private ApiaryManager apiaryManager;
+        private float speedFly = 2;
 
         internal void OnInit(ApiaryManager am)
         {
@@ -31,10 +34,14 @@ namespace Society.Anomalies.ApiaryAnomaly
 
         private void MoveToTargetPosition()
         {
-            transform.position = Vector3.MoveTowards(transform.position, GetTargetPosition(), Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, GetTargetPosition(), Time.deltaTime * speedFly);
 
             if (targetPosition == transform.position)
-                SetTargetPosition(apiaryManager.RecalculateTargetPosition(transform));
+                SetTargetPosition(apiaryManager.RecalculateTargetPosition());
         }
+
+        internal float AttackDistance() => 0.1f;
+
+        internal float Damage() => 0.5f;
     }
 }

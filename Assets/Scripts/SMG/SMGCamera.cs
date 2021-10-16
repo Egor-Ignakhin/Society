@@ -9,7 +9,7 @@ namespace Society.SMG
     /// <summary>
     /// камера которая рендерит оружия на верстаке, а также она отвечает за режим предпросмотра
     /// </summary>
-    class SMGCamera : MonoBehaviour
+    internal class SMGCamera : MonoBehaviour
     {
         /// <summary>
         /// шаг камеры при приближении-отдалении

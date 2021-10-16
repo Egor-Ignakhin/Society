@@ -13,8 +13,7 @@ namespace TMPro.Examples
         private const string label = "The <#0050FF>count is: </color>{0:2}";
         private float m_frame;
 
-
-        void Start()
+        private void Start()
         {
             // Add new TextMesh Pro Component
             m_textMeshPro = gameObject.AddComponent<TextMeshPro>();
@@ -49,8 +48,7 @@ namespace TMPro.Examples
             //Debug.Log(string.Format("{0:0.0000}", 15.37567f));
         }
 
-
-        void Update()
+        private void Update()
         {
             m_textMeshPro.SetText(label, m_frame % 1000);
             m_frame += 1 * Time.deltaTime;

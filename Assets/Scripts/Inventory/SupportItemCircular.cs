@@ -21,9 +21,9 @@ namespace Society.Inventory
         public void SetColorByTypeOfInteractiveObject(InteractiveObject[] ios)
         {
             foreach (var io in ios)
-            {                
+            {
                 if (io is Missions.MissionInteractiveObject)
-                {                    
+                {
                     mCircular.color = Color.green;
                     print(1);
                     return;

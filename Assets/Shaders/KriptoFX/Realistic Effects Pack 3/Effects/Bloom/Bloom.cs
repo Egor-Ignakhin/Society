@@ -115,18 +115,17 @@ namespace UnityStandardAssets.CinematicEffects
 
         #region Private Members
 
-        const int kMaxIterations = 16;
-        RenderTexture[] m_blurBuffer1 = new RenderTexture[kMaxIterations];
-        RenderTexture[] m_blurBuffer2 = new RenderTexture[kMaxIterations];
-
-        int m_Threshold;
-        int m_Curve;
-        int m_PrefilterOffs;
-        int m_SampleScale;
-        int m_Intensity;
-        int m_DirtTex;
-        int m_DirtIntensity;
-        int m_BaseTex;
+        private const int kMaxIterations = 16;
+        private RenderTexture[] m_blurBuffer1 = new RenderTexture[kMaxIterations];
+        private RenderTexture[] m_blurBuffer2 = new RenderTexture[kMaxIterations];
+        private int m_Threshold;
+        private int m_Curve;
+        private int m_PrefilterOffs;
+        private int m_SampleScale;
+        private int m_Intensity;
+        private int m_DirtTex;
+        private int m_DirtIntensity;
+        private int m_BaseTex;
 
         private void Awake()
         {

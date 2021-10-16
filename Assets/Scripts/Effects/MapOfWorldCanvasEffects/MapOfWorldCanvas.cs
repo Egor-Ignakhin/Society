@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Effects.MapOfWorldCanvasEffects
 {
-    sealed class MapOfWorldCanvas : MonoBehaviour
+    internal sealed class MapOfWorldCanvas : MonoBehaviour
     {
         [SerializeField] private List<MonoBehaviour> renderers = new List<MonoBehaviour>();
         [SerializeField] private List<MonoBehaviour> binoculeRenderers = new List<MonoBehaviour>();

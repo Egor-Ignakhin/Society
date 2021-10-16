@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 namespace Society.Effects
 {
-    sealed class ImageFromCameraRender : MonoBehaviour
+    internal sealed class ImageFromCameraRender : MonoBehaviour
     {
 #if UNITY_EDITOR
         private Camera cam;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Society.Enviroment.Radio
 {
-    sealed class RadioButton : InteractiveObject
+    internal sealed class RadioButton : InteractiveObject
     {
         [SerializeField] private RadioManager.Action action;// действие кнопки
 

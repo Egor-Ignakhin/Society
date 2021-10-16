@@ -5,13 +5,14 @@ public class DebuffOnEnemyFromCollision : MonoBehaviour
 
     public EffectSettings EffectSettings;
     public GameObject Effect;
+
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         EffectSettings.CollisionEnter += EffectSettings_CollisionEnter;
     }
 
-    void EffectSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void EffectSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         if (Effect == null)
             return;
@@ -20,7 +21,7 @@ public class DebuffOnEnemyFromCollision : MonoBehaviour
         {
             var hitGO = coll.transform;
             var renderer = hitGO.GetComponentInChildren<Renderer>();
-            var effectInstance = Instantiate(Effect) as GameObject;
+            var effectInstance = Instantiate(Effect);
             effectInstance.transform.parent = renderer.transform;
             effectInstance.transform.localPosition = Vector3.zero;
             effectInstance.GetComponent<AddMaterialOnHit>().UpdateMaterial(coll.transform);
@@ -28,7 +29,7 @@ public class DebuffOnEnemyFromCollision : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

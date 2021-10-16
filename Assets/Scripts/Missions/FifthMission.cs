@@ -26,7 +26,7 @@ namespace Society.Missions
             if (isLoad)
                 taskDrawer.SetVisible(true);
             switch (currentTask)
-            {               
+            {
 
                 case 1:
                     taskDrawer.SetVisible(false);

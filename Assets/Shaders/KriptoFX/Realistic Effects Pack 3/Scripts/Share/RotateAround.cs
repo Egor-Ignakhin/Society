@@ -13,8 +13,9 @@ public class RotateAround : MonoBehaviour
     private bool canUpdate;
     private float currentSpeedFadeIn;
     private float allTime;
+
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         if (UseCollision) EffectSettings.CollisionEnter += EffectSettings_CollisionEnter;
         if (TimeDelay > 0)
@@ -23,18 +24,18 @@ public class RotateAround : MonoBehaviour
             canUpdate = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         canUpdate = true;
         allTime = 0;
     }
 
-    void EffectSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void EffectSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         canUpdate = false;
     }
 
-    void ChangeUpdate()
+    private void ChangeUpdate()
     {
         canUpdate = true;
     }

@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 namespace Society.Enviroment.Doors
 {
-    sealed class DoorManager : MonoBehaviour, IChangeable// класс реализует взаимодействие, а так же движение двери
+    internal sealed class DoorManager : MonoBehaviour, IChangeable// класс реализует взаимодействие, а так же движение двери
     {
         public enum RateTypes { normal, extrim }
         [SerializeField] private State currentState;

@@ -15,8 +15,7 @@ namespace TexPacker
         private readonly int _maxInputCount = 4;
         private readonly int _textureSupportedResolutionMin = 64;
         private readonly int _textureSupportedResolutionMax = 8192;
-
-        Vector2 _windowScrollPos;
+        private Vector2 _windowScrollPos;
 
         private TextureFormat _textureFormat = TextureFormat.PNG;
 
@@ -29,7 +28,7 @@ namespace TexPacker
         private TexturePreview _preview;
 
         [MenuItem("Window/Channel Packer")]
-        static void Open()
+        private static void Open()
         {
             TexturePackerWindow window = GetWindow<TexturePackerWindow>();
             window.Initialize();

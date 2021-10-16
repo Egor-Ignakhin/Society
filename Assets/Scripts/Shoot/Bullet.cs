@@ -18,8 +18,7 @@ namespace Society.Shoot
         [SerializeField] private float mass = 0;
         [SerializeField] private float area = 0.649f;
         [SerializeField] private float kf = 1;
-
-        BulletValues mBv;
+        private BulletValues mBv;
 
         public ItemStates.ItemsID Id;
         private AudioClip reflectSound;

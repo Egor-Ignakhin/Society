@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    sealed class PlayerRadiationDrawer : BasicNeedsEventsReceiver
+    internal sealed class PlayerRadiationDrawer : BasicNeedsEventsReceiver
     {
         #region Fields
         [SerializeField] private Image mImage;

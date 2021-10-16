@@ -17,12 +17,12 @@ namespace Toolbox.Editor.Drawers
             return true;
         }
 
-        public override sealed void OnGui(SerializedProperty property, GUIContent label)
+        public sealed override void OnGui(SerializedProperty property, GUIContent label)
         {
             OnGui(property, label, PropertyUtility.GetAttribute<T>(property));
         }
 
-        public override sealed void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
+        public sealed override void OnGui(SerializedProperty property, GUIContent label, ToolboxAttribute attribute)
         {
             OnGui(property, label, attribute as T);
         }

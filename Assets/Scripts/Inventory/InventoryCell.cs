@@ -217,7 +217,7 @@ namespace Society.Inventory
             eventReceiver.FocusCell(this);
         }
 
-        bool wasAnimated = false;
+        private bool wasAnimated = false;
         private void BackgroundAnimate()
         {
             Vector3 nextState = wasAnimated ? additionalSettins.DefaultScale : additionalSettins.AnimatedScale;

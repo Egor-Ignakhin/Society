@@ -8,7 +8,7 @@ namespace Society.SMG
     /// <summary>
     /// класс отвечающий за верстак
     /// </summary>
-    sealed class WorkbenchSMG : InteractiveObject
+    internal sealed class WorkbenchSMG : InteractiveObject
     {
         private SMGMain main;
         [SerializeField] private Transform cameraPoint;

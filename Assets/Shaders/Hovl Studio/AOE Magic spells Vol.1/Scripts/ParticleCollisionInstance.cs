@@ -17,18 +17,19 @@ public class ParticleCollisionInstance : MonoBehaviour
     private List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
     private ParticleSystem ps;
 
-    void Start()
+    private void Start()
     {
         part = GetComponent<ParticleSystem>();
     }
-    void OnParticleCollision(GameObject other)
+
+    private void OnParticleCollision(GameObject other)
     {
         int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);
         for (int i = 0; i < numCollisionEvents; i++)
         {
             foreach (var effect in EffectsOnCollision)
             {
-                var instance = Instantiate(effect, collisionEvents[i].intersection + collisionEvents[i].normal * Offset, new Quaternion()) as GameObject;
+                var instance = Instantiate(effect, collisionEvents[i].intersection + collisionEvents[i].normal * Offset, new Quaternion());
                 if (!UseWorldSpacePosition) instance.transform.parent = transform;
                 if (UseFirePointRotation) { instance.transform.LookAt(transform.position); }
                 else if (rotationOffset != Vector3.zero && useOnlyRotationOffset) { instance.transform.rotation = Quaternion.Euler(rotationOffset); }

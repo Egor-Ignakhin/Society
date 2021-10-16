@@ -6,7 +6,7 @@ namespace Society.Maps
     /// <summary>
     /// класс-контроллёр для компаса
     /// </summary>
-    sealed class CompassController : MonoBehaviour
+    internal sealed class CompassController : MonoBehaviour
     {
         private Transform player;
         private void Awake()

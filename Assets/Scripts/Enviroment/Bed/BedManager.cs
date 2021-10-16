@@ -4,7 +4,7 @@ using Society.Player.Controllers;
 using UnityEngine;
 namespace Society.Enviroment.Bed
 {
-    sealed class BedManager : MonoBehaviour
+    internal sealed class BedManager : MonoBehaviour
     {
         private Transform playerT;
         private BedController bc;// игрок

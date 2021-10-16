@@ -8,7 +8,7 @@ namespace Society.Editor
     /// <summary>
     /// класс при вызове создаёт необходимую иерарихю папок
     /// </summary>
-    sealed class StdFoldersCreator
+    internal sealed class StdFoldersCreator
     {
 #if UNITY_EDITOR
         [MenuItem("Tools/ Create Standart Folders")]

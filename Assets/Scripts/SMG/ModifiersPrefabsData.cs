@@ -5,7 +5,7 @@ using UnityEngine;
 using static Society.SMG.ModifierCharacteristics;
 namespace Society.SMG
 {
-    static class ModifiersPrefabsData
+    internal static class ModifiersPrefabsData
     {
         private static readonly Dictionary<SMGTitleTypeIndex, GunModifier> modPrefabs = new Dictionary<SMGTitleTypeIndex, GunModifier>();
         static ModifiersPrefabsData()

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace Society.Missions
 {
-    sealed class SecondMission : Mission
+    internal sealed class SecondMission : Mission
     {
         public override int GetMissionNumber() => 2;
         protected override void StartMission()

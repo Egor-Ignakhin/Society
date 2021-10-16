@@ -20,7 +20,7 @@ public class AddMaterialOnHit : MonoBehaviour
     private bool waitRemove;
     private float timeToDelete;
 
-    void Update()
+    private void Update()
     {
         if (EffectSettings == null) return;
         if (EffectSettings.IsVisible)
@@ -139,7 +139,7 @@ public class AddMaterialOnHit : MonoBehaviour
         return instanceMat.renderQueue;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (renderParent == null)
             return;

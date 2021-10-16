@@ -7,7 +7,7 @@ namespace Toolbox.Editor.Drawers
     [CustomPropertyDrawer(typeof(SeparatorAttribute))]
     public class SeparatorAttributeDrawer : DecoratorDrawer
     {
-        private readonly static Color lineColor = new Color(0.3f, 0.3f, 0.3f);
+        private static readonly Color lineColor = new Color(0.3f, 0.3f, 0.3f);
 
 
         private void DrawLine(Rect rect, float thickness, float propertyPadding, float propertySpacing)

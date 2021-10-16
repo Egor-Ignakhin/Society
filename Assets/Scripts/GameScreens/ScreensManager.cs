@@ -6,7 +6,7 @@ namespace Society.GameScreens
     /// <summary>
     /// класс отвечающий за текущий экран, помогает не путатся в открытом инвентаре, меню, смо и тд
     /// </summary>
-    static class ScreensManager
+    internal static class ScreensManager
     {
         private static IGameScreen currentScreen;
         public static void OnInit()

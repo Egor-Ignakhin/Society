@@ -56,7 +56,7 @@ namespace Society.Inventory
 
         [Space(5)]
 
-        [ShowIf(nameof(itsGun), true)] [SerializeField] int ammoCount = 0;
+        [ShowIf(nameof(itsGun), true)] [SerializeField] private int ammoCount = 0;
         private bool isDroppedGun = false;
 
         internal void OnInit(int count, ItemStates.ItemsID item, bool itsGun)
@@ -75,8 +75,6 @@ namespace Society.Inventory
             SetType(startItem.ToString());
             if (!isDroppedGun)
                 possibleGun.Reload(GetGunIdFromItemId(), (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex);
-
-            gameObject.AddComponent<Society.Effects.DropableSoundsManager.InvItemCollision>().OnInit(this, GetComponent<Rigidbody>());
         }
         public void SetGun(SMGInventoryCellGun g)
         {
@@ -126,7 +124,7 @@ namespace Society.Inventory
         internal void SetCount(int c) => count = c;
 
         ///Функция преобразующая тип <see cref="ItemStates.ItemsID"/> в тип <see cref="ItemStates.GunsID"> для индекса данного предмета.
-        int GetGunIdFromItemId()
+        private int GetGunIdFromItemId()
         {
             if (itsGun)
             {

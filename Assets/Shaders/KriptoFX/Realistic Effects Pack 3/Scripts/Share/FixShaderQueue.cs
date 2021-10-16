@@ -14,13 +14,13 @@ public class FixShaderQueue : MonoBehaviour
             Invoke("SetProjectorQueue", 0.1f);
     }
 
-    void SetProjectorQueue()
+    private void SetProjectorQueue()
     {
         GetComponent<Projector>().material.renderQueue += AddQueue;
     }
 
     // Update is called once per frame
-    void OnDisable()
+    private void OnDisable()
     {
         if (rend != null)
             rend.sharedMaterial.renderQueue = -1;

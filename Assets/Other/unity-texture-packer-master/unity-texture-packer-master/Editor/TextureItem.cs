@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TexPacker
 {
-    class TextureItem
+    internal class TextureItem
     {
         public TextureInput input;
         public bool toDelete { get; private set; }

@@ -142,7 +142,7 @@ namespace Society.Anomalies.Carousel
 
         }
 
-        System.Collections.IEnumerator DegreesPerSecCalc()
+        private System.Collections.IEnumerator DegreesPerSecCalc()
         {
             float times = interactionTime * 10;
             for (int i = 0; i < times; i++)
@@ -265,7 +265,8 @@ namespace Society.Anomalies.Carousel
         {
             cm.PlayerFixedUpdate();
         }
-        System.Collections.IEnumerator Timer()
+
+        private System.Collections.IEnumerator Timer()
         {
             yield return new WaitForSeconds(t);
             Exit();
@@ -295,7 +296,8 @@ namespace Society.Anomalies.Carousel
         {
 
         }
-        System.Collections.IEnumerator Timer()
+
+        private System.Collections.IEnumerator Timer()
         {
             yield return new WaitForSeconds(t);
             Exit();

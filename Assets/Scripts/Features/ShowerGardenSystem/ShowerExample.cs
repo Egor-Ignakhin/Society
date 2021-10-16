@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Features
 {
-    sealed class ShowerExample : Society.Patterns.InteractiveObject
+    internal sealed class ShowerExample : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerManager showerGarden;
         [SerializeField] private AudioSource mAudS;

@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Society.Menu
 {
-    class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    internal class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private MenuManager menuManager;
         private TMPro.TextMeshProUGUI text;

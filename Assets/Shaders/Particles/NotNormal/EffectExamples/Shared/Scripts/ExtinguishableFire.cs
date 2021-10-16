@@ -12,8 +12,7 @@ public class ExtinguishableFire : MonoBehaviour
     public ParticleSystem smokeParticleSystem;
 
     protected bool m_isExtinguished;
-
-    const float m_FireStartingTime = 2.0f;
+    private const float m_FireStartingTime = 2.0f;
 
     private void Start()
     {
@@ -34,7 +33,7 @@ public class ExtinguishableFire : MonoBehaviour
         StartCoroutine(Extinguishing());
     }
 
-    IEnumerator Extinguishing()
+    private IEnumerator Extinguishing()
     {
         fireParticleSystem.Stop();
         smokeParticleSystem.time = 0;
@@ -62,7 +61,7 @@ public class ExtinguishableFire : MonoBehaviour
         StartCoroutine(StartingFire());
     }
 
-    IEnumerator StartingFire()
+    private IEnumerator StartingFire()
     {
         smokeParticleSystem.Stop();
         fireParticleSystem.time = 0;

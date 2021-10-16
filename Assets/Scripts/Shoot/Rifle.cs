@@ -2,7 +2,7 @@
 
 namespace Society.Shoot
 {
-    class Rifle : Gun
+    internal class Rifle : Gun
     {
         protected override void LoadAssets()
         {

@@ -5,11 +5,11 @@ namespace PlayerClasses.BasicNeedsEventReceivers
     /// <summary>
     /// Класс меняющий местами линии воды и еды в зависимости от большего параметра.
     /// </summary>
-    sealed class FoodThirstLinesQueue : BasicNeedsEventsReceiver
+    internal sealed class FoodThirstLinesQueue : BasicNeedsEventsReceiver
     {
         #region Fields
-        [SerializeField] Transform baseFood;// Ссылка на трансформ еды
-        [SerializeField] Transform baseThirst;// Ссылка на трансформ воды
+        [SerializeField] private Transform baseFood;// Ссылка на трансформ еды
+        [SerializeField] private Transform baseThirst;// Ссылка на трансформ воды
 
         [SerializeField] private Animator mAnim;
 

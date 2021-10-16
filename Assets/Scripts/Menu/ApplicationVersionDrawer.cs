@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Society.ApplicationTools
 {
-    sealed class ApplicationVersionDrawer : MonoBehaviour
+    internal sealed class ApplicationVersionDrawer : MonoBehaviour
     {
         public ApplicationVersion applicationVersion;
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-class ToolsAnimator : MonoBehaviour
+internal class ToolsAnimator : MonoBehaviour
 {
     private readonly Dictionary<int, ToolExample> Tools = new Dictionary<int, ToolExample>();
     private int currentActiveToolIt = -1;

@@ -22,7 +22,7 @@ public class CFX_SpawnSystem : MonoBehaviour
     /// <param name='activateObject'>
     /// Activates the object before returning it.
     /// </param>
-    static public GameObject GetNextObject(GameObject sourceObj, bool activateObject = true)
+    public static GameObject GetNextObject(GameObject sourceObj, bool activateObject = true)
     {
         int uniqueId = sourceObj.GetInstanceID();
 
@@ -86,7 +86,7 @@ public class CFX_SpawnSystem : MonoBehaviour
     /// <param name='poolSize'>
     /// The number of times it will be instantiated in the pool (i.e. the max number of same object that would appear simultaneously in your Scene).
     /// </param>
-    static public void PreloadObject(GameObject sourceObj, int poolSize = 1)
+    public static void PreloadObject(GameObject sourceObj, int poolSize = 1)
     {
         instance.addObjectToPool(sourceObj, poolSize);
     }
@@ -97,7 +97,7 @@ public class CFX_SpawnSystem : MonoBehaviour
     /// <param name='sourceObj'>
     /// Source object.
     /// </param>
-    static public void UnloadObjects(GameObject sourceObj)
+    public static void UnloadObjects(GameObject sourceObj)
     {
         instance.removeObjectsFromPool(sourceObj);
     }
@@ -108,7 +108,7 @@ public class CFX_SpawnSystem : MonoBehaviour
     /// <value>
     /// <c>true</c> if all objects are loaded; otherwise, <c>false</c>.
     /// </value>
-    static public bool AllObjectsLoaded
+    public static bool AllObjectsLoaded
     {
         get
         {
@@ -118,7 +118,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 
     // INTERNAL SYSTEM ----------------------------------------------------------------------------------------------------------------------------------------
 
-    static private CFX_SpawnSystem instance;
+    private static CFX_SpawnSystem instance;
 
     public GameObject[] objectsToPreload = new GameObject[0];
     public int[] objectsToPreloadTimes = new int[0];
@@ -146,7 +146,7 @@ public class CFX_SpawnSystem : MonoBehaviour
         GameObject newObj;
         for (int i = 0; i < number; i++)
         {
-            newObj = (GameObject)Instantiate(sourceObject);
+            newObj = Instantiate(sourceObject);
             newObj.SetActive(false);
 
             //Set flag to not destruct object
@@ -206,7 +206,7 @@ public class CFX_SpawnSystem : MonoBehaviour
 
     //--------------------------------
 
-    void Awake()
+    private void Awake()
     {
         if (instance != null)
             Debug.LogWarning("CFX_SpawnSystem: There should only be one instance of CFX_SpawnSystem per Scene!\n", this.gameObject);
@@ -214,7 +214,7 @@ public class CFX_SpawnSystem : MonoBehaviour
         instance = this;
     }
 
-    void Start()
+    private void Start()
     {
         allObjectsLoaded = false;
 

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace PlayerClasses.BasicNeedsEventReceivers
 {
-    sealed class PlayerThirstDrawer : BasicNeedsEventsReceiver
+    internal sealed class PlayerThirstDrawer : BasicNeedsEventsReceiver
     {
         #region Fields
         [SerializeField] private Image mImage;

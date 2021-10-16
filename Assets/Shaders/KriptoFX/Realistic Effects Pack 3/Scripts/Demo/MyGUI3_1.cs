@@ -64,7 +64,7 @@ public class MyGUI3_1 : MonoBehaviour
 
     private void InstanceEffect(Vector3 pos)
     {
-        currentGo = Instantiate(Prefabs[current], pos, Prefabs[current].transform.rotation) as GameObject;
+        currentGo = Instantiate(Prefabs[current], pos, Prefabs[current].transform.rotation);
         effectSettings = currentGo.GetComponent<EffectSettings>();
         effectSettings.Target = GetTargetObject(GuiStats[current]);
         effectSettings.EffectDeactivated += effectSettings_EffectDeactivated;

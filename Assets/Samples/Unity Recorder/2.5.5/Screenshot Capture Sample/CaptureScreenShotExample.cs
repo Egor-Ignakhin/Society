@@ -17,9 +17,9 @@ namespace UnityEngine.Recorder.Examples
     /// </summary>
     public class CaptureScreenShotExample : MonoBehaviour
     {
-        RecorderController m_RecorderController;
+        private RecorderController m_RecorderController;
 
-        void OnEnable()
+        private void OnEnable()
         {
             var controllerSettings = ScriptableObject.CreateInstance<RecorderControllerSettings>();
             m_RecorderController = new RecorderController(controllerSettings);
@@ -46,7 +46,7 @@ namespace UnityEngine.Recorder.Examples
             controllerSettings.SetRecordModeToSingleFrame(0);
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             if (GUI.Button(new Rect(10, 10, 150, 50), "Capture ScreenShot"))
             {

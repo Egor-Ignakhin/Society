@@ -2,7 +2,7 @@
 
 namespace Features
 {
-    sealed class ShowerLeverOnWall : Society.Patterns.InteractiveObject
+    internal sealed class ShowerLeverOnWall : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerExample showerExample;
         [SerializeField] private ParticleSystem waterParticleSystem;

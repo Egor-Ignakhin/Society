@@ -1,7 +1,6 @@
 ﻿using Society.Effects;
 using Society.Player;
 
-using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Society.Enemies
     /// <summary>
     /// наследники класса - враги, их можно убивать. 
     /// </summary>
-    public abstract class Enemy : MonoBehaviour, IMovableController
+    public abstract class Enemy : MonoBehaviour, IMovableController, IPlayerSoundReceiver
     {
         [SerializeField] protected float fov = 90;// угол обзора монстра
         [SerializeField] protected float seeDistance;// дальность обзора
@@ -57,9 +56,7 @@ namespace Society.Enemies
         internal bool HasEnemy() => enemy != null;
         internal float GetAttackDistance() => attackDistance;
 
-        protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)
-
-        internal float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
+        protected Vector3 possibleTargetPos;// пост-последняя позиция (для поворота в её сторону)        
 
         protected NavMeshAgent mAgent;
         protected Animator mAnim;
@@ -92,7 +89,7 @@ namespace Society.Enemies
             mAgent.stoppingDistance = UVariables.DistanceForAttack;
             UVariables.ChangeHealthEvent += Death;
 
-            EnemiesData.AddEnemy(this);
+            PlayerSoundReceiversCollection.AddListner(this);
             stepEnemy = new StepEnemy(this, stepSoundData);
             tpm = new TargetPointsManager(targetPointsParent);
 
@@ -117,7 +114,7 @@ namespace Society.Enemies
         /// <summary>
         /// Поворот тела врага к цели
         /// </summary>
-        protected abstract void RotateBodyToTarget();        
+        protected abstract void RotateBodyToTarget();
 
         /// <summary>
         /// Вызов звука шага
@@ -321,5 +318,11 @@ namespace Society.Enemies
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
         }
+
+        public Transform GetTransform() => transform;
+
+        public float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
+
+        public void SetPlayer(BasicNeeds bn) => SetEnemy(bn, true);
     }
 }

@@ -36,7 +36,7 @@ public class MoveOnGround : MonoBehaviour
         isInitialized = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) InitDefaultVariables();
     }

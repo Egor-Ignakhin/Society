@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Society.Enemies
 {
-    sealed class DogEnemy : Enemy
+    internal sealed class DogEnemy : Enemy
     {
         protected override void Start()
         {
@@ -17,7 +17,7 @@ namespace Society.Enemies
             mAnim.applyRootMotion = true;
             enabled = false;
             DeathEvent.Invoke();
-            EnemiesData.RemoveEnemy(this);
+            PlayerSoundReceiversCollection.RemoveListner(this);
             stepEnemy.PlayDeathClip(deathClip);
         }
 

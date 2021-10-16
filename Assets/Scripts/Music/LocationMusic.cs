@@ -5,7 +5,7 @@ using System.Collections;
 using UnityEngine;
 namespace Society.Music
 {
-    sealed class LocationMusic : MonoBehaviour
+    internal sealed class LocationMusic : MonoBehaviour
     {
         [SerializeField] private AudioClip[] musicList;
         [SerializeField] private float musicWaitTime = 5f;

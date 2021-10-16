@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Enviroment.Doors
 {
-    sealed class MedicalDoorChecker : MonoBehaviour
+    internal sealed class MedicalDoorChecker : MonoBehaviour
     {
         [SerializeField] private MedicalDoor myMedicalDoor;
         private Collider playerCollider;

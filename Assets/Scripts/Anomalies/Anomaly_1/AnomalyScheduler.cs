@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Anomaly_1
 {
-    sealed class AnomalyScheduler : MonoBehaviour
+    internal sealed class AnomalyScheduler : MonoBehaviour
     {
         [SerializeField] private float lowerTimeLimitInSeconds; // Минимальное время до появление аномалии
         [SerializeField] private float upperTimeLimitInSeconds;

@@ -8,14 +8,15 @@ public class FlyDemo : MonoBehaviour
 
     private Transform t;
     private float time;
+
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         t = transform;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         time += Time.deltaTime;
         var sin = Mathf.Cos(time / Speed);

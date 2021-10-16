@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Carousel
 {
-    class CarouselBulletsTrigger : MonoBehaviour, IBulletReceiver
+    internal class CarouselBulletsTrigger : MonoBehaviour, IBulletReceiver
     {
         private bool needBlust;
         [SerializeField] private ParticleSystem aura;

@@ -9,19 +9,19 @@ public class EffectsColorizer : MonoBehaviour
     private Color oldColor;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
 
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (oldColor != TintColor) ChangeColor(gameObject, TintColor);
         oldColor = TintColor;
     }
 
-    void ChangeColor(GameObject effect, Color color)
+    private void ChangeColor(GameObject effect, Color color)
     {
         var rend = effect.GetComponentsInChildren<Renderer>();
         foreach (var r in rend)

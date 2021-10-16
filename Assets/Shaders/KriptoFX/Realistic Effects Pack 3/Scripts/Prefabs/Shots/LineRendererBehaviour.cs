@@ -20,7 +20,7 @@ public class LineRendererBehaviour : MonoBehaviour
     private bool isInitializedOnStart;
     private LineRenderer line;
     private int currentShaderIndex;
-    RaycastHit hit;
+    private RaycastHit hit;
 
     private void GetEffectSettingsComponent(Transform tr)
     {
@@ -34,7 +34,7 @@ public class LineRendererBehaviour : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
         if (effectSettings == null)
@@ -45,7 +45,7 @@ public class LineRendererBehaviour : MonoBehaviour
         isInitializedOnStart = true;
     }
 
-    void InitializeDefault()
+    private void InitializeDefault()
     {
         GetComponent<Renderer>().material.SetFloat("_Chanel", currentShaderIndex);
         ++currentShaderIndex;
@@ -103,7 +103,7 @@ public class LineRendererBehaviour : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitializedOnStart) InitializeDefault();
     }

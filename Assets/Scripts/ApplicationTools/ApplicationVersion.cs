@@ -2,7 +2,7 @@
 namespace Society.ApplicationTools
 {
     [CreateAssetMenu(fileName = "ApplicationVersion", menuName = "Tools/ApplicationVersion", order = 1)]
-    sealed class ApplicationVersion : ScriptableObject
+    internal sealed class ApplicationVersion : ScriptableObject
     {
         public int MajorVersion;
         public int MinorVersion;

@@ -19,10 +19,10 @@ public class DemoGUI : MonoBehaviour
     private GameObject currentInstance;
     private GUIStyle guiStyleHeader = new GUIStyle();
     private float colorHUE;
-    float dpiScale;
+    private float dpiScale;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
 
         if (Screen.dpi < 1) dpiScale = 1;
@@ -30,7 +30,7 @@ public class DemoGUI : MonoBehaviour
         else dpiScale = Screen.dpi / 200f;
         guiStyleHeader.fontSize = (int)(15f * dpiScale);
         guiStyleHeader.normal.textColor = new Color(1, 1, 1);
-        currentInstance = Instantiate(Prefabs[currentNomber], transform.position, new Quaternion()) as GameObject;
+        currentInstance = Instantiate(Prefabs[currentNomber], transform.position, new Quaternion());
 
         //var reactivator = currentInstance.AddComponent<DemoReactivator>();
         //reactivator.TimeDelayToReactivate = 3f;
@@ -66,7 +66,7 @@ public class DemoGUI : MonoBehaviour
         GUI.Label(new Rect(240 * dpiScale, 105 * dpiScale, 30 * dpiScale, 30 * dpiScale), "Effect color", guiStyleHeader);
     }
 
-    void ChangeColor()
+    private void ChangeColor()
     {
         var color = Hue(colorHUE / 255f);
         var rend = currentInstance.GetComponentsInChildren<Renderer>();
@@ -82,7 +82,7 @@ public class DemoGUI : MonoBehaviour
         if (light != null) light.color = color;
     }
 
-    Color Hue(float H)
+    private Color Hue(float H)
     {
         Color col = new Color(1, 0, 0);
         if (H >= 0 && H < 1) col = new Color(1, 0, H);
@@ -93,8 +93,9 @@ public class DemoGUI : MonoBehaviour
         if (H >= 5 && H < 6) col = new Color(1, 6 - H, 0);
         return col;
     }
+
     // Update is called once per frame
-    void ChangeCurrent(int delta)
+    private void ChangeCurrent(int delta)
     {
         currentNomber += delta;
         if (currentNomber > Prefabs.Length - 1)
@@ -105,7 +106,7 @@ public class DemoGUI : MonoBehaviour
         var pos = transform.position;
         if (Positions[currentNomber] == Position.Bottom) pos.y -= 1;
         if (Positions[currentNomber] == Position.Bottom02) pos.y -= 0.8f;
-        currentInstance = Instantiate(Prefabs[currentNomber], pos, new Quaternion()) as GameObject;
+        currentInstance = Instantiate(Prefabs[currentNomber], pos, new Quaternion());
         //var reactivator = currentInstance.AddComponent<DemoReactivator>();
         //reactivator.TimeDelayToReactivate = 1.5f;
     }

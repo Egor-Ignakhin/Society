@@ -9,7 +9,7 @@ public class SetPositionOnHit : MonoBehaviour
     private Transform tRoot;
     private bool isInitialized;
 
-    void GetEffectSettingsComponent(Transform tr)
+    private void GetEffectSettingsComponent(Transform tr)
     {
         var parent = tr.parent;
         if (parent != null)
@@ -20,7 +20,7 @@ public class SetPositionOnHit : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
         if (effectSettings == null)
@@ -28,13 +28,13 @@ public class SetPositionOnHit : MonoBehaviour
         tRoot = effectSettings.transform;
     }
 
-    void effectSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void effectSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         var direction = (tRoot.position + Vector3.Normalize(e.Hit.point - tRoot.position) * (effectSettings.MoveDistance + 1)).normalized;
         transform.position = e.Hit.point - direction * OffsetPosition;
     }
 
-    void Update()
+    private void Update()
     {
         if (!isInitialized)
         {
@@ -42,8 +42,9 @@ public class SetPositionOnHit : MonoBehaviour
             effectSettings.CollisionEnter += effectSettings_CollisionEnter;
         }
     }
+
     // Update is called once per frame
-    void OnDisable()
+    private void OnDisable()
     {
         transform.position = Vector3.zero;
     }

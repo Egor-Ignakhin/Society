@@ -7,13 +7,13 @@ public class OffsetOnNormal : MonoBehaviour
 
     private Vector3 startPosition;
 
-    void Awake()
+    private void Awake()
     {
         startPosition = transform.position;
     }
 
     // Use this for initialization
-    void OnEnable()
+    private void OnEnable()
     {
         RaycastHit verticalHit;
         Physics.Raycast(startPosition, Vector3.down, out verticalHit);
@@ -25,7 +25,7 @@ public class OffsetOnNormal : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

@@ -14,7 +14,7 @@ using Society.Inventory.Other;
 
 namespace Society.Editor
 {
-    sealed class GUIСontainerСontent : EditorWindow
+    internal sealed class GUIСontainerСontent : EditorWindow
     {
 
 #if UNITY_EDITOR

@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Anomalies
 {
-    sealed class PlayerDamageZone : MonoBehaviour
+    internal sealed class PlayerDamageZone : MonoBehaviour
     {
         [SerializeField] private float waitForNewDamage = 1;
         private float currentWFND = 0;

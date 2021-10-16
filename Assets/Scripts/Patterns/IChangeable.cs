@@ -1,6 +1,6 @@
 ﻿namespace Society.Patterns
 {
-    interface IChangeable
+    internal interface IChangeable
     {
         State GetState();
     }

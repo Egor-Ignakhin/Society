@@ -24,7 +24,7 @@ namespace Society.Missions
         public const int MaxMissions = 5;
         private TaskSystem.TaskDrawer taskDrawer;
         internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
-        
+
         private void Awake()
         {
             currentState = LoadState();
@@ -94,7 +94,7 @@ namespace Society.Missions
                 return;
             Mission foundedMission = null;
             foreach (var m in all)
-            {                
+            {
                 if (m.GetMissionNumber() == currentState.currentMission)
                 {
                     foundedMission = m;
@@ -103,7 +103,7 @@ namespace Society.Missions
             }
             if (foundedMission)
                 foundedMission.ContinueMission(currentState.currentTask);
-            
+
         }
         private void OnDisable() => SaveState(currentState);
 
@@ -178,7 +178,7 @@ namespace Society.Missions
                 }
                 catch
                 {
-                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");                    
+                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");
                 }
             }
 

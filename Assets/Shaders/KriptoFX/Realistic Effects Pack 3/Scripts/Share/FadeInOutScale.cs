@@ -56,13 +56,13 @@ public class FadeInOutScale : MonoBehaviour
         isCollisionEnter = false;
     }
 
-    void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         isCollisionEnter = true;
         canUpdate = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) InitDefaultVariables();
     }

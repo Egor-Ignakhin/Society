@@ -11,7 +11,7 @@ namespace Society.Shoot
     /// <summary>
     /// аниматор оружия
     /// </summary>
-    class GunAnimator : MonoBehaviour
+    internal class GunAnimator : MonoBehaviour
     {
         /// <summary>
         /// Пустышки содержащие <see cref="Gun"/> и Hang/Aim places

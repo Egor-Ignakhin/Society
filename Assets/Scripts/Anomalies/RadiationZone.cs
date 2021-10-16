@@ -4,7 +4,7 @@ using Society.Player;
 using UnityEngine;
 namespace Society.Anomalies
 {
-    sealed class RadiationZone : MonoBehaviour
+    internal sealed class RadiationZone : MonoBehaviour
     {
         [SerializeField] private float powerZone = 1;
         private void OnTriggerEnter(Collider other)

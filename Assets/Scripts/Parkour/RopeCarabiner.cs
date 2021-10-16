@@ -7,7 +7,7 @@ namespace Society.Parkour
 {   /// <summary>
     /// Элемент паркура - верёвка с карабином
     /// </summary>
-    sealed class RopeCarabiner : ParkourElement
+    internal sealed class RopeCarabiner : ParkourElement
     {
         [SerializeField] private Transform highestPlace;
         [SerializeField] private Transform lowestPlace;

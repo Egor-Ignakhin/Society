@@ -2,7 +2,7 @@
 
 namespace Features.RandomBoxes
 {
-    sealed class TrunkExample : RandomlyBox
+    internal sealed class TrunkExample : RandomlyBox
     {
         protected override void OnInit()
         {

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Anomaly_1
 {
-    sealed class AnomalyPulsation : MonoBehaviour
+    internal sealed class AnomalyPulsation : MonoBehaviour
     {
         [SerializeField] private float lightningStartDelay; // "StartDelay" из Lightning (ParticleSystem).
         [SerializeField] private float anomalyBoxSide; // Сторона куба опасной зоны аномалии.

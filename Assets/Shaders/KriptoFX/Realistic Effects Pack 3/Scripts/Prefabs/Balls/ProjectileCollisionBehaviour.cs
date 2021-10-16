@@ -45,7 +45,7 @@ public class ProjectileCollisionBehaviour : MonoBehaviour
     private Vector3 randomTargetOffsetXZVector;
     private bool frameDroped;
 
-    void GetEffectSettingsComponent(Transform tr)
+    private void GetEffectSettingsComponent(Transform tr)
     {
         var parent = tr.parent;
         if (parent != null)
@@ -69,12 +69,12 @@ public class ProjectileCollisionBehaviour : MonoBehaviour
         isInitializedOnStart = true;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitializedOnStart) InitializeDefault();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (ResetParentPositionOnDisable && isInitializedOnStart && !IsRootMove) transform.parent.position = startParentPosition;
     }
@@ -195,7 +195,7 @@ public class ProjectileCollisionBehaviour : MonoBehaviour
         {
             var hitGO = hit.transform;
             var renderer = hitGO.GetComponentInChildren<Renderer>();
-            var effectInstance = Instantiate(EffectOnHitObject) as GameObject;
+            var effectInstance = Instantiate(EffectOnHitObject);
             effectInstance.transform.parent = renderer.transform;
             effectInstance.transform.localPosition = Vector3.zero;
             effectInstance.GetComponent<AddMaterialOnHit>().UpdateMaterial(hit);

@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 namespace Society.Player
 {
-    sealed class PrefabsCreator : MonoBehaviour
+    internal sealed class PrefabsCreator : MonoBehaviour
     {
         private void Awake()
         {

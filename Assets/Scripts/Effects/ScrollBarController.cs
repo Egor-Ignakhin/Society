@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace Society.Effects
 {
-    sealed class ScrollBarController : MonoBehaviour
+    internal sealed class ScrollBarController : MonoBehaviour
     {
         [SerializeField] private ScrollRect sr;
 

@@ -53,7 +53,7 @@ namespace Toolbox.Editor.Drawers
         /// <summary>
         /// Dictionary used to store all previously filtered types.
         /// </summary>
-        private readonly static Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
+        private static readonly Dictionary<Type, List<Type>> filteredTypes = new Dictionary<Type, List<Type>>();
 
 
         protected override float GetPropertyHeightSafe(SerializedProperty property, GUIContent label)

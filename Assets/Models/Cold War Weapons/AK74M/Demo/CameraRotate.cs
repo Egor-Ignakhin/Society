@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CreationWasteland
 {
@@ -10,15 +8,16 @@ namespace CreationWasteland
         public float radius = 0.5f;
         public float cameraHeight = 0.1f;
         public Transform target;
-        float cycleProgress;
+        private float cycleProgress;
+
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
 
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             cycleProgress += Time.deltaTime * speed;
 

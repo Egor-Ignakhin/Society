@@ -14,7 +14,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 public class WFX_BulletHoleDecal : MonoBehaviour
 {
-    static private Vector2[] quadUVs = new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+    private static Vector2[] quadUVs = new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
 
     public float lifetime = 10f;
     public float fadeoutpercent = 80;
@@ -27,13 +27,13 @@ public class WFX_BulletHoleDecal : MonoBehaviour
     private Color color;
     private float orgAlpha;
 
-    void Awake()
+    private void Awake()
     {
         color = this.GetComponent<Renderer>().material.GetColor("_TintColor");
         orgAlpha = color.a;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         //Random UVs
         int random = Random.Range(0, (int)(frames.x * frames.y));
@@ -61,7 +61,7 @@ public class WFX_BulletHoleDecal : MonoBehaviour
         StartCoroutine("holeUpdate");
     }
 
-    IEnumerator holeUpdate()
+    private IEnumerator holeUpdate()
     {
         while (life > 0f)
         {

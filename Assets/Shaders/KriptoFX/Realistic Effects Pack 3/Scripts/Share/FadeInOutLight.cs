@@ -70,23 +70,23 @@ public class FadeInOutLight : MonoBehaviour
         }
     }
 
-    void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void prefabSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         isCollisionEnter = true;
         if (!isIn && FadeOutAfterCollision) Invoke("SetupFadeOutDelay", FadeOutDelay);
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (isInitialized) InitDefaultVariables();
     }
 
-    void SetupStartDelay()
+    private void SetupStartDelay()
     {
         canStart = true;
     }
 
-    void SetupFadeOutDelay()
+    private void SetupFadeOutDelay()
     {
         canStartFadeOut = true;
     }

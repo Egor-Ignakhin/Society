@@ -11,7 +11,7 @@ namespace Society.Editor
     /// <summary>
     /// Класс копирует нужные данные в папку с билдом из папки проекта
     /// </summary>
-    sealed class PostBuildFilesCreator
+    internal sealed class PostBuildFilesCreator
     {
 #if UNITY_EDITOR
         [PostProcessBuild(1)]

@@ -19,7 +19,7 @@ namespace UnityEngine.Recorder.Examples
     /// </summary>
     public class MovieRecorderExample : MonoBehaviour
     {
-        RecorderController m_RecorderController;
+        private RecorderController m_RecorderController;
         public bool m_RecordAudio = true;
         internal MovieRecorderSettings m_Settings = null;
 
@@ -32,7 +32,7 @@ namespace UnityEngine.Recorder.Examples
             }
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             Initialize();
         }
@@ -76,7 +76,7 @@ namespace UnityEngine.Recorder.Examples
             Debug.Log($"Started recording for file {OutputFile.FullName}");
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             m_RecorderController.StopRecording();
         }

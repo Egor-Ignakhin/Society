@@ -5,25 +5,26 @@ public class LazyLoad : MonoBehaviour
 
     public GameObject GO;
     public float TimeDelay = 0.3f;
+
     // Use this for initialization
 
-    void Awake()
+    private void Awake()
     {
         GO.SetActive(false);
     }
 
     // Update is called once per frame
-    void LazyEnable()
+    private void LazyEnable()
     {
         GO.SetActive(true);
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         Invoke("LazyEnable", TimeDelay);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         CancelInvoke("LazyEnable");
         GO.SetActive(false);

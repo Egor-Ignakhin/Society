@@ -3,7 +3,7 @@
 using UnityEngine;
 namespace Society.Enviroment
 {
-    sealed class CallInteractObject : InteractiveObject
+    internal sealed class CallInteractObject : InteractiveObject
     {
         [SerializeField] private InteractiveObject receiver;
 

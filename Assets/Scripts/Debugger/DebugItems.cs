@@ -8,7 +8,7 @@ namespace Society.Debugger
     /// <summary>
     /// клас для взятия предметов из дебаггера
     /// </summary>
-    sealed class DebugItems : MonoBehaviour, IDebug
+    internal sealed class DebugItems : MonoBehaviour, IDebug
     {
         public bool Active { get; set; }
         GameObject IDebug.gameObject => gameObject;

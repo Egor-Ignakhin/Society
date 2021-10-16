@@ -1,5 +1,4 @@
 ﻿using Society.Enemies;
-using Society.Inventory;
 using Society.Player.Controllers;
 
 using System.Collections;
@@ -41,25 +40,6 @@ namespace Society.Player
             }
         }
 
-        internal static void AddItemSound(InventoryItem item)
-        {
-            decimal wight = ItemStates.GetWeightItem(item.Id);
-            Vector3 itemPos = item.transform.position;
-            var startedCollection = EnemiesData.GetCollection();//все монстры на локации
-            startedCollection.RemoveAll(e => e == null);
-
-            for (int i = 0; i < startedCollection.Count; i++)// проходимся по всем позициям монстров
-            {
-                if (startedCollection[i].HasEnemy())
-                    continue;
-
-                if (Vector3.Distance(itemPos, startedCollection[i].transform.position) < startedCollection[i].GetDistanceToTarget())// если дистанция между позицией игрока и позицией монстра > шум от ходьбы игрока + добавляемый шум
-                {
-                    startedCollection[i].SetEnemy(basicNeeds, true, item.transform);
-                }
-            }
-        }
-
         private void Calculate()
         {
             if (additionalNoise > 0)
@@ -77,20 +57,20 @@ namespace Society.Player
         private void OnDestroy() => StopAllCoroutines();
         private void FindMonsters()
         {
-            var startedCollection = EnemiesData.GetCollection();//все монстры на локации
+            var startedCollection = PlayerSoundReceiversCollection.GetCollection();
             startedCollection.RemoveAll(e => e == null);
             var montsterPoses = new List<Vector3>();// лист позиций монстров
             foreach (var e in startedCollection)//добавление в лист позиций все позиции монстров
-                montsterPoses.Add(e.transform.position);
+                montsterPoses.Add(e.GetTransform().position);
 
             Vector3 playerPos = player.position;// позиция игрока
 
             for (int i = 0; i < montsterPoses.Count; i++)// проходимся по всем позициям монстров
             {
-                if (Vector3.Distance(playerPos, montsterPoses[i]) > (playerSpeed + additionalNoise))// если дистанция между позицией игрока и позицией монстра > шум от ходьбы игрока + добавляемый шум
+                if (startedCollection[i].GetDistanceToTarget() > (playerSpeed + additionalNoise))// если дистанция между позицией игрока и позицией слушателя > шум от ходьбы игрока + добавляемый шум
                     continue;//пропускаем
 
-                startedCollection[i].SetEnemy(basicNeeds, true);// указываем их цель как игрока
+                startedCollection[i].SetPlayer(basicNeeds);// указываем их цель как игрока
             }
         }
     }

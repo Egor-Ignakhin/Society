@@ -2,7 +2,7 @@
 
 namespace Society.DeadScene
 {
-    sealed class DeadSceneManager : MonoBehaviour// класс отвечающий за сцена смерти
+    internal sealed class DeadSceneManager : MonoBehaviour// класс отвечающий за сцена смерти
     {
         [SerializeField] private float delayToStartDissolving = 5;// длина ожидания до запуска анимации
         [SerializeField] private float delayToFullTransparency = 2;// длина анимации

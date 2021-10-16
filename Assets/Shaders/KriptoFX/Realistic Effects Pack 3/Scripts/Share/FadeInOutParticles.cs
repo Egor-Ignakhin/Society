@@ -18,14 +18,14 @@ public class FadeInOutParticles : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
         particles = effectSettings.GetComponentsInChildren<ParticleSystem>();
         oldVisibleStat = effectSettings.IsVisible;
     }
 
-    void Update()
+    private void Update()
     {
         if (effectSettings.IsVisible != oldVisibleStat)
         {

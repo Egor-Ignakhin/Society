@@ -20,9 +20,9 @@ namespace UnityEngine.Recorder.Examples
     /// </summary>
     public class MultipleRecordingsExample : MonoBehaviour
     {
-        RecorderController m_RecorderController;
+        private RecorderController m_RecorderController;
 
-        void OnEnable()
+        private void OnEnable()
         {
             var controllerSettings = ScriptableObject.CreateInstance<RecorderControllerSettings>();
             m_RecorderController = new RecorderController(controllerSettings);
@@ -95,7 +95,7 @@ namespace UnityEngine.Recorder.Examples
             m_RecorderController.StartRecording();
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             m_RecorderController.StopRecording();
         }

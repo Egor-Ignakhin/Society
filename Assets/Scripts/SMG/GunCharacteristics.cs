@@ -5,7 +5,7 @@ using static Society.Inventory.ItemStates;
 
 namespace Society.SMG
 {
-    static class GunCharacteristics
+    internal static class GunCharacteristics
     {
         private static readonly Dictionary<ItemsID, GunDescription.Gun> guns;
         private static GunModifierDescription modDescriptions;

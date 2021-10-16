@@ -3,7 +3,7 @@
     /// <summary>
     /// наследники - слоты инвентарей
     /// </summary>
-    interface ICellable
+    internal interface ICellable
     {
         bool IsEmpty();
         void Clear();

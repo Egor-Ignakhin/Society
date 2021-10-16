@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Society.Effects
 {
     [RequireComponent(typeof(AudioSource))]
-    sealed class MusicPlayer : MonoBehaviour
+    internal sealed class MusicPlayer : MonoBehaviour
     {
         [SerializeField] private System.Collections.Generic.List<AudioClip> loopedClips = new System.Collections.Generic.List<AudioClip>();
         [SerializeField] private AudioSource mAudioS;

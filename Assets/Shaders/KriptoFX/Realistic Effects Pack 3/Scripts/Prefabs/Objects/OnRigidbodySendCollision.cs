@@ -15,12 +15,13 @@ public class OnRigidbodySendCollision : MonoBehaviour
                 GetEffectSettingsComponent(parent.transform);
         }
     }
-    void Start()
+
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         effectSettings.OnCollisionHandler(new CollisionInfo());
     }

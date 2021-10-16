@@ -6,7 +6,7 @@ using Society.Player.Controllers;
 using UnityEngine;
 namespace Society.Shoot
 {
-    sealed class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
+    internal sealed class ExplosiveBarrel : MonoBehaviour, IBulletReceiver
     {
         private AudioSource explosionSound;
         [SerializeField] private GameObject explosion;

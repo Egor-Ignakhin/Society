@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Society.Enemies
 {
-    sealed class EnemyCollisionAdder : MonoBehaviour
+    internal sealed class EnemyCollisionAdder : MonoBehaviour
     {
         private void OnValidate()
         {

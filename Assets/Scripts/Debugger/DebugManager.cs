@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Society.Debugger
 {
-    sealed class DebugManager : MonoBehaviour, IGameScreen
+    internal sealed class DebugManager : MonoBehaviour, IGameScreen
     {
         [SerializeField] private Transform background;// фон
         private bool isHidden = true;

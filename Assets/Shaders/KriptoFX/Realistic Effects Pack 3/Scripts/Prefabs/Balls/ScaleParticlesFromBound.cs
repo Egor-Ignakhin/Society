@@ -5,7 +5,7 @@ public class ScaleParticlesFromBound : MonoBehaviour
 
     private Collider targetCollider;
 
-    void GetMeshFilterParent(Transform t)
+    private void GetMeshFilterParent(Transform t)
     {
         var coll = t.parent.GetComponent<Collider>();
         if (coll == null)
@@ -15,7 +15,7 @@ public class ScaleParticlesFromBound : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         GetMeshFilterParent(transform);
         if (targetCollider == null) return;
@@ -24,7 +24,7 @@ public class ScaleParticlesFromBound : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }

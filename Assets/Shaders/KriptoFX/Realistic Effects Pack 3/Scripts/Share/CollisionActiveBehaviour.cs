@@ -9,7 +9,7 @@ public class CollisionActiveBehaviour : MonoBehaviour
     private EffectSettings effectSettings;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         GetEffectSettingsComponent(transform);
         if (IsReverse)
@@ -22,7 +22,7 @@ public class CollisionActiveBehaviour : MonoBehaviour
         if (IsLookAt) effectSettings.CollisionEnter += effectSettings_CollisionEnter;
     }
 
-    void effectSettings_CollisionEnter(object sender, CollisionInfo e)
+    private void effectSettings_CollisionEnter(object sender, CollisionInfo e)
     {
         transform.LookAt(effectSettings.transform.position + e.Hit.normal);
     }

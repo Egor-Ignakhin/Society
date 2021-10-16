@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Society.Menu
 {
-    sealed class MenuClock : MonoBehaviour
+    internal sealed class MenuClock : MonoBehaviour
     {
         [SerializeField] private Transform[] pointers = new Transform[2];
         [SerializeField] private Vector3 additionalRotateForMin;

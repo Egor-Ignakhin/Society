@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Anomaly_1
 {
-    sealed class AnomalyLifetime : ObjectPool
+    internal sealed class AnomalyLifetime : ObjectPool
     {
         [SerializeField] private float timeForDestroyInSeconds;
         private AnomalyPulsation anomalyPulsation;

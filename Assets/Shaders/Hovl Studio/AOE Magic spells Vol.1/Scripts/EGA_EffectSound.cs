@@ -12,7 +12,7 @@ public class EGA_EffectSound : MonoBehaviour
 
     private AudioSource soundComponent;
 
-    void Start()
+    private void Start()
     {
         soundComponent = GetComponent<AudioSource>();
         clip = soundComponent.clip;
@@ -27,7 +27,7 @@ public class EGA_EffectSound : MonoBehaviour
         }
     }
 
-    void RepeatSound()
+    private void RepeatSound()
     {
         soundComponent.PlayOneShot(clip);
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Society.Inventory.Other
 {
-    sealed class ItemsLogger : MonoBehaviour
+    internal sealed class ItemsLogger : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI loggerPrefab;
         private InventoryContainer inventoryContainer;

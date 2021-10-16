@@ -24,13 +24,13 @@ public class GunShoot : MonoBehaviour
     private Animator anim;
     private GunAim gunAim;
 
-    void Start()
+    private void Start()
     {
         anim = GetComponent<Animator>();
         gunAim = GetComponentInParent<GunAim>();
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetButtonDown("Fire1") && Time.time > nextFire && !gunAim.GetIsOutOfBounds())
         {
@@ -48,7 +48,7 @@ public class GunShoot : MonoBehaviour
         }
     }
 
-    void HandleHit(RaycastHit hit)
+    private void HandleHit(RaycastHit hit)
     {
         if (hit.collider.sharedMaterial != null)
         {
@@ -86,7 +86,7 @@ public class GunShoot : MonoBehaviour
         }
     }
 
-    void SpawnDecal(RaycastHit hit, GameObject prefab)
+    private void SpawnDecal(RaycastHit hit, GameObject prefab)
     {
         GameObject spawnedDecal = GameObject.Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal));
         spawnedDecal.transform.SetParent(hit.collider.transform);

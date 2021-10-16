@@ -12,7 +12,7 @@ namespace Society.Inventory
         public enum ItemsID : int
         {
             Default, Axe_1, TTPistol, Ak_74, CannedFood, Milk, Binoculars, Knife_1, Bullet_7_62, Bullet_9_27, Tablets_1,
-            Lom, WoodBoard, SteelSheet, Brick, Plywood, Rope, Magazine_1, Magazine_2, Magazine_3, Magazine_4, 
+            Lom, WoodBoard, SteelSheet, Brick, Plywood, Rope, Magazine_1, Magazine_2, Magazine_3, Magazine_4,
             Latchkey, Artefact_Bird, Artefact_Iscra, Artefact_Uley
         }
         public enum GunsID : int { TTPistol, Ak_74 }

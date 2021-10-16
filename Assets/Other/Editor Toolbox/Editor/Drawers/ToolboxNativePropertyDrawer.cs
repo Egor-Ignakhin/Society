@@ -40,7 +40,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="property"></param>
         /// <param name="label"></param>
         /// <returns></returns>
-        public override sealed float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        public sealed override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (IsPropertyValid(property))
             {
@@ -59,7 +59,7 @@ namespace Toolbox.Editor.Drawers
         /// <param name="position"></param>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public override sealed void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public sealed override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (IsPropertyValid(property))
             {

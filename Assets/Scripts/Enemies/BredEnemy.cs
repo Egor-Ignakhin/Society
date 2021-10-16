@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Society.Enemies
 {
-    sealed class BredEnemy : Enemy
+    internal sealed class BredEnemy : Enemy
     {
         [SerializeField] private List<Rigidbody> allJoints = new List<Rigidbody>();
         protected override void Start()
@@ -22,7 +22,7 @@ namespace Society.Enemies
             MakePhysical(true);
             enabled = false;
             DeathEvent.Invoke();
-            EnemiesData.RemoveEnemy(this);
+            PlayerSoundReceiversCollection.RemoveListner(this);
             stepEnemy.PlayDeathClip(deathClip);
         }
         private void MakePhysical(bool v)

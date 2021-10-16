@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Society.Enemies
 {
-    sealed class EnemyPoint : MonoBehaviour
+    internal sealed class EnemyPoint : MonoBehaviour
     {
         [SerializeField] private float timeDelay;
         private void Start()

@@ -11,7 +11,7 @@ namespace Society.Missions
         protected override void StartMission()
         {
             OnTaskActions.Add("OnFinish", () =>
-           {               
+           {
                FinishMission();
            });
 

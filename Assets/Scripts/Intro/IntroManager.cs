@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Society.Intro
 {
-    sealed class IntroManager : MonoBehaviour// класс отвечающий за интро-сцену
+    internal sealed class IntroManager : MonoBehaviour// класс отвечающий за интро-сцену
     {
         private const int listsCount = 3;// количество слайдов
         [SerializeField] private List<GameObject> lists = new List<GameObject>(listsCount);// слайды
