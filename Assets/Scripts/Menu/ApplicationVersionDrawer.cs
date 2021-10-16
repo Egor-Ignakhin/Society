@@ -1,4 +1,7 @@
-﻿#if UNITY_EDITOR
+﻿
+using System.IO;
+#if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEditor.Callbacks;
 
@@ -9,19 +12,25 @@ namespace Society.ApplicationTools
 {
     internal sealed class ApplicationVersionDrawer : MonoBehaviour
     {
-        public ApplicationVersion applicationVersion;
+        public static string PathToAppInfo = Directory.GetCurrentDirectory() + "\\Saves\\AppInfo.json";
 
-
+#if UNITY_EDITOR
         [PostProcessBuild()]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
-            ApplicationVersion av = FindObjectOfType<ApplicationVersionDrawer>().applicationVersion;
-            av.BuildVersion++;
+            string inputData = File.ReadAllText(PathToAppInfo);
+            var appInfo = JsonUtility.FromJson<ApplicationVersion>(inputData);
+            appInfo.BuildVersion++;
+
+            var outputData = JsonUtility.ToJson(appInfo);
+            File.WriteAllText(PathToAppInfo, outputData);
         }
+#endif
 
         private void Start()
         {
-            string text = applicationVersion.ToString();
+            string data = File.ReadAllText(PathToAppInfo);
+            string text = JsonUtility.FromJson<ApplicationVersion>(data).ToString();
             GetComponent<TMPro.TextMeshProUGUI>().SetText(text);
         }
     }

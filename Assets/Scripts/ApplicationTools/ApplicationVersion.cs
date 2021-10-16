@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-namespace Society.ApplicationTools
+﻿namespace Society.ApplicationTools
 {
-    [CreateAssetMenu(fileName = "ApplicationVersion", menuName = "Tools/ApplicationVersion", order = 1)]
-    internal sealed class ApplicationVersion : ScriptableObject
+    [System.Serializable]
+    public class ApplicationVersion
     {
         public int MajorVersion;
         public int MinorVersion;
