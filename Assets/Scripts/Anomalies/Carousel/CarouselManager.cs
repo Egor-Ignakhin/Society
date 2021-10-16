@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Society.Anomalies.Carousel
 {
-    public sealed class CarouselManager : MonoBehaviour
+    public sealed class CarouselManager : Anomaly
     {
         private readonly List<Rigidbody> items = new List<Rigidbody>();
         private Collider mCollider;
@@ -15,13 +15,11 @@ namespace Society.Anomalies.Carousel
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
         private readonly float explosionImpulse = 20;
-        [SerializeField] private GameObject piece;
-        [SerializeField] [Range(1, 10)] private int health;
+        [SerializeField] private GameObject piece;        
         [SerializeField] private GameObject explosion;
         [SerializeField] private CarouselDieHandler carouselDeathHandler;
 
-        [SerializeField] private Transform explosionPoint;
-        private int GetHealth() => health;
+        [SerializeField] private Transform explosionPoint;        
         private void SetHealth(int value)
         {
             health = value;
