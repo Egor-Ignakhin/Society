@@ -13,7 +13,7 @@ namespace Society.SMG
         private List<SMGTitleTypeIndex> data = new List<SMGTitleTypeIndex>();
 
         private SMGSaver saver;
-        private readonly string savingPath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\Society.SMGSave.json";
+        private readonly string savingPath = System.IO.Directory.GetCurrentDirectory() + "\\Saves\\SMGSave.json";
         private const int maxDataCount = 20;
         private InventoryInput inventoryInput;
         private void OnEnable()

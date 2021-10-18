@@ -10,6 +10,8 @@ namespace Society.Inventory
         public int Title = 0;
 
         public int AmmoCount = 0;
+
+        public string AmmoType;
         internal void SetMag(ModifierIndex index) => Mag = (int)index;
 
         public void SetAim(ModifierIndex index) => Aim = (int)index;
@@ -23,26 +25,28 @@ namespace Society.Inventory
         {
             Clear();
         }
-        public void Reload(int title, int dispenser, int silencer, int ammocount, int aim)
+        public void Reload(int title, int dispenser, int silencer, int ammoCount, int aim, string ammoType)
         {
             Title = title;
             Mag = dispenser;
             Aim = aim;
             Silencer = silencer;
-            AmmoCount = ammocount;
+            AmmoCount = ammoCount;
+            AmmoType = ammoType;
         }
-        internal void Reload(SMGInventoryCellGun GunAk_74)
+        internal void Reload(SMGInventoryCellGun sendedGun)
         {
-            if (GunAk_74 == null)
+            if (sendedGun == null)
             {
                 Clear();
                 return;
             }
-            Title = GunAk_74.Title;
-            Mag = GunAk_74.Mag;
-            Aim = GunAk_74.Aim;
-            Silencer = GunAk_74.Silencer;
-            AmmoCount = GunAk_74.AmmoCount;
+            Title = sendedGun.Title;
+            Mag = sendedGun.Mag;
+            Aim = sendedGun.Aim;
+            Silencer = sendedGun.Silencer;
+            AmmoCount = sendedGun.AmmoCount;
+            AmmoType = sendedGun.AmmoType;
         }
         public void Clear()
         {
@@ -52,5 +56,7 @@ namespace Society.Inventory
             AmmoCount = 0;
         }
         public void SetAmmoCount(int ac) => AmmoCount = ac;
+
+        public void SetAmmoType(string arg) => AmmoType = arg;
     }
 }

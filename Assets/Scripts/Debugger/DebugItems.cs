@@ -29,10 +29,11 @@ namespace Society.Debugger
                 var itemGun = new SMGInventoryCellGun();
                 itemGun.Reload(
                     i - 1,
-                    Society.SMG.GunCharacteristics.GetMaxMagFromID(i),
-                    Society.SMG.GunCharacteristics.GetMaxSilencerFromID(i),
+                    SMG.GunCharacteristics.GetMaxMagFromID(i),
+                    SMG.GunCharacteristics.GetMaxSilencerFromID(i),
                     0,
-                    Society.SMG.GunCharacteristics.GetMaxAimFromID(i));
+                    SMG.GunCharacteristics.GetMaxAimFromID(i),
+                    "Default");
 
                 itemButton.GetComponent<InventoryItem>().SetGun(itemGun);
 

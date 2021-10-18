@@ -21,12 +21,13 @@ namespace Society.Inventory.Other
         [HideInInspector] public List<int> StartedItems = new List<int>();
         [HideInInspector] public List<int> StartedCount = new List<int>();
 
-        #region Society.SMG
+        #region SMG
         [HideInInspector] public List<int> Aims = new List<int>();
         [HideInInspector] public List<int> Mags = new List<int>();
         [HideInInspector] public List<int> Silencers = new List<int>();
+        [HideInInspector] public List<string> AmmoTypes = new List<string>();
         #endregion
-        public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers);
+        public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers, List<string> ammoTypes) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers, AmmoTypes);
 
         private AudioSource mAud;
         private AudioClip OpenCloseClip;
@@ -36,7 +37,7 @@ namespace Society.Inventory.Other
             for (int i = 0; i < StartedItems.Count; i++)
             {
                 var possibleGun = new SMGInventoryCellGun();
-                possibleGun.Reload(StartedItems[i], Mags[i], Silencers[i], 0, Aims[i]);
+                possibleGun.Reload(StartedItems[i], Mags[i], Silencers[i], 0, Aims[i], AmmoTypes[i]);
                 container.Add((StartedItems[i], StartedCount[i], possibleGun));
             }
             SetType(startedType.ToString());

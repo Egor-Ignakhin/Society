@@ -229,10 +229,10 @@ MonoBehaviour:
       cookieTexArraySize: 1
       planarReflectionAtlasSize: 2048
       reflectionProbeCacheSize: 64
-      reflectionCubemapSize: 512
+      reflectionCubemapSize: 128
       reflectionCacheCompressed: 1
       planarReflectionCacheCompressed: 1
-      skyReflectionSize: 512
+      skyReflectionSize: 2048
       skyLightingOverrideLayerMask:
         serializedVersion: 2
         m_Bits: 0
@@ -246,7 +246,7 @@ MonoBehaviour:
     hdShadowInitParams:
       maxShadowRequests: 128
       directionalShadowsDepthBits: 32
-      shadowFilteringQuality: 1
+      shadowFilteringQuality: 2
       punctualLightShadowAtlas:
         shadowAtlasResolution: 4096
         shadowAtlasDepthBits: 32
@@ -317,7 +317,7 @@ MonoBehaviour:
       ChromaticAberrationMaxSamples: 03000000060000000c000000
     lightSettings:
       useContactShadow:
-        m_Values: 000000
+        m_Values: 000001
         m_SchemaId:
           m_Id: 
     maximumLODLevel:
@@ -346,8 +346,7 @@ MonoBehaviour:
   m_DefaultMaterialQualityLevel: 4
   diffusionProfileSettings: {fileID: 0}
   diffusionProfileSettingsList:
-  - {fileID: 11400000, guid: dbb9d22187d6097478a2a66726ab9753, type: 2}
-  - {fileID: 11400000, guid: ca2f1f28db05e5842a931bffea18e975, type: 2}
+  - {fileID: 11400000, guid: 16689ff5a0c87d04685c4b1df7905739, type: 2}
   beforeTransparentCustomPostProcesses: []
   beforePostProcessCustomPostProcesses: []
   afterPostProcessCustomPostProcesses: []

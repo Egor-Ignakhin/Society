@@ -2,6 +2,7 @@
 using Society.Enemies;
 using Society.GameScreens;
 using Society.Inventory;
+using Society.Menu.GameOverlay;
 using Society.Patterns;
 using Society.Player;
 
@@ -56,11 +57,14 @@ namespace Society.Shoot
 
         private GunAnimator gunAnimator;
         private EffectsManager effectsManager;
-        private Society.SMG.GunModifiersActiveManager gunModifiersActiveManager;
+        private SMG.GunModifiersActiveManager gunModifiersActiveManager;
         private UsedUpBulletsDropper ubp;
         private ShootedBulletPool sbp;
         private AudioClip reflectSound;
         private AudioSource reflectSource;
+        private GameOverlayManager gameOverlayManager;
+
+        private float checkoutCBTimer;
         public static bool EndlessBullets { get; set; }
         private void Awake()
         {
@@ -70,6 +74,7 @@ namespace Society.Shoot
         }
         private void Start()
         {
+            gameOverlayManager = FindObjectOfType<GameOverlayManager>();
             effectsManager = FindObjectOfType<EffectsManager>();
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<InventoryContainer>();
@@ -129,7 +134,24 @@ namespace Society.Shoot
 
             Reload();
 
-            if (Input.GetKeyDown(KeyCode.R) && !gunAnimator.IsAiming)
+            if (Input.GetKeyUp(KeyCode.R) && checkoutCBTimer > 0)
+            {
+                checkoutCBTimer = 0;
+                gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, false);
+            }
+
+            if (gunAnimator.IsAiming)
+                return;
+
+
+            if (Input.GetKey(KeyCode.R) &&
+                (checkoutCBTimer += Time.deltaTime) > 0.5f)
+            {
+                gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, true, ChangeBulletType);
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
             {
                 IsReload = true;
             }
@@ -303,6 +325,21 @@ namespace Society.Shoot
 
             if (effectsManager)
                 effectsManager.SetRechargeable(IsReload);
+        }
+
+        private void ChangeBulletType(object value)
+        {
+            var sc = inventoryEv.GetSelectedCell();
+            switch (value)
+            {
+                case "Default":
+                    sc.MGun.SetAmmoType("Default");
+                    break;
+
+                case "Electric":
+                    sc.MGun.SetAmmoType("Electric");
+                    break;
+            }
         }
 
         /// <summary>
