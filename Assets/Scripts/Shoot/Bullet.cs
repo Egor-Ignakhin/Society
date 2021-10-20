@@ -2,8 +2,6 @@
 using Society.Inventory;
 using Society.Patterns;
 
-using System;
-
 using UnityEngine;
 namespace Society.Shoot
 {
@@ -13,7 +11,7 @@ namespace Society.Shoot
     public sealed class Bullet : PoolableObject
     {
         private Vector3 target;//точка назначения
-        private EnemyCollision enemy;// возможный враг
+        private EnemyCollision enemyCollision;// возможный враг
         private bool haveTarget;// имеет ли патрон цель(возможен выстрел в воздух)
         private GameObject impactEffect;// эффекта столкновения
 
@@ -33,7 +31,7 @@ namespace Society.Shoot
         {
             mBv = bv;
             target = t.point;
-            enemy = e;
+            enemyCollision = e;
             haveTarget = true;
             impactEffect = impact;
             impactEffect = Instantiate(impactEffect);
@@ -54,56 +52,56 @@ namespace Society.Shoot
         private void Update()
         {
             if ((transform.position = Vector3.MoveTowards(transform.position, target, mBv.Speed * Time.deltaTime)) == target)
+            {
                 Boom();
+                mPool.ReturnToPool(this);
+            }
         }
         /// <summary>
         /// "взрыв" снаряда
         /// </summary>
         private void Boom()
         {
-            if (haveTarget)
+            if (!haveTarget)// Цели нет?
+                return;// выход
+
+            float damage = Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance);// высчитывание урона
+
+            bulletReceiver?.OnBulletEnter(bulletType);// Есть приёмник пуль? Вызвать его.
+
+            if (enemyCollision)// Есть враг? Ударить его.
+                enemyCollision.InjureEnemy(damage);
+
+            else if (BulletValues.CanReflect(mass, kf, mBv.Speed, mBv.StartSpeed, mBv.Angle)
+                && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
             {
-                mBv.SetSpeed();
+                hit.transform.TryGetComponent(out enemyCollision);
 
-                float damage = Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance);
-                if (bulletReceiver != null)
-                    bulletReceiver.OnBulletEnter(bulletType);
+                mBv.SetValues(hit.distance + mBv.CoveredDistance, Vector3.Reflect(transform.forward, hit.normal), Mathf.Abs(90 - Vector3.Angle(transform.forward, hit.normal)));
+                target = hit.point;
+                impactEffect.transform.forward = hit.normal;
 
-                if (enemy)
-                {
-                    enemy.InjureEnemy(damage);
-                }
-                else if (BulletValues.CanReflect(BulletValues.Energy(mass * kf, mBv.Speed), BulletValues.Energy(mass * kf, mBv.StartSpeed), mBv.Speed, mBv.Angle)
-                    && Physics.Raycast(target, mBv.PossibleReflectionPoint, out RaycastHit hit, mBv.MaxDistance, mBv.Layers, QueryTriggerInteraction.Ignore))
-                {
-                    hit.transform.TryGetComponent(out enemy);
-
-                    mBv.SetValues(hit.distance + mBv.CoveredDistance, Vector3.Reflect(transform.forward, hit.normal), Mathf.Abs(90 - Vector3.Angle(transform.forward, hit.normal)));
-                    target = hit.point;
-                    impactEffect.transform.forward = hit.normal;
-
-                    reflectSource.PlayOneShot(reflectSound);
-                    reflectSource.transform.position = hit.point;
-                    return;
-                }
-
-                impactEffect.transform.position = target;
-
-                //Если попали во врага - прикрепляем декаль к нему
-                if (enemy)
-                    impactEffect.transform.SetParent(enemy.transform);
-
-                impactEffect.SetActive(true);
-                
-                if(bulletType == BulletType.Electric)
-                {
-                    Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);                    
-
-                    if (enemy)
-                        enemy.DebuffEnemy(EnemyDebuffs.SlowingMovement);
-                }
+                reflectSource.PlayOneShot(reflectSound);
+                reflectSource.transform.position = hit.point;                
+                return;
             }
-            mPool.ReturnToPool(this);
+
+            impactEffect.transform.position = target;
+
+            //Если попали во врага - прикрепляем декаль к нему
+            if (enemyCollision)
+                impactEffect.transform.SetParent(enemyCollision.transform);
+
+
+            if (bulletType == BulletType.Electric)
+            {
+                Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);
+
+                if (enemyCollision)
+                    enemyCollision.DebuffEnemy(EnemyDebuffs.SlowingMovement);
+            }
+
+            impactEffect.SetActive(true);
         }
     }
 }

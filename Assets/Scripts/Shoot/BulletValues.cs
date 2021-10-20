@@ -24,16 +24,19 @@
             return ((float)(mass * System.Math.Pow(speed, 2)) / 2) * 0.01f;
         }
         /// <summary>
-        ///  вероятность рикошета
+        ///  Рикошет возможен?
         /// </summary>
         /// <param name="currentE"></param>
         /// <param name="startE"></param>
         /// <param name="speed"></param>
         /// <param name="angle"></param>
         /// <returns></returns>
-        public static bool CanReflect(float currentE, float startE, float speed, float angle)
+        public static bool CanReflect(float mass, float kf, float currentSpeed, float startSpeed, float angle)
         {
-            return (currentE / startE) * speed > 1f && angle > 10 && angle < 20 && UnityEngine.Random.Range(0, 101) > 95;
+            float currentEnergy = Energy(mass * kf, currentSpeed);
+            float startEnergy = Energy(mass * kf, startSpeed);
+
+            return currentEnergy / startEnergy * currentSpeed > 1f && angle > 10 && angle < 20 && UnityEngine.Random.Range(0, 101) > 95;            
         }
         public BulletValues(float currentDistance, float maxDistance, float caliber, float speed,
             float angle, UnityEngine.Vector3 prp, UnityEngine.LayerMask lm)
@@ -57,10 +60,6 @@
             CoveredDistance += d;
             PossibleReflectionPoint = prp;
             Angle = a;
-        }
-        public void SetSpeed()
-        {
-            //Speed = MaxDistance / CoveredDistance;
         }
     }
 }

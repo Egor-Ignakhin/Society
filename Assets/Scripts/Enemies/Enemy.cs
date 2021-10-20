@@ -81,7 +81,8 @@ namespace Society.Enemies
         private TargetPointsManager tpm;
         [SerializeField] private Transform targetPointsParent;
         public bool StepEventIsEnabled { get; set; } = true;
-        private EnemyDebuffs debuffs;
+        private EnemyDebuffs debuffs = EnemyDebuffs.None;
+        private readonly List<float> debuffTimers = new List<float>();
         protected virtual void Start()
         {
             UVariables = new UniqueVariables(attackDistance, power, seeDistance, health);
@@ -97,6 +98,12 @@ namespace Society.Enemies
 
             target = tpm.GetCurrentTarget(this);
             lastTargetPos = target.position;
+
+            for (int i = 0; i < Enum.GetNames(typeof(EnemyDebuffs)).Length; i++)
+            {
+                debuffTimers.Add(0);
+            }
+
         }
         protected class AnimationsContainer
         {
@@ -111,6 +118,36 @@ namespace Society.Enemies
             SetPhysMaterial();
             CallStepEvent();
             RotateBodyToTarget();
+
+            Heal();
+
+            SetDebuffs();
+        }
+
+        private void SetDebuffs()
+        {
+            if (debuffs.HasFlag(EnemyDebuffs.SlowingMovement))
+                mAnim.SetFloat("RunningSpeed", 0.5f);
+            else
+                mAnim.SetFloat("RunningSpeed", 1);
+        }
+
+        /// <summary>
+        /// проход по всем таймерам... если дебаффа нет, то и смотреть не стоит...
+        /// </summary>
+        private void Heal()
+        {
+            for (int i = 0; i < debuffTimers.Count; i++)
+            {
+                if (debuffs.HasFlag((EnemyDebuffs)i))
+                {
+                    debuffTimers[i] -= Time.fixedDeltaTime;
+                    if (debuffTimers[i] <= 0)
+                    {
+                        debuffs ^= (EnemyDebuffs)i;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -219,9 +256,10 @@ namespace Society.Enemies
 
         public void DebuffEnemy(EnemyDebuffs d)
         {
-            debuffs = d;
+            if (!debuffs.HasFlag(d))
+                debuffs |= d;
 
-            mAnim.SetFloat("RunningSpeed", 0.5f);
+            debuffTimers[(int)d] = 5f;
         }
 
         /// <summary>
