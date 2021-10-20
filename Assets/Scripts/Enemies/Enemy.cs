@@ -1,6 +1,7 @@
 ﻿using Society.Effects;
 using Society.Player;
 
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -80,6 +81,7 @@ namespace Society.Enemies
         private TargetPointsManager tpm;
         [SerializeField] private Transform targetPointsParent;
         public bool StepEventIsEnabled { get; set; } = true;
+        private EnemyDebuffs debuffs;
         protected virtual void Start()
         {
             UVariables = new UniqueVariables(attackDistance, power, seeDistance, health);
@@ -213,6 +215,13 @@ namespace Society.Enemies
             if (isPlayerDamage)
                 SetEnemy(BasicNeeds.Instance, true);
             UVariables.Health -= value;
+        }
+
+        public void DebuffEnemy(EnemyDebuffs d)
+        {
+            debuffs = d;
+
+            mAnim.SetFloat("RunningSpeed", 0.5f);
         }
 
         /// <summary>

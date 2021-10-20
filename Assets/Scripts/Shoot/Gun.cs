@@ -206,9 +206,9 @@ namespace Society.Shoot
 
         public void UpdateModifiers(int magIndex, int aimIndex, int silIndex)
         {
-            gunModifiersActiveManager.SetMag((Society.SMG.ModifierCharacteristics.ModifierIndex)magIndex);
-            gunModifiersActiveManager.SetAim((Society.SMG.ModifierCharacteristics.ModifierIndex)aimIndex);
-            gunModifiersActiveManager.SetSilencer((Society.SMG.ModifierCharacteristics.ModifierIndex)silIndex);
+            gunModifiersActiveManager.SetMag((SMG.ModifierCharacteristics.ModifierIndex)magIndex);
+            gunModifiersActiveManager.SetAim((SMG.ModifierCharacteristics.ModifierIndex)aimIndex);
+            gunModifiersActiveManager.SetSilencer((SMG.ModifierCharacteristics.ModifierIndex)silIndex);
         }
 
         /// <summary>
@@ -310,10 +310,17 @@ namespace Society.Shoot
 
                 bool enemyFound = hit.transform.TryGetComponent(out EnemyCollision e);
                 hit.transform.TryGetComponent(out IBulletReceiver bulletReceiver);
-                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource, bulletReceiver);
+                newBullet.Init(bv, hit, enemyFound ? ImpactsData.Impacts["Enemy"] : ImpactsData.Impacts["Default"], e, reflectSound, reflectSource, bulletReceiver, GetBulletType(), ImpactsData.ExplosiveElectricEffect);
                 return;
             }
             newBullet.Init(bv, ray.GetPoint(maxDistance));
+        }
+
+        private BulletType GetBulletType()
+        {
+            var sc = inventoryEv.GetSelectedCell();
+
+            return (BulletType)sc.MGun.AmmoType;
         }
 
         private void OnDisable()
@@ -327,19 +334,11 @@ namespace Society.Shoot
                 effectsManager.SetRechargeable(IsReload);
         }
 
-        private void ChangeBulletType(object value)
+        private void ChangeBulletType(string bulletTypeStr)
         {
+            var bulletType = Enum.Parse(typeof(BulletType), bulletTypeStr);
             var sc = inventoryEv.GetSelectedCell();
-            switch (value)
-            {
-                case "Default":
-                    sc.MGun.SetAmmoType("Default");
-                    break;
-
-                case "Electric":
-                    sc.MGun.SetAmmoType("Electric");
-                    break;
-            }
+            sc.MGun.SetAmmoType((int)bulletType);
         }
 
         /// <summary>
@@ -383,6 +382,8 @@ namespace Society.Shoot
             { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
             { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
             };
-        }
+            
+            public static GameObject ExplosiveElectricEffect = Resources.Load<GameObject>("Bullets\\Electric\\ExplosiveElectricEffect");
+    }
     }
 }

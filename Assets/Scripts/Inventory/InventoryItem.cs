@@ -1,4 +1,5 @@
 ﻿using Society.Patterns;
+using Society.Shoot;
 
 using System.Collections.Generic;
 
@@ -58,7 +59,7 @@ namespace Society.Inventory
 
         [ShowIf(nameof(itsGun), true)] [SerializeField] private int ammoCount = 0;
 
-        [ShowIf(nameof(itsGun), true)] [SerializeField] private string ammoType = "Default";
+        [ShowIf(nameof(itsGun), true)] [SerializeField] private BulletType ammoType = BulletType.Default;
         private bool isDroppedGun = false;
 
         internal void OnInit(int count, ItemStates.ItemsID item, bool itsGun)
@@ -76,7 +77,7 @@ namespace Society.Inventory
             SetId((int)startItem);
             SetType(startItem.ToString());
             if (!isDroppedGun)
-                possibleGun.Reload(GetGunIdFromItemId(), (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex, ammoType);
+                possibleGun.Reload(GetGunIdFromItemId(), (int)magIndex, (int)silencerIndex, ammoCount, (int)aimIndex, (int)ammoType);
         }
         public void SetGun(SMGInventoryCellGun g)
         {
@@ -87,7 +88,7 @@ namespace Society.Inventory
             magIndex = (ModifierIndex)possibleGun.Mag;
             aimIndex = (ModifierIndex)possibleGun.Aim;
             silencerIndex = (ModifierIndex)possibleGun.Silencer;
-            ammoType = possibleGun.AmmoType;
+            ammoType = (BulletType)possibleGun.AmmoType;
             OnValidate();
         }
         public override void Interact()

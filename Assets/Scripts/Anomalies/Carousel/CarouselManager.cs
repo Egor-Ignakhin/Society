@@ -15,11 +15,11 @@ namespace Society.Anomalies.Carousel
         private Vector3 targetPos = Vector3.zero;
         private BoxCollider zone;
         private readonly float explosionImpulse = 20;
-        [SerializeField] private GameObject piece;        
+        [SerializeField] private GameObject piece;
         [SerializeField] private GameObject explosion;
         [SerializeField] private CarouselDieHandler carouselDeathHandler;
 
-        [SerializeField] private Transform explosionPoint;        
+        [SerializeField] private Transform explosionPoint;
         private void SetHealth(int value)
         {
             health = value;
@@ -172,27 +172,11 @@ namespace Society.Anomalies.Carousel
             playerAcceleration = new Vector3(0, 0, 0);
             while (true)
             {
-                targetPos = CalculateSpawnPosition(zone.transform, zone);
+                targetPos = Extensions.CalculateSpawnPositionInRange(zone.transform, zone);
                 yield return new WaitForSeconds(4);
             }
         }
         internal void SetZone(BoxCollider mCollider) => zone = mCollider;
-
-        public Vector3 CalculateSpawnPosition(Transform transform, Collider collider)
-        {
-            var width = collider.bounds.size.x;
-            var center = transform.position;
-            return new Vector3(GetRandomDot(center.x, width, 0),
-                                0,
-                                GetRandomDot(center.z, width, 0));
-        }
-        private float GetRandomDot(float center, float sideLength, float axisLowestLimit)
-        {
-            var LowestVertex = center + axisLowestLimit - (sideLength / 2);
-            var HeighestVertex = center + (sideLength / 2);
-            var RandomDot = UnityEngine.Random.Range(LowestVertex, HeighestVertex);
-            return RandomDot;
-        }
 
         public void AddInList(Rigidbody rb) => items.Add(rb);
 

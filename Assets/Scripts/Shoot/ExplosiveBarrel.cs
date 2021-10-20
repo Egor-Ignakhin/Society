@@ -23,7 +23,7 @@ namespace Society.Shoot
         private Rigidbody rb;
         private float g = 9.8f;
 
-        public void OnBulletEnter()
+        public void OnBulletEnter(BulletType bulletType)
         {
             g = 0;
             explosion.SetActive(true);

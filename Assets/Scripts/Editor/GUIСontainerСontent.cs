@@ -52,7 +52,7 @@ namespace Society.Editor
                 return;
 
             EditorGUILayout.LabelField($"Container     {Selection.activeObject.name}");
-            (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers, List<string> ammoTypes) = container.GetStartedData();
+            (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers, List<int> ammoTypes) = container.GetStartedData();
             DrawFreeItems(items.Count, container);
 
             DrawItemEditButtons(container, items, count, aims, mags, silencers);

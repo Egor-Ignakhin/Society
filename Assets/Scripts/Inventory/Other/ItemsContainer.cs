@@ -25,9 +25,9 @@ namespace Society.Inventory.Other
         [HideInInspector] public List<int> Aims = new List<int>();
         [HideInInspector] public List<int> Mags = new List<int>();
         [HideInInspector] public List<int> Silencers = new List<int>();
-        [HideInInspector] public List<string> AmmoTypes = new List<string>();
+        [HideInInspector] public List<int> AmmoTypes = new List<int>();
         #endregion
-        public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers, List<string> ammoTypes) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers, AmmoTypes);
+        public (List<int> items, List<int> count, List<int> aims, List<int> mags, List<int> silencers, List<int> ammoTypes) GetStartedData() => (StartedItems, StartedCount, Aims, Mags, Silencers, AmmoTypes);
 
         private AudioSource mAud;
         private AudioClip OpenCloseClip;

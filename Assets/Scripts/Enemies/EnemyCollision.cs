@@ -26,5 +26,9 @@ namespace Society.Enemies
         {
             mParent = eParent;
         }
+        public void DebuffEnemy(EnemyDebuffs d)
+        {
+            mParent.DebuffEnemy(d);
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Society.GameScreens;
+using Society.Shoot;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Society.Menu.GameOverlay
 
         private readonly Dictionary<GameOverlayType, Action<bool>> gameOverlayCallableActions = new Dictionary<GameOverlayType, Action<bool>>();
         private Action<bool> activeAction;
-        private Action<object> CALLBACK;
+        private Action<string> CALLBACK;
         private void Awake()
         {
             #region Инициализация вызываемых методов
@@ -28,7 +29,7 @@ namespace Society.Menu.GameOverlay
 
             #endregion
         }
-        internal void SetEnableMenu(GameOverlayType changeBullet, bool isActive, Action<object> callback = null)
+        internal void SetEnableMenu(GameOverlayType changeBullet, bool isActive, Action<string> callback = null)
         {
             gameOverlayCallableActions[changeBullet].Invoke(isActive);
 
@@ -46,7 +47,7 @@ namespace Society.Menu.GameOverlay
 
         public void SetTypeBulletDefault()
         {            
-            CALLBACK?.Invoke("Default");
+            CALLBACK?.Invoke(BulletType.Default.ToString());
         }
         public void SetTypeBulletElectric()
         {            

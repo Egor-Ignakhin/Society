@@ -1,4 +1,5 @@
 ﻿using Society.Patterns;
+using Society.Shoot;
 
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Society.Anomalies.Carousel
             defaultStartSizeM = aura.main.startSpeedMultiplier;
             cm = gameObject.transform.parent.parent.gameObject.GetComponent<CarouselManager>();
         }
-        public void OnBulletEnter()
+        public void OnBulletEnter(BulletType inputBulletType)
         {
             needBlust = true;
             ParticleSystem.MainModule main = aura.main;

@@ -211,7 +211,7 @@ MonoBehaviour:
     supportTransparentDepthPostpass: 1
     colorBufferFormat: 48
     supportCustomPass: 0
-    customBufferFormat: 12
+    customBufferFormat: 48
     supportedLitShaderMode: 1
     supportDecals: 1
     msaaSampleCount: 8
@@ -244,7 +244,7 @@ MonoBehaviour:
       maxDecalsOnScreen: 512
       maxPlanarReflectionOnScreen: 32
     hdShadowInitParams:
-      maxShadowRequests: 128
+      maxShadowRequests: 4096
       directionalShadowsDepthBits: 32
       shadowFilteringQuality: 2
       punctualLightShadowAtlas:
@@ -317,7 +317,7 @@ MonoBehaviour:
       ChromaticAberrationMaxSamples: 03000000060000000c000000
     lightSettings:
       useContactShadow:
-        m_Values: 000001
+        m_Values: 010101
         m_SchemaId:
           m_Id: 
     maximumLODLevel:

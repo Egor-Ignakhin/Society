@@ -1,4 +1,5 @@
 ﻿using Society.Inventory;
+using Society.Shoot;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +34,7 @@ namespace Society.Debugger
                     SMG.GunCharacteristics.GetMaxSilencerFromID(i),
                     0,
                     SMG.GunCharacteristics.GetMaxAimFromID(i),
-                    "Default");
+                    (int)BulletType.Default);
 
                 itemButton.GetComponent<InventoryItem>().SetGun(itemGun);
 

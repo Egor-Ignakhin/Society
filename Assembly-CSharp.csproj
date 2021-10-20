@@ -113,7 +113,6 @@
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyLifetime.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyPulsation.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\AnomalyScheduler.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Anomaly_1\SpawnPositionFinder.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselDieHandler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselManager.cs" />
@@ -161,6 +160,7 @@
     <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyCollision.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyCollisionAdder.cs" />
+    <Compile Include="Assets\Scripts\Enemies\EnemyDebuffs.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnemyPoint.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnviromentMobs\ShrummiExample.cs" />
     <Compile Include="Assets\Scripts\Enemies\EnviromentMobs\ShrummieSpawnPoint.cs" />
@@ -183,6 +183,7 @@
     <Compile Include="Assets\Scripts\Enviroment\Doors\MedicalDoorChecker.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Radio\RadioButton.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Radio\RadioManager.cs" />
+    <Compile Include="Assets\Scripts\Extension\Vector3Extension.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\MailboxExample.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\RandomlyBox.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\TrunkExample.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Assets\Scripts\SMG\SMGSaver.cs" />
     <Compile Include="Assets\Scripts\SMG\WorkbenchSMG.cs" />
     <Compile Include="Assets\Scripts\Shoot\Bullet.cs" />
+    <Compile Include="Assets\Scripts\Shoot\BulletType.cs" />
     <Compile Include="Assets\Scripts\Shoot\BulletValues.cs" />
     <Compile Include="Assets\Scripts\Shoot\ExplosiveBarrel.cs" />
     <Compile Include="Assets\Scripts\Shoot\Gun.cs" />

@@ -2,13 +2,15 @@
 using Society.Inventory;
 using Society.Patterns;
 
+using System;
+
 using UnityEngine;
 namespace Society.Shoot
 {
     /// <summary>
     /// патрон для оружия
     /// </summary>
-    public class Bullet : PoolableObject
+    public sealed class Bullet : PoolableObject
     {
         private Vector3 target;//точка назначения
         private EnemyCollision enemy;// возможный враг
@@ -24,8 +26,10 @@ namespace Society.Shoot
         private AudioClip reflectSound;
         private AudioSource reflectSource;
         private IBulletReceiver bulletReceiver;
+        private BulletType bulletType;
+        private GameObject electricImpactEffectInstance;
 
-        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource, IBulletReceiver br)
+        public void Init(BulletValues bv, RaycastHit t, GameObject impact, EnemyCollision e, AudioClip rs, AudioSource rsource, IBulletReceiver br, BulletType btp, GameObject eiei)
         {
             mBv = bv;
             target = t.point;
@@ -38,6 +42,8 @@ namespace Society.Shoot
             reflectSound = rs;
             reflectSource = rsource;
             bulletReceiver = br;
+            bulletType = btp;
+            electricImpactEffectInstance = eiei;
         }
         public void Init(BulletValues bv, Vector3 t)
         {
@@ -61,7 +67,7 @@ namespace Society.Shoot
 
                 float damage = Gun.GetOptimalDamage(mass, mBv.Speed, area, kf, mBv.CoveredDistance, mBv.MaxDistance);
                 if (bulletReceiver != null)
-                    bulletReceiver.OnBulletEnter();
+                    bulletReceiver.OnBulletEnter(bulletType);
 
                 if (enemy)
                 {
@@ -88,6 +94,14 @@ namespace Society.Shoot
                     impactEffect.transform.SetParent(enemy.transform);
 
                 impactEffect.SetActive(true);
+                
+                if(bulletType == BulletType.Electric)
+                {
+                    Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);                    
+
+                    if (enemy)
+                        enemy.DebuffEnemy(EnemyDebuffs.SlowingMovement);
+                }
             }
             mPool.ReturnToPool(this);
         }

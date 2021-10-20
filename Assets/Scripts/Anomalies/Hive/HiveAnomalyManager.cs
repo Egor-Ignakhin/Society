@@ -59,32 +59,8 @@ namespace Society.Anomalies.Hive
             }
         }
 
-        internal Vector3 RecalculateTargetPosition()
-        {
-            if (playerBn)
-            {
-                return player.position;
-            }
-            else return CalculateSpawnPosition();
-        }
-
-        public Vector3 CalculateSpawnPosition()
-        {
-            var width = boxColliderSpawnRange.bounds.size.x;
-            var height = boxColliderSpawnRange.bounds.size.y;
-            var center = boxColliderSpawnRange.transform.position;
-            return new Vector3(GetRandomDot(center.x, width, 0),
-                                GetRandomDot(center.y, height, yLowestLimit),
-                                GetRandomDot(center.z, width, 0));
-        }
-
-        private float GetRandomDot(float center, float sideLength, float axisLowestLimit)
-        {
-            var LowestVertex = center + axisLowestLimit - (sideLength / 2);
-            var HeighestVertex = center + (sideLength / 2);
-            var RandomDot = Random.Range(LowestVertex, HeighestVertex);
-            return RandomDot;
-        }
+        internal Vector3 RecalculateTargetPosition() => playerBn ? player.position :
+                Extensions.CalculateSpawnPositionInRange(boxColliderSpawnRange.transform, boxColliderSpawnRange);       
 
         public Transform GetTransform() => transform;
 

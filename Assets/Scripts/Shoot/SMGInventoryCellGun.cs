@@ -11,7 +11,7 @@ namespace Society.Inventory
 
         public int AmmoCount = 0;
 
-        public string AmmoType;
+        public int AmmoType;
         internal void SetMag(ModifierIndex index) => Mag = (int)index;
 
         public void SetAim(ModifierIndex index) => Aim = (int)index;
@@ -25,7 +25,7 @@ namespace Society.Inventory
         {
             Clear();
         }
-        public void Reload(int title, int dispenser, int silencer, int ammoCount, int aim, string ammoType)
+        public void Reload(int title, int dispenser, int silencer, int ammoCount, int aim, int ammoType)
         {
             Title = title;
             Mag = dispenser;
@@ -57,6 +57,6 @@ namespace Society.Inventory
         }
         public void SetAmmoCount(int ac) => AmmoCount = ac;
 
-        public void SetAmmoType(string arg) => AmmoType = arg;
+        public void SetAmmoType(int arg) => AmmoType = arg;
     }
 }
