@@ -383,7 +383,7 @@ namespace Society.Inventory
         }
 
         internal void DelItem(ItemStates.ItemsID itemId, int count)
-        {
+        {            
             var cells = inventoryContainer.GetCells().FindAll(c => c.Id == (int)itemId);
             var foundedCell = cells.OrderBy(c => c.Count).First();
 
