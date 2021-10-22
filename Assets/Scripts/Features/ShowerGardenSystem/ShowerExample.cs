@@ -9,12 +9,12 @@ namespace Features
         [SerializeField] private AudioSource mAudS;
         [SerializeField] private AudioSource movableAudioSource;
         [SerializeField] private Transform weightArrow;
-        [SerializeField] private ParticleSystem waterParticleSystem;
+        [SerializeField] private GameObject waterGameobject;
 
         private AudioClip waterAudio;
         private AudioClip moveAudio;
 
-        public bool IsFull;// => waterContent.WaterWeight >= waterContent.MaxWaterWeight; 
+        [HideInInspector] public bool IsFull;
 
         public bool GetIsFull() => IsFull;
         public void SetIsFull(bool v) => IsFull = v;
@@ -41,8 +41,7 @@ namespace Features
         {
             isWaterOpen = value;
 
-            var waterEmission = waterParticleSystem.emission;
-            waterEmission.enabled = value;
+            waterGameobject.SetActive(value);
             SetEnableWaterAudioEffect(value);
         }
 
