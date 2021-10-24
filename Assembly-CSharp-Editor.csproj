@@ -68,6 +68,7 @@
     <Compile Include="Assets\Other\MeshCombiner\Editor\MeshCombinerEditor.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\AssetCreateMenuItems.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\ScriptModificationProcessor.cs" />
+    <Compile Include="Assets\PathCreator\Examples\Scripts\Editor\PathSceneToolEditor.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Editor\ProceduralSky\ProceduralSkyEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIMissionsHelper.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIСontainerСontent.cs" />
@@ -272,6 +273,9 @@
     </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.UWP.Extensions">
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.UWP.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
@@ -749,9 +753,17 @@
       <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
       <Name>TexturePacker.Runtime</Name>
     </ProjectReference>
+    <ProjectReference Include="PathCreator.csproj">
+      <Project>{9ED27AB3-8EAA-8728-DBF8-515B24AC1F14}</Project>
+      <Name>PathCreator</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
       <Project>{27C03352-97F7-A6EE-02BA-DA951EA0B871}</Project>
       <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="PathCreatorEditor.csproj">
+      <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>
+      <Name>PathCreatorEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
