@@ -21,7 +21,7 @@ namespace Society.Anomalies.Carousel
             needBlust = true;
             ParticleSystem.MainModule main = aura.main;
             main.startSizeMultiplier += 2;
-            cm.OnBulletEnter();
+            cm.Hit(1);
         }
         private void FixedUpdate()
         {

@@ -66,9 +66,9 @@
     <Compile Include="Assets\Other\JMO Assets\Cartoon FX Easy Editor\Editor\CFXEasyEditor.cs" />
     <Compile Include="Assets\Other\JMO Assets\WarFX\Editor\CFX_SpawnSystemEditor.cs" />
     <Compile Include="Assets\Other\MeshCombiner\Editor\MeshCombinerEditor.cs" />
+    <Compile Include="Assets\Other\PathCreator\Examples\Scripts\Editor\PathSceneToolEditor.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\AssetCreateMenuItems.cs" />
     <Compile Include="Assets\Other\ScriptsMenu-master\ScriptsMenu-master\Assets\Plugins\Numba\ScriptsMenu\Editor\ScriptModificationProcessor.cs" />
-    <Compile Include="Assets\PathCreator\Examples\Scripts\Editor\PathSceneToolEditor.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Editor\ProceduralSky\ProceduralSkyEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIMissionsHelper.cs" />
     <Compile Include="Assets\Scripts\Editor\GUIСontainerСontent.cs" />
@@ -753,13 +753,13 @@
       <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
       <Name>TexturePacker.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="PathCreator.csproj">
-      <Project>{9ED27AB3-8EAA-8728-DBF8-515B24AC1F14}</Project>
-      <Name>PathCreator</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
       <Project>{27C03352-97F7-A6EE-02BA-DA951EA0B871}</Project>
       <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="PathCreator.csproj">
+      <Project>{9ED27AB3-8EAA-8728-DBF8-515B24AC1F14}</Project>
+      <Name>PathCreator</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreatorEditor.csproj">
       <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>

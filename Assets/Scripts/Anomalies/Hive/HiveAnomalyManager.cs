@@ -19,9 +19,9 @@ namespace Society.Anomalies.Hive
         private BasicNeeds playerBn;
         [SerializeField] private Inventory.InventoryItem hiveBeeArtefactInstance;
 
-        internal void Hit()
+        public override void Hit(int value)
         {
-            health--;
+            health -= value;
 
             if (health <= 0)
                 OnDie();
@@ -70,7 +70,7 @@ namespace Society.Anomalies.Hive
         {
             playerBn = bn;
         }
-        public void OnDie()
+        protected override void OnDie()
         {
             PlayerSoundReceiversCollection.RemoveListner(this);
 
