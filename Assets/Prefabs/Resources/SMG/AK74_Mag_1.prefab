@@ -57,7 +57,6 @@ GameObject:
   - component: {fileID: 3460872914489728109}
   - component: {fileID: 3460872914489728108}
   - component: {fileID: 3460872914489728097}
-  - component: {fileID: -3057007344695847886}
   m_Layer: 8
   m_Name: AK74_Mag_1
   m_TagString: Untagged
@@ -139,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a24015b31c23a42b6fd22833826bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modifiableGun: 3
+  modifiableGun: 2
   type: 2
   index: 1
 --- !u!54 &3460872914489728097
@@ -158,16 +157,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-3057007344695847886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3460872914489728111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7609e50a09f4ea8468b5e32fd259d83d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 7062266566111559414, guid: 41f8ff0010c941940bd9159f9b6f083c, type: 3}

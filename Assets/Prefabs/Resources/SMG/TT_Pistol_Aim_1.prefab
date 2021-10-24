@@ -57,7 +57,6 @@ GameObject:
   - component: {fileID: 5235853501818215249}
   - component: {fileID: 5235853501818215248}
   - component: {fileID: 5235853501818215247}
-  - component: {fileID: 531544082414373403}
   m_Layer: 0
   m_Name: TT_Pistol_Aim_1
   m_TagString: Untagged
@@ -100,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84a24015b31c23a42b6fd22833826bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modifiableGun: 2
+  modifiableGun: 1
   type: 3
   index: 1
 --- !u!54 &5235853501818215248
@@ -158,16 +157,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &531544082414373403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5235853501818215246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7609e50a09f4ea8468b5e32fd259d83d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 7062266566111559414, guid: 41f8ff0010c941940bd9159f9b6f083c, type: 3}
