@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using Society.Patterns;
+using Society.Shoot;
+
+using UnityEngine;
 namespace Society.Enemies
 {
-    public sealed class EnemyCollision : MonoBehaviour
+    public sealed class EnemyCollision : MonoBehaviour, IBulletReceiver
     {
         private bool wasKilled;
         [SerializeField] private Enemy mParent;
@@ -29,6 +32,11 @@ namespace Society.Enemies
         public void DebuffEnemy(EnemyDebuffs d)
         {
             mParent.DebuffEnemy(d);
+        }
+
+        public void OnBulletEnter(BulletType inputBulletType)
+        {
+            
         }
     }
 }

@@ -82,7 +82,7 @@ namespace Society.Shoot
                 impactEffect.transform.forward = hit.normal;
 
                 reflectSource.PlayOneShot(reflectSound);
-                reflectSource.transform.position = hit.point;                
+                reflectSource.transform.position = hit.point;
                 return;
             }
 
@@ -95,10 +95,13 @@ namespace Society.Shoot
 
             if (bulletType == BulletType.Electric)
             {
-                Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);
-
                 if (enemyCollision)
+                {                    
                     enemyCollision.DebuffEnemy(EnemyDebuffs.SlowingMovement);
+                }
+
+                if(bulletReceiver !=  null)
+                    Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);
             }
 
             impactEffect.SetActive(true);
