@@ -12,16 +12,12 @@ namespace Society.Missions
     public abstract class Mission : MonoBehaviour
     {
         private bool isInitialized = false;
-        protected int currentTask = 0;
-        protected MissionsManager missionsManager;
-        protected int missionItems = 0;
-        protected TaskDrawer taskDrawer;
+        protected int currentTask = 0;        
+        protected int missionItems = 0;        
         protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
 
         protected virtual void StartMission()
-        {
-            missionsManager = FindObjectOfType<MissionsManager>();
-            taskDrawer = missionsManager.GetTaskDrawer();
+        {            
             OnReportTask(true);
             isInitialized = true;
         }
@@ -43,7 +39,7 @@ namespace Society.Missions
         {
             if (!isMissionItem)//если сообщение явл. обычнм трекером
             {
-                missionsManager.ReportTask();
+                MissionsManager.Instance.ReportTask();
                 SetTask(++currentTask);
                 OnReportTask();
             }
@@ -51,7 +47,8 @@ namespace Society.Missions
                 OnReportTask(false, true);
         }
 
-        public abstract int GetMissionNumber();
+        public abstract int MissionNumber { get; }
+
         public void ContinueMission(int skipLength)
         {
             if (!isInitialized)
@@ -62,14 +59,14 @@ namespace Society.Missions
 
         protected void FinishMission()
         {
-            missionsManager.FinishMission();
+            MissionsManager.Instance.FinishMission();
             gameObject.SetActive(false);
         }
         protected void SetTask(int number)
         {
-            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
+            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, MissionNumber, number);
 
-            taskDrawer.DrawNewTask(neededContent);
+            MissionsManager.Instance.GetTaskDrawer().DrawNewTask(neededContent);
         }
 
         internal int GetCurrentTask() => currentTask;

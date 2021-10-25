@@ -1,6 +1,7 @@
 ﻿
 using Society.Inventory.Other;
 using Society.Localization;
+using Society.Patterns;
 
 using System;
 using System.IO;
@@ -14,7 +15,7 @@ namespace Society.Missions
 {   /// <summary>
     /// Главный за все миссии
     /// </summary>    
-    public sealed class MissionsManager : MonoBehaviour
+    public sealed class MissionsManager : Singleton<MissionsManager>
     {
         public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\State.json"; // папка с сохранением    
         private State currentState;// состояние миссий        
@@ -23,6 +24,8 @@ namespace Society.Missions
 
         public const int MaxMissions = 5;
         private TaskSystem.TaskDrawer taskDrawer;
+        private Mission activeMission;
+
         internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
 
         private void Awake()
@@ -60,11 +63,9 @@ namespace Society.Missions
 
             return reState;
         }
-        /// <summary>
-        /// возвращает активную миссию
-        /// </summary>
-        /// <returns></returns>
-        public static Mission GetActiveMission() => FindObjectOfType<PrologMission>();
+        
+        public Mission GetActiveMission() => activeMission;
+
         /// <summary>
         /// Сохранение миссий
         /// </summary>
@@ -95,14 +96,18 @@ namespace Society.Missions
             Mission foundedMission = null;
             foreach (var m in all)
             {
-                if (m.GetMissionNumber() == currentState.currentMission)
+                if (m.MissionNumber == currentState.currentMission)
                 {
                     foundedMission = m;
                     break;
                 }
             }
             if (foundedMission)
+            {
                 foundedMission.ContinueMission(currentState.currentTask);
+
+                activeMission = foundedMission;
+            }
 
         }
         private void OnDisable() => SaveState(currentState);

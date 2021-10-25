@@ -364,12 +364,12 @@ namespace Society.Enemies
         {
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
-        }
-
-        public Transform GetTransform() => transform;
+        }        
 
         public float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
 
         public void SetPlayer(BasicNeeds bn) => SetEnemy(bn, true);
+
+        public Transform Transform => transform;
     }
 }

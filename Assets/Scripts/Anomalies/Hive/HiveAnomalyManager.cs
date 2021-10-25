@@ -60,9 +60,9 @@ namespace Society.Anomalies.Hive
         }
 
         internal Vector3 RecalculateTargetPosition() => playerBn ? player.position :
-                Extensions.CalculateSpawnPositionInRange(boxColliderSpawnRange.transform, boxColliderSpawnRange);       
+                Extensions.CalculateSpawnPositionInRange(boxColliderSpawnRange.transform, boxColliderSpawnRange);
 
-        public Transform GetTransform() => transform;
+        public Transform Transform => transform;
 
         public float GetDistanceToTarget() => Vector3.Distance(transform.position, player.position);
 
