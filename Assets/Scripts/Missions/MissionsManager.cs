@@ -4,6 +4,7 @@ using Society.Localization;
 using Society.Patterns;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 #if UNITY_EDITOR
@@ -25,6 +26,7 @@ namespace Society.Missions
         public const int MaxMissions = 5;
         private TaskSystem.TaskDrawer taskDrawer;
         private Mission activeMission;
+        [SerializeField] List<Mission> MissionList = new List<Mission>();
 
         internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
 
@@ -89,9 +91,9 @@ namespace Society.Missions
         /// <param name="num"></param>
         private void StartOrContinueMission()
         {
-            var all = FindObjectsOfType<Mission>();
+            var all = MissionList;
 
-            if (all.Length == 0)
+            if (all.Count == 0)
                 return;
             Mission foundedMission = null;
             foreach (var m in all)

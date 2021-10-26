@@ -25,7 +25,6 @@ namespace Society.Inventory
                 if (io is Missions.MissionInteractiveObject)
                 {
                     mCircular.color = Color.green;
-                    print(1);
                     return;
                 }
                 else
