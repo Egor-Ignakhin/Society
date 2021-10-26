@@ -97,7 +97,7 @@ namespace Society.Dialogs
         protected void TakeAnswerInDialog() => answerInDialogHasTaked = true;
         public void FinishDialog()
         {
-            Missions.MissionsManager.GetActiveMission().Report();
+            FindObjectOfType<Missions.MissionsManager>().GetActiveMission().Report();
             var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
             ddrawer.SetEnableAll(false);
 

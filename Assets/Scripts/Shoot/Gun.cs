@@ -184,24 +184,24 @@ namespace Society.Shoot
             IsReload = (currentReloadTime += Time.deltaTime) < ReloadTime;
             mAnimator.SetBool("Reload", IsReload);
 
-            if (!IsReload)
-            {
-                var outOfRange = remainingBullets - dispenser.MaxBullets;
-                if (outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
-                {
-                    remainingBullets -= outOfRange;
-                }
-                inventoryEv.DelItem(bulletId, remainingBullets);
+            if (IsReload)
+                return;
 
-                dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().MGun.AmmoCount);
-                if (dispenser.CountBullets > dispenser.MaxBullets)
-                {
-                    InventoryContainer.AddItem((int)bullet.Id - 1, dispenser.CountBullets - dispenser.MaxBullets, null);
-                    dispenser.Reload(dispenser.MaxBullets);
-                }
-                currentReloadTime = 0;
-                ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
+            var outOfRange = remainingBullets - dispenser.MaxBullets;
+            if (outOfRange > 0)// если патронов в инвентаре больше чем помещается в 1 магазине
+            {
+                remainingBullets -= outOfRange;
             }
+            inventoryEv.DelItem(bulletId, remainingBullets);
+
+            dispenser.Reload(remainingBullets + inventoryEv.GetSelectedCell().MGun.AmmoCount);
+            if (dispenser.CountBullets > dispenser.MaxBullets)
+            {
+                InventoryContainer.AddItem((int)bullet.Id, dispenser.CountBullets - dispenser.MaxBullets, null);
+                dispenser.Reload(dispenser.MaxBullets);
+            }
+            currentReloadTime = 0;
+            ChangeAmmoCountEvent?.Invoke(dispenser.CountBullets);
         }
 
         public void UpdateModifiers(int magIndex, int aimIndex, int silIndex)
@@ -238,6 +238,7 @@ namespace Society.Shoot
             // Debug.Log(damage);
             return damage;
         }
+        #region Вызывается посредством event system от анимации, не удалять!!!
         public void PlayStartReloadClip() => gunAnimator.PlayArmorySound(startReloadClip);
 
         public void PlayReloadSound() => gunAnimator.PlayArmorySound(reloadClip);
@@ -245,7 +246,7 @@ namespace Society.Shoot
         public void PlayLastReloadSound() => gunAnimator.PlayArmorySound(lastReloadClip);
 
         public void SetPossibleShooting(bool isAnimFinish) => possibleShoot = isAnimFinish;
-
+        #endregion
         protected void DropUsedBullet()
         {
             ubp.Drop();
@@ -382,8 +383,8 @@ namespace Society.Shoot
             { "Enemy", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactFleshSmallEffect")},
             { "Default", Resources.Load<GameObject>("WeaponEffects\\Prefabs\\BulletImpactStoneEffect")}
             };
-            
+
             public static GameObject ExplosiveElectricEffect = Resources.Load<GameObject>("Bullets\\Electric\\ExplosiveElectricEffect");
-    }
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Society.Anomalies.Carousel
         private void SetHealth(int value)
         {
             health = value;
-            if (value == 0) Die();
+            if (value == 0) OnDie();
         }
 
         #region Player Interaction
@@ -49,11 +49,11 @@ namespace Society.Anomalies.Carousel
 
         #region Methods
 
-        public void OnBulletEnter()
+        public override void Hit(int value)
         {
-            SetHealth(GetHealth() - 1);
+            SetHealth(GetHealth() - value);
         }
-        private void Die()
+        protected override void OnDie()
         {
             int piecesNum = UnityEngine.Random.Range(1, 4);
             explosion.SetActive(true);
@@ -194,7 +194,6 @@ namespace Society.Anomalies.Carousel
                 else
                 {
                     itemPos = items[i].transform.position;
-                    float m = Vector3.Distance(PointPos, itemPos);
                     if (itemPos.y < (PointPos.y - 1))
                     {
                         items[i].AddForce((PointPos - itemPos).normalized * items[i].mass * Time.fixedDeltaTime * 1.33f, ForceMode.VelocityChange);

@@ -7,5 +7,7 @@ namespace Society.Anomalies
         [SerializeField] protected int health;
 
         internal int GetHealth() => health;
+        public abstract void Hit(int value);
+        protected abstract void OnDie();
     }
 }

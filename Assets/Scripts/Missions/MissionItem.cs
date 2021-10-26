@@ -10,7 +10,7 @@ namespace Society.Missions
 
         public override void Interact()
         {
-            MissionsManager.GetActiveMission().OnAddMissionItem();
+            FindObjectOfType<MissionsManager>().GetActiveMission().OnAddMissionItem();
             gameObject.SetActive(false);
         }
     }

@@ -6,7 +6,8 @@ namespace Society.Enemies
 {
     public interface IPlayerSoundReceiver
     {
-        Transform GetTransform();
+        Transform Transform { get; }
+
         float GetDistanceToTarget();
         void SetPlayer(BasicNeeds bn);
     }

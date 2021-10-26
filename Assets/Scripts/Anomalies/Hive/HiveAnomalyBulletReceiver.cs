@@ -10,8 +10,7 @@ namespace Society.Anomalies.Hive
         [SerializeField] private HiveAnomalyManager hiveAnomalyManager;
         public void OnBulletEnter(BulletType inputBulletType)
         {
-            if (inputBulletType == BulletType.Electric)
-                hiveAnomalyManager.Hit();
+            hiveAnomalyManager.Hit(1);
         }
     }
 }

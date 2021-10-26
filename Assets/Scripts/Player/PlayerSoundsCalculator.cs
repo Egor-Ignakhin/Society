@@ -61,7 +61,7 @@ namespace Society.Player
             startedCollection.RemoveAll(e => e == null);
             var montsterPoses = new List<Vector3>();// лист позиций монстров
             foreach (var e in startedCollection)//добавление в лист позиций все позиции монстров
-                montsterPoses.Add(e.GetTransform().position);
+                montsterPoses.Add(e.Transform.position);
 
             Vector3 playerPos = player.position;// позиция игрока
 

@@ -26,7 +26,7 @@ namespace Society.Missions
 
         protected virtual void Start()
         {
-            mMission = FindObjectsOfType<Mission>().First(m => m.GetMissionNumber() == missionNumber);
+            mMission = FindObjectsOfType<Mission>().First(m => m.MissionNumber == missionNumber);
         }
         public override void Interact() => Report();
         protected void Report()

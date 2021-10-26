@@ -5,7 +5,7 @@ namespace Features
     internal sealed class ShowerLeverOnWall : Society.Patterns.InteractiveObject
     {
         [SerializeField] private ShowerExample showerExample;
-        [SerializeField] private ParticleSystem waterParticleSystem;
+        [SerializeField] private GameObject waterGameobject;
         [SerializeField] private AudioSource mAudS;
 
 
@@ -15,8 +15,7 @@ namespace Features
         {
             IsLeverOpen = value;
 
-            var em = waterParticleSystem.emission;
-            em.enabled = value;
+            waterGameobject.SetActive(value);            
             SetType(!value ? "ClosedShowerLever" : "OpenedShowerLever");
             SetEnableWaterAudioEffect(value);
         }
