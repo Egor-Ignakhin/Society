@@ -15,6 +15,7 @@ namespace Society.Missions.NumeratedMissions
         {
             OnTaskActions.Add("finish", () =>
             {
+
                 MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
                 DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                 db.OnInit(2, Color.black);
@@ -30,6 +31,7 @@ namespace Society.Missions.NumeratedMissions
             });
             OnTaskActions.Add("onLoadBunker", () =>
             {
+                MissionsManager.Instance.FinishMission();
                 ScreensManager.SetScreen(null);
                 SceneManager.LoadScene(ScenesManager.Bunker);
             });
