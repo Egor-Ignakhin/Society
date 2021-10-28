@@ -1,13 +1,13 @@
-﻿using Society.Effects;
+﻿using System;
+using System.Collections.Generic;
+
+using Society.Effects;
 using Society.Enemies;
 using Society.GameScreens;
 using Society.Inventory;
 using Society.Menu.GameOverlay;
 using Society.Patterns;
 using Society.Player;
-
-using System;
-using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -72,6 +72,7 @@ namespace Society.Shoot
             reflectSound = Resources.Load<AudioClip>("Guns\\BulletReflect");
             reflectSource = new GameObject($"ReflectSource_{GetType()}").AddComponent<AudioSource>();
         }
+
         private void Start()
         {
             gameOverlayManager = FindObjectOfType<GameOverlayManager>();
