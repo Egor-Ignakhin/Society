@@ -1,4 +1,6 @@
-﻿using Society.Patterns;
+﻿using System;
+
+using Society.Patterns;
 using Society.Shoot;
 
 using UnityEngine;
@@ -42,6 +44,11 @@ namespace Society.Enemies
         public Transform GetCenter()
         {
             return mParent.GetCenter();
+        }
+
+        internal void InjureEnemy(object p)
+        {
+            throw new NotImplementedException();
         }
     }
 }

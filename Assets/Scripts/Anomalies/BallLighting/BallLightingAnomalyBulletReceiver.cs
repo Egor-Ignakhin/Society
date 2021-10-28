@@ -1,19 +1,13 @@
-using Society.Patterns;
 using Society.Shoot;
 
 using UnityEngine;
 
 namespace Society.Anomalies.BallLighting
 {
-    public class BallLightingAnomalyBulletReceiver : MonoBehaviour, IBulletReceiver
+    internal sealed class BallLightingAnomalyBulletReceiver : AnomalyBulletReceiver
     {
-        [SerializeField] private BallLightingAnomalyManager manager;
+        public override Transform GetCenter() => transform;
 
-        public Transform GetCenter() => transform;
-
-        public void OnBulletEnter(BulletType inputBulletType)
-        {
-            manager.Hit(1);
-        }
+        public override void OnBulletEnter(BulletType inputBulletType) => manager.Hit(1);
     }
 }

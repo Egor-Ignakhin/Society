@@ -1,8 +1,8 @@
-﻿using Society.Effects;
-using Society.Player;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Society.Effects;
+using Society.Player;
 
 using UnityEngine;
 using UnityEngine.AI;
@@ -110,7 +110,6 @@ namespace Society.Enemies
             {
                 debuffTimers.Add(0);
             }
-
         }
         protected class AnimationsContainer
         {
@@ -259,6 +258,10 @@ namespace Society.Enemies
             if (isPlayerDamage)
                 SetEnemy(BasicNeeds.Instance, true);
             UVariables.Health -= value;
+
+#if UNITY_EDITOR
+            health -= value;
+#endif
         }
 
         public void DebuffEnemy(EnemyDebuffs d)
@@ -371,7 +374,7 @@ namespace Society.Enemies
         {
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
-        }        
+        }
 
         public float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
 

@@ -1,19 +1,16 @@
-using Society.Patterns;
 using Society.Shoot;
 
 using UnityEngine;
 
 namespace Society.Anomalies.Hive
 {
-    internal sealed class HiveAnomalyBulletReceiver : MonoBehaviour, IBulletReceiver
+    internal sealed class HiveAnomalyBulletReceiver : AnomalyBulletReceiver
     {
-        [SerializeField] private HiveAnomalyManager hiveAnomalyManager;
+        public override Transform GetCenter() => transform;
 
-        public Transform GetCenter() => transform;
-
-        public void OnBulletEnter(BulletType inputBulletType)
+        public override void OnBulletEnter(BulletType inputBulletType)
         {
-            hiveAnomalyManager.Hit(1);
+            manager.Hit(1);
         }
     }
 }

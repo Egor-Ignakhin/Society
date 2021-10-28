@@ -3,7 +3,7 @@ namespace Society.Anomalies.Carousel
 {
     internal class CarouselZone : MonoBehaviour
     {
-        [SerializeField] private CarouselManager carousel;
+        [SerializeField] private CarouselAnomalyManager carousel;
         [SerializeField] private BoxCollider mCollider;
         private void Awake()
         {

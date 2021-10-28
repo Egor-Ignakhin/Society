@@ -1,18 +1,21 @@
-
 using System.Collections.Generic;
+
+using Society.Enemies;
+using Society.Player;
 
 using UnityEngine;
 using UnityEngine.VFX;
 
-namespace Society.Anomalies.Anomaly_1.BallLighting
+namespace Society.Anomalies.BallLighting
 {
-    public class BallLightingAnomalyLine : MonoBehaviour
+    public sealed class BallLightingAnomalyLine : MonoBehaviour
     {
         private float radius = 3;
         [SerializeField] private Transform lineTargetPoint;
 
         private VisualEffect mVisualEffect;
         [SerializeField] private LayerMask layerMask;
+        [SerializeField] private BallLightingAnomalyManager anomalyManager;
         private void Awake()
         {
             mVisualEffect = GetComponent<VisualEffect>();
@@ -46,6 +49,24 @@ namespace Society.Anomalies.Anomaly_1.BallLighting
             for (int i = 0; i < bscOrMColliders.Count; i++)
             {
                 float tempMinDist = Vector3.Distance(center, bscOrMColliders[i].ClosestPoint(center));
+
+                if (bscOrMColliders[i].TryGetComponent(out EnemyCollision e))
+                {
+                    foundedPoint = bscOrMColliders[i].ClosestPoint(center);
+
+                    anomalyManager.DamageEnemy(e);
+
+                    break;
+                }
+                else if (bscOrMColliders[i].TryGetComponent(out BasicNeeds bn))
+                {
+                    foundedPoint = bscOrMColliders[i].ClosestPoint(center);
+
+                    anomalyManager.InjurePlayer(bn);
+
+                    break;
+                }
+
                 if (tempMinDist < minDist)
                 {
                     minDist = tempMinDist;
@@ -54,6 +75,7 @@ namespace Society.Anomalies.Anomaly_1.BallLighting
             }
 
             mVisualEffect.enabled = bscOrMColliders.Count != 0;
+
             return foundedPoint;
         }
 
