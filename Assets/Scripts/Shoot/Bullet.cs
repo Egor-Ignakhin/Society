@@ -101,7 +101,7 @@ namespace Society.Shoot
                 }
 
                 if(bulletReceiver !=  null)
-                    Instantiate(electricImpactEffectInstance, impactEffect.transform.position, impactEffect.transform.rotation, impactEffect.transform.parent);
+                    Instantiate(electricImpactEffectInstance, bulletReceiver.GetCenter().position, bulletReceiver.GetCenter().rotation, impactEffect.transform.parent);
             }
 
             impactEffect.SetActive(true);

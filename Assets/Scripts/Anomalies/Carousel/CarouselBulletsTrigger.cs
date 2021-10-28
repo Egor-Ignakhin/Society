@@ -35,5 +35,10 @@ namespace Society.Anomalies.Carousel
             if ((main.startSizeMultiplier -= (Time.fixedDeltaTime * 100)) <= defaultStartSizeM)
                 needBlust = false;
         }
+
+        public Transform GetCenter()
+        {
+            return transform;
+        }
     }
 }

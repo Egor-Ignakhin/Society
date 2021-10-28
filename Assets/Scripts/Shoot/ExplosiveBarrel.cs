@@ -93,5 +93,7 @@ namespace Society.Shoot
             //Компенсируем гравитаию, отключенную в интересах красоты взрыва:
             rb.AddForce(0, -rb.mass * g, 0);
         }
+
+        public Transform GetCenter() => transform;
     }
 }

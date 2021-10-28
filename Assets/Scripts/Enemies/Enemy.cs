@@ -20,6 +20,7 @@ namespace Society.Enemies
         [SerializeField] private float power;
         [SerializeField] private float attackDistance;
         public UniqueVariables UVariables { get; private set; }
+        [SerializeField] private Transform centerPoint;
         public class UniqueVariables
         {
             public delegate void HealthHandler(float health);
@@ -51,6 +52,12 @@ namespace Society.Enemies
                 this.Health = Shealth;
             }
         }
+
+        internal Transform GetCenter()
+        {
+            return centerPoint;
+        }
+
         protected Transform target;// текущая цель
         protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
 

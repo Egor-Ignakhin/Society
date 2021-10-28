@@ -1,5 +1,7 @@
 ﻿using Society.Shoot;
 
+using UnityEngine;
+
 namespace Society.Patterns
 {
     /// <summary>
@@ -8,5 +10,6 @@ namespace Society.Patterns
     public interface IBulletReceiver
     {
         void OnBulletEnter(BulletType inputBulletType);
+        Transform GetCenter();
     }
 }

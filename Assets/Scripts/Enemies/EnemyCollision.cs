@@ -38,5 +38,10 @@ namespace Society.Enemies
         {
             
         }
+
+        public Transform GetCenter()
+        {
+            return mParent.GetCenter();
+        }
     }
 }
