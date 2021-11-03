@@ -109,7 +109,7 @@ namespace TexPacker
 
             if (GUILayout.Button("Generate Texture", TexturePackerStyles.Button))
             {
-                string savePath = EditorUtility.SaveFilePanel("Save", Application.dataPath, "texture.png", _textureFormat.ToString());
+                string savePath = EditorUtility.SaveFilePanel("Save", GetSelectedPathOrFallback(), "texture.png", _textureFormat.ToString());
                 if (savePath != string.Empty)
                 {
                     Texture2D output = _texturePacker.Create();
@@ -127,6 +127,22 @@ namespace TexPacker
 
             GUILayout.EndVertical();
             EditorGUILayout.EndScrollView();
+        }
+
+        public static string GetSelectedPathOrFallback()
+        {
+            string path = "Assets";
+
+            foreach (Object obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
+            {
+                path = AssetDatabase.GetAssetPath(obj);
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                {
+                    path = Path.GetDirectoryName(path);
+                    break;
+                }
+            }
+            return path;
         }
     }
 }
