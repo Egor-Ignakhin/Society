@@ -58,8 +58,7 @@ public class MoveOnGround : MonoBehaviour
         }
 
         targetPos = tRoot.position + Vector3.Normalize(tTarget.position - tRoot.position) * effectSettings.MoveDistance;
-        RaycastHit verticalHit;
-        Physics.Raycast(tRoot.position, Vector3.down, out verticalHit);
+        Physics.Raycast(tRoot.position, Vector3.down, out RaycastHit verticalHit);
         tRoot.position = verticalHit.point;
         foreach (var particle in particles)
         {
@@ -72,8 +71,7 @@ public class MoveOnGround : MonoBehaviour
         if (tTarget == null || isFinished)
             return;
         var pos = tRoot.position;
-        RaycastHit verticalHit;
-        Physics.Raycast(new Vector3(pos.x, 0.5f, pos.z), Vector3.down, out verticalHit);
+        Physics.Raycast(new Vector3(pos.x, 0.5f, pos.z), Vector3.down, out RaycastHit verticalHit);
         tRoot.position = verticalHit.point;
         pos = tRoot.position;
 

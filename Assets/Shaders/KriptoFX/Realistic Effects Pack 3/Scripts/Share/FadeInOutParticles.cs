@@ -35,7 +35,8 @@ public class FadeInOutParticles : MonoBehaviour
                     if (effectSettings.IsVisible)
                     {
                         particle.Play();
-                        particle.enableEmission = true;
+                        var pe = particle.emission;
+                        pe.enabled = true;
                     }
                 }
             else
@@ -44,7 +45,8 @@ public class FadeInOutParticles : MonoBehaviour
                     if (!effectSettings.IsVisible)
                     {
                         particle.Stop();
-                        particle.enableEmission = false;
+                        var pe = particle.emission;
+                        pe.enabled = false;
                     }
                 }
         }
