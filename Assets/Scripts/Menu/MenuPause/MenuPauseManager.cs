@@ -1,15 +1,13 @@
-﻿using Society.Effects;
+﻿using System.IO;
+
+using Society.Effects;
 using Society.GameScreens;
 using Society.Menu.PauseMenu;
 using Society.Player.Controllers;
 
-using System.Collections.Generic;
-using System.IO;
-
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Society.Menu.PauseMenu
@@ -39,7 +37,7 @@ namespace Society.Menu.PauseMenu
         {
             fpc = FindObjectOfType<FirstPersonController>();
             effectsManager = FindObjectOfType<EffectsManager>();
-            menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, SettingsObj, this, effectsManager);
+            menuEventReceiver = new MenuEventReceiver(MenuUI, SettingsObj, this, effectsManager);
             LoadData();
         }
         private void Start()
@@ -132,56 +130,42 @@ namespace Society.Menu.PauseMenu
             menuEventReceiver.Disable();
             return true;
         }
+       
+
+        public void BackToGame()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.BakeToGame);            
+        }
+        public void OpenSettings()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.OpenSettings);
+
+        }
+        public void GoToMainMenu()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.GoToMainMenu);
+
+        }
 
         public KeyCode HideKey() => KeyCode.Escape;
 
+        sealed class AdvancedSettings
+        {
+            public static readonly Color SelectedColor = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
+            public static readonly Color DefaultColor = new Color(0, 0, 0, 0);// обычный цвет кнопки
+            public static readonly Color PressedColor = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
+        }
         private class MenuEventReceiver
         {
             private readonly GameObject menuUI;
             private readonly GameObject SettingsObj;
-            private readonly CommandContainer commandContainer = new CommandContainer();
-            private readonly AdvancedSettings advanced = new AdvancedSettings();
-            private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
+            private readonly CommandContainer commandContainer = new CommandContainer();            
             private readonly MenuPauseManager menuPauseManager;
-            private readonly EffectsManager effectsManager;
-            public class AdvancedSettings
-            {
-                public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
-                public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
-                public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
-            }
-            public MenuEventReceiver(GameObject menu, Transform mainParent, GameObject stn, MenuPauseManager mpm, EffectsManager em)
+            private readonly EffectsManager effectsManager;          
+            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em)
             {
                 menuUI = menu;
-                SettingsObj = stn;
-                for (int i = 0; i < mainParent.childCount; i++)
-                {
-                    var c = mainParent.GetChild(i).GetChild(0).GetComponent<EventTrigger>();
-
-                    EventTrigger.Entry entry = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerEnter
-                    };
-                    entry.callback.AddListener((data) => { IntersectMouse(c.gameObject); });
-                    c.triggers.Add(entry);
-
-                    EventTrigger.Entry down = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerDown
-                    };
-                    down.callback.AddListener((data) => { Down(c.gameObject); });
-                    c.triggers.Add(down);
-
-                    EventTrigger.Entry up = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerUp
-                    };
-                    up.callback.AddListener((data) => { Up(c.gameObject); });
-                    c.triggers.Add(up);
-
-                    btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
-                }
-                DisableAllTriggers();
+                SettingsObj = stn;                
                 menuPauseManager = mpm;
                 effectsManager = em;
                 Disable();
@@ -194,96 +178,29 @@ namespace Society.Menu.PauseMenu
                 SettingsObj.SetActive(false);
             }
 
-            /// <summary>
-            /// наведение на кнопку
-            /// </summary>
-            /// <param name="sender"></param>
-            public void IntersectMouse(GameObject sender)
+            public void Doing(CommandContainer.Doings doi)
             {
-                DisableAllTriggers();
-                btns[sender].image.color = advanced.SelectedColor;
-                btns[sender].text.color = Color.white;
-            }
-            /// <summary>
-            /// нажатие на кнопку
-            /// </summary>
-            /// <param name="sender"></param>
-            public void Down(GameObject sender)
-            {
-                btns[sender].image.color = advanced.PressedColor;
-                btns[sender].text.color = Color.white;
-                Doing(btns[sender].index);
-            }
-            //отжатие кнопки
-            public void Up(GameObject sender)
-            {
-                DisableAllTriggers();
-                btns[sender].image.color = advanced.SelectedColor;
-                btns[sender].text.color = Color.white;
-            }
-            /// <summary>
-            /// выключение видимости всех кнопок
-            /// </summary>
-            public void DisableAllTriggers()
-            {
-                foreach (var obj in btns)
+                switch (doi)
                 {
-                    obj.Value.image.color = advanced.DefaultColor;
-                    obj.Value.text.color = Color.black;
-                }
-            }
-            public void Doing(int index)
-            {
-                switch (index)
-                {
-                    case 0:
-                        commandContainer.FastLoad();
+                    case CommandContainer.Doings.BakeToGame:
+                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                         break;
-                    case 1:
-                        commandContainer.LoadLastCheckpoint();
-                        break;
-                    case 2:
-                        commandContainer.NoteBook();
-                        break;
-                    case 3:
-                        commandContainer.Hints();
-                        break;
-                    case 4:
-                        commandContainer.PhotoMode();
-                        break;
-                    case 5:
+                    case CommandContainer.Doings.OpenSettings:
                         commandContainer.Settings(SettingsObj);
                         break;
-                    case 6:
+                    case CommandContainer.Doings.GoToMainMenu:
                         commandContainer.ExitToMainMenu();
-                        break;
-                    case 7:
-                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                         break;
                 }
             }
         }
         public sealed class CommandContainer
         {
-            public void FastLoad()
+            public enum Doings
             {
-                Debug.Log("TODO:FASTLOAD");
-            }
-            public void LoadLastCheckpoint()
-            {
-                Debug.Log("TODO:LOADLASTCHECKPOINT");
-            }
-            public void NoteBook()
-            {
-                Debug.Log("TODO:NOTEBOOK");
-            }
-            public void Hints()
-            {
-                Debug.Log("TODO:HINTS");
-            }
-            public void PhotoMode()
-            {
-                Debug.Log("TODO:PHOTOMODE");
+                BakeToGame,
+                OpenSettings,
+                GoToMainMenu
             }
             public void Settings(GameObject SettingsObj)
             {
@@ -296,6 +213,7 @@ namespace Society.Menu.PauseMenu
             public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
             {
                 menu.SetActive(v);
+                Time.timeScale = v ? 0 : 1;
                 // пауза при открытии инвентаря                                                        
                 if (!v)
                 {
