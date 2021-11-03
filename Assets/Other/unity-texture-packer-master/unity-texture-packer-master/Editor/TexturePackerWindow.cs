@@ -19,12 +19,12 @@ namespace TexPacker
 
         private TextureFormat _textureFormat = TextureFormat.PNG;
 
-        private TexturePacker _texturePacker = new TexturePacker();
+        private readonly TexturePacker _texturePacker = new TexturePacker();
 
-        private List<int> _textureResolutions = new List<int>();
-        private List<string> _textureResolutionsNames = new List<string>();
+        private readonly List<int> _textureResolutions = new List<int>();
+        private readonly List<string> _textureResolutionsNames = new List<string>();
 
-        private List<TextureItem> _items = new List<TextureItem>();
+        private readonly List<TextureItem> _items = new List<TextureItem>();
         private TexturePreview _preview;
 
         [MenuItem("Window/Channel Packer")]

@@ -32,12 +32,13 @@ namespace Society.Menu.PauseMenu
 
         [SerializeField] private TextMeshProUGUI sensivityText;
         [SerializeField] private Slider sensivitySlider;
-        [SerializeField] private Toggle reloadCABToggle;
+        [SerializeField] private RawImage latestCameraRender;
+        [SerializeField] private Camera menuCamera;
         private void Awake()
         {
             fpc = FindObjectOfType<FirstPersonController>();
             effectsManager = FindObjectOfType<EffectsManager>();
-            menuEventReceiver = new MenuEventReceiver(MenuUI, SettingsObj, this, effectsManager);
+            menuEventReceiver = new MenuEventReceiver(MenuUI, SettingsObj, this, effectsManager, latestCameraRender, menuCamera);
             LoadData();
         }
         private void Start()
@@ -51,9 +52,7 @@ namespace Society.Menu.PauseMenu
             sensivityText.SetText(currentGameSettings.Sensivity.ToString());
 
             effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
-            effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled);
             bloomToggle.isOn = currentGameSettings.BloomEnabled;
-            reloadCABToggle.isOn = currentGameSettings.reloadEffectEnabled;
             SettingsObj.SetActive(false);
             sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
             fovSlider.onValueChanged.AddListener(ChangeFovSlider);
@@ -76,11 +75,6 @@ namespace Society.Menu.PauseMenu
         {
             if (effectsManager)
                 effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
-        }
-        public void SetActiveReloadCAB()
-        {
-            if (effectsManager)
-                effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled = reloadCABToggle.isOn);
         }
         public void ChangeFovSlider(float v)
         {
@@ -130,11 +124,11 @@ namespace Society.Menu.PauseMenu
             menuEventReceiver.Disable();
             return true;
         }
-       
+
 
         public void BackToGame()
         {
-            menuEventReceiver.Doing(CommandContainer.Doings.BakeToGame);            
+            menuEventReceiver.Doing(CommandContainer.Doings.BakeToGame);
         }
         public void OpenSettings()
         {
@@ -149,7 +143,7 @@ namespace Society.Menu.PauseMenu
 
         public KeyCode HideKey() => KeyCode.Escape;
 
-        sealed class AdvancedSettings
+        private sealed class AdvancedSettings
         {
             public static readonly Color SelectedColor = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
             public static readonly Color DefaultColor = new Color(0, 0, 0, 0);// обычный цвет кнопки
@@ -159,22 +153,26 @@ namespace Society.Menu.PauseMenu
         {
             private readonly GameObject menuUI;
             private readonly GameObject SettingsObj;
-            private readonly CommandContainer commandContainer = new CommandContainer();            
+            private readonly CommandContainer commandContainer;
             private readonly MenuPauseManager menuPauseManager;
-            private readonly EffectsManager effectsManager;          
-            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em)
+            private readonly EffectsManager effectsManager;
+            private readonly Camera menuCamera;
+            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender,Camera menuCamera)
             {
                 menuUI = menu;
-                SettingsObj = stn;                
+                SettingsObj = stn;
                 menuPauseManager = mpm;
                 effectsManager = em;
+                this.menuCamera = menuCamera;
+                commandContainer = new CommandContainer(Camera.main, latestCameraRender);
+
                 Disable();
             }
 
-            public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager);
+            public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager, menuCamera);
             public void Disable()
             {
-                commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
+                commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
                 SettingsObj.SetActive(false);
             }
 
@@ -183,7 +181,7 @@ namespace Society.Menu.PauseMenu
                 switch (doi)
                 {
                     case CommandContainer.Doings.BakeToGame:
-                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
+                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
                         break;
                     case CommandContainer.Doings.OpenSettings:
                         commandContainer.Settings(SettingsObj);
@@ -196,6 +194,14 @@ namespace Society.Menu.PauseMenu
         }
         public sealed class CommandContainer
         {
+            private readonly Camera mainCamera;
+            private readonly RawImage latestCameraRender;
+
+            public CommandContainer(Camera mainCamera, RawImage latestCameraRender)
+            {
+                this.mainCamera = mainCamera;
+                this.latestCameraRender = latestCameraRender;
+            }
             public enum Doings
             {
                 BakeToGame,
@@ -210,20 +216,41 @@ namespace Society.Menu.PauseMenu
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
             }
-            public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
+            public void SetEnableMenu(bool isActive, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager, Camera menuCamera)
             {
-                menu.SetActive(v);
-                Time.timeScale = v ? 0 : 1;
+                menuCamera.gameObject.SetActive(isActive);
+                menu.SetActive(isActive);
+                Time.timeScale = isActive ? 0 : 1;
                 // пауза при открытии инвентаря                                                        
-                if (!v)
-                {
-                    ScreensManager.SetScreen(null);
-                }
-                else
-                {
-                    ScreensManager.SetScreen(mpm);
-                }
-                effectsManager.SetEnableSimpleDOF(v);
+
+                ScreensManager.SetScreen(isActive ? mpm : null);
+
+                effectsManager.SetEnableSimpleDOF(isActive);
+                latestCameraRender.texture = MakeScrenshot(mainCamera);
+
+                mainCamera.enabled = !isActive;
+            }
+            public Texture2D MakeScrenshot(Camera camera)
+            {
+                int width = camera.pixelWidth;
+                int height = camera.pixelHeight;
+                Texture2D texture = new Texture2D(width, height);
+
+                RenderTexture targetTexture = RenderTexture.GetTemporary(width, height);
+
+                var latestTargetT = camera.targetTexture;
+                camera.targetTexture = targetTexture;
+                camera.Render();
+                camera.targetTexture = latestTargetT;
+
+
+                RenderTexture.active = targetTexture;
+
+                Rect rect = new Rect(0, 0, width, height);
+                texture.ReadPixels(rect, 0, 0);
+                texture.Apply();
+
+                return texture;
             }
         }
     }
