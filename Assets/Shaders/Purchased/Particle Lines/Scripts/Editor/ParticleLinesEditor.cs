@@ -127,7 +127,8 @@ public class ParticleLinesEditor : Editor {
 
 			if (target_cs._flicker) {
 				if (target_cs._lightFlicker.length == 0) target_cs._lightFlicker = new AnimationCurve(new Keyframe(0.0f, 1.0f), new Keyframe(1.0f, 1.0f));
-				target_cs._lightFlicker = EditorGUILayout.CurveField(target_cs._lightFlicker); EditorGUILayout.BeginVertical("Box");
+				target_cs._lightFlicker = EditorGUILayout.CurveField(target_cs._lightFlicker);
+				
 			}
 
 			indexLight = EditorGUILayout.Popup("Light Position", indexLight, optionsLight);

@@ -198,8 +198,12 @@ public class ParticleLines : MonoBehaviour {
 		} else {
 			CreateLine();
 		}
-		if (_freezeZeroParticle && _lineVertex > 0)
-			if ((myParticlesX != null) && myParticlesX.Length > 0) myParticlesX[0].position = _ps.transform.position;
+		if (_freezeZeroParticle && myParticlesX != null && myParticlesX.Length > 0 &&  _lineVertex > 0) {
+			if (!_line.localSpace) myParticlesX[0].position = _ps.transform.position;
+			else myParticlesX[0].position = Vector3.zero;
+		}
+
+
 		SetLine();
 	}
 
@@ -210,8 +214,19 @@ public class ParticleLines : MonoBehaviour {
 			GetComponent<MeshFilter>().mesh = null;
 			return;
 		}
+		if (_line == null) _line = transform.GetComponent<SimpleLineRenderer>();
+		if (_ps == null) _ps = transform.GetComponent<ParticleSystem>();
+		if (_ps == null) _ps = transform.parent.GetComponent<ParticleSystem>();
 		if (!_line || !_ps) return;
-		if (cacheMeshRenderer.sharedMaterial == null) cacheMeshRenderer.sharedMaterial = Instantiate(lineMaterial);
+		if (_ps.main.simulationSpace == ParticleSystemSimulationSpace.Local && !_line.localSpace) {
+			_line.localSpace = true;
+			EditorUtility.SetDirty(_line);
+		} else if (_ps.main.simulationSpace == ParticleSystemSimulationSpace.World && _line.localSpace) {
+			_line.localSpace = false;
+			EditorUtility.SetDirty(_line);
+		}
+		cacheMeshRenderer = GetComponent<MeshRenderer>();
+		if (cacheMeshRenderer && cacheMeshRenderer.sharedMaterial == null) cacheMeshRenderer.sharedMaterial = Instantiate(lineMaterial);
 #endif
 
 		if (!_ps.IsAlive()) return;

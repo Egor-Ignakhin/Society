@@ -1,8 +1,8 @@
-﻿using Society.Effects;
-using Society.Player;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Society.Effects;
+using Society.Player;
 
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,6 +20,7 @@ namespace Society.Enemies
         [SerializeField] private float power;
         [SerializeField] private float attackDistance;
         public UniqueVariables UVariables { get; private set; }
+        [SerializeField] private Transform centerPoint;
         public class UniqueVariables
         {
             public delegate void HealthHandler(float health);
@@ -51,6 +52,12 @@ namespace Society.Enemies
                 this.Health = Shealth;
             }
         }
+
+        internal Transform GetCenter()
+        {
+            return centerPoint;
+        }
+
         protected Transform target;// текущая цель
         protected Vector3 lastTargetPos;// последняя позиция которую видел монстр
 
@@ -103,7 +110,6 @@ namespace Society.Enemies
             {
                 debuffTimers.Add(0);
             }
-
         }
         protected class AnimationsContainer
         {
@@ -252,6 +258,10 @@ namespace Society.Enemies
             if (isPlayerDamage)
                 SetEnemy(BasicNeeds.Instance, true);
             UVariables.Health -= value;
+
+#if UNITY_EDITOR
+            health -= value;
+#endif
         }
 
         public void DebuffEnemy(EnemyDebuffs d)
@@ -364,7 +374,7 @@ namespace Society.Enemies
         {
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
-        }        
+        }
 
         public float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;
 

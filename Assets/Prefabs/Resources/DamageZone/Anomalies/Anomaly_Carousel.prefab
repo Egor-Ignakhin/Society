@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7185e1d20d916b948be791de31f4c382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manager: {fileID: 2137813043452112028}
+  manager: {fileID: 0}
 --- !u!82 &8896198969606045208
 AudioSource:
   m_ObjectHideFlags: 0
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edfcafa8ed3c61240b69f7746b668ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carousel: {fileID: 2137813043452112028}
+  carousel: {fileID: 1660107547721150097}
   mCollider: {fileID: 2137813043584444803}
 --- !u!1 &2138693529132850676
 GameObject:
@@ -259,8 +259,8 @@ GameObject:
   - component: {fileID: 2142069602912960828}
   - component: {fileID: 2263482946048897606}
   - component: {fileID: 2264962986373358294}
-  - component: {fileID: 2137813043452112028}
   - component: {fileID: 6865059629640304161}
+  - component: {fileID: 1660107547721150097}
   m_Layer: 1
   m_Name: Carousel
   m_TagString: Untagged
@@ -5096,26 +5096,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &2137813043452112028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138693529132850676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ffb6725f7b9764e9f4e965a5301d40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 2
-  piece: {fileID: 6333947027392172707, guid: 9200d7aa3a912de44bc7f2371220b9f5, type: 3}
-  explosion: {fileID: 6865059629100429131}
-  carouselDeathHandler: {fileID: 6865059628533127477}
-  explosionPoint: {fileID: 2142582182616451633}
-  interactionTime: 10
-  playerMaxHeight: 10.53
-  degreesPerSecondMax: 90.4
 --- !u!95 &6865059629640304161
 Animator:
   serializedVersion: 3
@@ -5135,6 +5115,26 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1660107547721150097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138693529132850676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40d08c9701237ba40895829db94c3e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 2
+  piece: {fileID: 6333947027392172707, guid: 9200d7aa3a912de44bc7f2371220b9f5, type: 3}
+  explosion: {fileID: 6865059629100429131}
+  carouselDeathHandler: {fileID: 6865059628533127477}
+  explosionPoint: {fileID: 2142582182616451633}
+  interactionTime: 10
+  playerMaxHeight: 10.53
+  degreesPerSecondMax: 90.4
 --- !u!1 &2138861873948694868
 GameObject:
   m_ObjectHideFlags: 0
@@ -9879,6 +9879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df9f3ebfe7355440b4afc9d92564675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manager: {fileID: 1660107547721150097}
   aura: {fileID: 2263822879163064223}
 --- !u!1001 &2137813042106398871
 PrefabInstance:

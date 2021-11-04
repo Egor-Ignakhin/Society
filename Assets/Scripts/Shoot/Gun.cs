@@ -1,13 +1,13 @@
-﻿using Society.Effects;
+﻿using System;
+using System.Collections.Generic;
+
+using Society.Effects;
 using Society.Enemies;
 using Society.GameScreens;
 using Society.Inventory;
 using Society.Menu.GameOverlay;
 using Society.Patterns;
 using Society.Player;
-
-using System;
-using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -55,8 +55,7 @@ namespace Society.Shoot
         protected InventoryEventReceiver inventoryEv;
         private InventoryContainer InventoryContainer;
 
-        private GunAnimator gunAnimator;
-        private EffectsManager effectsManager;
+        private GunAnimator gunAnimator;        
         private SMG.GunModifiersActiveManager gunModifiersActiveManager;
         private UsedUpBulletsDropper ubp;
         private ShootedBulletPool sbp;
@@ -72,10 +71,10 @@ namespace Society.Shoot
             reflectSound = Resources.Load<AudioClip>("Guns\\BulletReflect");
             reflectSource = new GameObject($"ReflectSource_{GetType()}").AddComponent<AudioSource>();
         }
+
         private void Start()
         {
-            gameOverlayManager = FindObjectOfType<GameOverlayManager>();
-            effectsManager = FindObjectOfType<EffectsManager>();
+            gameOverlayManager = FindObjectOfType<GameOverlayManager>();            
             playerSoundsCalculator = FindObjectOfType<PlayerSoundsCalculator>();
             InventoryContainer = FindObjectOfType<InventoryContainer>();
             inventoryEv = InventoryContainer.EventReceiver;
@@ -164,10 +163,7 @@ namespace Society.Shoot
         private void Reload()
         {
             if (dispenser.IsFull)
-                IsReload = false;
-
-
-            effectsManager.SetRechargeable(IsReload);
+                IsReload = false;            
 
             if (!IsReload)
                 return;
@@ -329,10 +325,7 @@ namespace Society.Shoot
             //стабилизация перезарядки (обнуление при выключении)
             IsReload = false;
             mAnimator.SetBool("Reload", false);
-            currentReloadTime = 0;
-
-            if (effectsManager)
-                effectsManager.SetRechargeable(IsReload);
+            currentReloadTime = 0;            
         }
 
         private void ChangeBulletType(string bulletTypeStr)

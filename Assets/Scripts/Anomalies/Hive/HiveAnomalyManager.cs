@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Society.Anomalies.Hive
 {
-    internal sealed class HiveAnomalyManager : Anomaly, IPlayerSoundReceiver
+    internal sealed class HiveAnomalyManager : AnomalyManager, IPlayerSoundReceiver
     {
         [SerializeField] private HiveEnemy hiveBeeEnemyInstance;
         [SerializeField] private BoxCollider boxColliderSpawnRange;

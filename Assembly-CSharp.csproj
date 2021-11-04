@@ -115,17 +115,19 @@
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Movie Recorder Sample\MovieRecorderExample.cs" />
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Multiple Recordings Sample\MultipleRecordingsExample.cs" />
     <Compile Include="Assets\Samples\Unity Recorder\2.5.5\Screenshot Capture Sample\CaptureScreenShotExample.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Anomaly.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\AnomalyBulletReceiver.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\AnomalyDieHandler.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\AnomalyManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\BallLighting\BallLightingAnomalyBulletReceiver.cs" />
     <Compile Include="Assets\Scripts\Anomalies\BallLighting\BallLightingAnomalyDieHandler.cs" />
     <Compile Include="Assets\Scripts\Anomalies\BallLighting\BallLightingAnomalyLine.cs" />
     <Compile Include="Assets\Scripts\Anomalies\BallLighting\BallLightingAnomalyManager.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselBulletsTrigger.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselDieHandler.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselManager.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselAnomalyBulletReceiver.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselAnomalyDieHandler.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselAnomalyManager.cs" />
+    <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselTriggerReceiver.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselZone.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Carousel\CarouselePieceII.cs" />
-    <Compile Include="Assets\Scripts\Anomalies\Carousel\TriggerReceiver.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Hive\HiveAnomalyBulletReceiver.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Hive\HiveAnomalyManager.cs" />
     <Compile Include="Assets\Scripts\Anomalies\Hive\HiveEnemy.cs" />
@@ -321,9 +323,6 @@
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Scripts\Bloom.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Scripts\PostEffectsBase.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Materials\Objects\FireJetPack\FlyDemo.cs" />
-    <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Demo\DemoGUI.cs" />
-    <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Demo\MyGUI3_1.cs" />
-    <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Demo\RealtimeReflection.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Prefabs\Balls\AddMaterialOnHit.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Prefabs\Balls\AnimatorBehaviour.cs" />
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Prefabs\Balls\IceOffsetBehaviour.cs" />
@@ -432,6 +431,7 @@
     <None Include="Assets\Other\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\Resources\ProceduralSky.shader" />
     <None Include="Assets\Models\Simple city plain\Read_me.txt" />
+    <None Include="Assets\Shaders\FrostedGlass.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColor.shader" />
     <None Include="Assets\Other\JMO Assets\WarFX\Shaders\WFX_S Particle AddSoft A8.shader" />
     <None Include="Assets\Other\JMO Assets\WarFX\!WarFX Readme.txt" />
@@ -1040,6 +1040,9 @@
     <Reference Include="Unity.Recorder.Base">
       <HintPath>F:/Society/Library/ScriptAssemblies/Unity.Recorder.Base.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime">
+      <HintPath>F:/Society/Library/ScriptAssemblies/Unity.RenderPipelines.HighDefinition.Config.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="com.unity.cinemachine.editor">
       <HintPath>F:/Society/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
     </Reference>
@@ -1089,10 +1092,6 @@
     <ProjectReference Include="PathCreator.csproj">
       <Project>{9ED27AB3-8EAA-8728-DBF8-515B24AC1F14}</Project>
       <Name>PathCreator</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
-      <Project>{27C03352-97F7-A6EE-02BA-DA951EA0B871}</Project>
-      <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreatorEditor.csproj">
       <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>

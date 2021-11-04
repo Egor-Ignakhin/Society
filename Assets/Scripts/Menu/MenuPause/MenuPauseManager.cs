@@ -1,15 +1,13 @@
-﻿using Society.Effects;
+﻿using System.IO;
+
+using Society.Effects;
 using Society.GameScreens;
 using Society.Menu.PauseMenu;
 using Society.Player.Controllers;
 
-using System.Collections.Generic;
-using System.IO;
-
 using TMPro;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Society.Menu.PauseMenu
@@ -34,12 +32,13 @@ namespace Society.Menu.PauseMenu
 
         [SerializeField] private TextMeshProUGUI sensivityText;
         [SerializeField] private Slider sensivitySlider;
-        [SerializeField] private Toggle reloadCABToggle;
+        [SerializeField] private RawImage latestCameraRender;
+        [SerializeField] private Camera menuCamera;
         private void Awake()
         {
             fpc = FindObjectOfType<FirstPersonController>();
             effectsManager = FindObjectOfType<EffectsManager>();
-            menuEventReceiver = new MenuEventReceiver(MenuUI, mainParent, SettingsObj, this, effectsManager);
+            menuEventReceiver = new MenuEventReceiver(MenuUI, SettingsObj, this, effectsManager, latestCameraRender, menuCamera);
             LoadData();
         }
         private void Start()
@@ -53,9 +52,7 @@ namespace Society.Menu.PauseMenu
             sensivityText.SetText(currentGameSettings.Sensivity.ToString());
 
             effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
-            effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled);
             bloomToggle.isOn = currentGameSettings.BloomEnabled;
-            reloadCABToggle.isOn = currentGameSettings.reloadEffectEnabled;
             SettingsObj.SetActive(false);
             sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
             fovSlider.onValueChanged.AddListener(ChangeFovSlider);
@@ -78,11 +75,6 @@ namespace Society.Menu.PauseMenu
         {
             if (effectsManager)
                 effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled = bloomToggle.isOn);
-        }
-        public void SetActiveReloadCAB()
-        {
-            if (effectsManager)
-                effectsManager.SetEnableReloadCAB(currentGameSettings.reloadEffectEnabled = reloadCABToggle.isOn);
         }
         public void ChangeFovSlider(float v)
         {
@@ -133,157 +125,88 @@ namespace Society.Menu.PauseMenu
             return true;
         }
 
+
+        public void BackToGame()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.BakeToGame);
+        }
+        public void OpenSettings()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.OpenSettings);
+
+        }
+        public void GoToMainMenu()
+        {
+            menuEventReceiver.Doing(CommandContainer.Doings.GoToMainMenu);
+
+        }
+
         public KeyCode HideKey() => KeyCode.Escape;
 
+        private sealed class AdvancedSettings
+        {
+            public static readonly Color SelectedColor = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
+            public static readonly Color DefaultColor = new Color(0, 0, 0, 0);// обычный цвет кнопки
+            public static readonly Color PressedColor = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
+        }
         private class MenuEventReceiver
         {
             private readonly GameObject menuUI;
             private readonly GameObject SettingsObj;
-            private readonly CommandContainer commandContainer = new CommandContainer();
-            private readonly AdvancedSettings advanced = new AdvancedSettings();
-            private readonly Dictionary<GameObject, (Image image, TextMeshProUGUI text, int index)> btns = new Dictionary<GameObject, (Image, TextMeshProUGUI, int)>();
+            private readonly CommandContainer commandContainer;
             private readonly MenuPauseManager menuPauseManager;
             private readonly EffectsManager effectsManager;
-            public class AdvancedSettings
-            {
-                public Color SelectedColor { get; private set; } = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
-                public Color DefaultColor { get; private set; } = new Color(0, 0, 0, 0);// обычный цвет кнопки
-                public Color PressedColor { get; private set; } = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
-            }
-            public MenuEventReceiver(GameObject menu, Transform mainParent, GameObject stn, MenuPauseManager mpm, EffectsManager em)
+            private readonly Camera menuCamera;
+            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender,Camera menuCamera)
             {
                 menuUI = menu;
                 SettingsObj = stn;
-                for (int i = 0; i < mainParent.childCount; i++)
-                {
-                    var c = mainParent.GetChild(i).GetChild(0).GetComponent<EventTrigger>();
-
-                    EventTrigger.Entry entry = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerEnter
-                    };
-                    entry.callback.AddListener((data) => { IntersectMouse(c.gameObject); });
-                    c.triggers.Add(entry);
-
-                    EventTrigger.Entry down = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerDown
-                    };
-                    down.callback.AddListener((data) => { Down(c.gameObject); });
-                    c.triggers.Add(down);
-
-                    EventTrigger.Entry up = new EventTrigger.Entry
-                    {
-                        eventID = EventTriggerType.PointerUp
-                    };
-                    up.callback.AddListener((data) => { Up(c.gameObject); });
-                    c.triggers.Add(up);
-
-                    btns.Add(c.gameObject, (c.GetComponent<Image>(), c.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), i));
-                }
-                DisableAllTriggers();
                 menuPauseManager = mpm;
                 effectsManager = em;
+                this.menuCamera = menuCamera;
+                commandContainer = new CommandContainer(Camera.main, latestCameraRender);
+
                 Disable();
             }
 
-            public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager);
+            public void Enable() => commandContainer.SetEnableMenu(true, menuUI, menuPauseManager, effectsManager, menuCamera);
             public void Disable()
             {
-                commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
+                commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
                 SettingsObj.SetActive(false);
             }
 
-            /// <summary>
-            /// наведение на кнопку
-            /// </summary>
-            /// <param name="sender"></param>
-            public void IntersectMouse(GameObject sender)
+            public void Doing(CommandContainer.Doings doi)
             {
-                DisableAllTriggers();
-                btns[sender].image.color = advanced.SelectedColor;
-                btns[sender].text.color = Color.white;
-            }
-            /// <summary>
-            /// нажатие на кнопку
-            /// </summary>
-            /// <param name="sender"></param>
-            public void Down(GameObject sender)
-            {
-                btns[sender].image.color = advanced.PressedColor;
-                btns[sender].text.color = Color.white;
-                Doing(btns[sender].index);
-            }
-            //отжатие кнопки
-            public void Up(GameObject sender)
-            {
-                DisableAllTriggers();
-                btns[sender].image.color = advanced.SelectedColor;
-                btns[sender].text.color = Color.white;
-            }
-            /// <summary>
-            /// выключение видимости всех кнопок
-            /// </summary>
-            public void DisableAllTriggers()
-            {
-                foreach (var obj in btns)
+                switch (doi)
                 {
-                    obj.Value.image.color = advanced.DefaultColor;
-                    obj.Value.text.color = Color.black;
-                }
-            }
-            public void Doing(int index)
-            {
-                switch (index)
-                {
-                    case 0:
-                        commandContainer.FastLoad();
+                    case CommandContainer.Doings.BakeToGame:
+                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
                         break;
-                    case 1:
-                        commandContainer.LoadLastCheckpoint();
-                        break;
-                    case 2:
-                        commandContainer.NoteBook();
-                        break;
-                    case 3:
-                        commandContainer.Hints();
-                        break;
-                    case 4:
-                        commandContainer.PhotoMode();
-                        break;
-                    case 5:
+                    case CommandContainer.Doings.OpenSettings:
                         commandContainer.Settings(SettingsObj);
                         break;
-                    case 6:
+                    case CommandContainer.Doings.GoToMainMenu:
                         commandContainer.ExitToMainMenu();
-                        break;
-                    case 7:
-                        commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager);
                         break;
                 }
             }
         }
         public sealed class CommandContainer
         {
-            public void FastLoad()
+            private readonly Camera mainCamera;
+            private readonly RawImage latestCameraRender;
+
+            public CommandContainer(Camera mainCamera, RawImage latestCameraRender)
             {
-                Debug.Log("TODO:FASTLOAD");
+                this.mainCamera = mainCamera;
+                this.latestCameraRender = latestCameraRender;
             }
-            public void LoadLastCheckpoint()
+            public enum Doings
             {
-                Debug.Log("TODO:LOADLASTCHECKPOINT");
-            }
-            public void NoteBook()
-            {
-                Debug.Log("TODO:NOTEBOOK");
-            }
-            public void Hints()
-            {
-                Debug.Log("TODO:HINTS");
-            }
-            public void PhotoMode()
-            {
-                Debug.Log("TODO:PHOTOMODE");
+                BakeToGame,
+                OpenSettings,
+                GoToMainMenu
             }
             public void Settings(GameObject SettingsObj)
             {
@@ -293,19 +216,41 @@ namespace Society.Menu.PauseMenu
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
             }
-            public void SetEnableMenu(bool v, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager)
+            public void SetEnableMenu(bool isActive, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager, Camera menuCamera)
             {
-                menu.SetActive(v);
+                menuCamera.gameObject.SetActive(isActive);
+                menu.SetActive(isActive);
+                Time.timeScale = isActive ? 0 : 1;
                 // пауза при открытии инвентаря                                                        
-                if (!v)
-                {
-                    ScreensManager.SetScreen(null);
-                }
-                else
-                {
-                    ScreensManager.SetScreen(mpm);
-                }
-                effectsManager.SetEnableSimpleDOF(v);
+
+                ScreensManager.SetScreen(isActive ? mpm : null);
+
+                effectsManager.SetEnableSimpleDOF(isActive);
+                latestCameraRender.texture = MakeScrenshot(mainCamera);
+
+                mainCamera.enabled = !isActive;
+            }
+            public Texture2D MakeScrenshot(Camera camera)
+            {
+                int width = camera.pixelWidth;
+                int height = camera.pixelHeight;
+                Texture2D texture = new Texture2D(width, height);
+
+                RenderTexture targetTexture = RenderTexture.GetTemporary(width, height);
+
+                var latestTargetT = camera.targetTexture;
+                camera.targetTexture = targetTexture;
+                camera.Render();
+                camera.targetTexture = latestTargetT;
+
+
+                RenderTexture.active = targetTexture;
+
+                Rect rect = new Rect(0, 0, width, height);
+                texture.ReadPixels(rect, 0, 0);
+                texture.Apply();
+
+                return texture;
             }
         }
     }

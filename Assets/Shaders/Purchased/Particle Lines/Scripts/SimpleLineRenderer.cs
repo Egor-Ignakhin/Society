@@ -13,6 +13,7 @@ public class SimpleLineRenderer : MonoBehaviour {
 	public LayerMask layerMask = -1;
 
 	public bool hardEdge;
+	public bool localSpace;
 
 	void Awake() {
 		mesh = new Mesh();
@@ -82,7 +83,11 @@ public class SimpleLineRenderer : MonoBehaviour {
 #if UNITY_EDITOR
 		EditorInit();
 #endif
-		cacheTransform.position = Vector3.zero;
+		if (!localSpace) {
+			cacheTransform.position = Vector3.zero;
+		} else {
+			cacheTransform.position = transform.parent.position;
+		}
 		cacheTransform.rotation = Quaternion.identity;
 		Vector3 localViewPos = transform.InverseTransformPoint(targetCamera.transform.position);
 		Vector3[] vertices = mesh.vertices;

@@ -1,7 +1,7 @@
 
-using Society.Missions;
-
 using System.IO;
+
+using Society.Missions;
 
 using UnityEditor;
 
@@ -19,10 +19,12 @@ namespace Society.Editor
 
         private void OnGUI()
         {
-            if (Application.isPlaying)
-            {
+            if (focusedWindow != this)
                 return;
-            }
+
+            if (Application.isPlaying)
+                return;
+
             autoRepaintOnSceneChange = true;
 
             titleContent.text = $"Missions Helper";
