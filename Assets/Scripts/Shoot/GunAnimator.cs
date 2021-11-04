@@ -1,8 +1,8 @@
-﻿using Society.Inventory;
-using Society.Player.Controllers;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using Society.Inventory;
+using Society.Player.Controllers;
 
 using UnityEngine;
 
@@ -30,7 +30,7 @@ namespace Society.Shoot
         public bool IsAiming { get; private set; }// прицеливается ли игрок
         [ReadOnlyField] private bool isAnimFinish;
         [SerializeField] [Range(0, 1)] private float lerpSpeed = 10;// скорость смены состояний : 1) у бедра 2) прицельный огонь
-        [SerializeField] private List<Camera> cameras = new List<Camera>();
+        [SerializeField] private Camera mainCamera;
         private AdvancedSettings advanced;
         private enum States { dSlant, LSlant, Rlant };
 
@@ -197,10 +197,9 @@ namespace Society.Shoot
 
             float targetFOV = IsAiming && !gun.IsReload ?// анимирование угла обзора
                   advanced.BaseCamFOV - (AdvancedSettings.FOVAim) : advanced.BaseCamFOV;
-            foreach (var c in cameras)
-            {
-                c.fieldOfView = Mathf.SmoothDamp(c.fieldOfView, targetFOV, ref advanced.fovRef, lerpSpeed);
-            }
+
+            mainCamera.fieldOfView = Mathf.SmoothDamp(mainCamera.fieldOfView, targetFOV, ref advanced.fovRef, lerpSpeed);
+
             if (gun.IsReload)
                 return;
             Quaternion q = IsAiming && !gun.IsReload ? aimPlace.rotation : hangPlace.rotation;// следующая позиция
