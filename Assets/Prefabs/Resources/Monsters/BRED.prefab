@@ -697,6 +697,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &1963506209433324838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1431,6 +1434,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &4408073184779375471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,6 +1591,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &4581086990941096819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1738,6 +1747,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 2
 --- !u!1 &5091088352047808647
 GameObject:
   m_ObjectHideFlags: 0
@@ -1892,6 +1904,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &5155935432947989757
 GameObject:
   m_ObjectHideFlags: 0
@@ -2140,6 +2155,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &5643657144327381097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,6 +2403,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &6267657417952694820
 GameObject:
   m_ObjectHideFlags: 0
@@ -2696,6 +2717,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &7034195092259878785
 GameObject:
   m_ObjectHideFlags: 0
@@ -2850,6 +2874,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &7391668700388183075
 GameObject:
   m_ObjectHideFlags: 0
@@ -2923,6 +2950,7 @@ GameObject:
   - component: {fileID: 3860874029451695746}
   - component: {fileID: 542717983}
   - component: {fileID: 542717984}
+  - component: {fileID: 2962629726901197490}
   m_Layer: 0
   m_Name: mixamorig1:Hips
   m_TagString: Untagged
@@ -2977,6 +3005,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.27316156, y: 0.30577314, z: 0.23216128}
   m_Center: {x: 0.009987907, y: 0.09049291, z: 0.0025996843}
+--- !u!114 &2962629726901197490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7601582175913921933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23f1e7f84ee8bba4eb5cb8bf163381a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &7956204238372181308
 GameObject:
   m_ObjectHideFlags: 0
@@ -3131,6 +3175,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mParent: {fileID: 6380112221337313375}
+  enemyCollisionType:
+    type: 1
+    color: 0
 --- !u!1 &8825107450157935525
 GameObject:
   m_ObjectHideFlags: 0
