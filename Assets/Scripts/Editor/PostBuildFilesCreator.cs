@@ -1,8 +1,5 @@
 ﻿using System.IO;
-
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 using UnityEditor.Callbacks;
 
 using UnityEngine;
@@ -13,7 +10,6 @@ namespace Society.Editor
     /// </summary>
     internal sealed class PostBuildFilesCreator
     {
-#if UNITY_EDITOR
         [PostProcessBuild(1)]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
@@ -63,7 +59,6 @@ namespace Society.Editor
                     DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
                 }
             }
-#endif
         }
     }
 }
