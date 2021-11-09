@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 using Society.Effects;
 using Society.GameScreens;
@@ -157,7 +158,7 @@ namespace Society.Menu.PauseMenu
             private readonly MenuPauseManager menuPauseManager;
             private readonly EffectsManager effectsManager;
             private readonly Camera menuCamera;
-            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender,Camera menuCamera)
+            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender, Camera menuCamera)
             {
                 menuUI = menu;
                 SettingsObj = stn;
@@ -196,6 +197,7 @@ namespace Society.Menu.PauseMenu
         {
             private readonly Camera mainCamera;
             private readonly RawImage latestCameraRender;
+            private List<Canvas> screenSpaceOverlayCanvases = new List<Canvas>();
 
             public CommandContainer(Camera mainCamera, RawImage latestCameraRender)
             {
@@ -216,19 +218,50 @@ namespace Society.Menu.PauseMenu
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
             }
-            public void SetEnableMenu(bool isActive, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager, Camera menuCamera)
+            public void SetEnableMenu(bool menuIsActive, GameObject menu, MenuPauseManager mpm, EffectsManager effectsManager, Camera menuCamera)
             {
-                menuCamera.gameObject.SetActive(isActive);
-                menu.SetActive(isActive);
-                Time.timeScale = isActive ? 0 : 1;
+                menuCamera.gameObject.SetActive(menuIsActive);
+                menu.SetActive(menuIsActive);
+                Time.timeScale = menuIsActive ? 0 : 1;
                 // пауза при открытии инвентаря                                                        
 
-                ScreensManager.SetScreen(isActive ? mpm : null);
+                ScreensManager.SetScreen(menuIsActive ? mpm : null);
 
-                effectsManager.SetEnableSimpleDOF(isActive);
-                latestCameraRender.texture = MakeScrenshot(mainCamera);
+                effectsManager.SetEnableSimpleDOF(menuIsActive);
 
-                mainCamera.enabled = !isActive;
+                SetupModeCanvases(menuIsActive, mainCamera);
+
+                if (menuIsActive)
+                    latestCameraRender.texture = MakeScrenshot(mainCamera);                
+
+                mainCamera.enabled = !menuIsActive;
+
+            }
+            private void SetupModeCanvases(bool menuIsActive, Camera camera)
+            {
+                if (menuIsActive)
+                {
+                    foreach (var c in FindObjectsOfType<Canvas>())
+                    {
+                        if (c.renderMode == RenderMode.ScreenSpaceOverlay)
+                            screenSpaceOverlayCanvases.Add(c);
+                    }
+                }
+
+                foreach (Canvas canvas in screenSpaceOverlayCanvases)
+                {
+                    if (!menuIsActive)
+                    {
+                        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                        canvas.worldCamera = null;
+                    }
+                    else
+                    {
+                        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                        canvas.planeDistance = camera.nearClipPlane * 1.1f;
+                        canvas.worldCamera = camera;
+                    }
+                }
             }
             public Texture2D MakeScrenshot(Camera camera)
             {
