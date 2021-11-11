@@ -6,7 +6,7 @@ namespace Society.Missions.NumeratedMissions
 {
     internal sealed class FourthMission : Mission
     {
-        public override int MissionNumber => 4;
+        public override int GetMissionNumber() => 4;
 
         protected override void StartMission()
         {

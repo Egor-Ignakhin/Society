@@ -1,7 +1,6 @@
-﻿using Society.Missions.TaskSystem;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 namespace Society.Missions
@@ -12,12 +11,12 @@ namespace Society.Missions
     public abstract class Mission : MonoBehaviour
     {
         private bool isInitialized = false;
-        protected int currentTask = 0;        
-        protected int missionItems = 0;        
+        protected int currentTask = 0;
+        protected int missionItems = 0;
         protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
 
         protected virtual void StartMission()
-        {            
+        {
             OnReportTask(true);
             isInitialized = true;
         }
@@ -47,7 +46,7 @@ namespace Society.Missions
                 OnReportTask(false, true);
         }
 
-        public abstract int MissionNumber { get; }
+        public abstract int GetMissionNumber();
 
         public void ContinueMission(int skipLength)
         {
@@ -64,7 +63,7 @@ namespace Society.Missions
         }
         protected void SetTask(int number)
         {
-            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, MissionNumber, number);
+            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
 
             MissionsManager.Instance.GetTaskDrawer().DrawNewTask(neededContent);
         }
@@ -73,5 +72,13 @@ namespace Society.Missions
 
 
         protected abstract void OnReportTask(bool isLoad = false, bool isMissiomItem = false);
+
+        /// <summary>
+        /// Насильный пропуск задачи
+        /// </summary>
+        internal void SkipTask()
+        {
+            FindObjectsOfType<MissionInteractiveObject>().First(mio => mio.CanForceInteract()).ForceInteract();
+        }
     }
 }

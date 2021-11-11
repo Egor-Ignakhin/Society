@@ -10,7 +10,7 @@ namespace Society.Missions.NumeratedMissions
 {
     internal sealed class SecondMission : Mission
     {
-        public override int MissionNumber => 2;
+        public override int GetMissionNumber() => 2;
         protected override void StartMission()
         {
             OnTaskActions.Add("finish", () =>

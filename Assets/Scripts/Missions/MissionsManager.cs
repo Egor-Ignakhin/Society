@@ -26,7 +26,7 @@ namespace Society.Missions
         public const int MaxMissions = 5;
         private TaskSystem.TaskDrawer taskDrawer;
         private Mission activeMission;
-        [SerializeField] List<Mission> MissionList = new List<Mission>();
+        [SerializeField] private List<Mission> MissionList = new List<Mission>();
 
         internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
 
@@ -65,7 +65,7 @@ namespace Society.Missions
 
             return reState;
         }
-        
+
         public Mission GetActiveMission() => activeMission;
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Society.Missions
             Mission foundedMission = null;
             foreach (var m in all)
             {
-                if (m.MissionNumber == currentState.currentMission)
+                if (m.GetMissionNumber() == currentState.currentMission)
                 {
                     foundedMission = m;
                     break;
@@ -191,6 +191,13 @@ namespace Society.Missions
 
             public static int GetMaxTasksByIndex(int missionIndex) => infoAboutMissions[missionIndex].Tasks.Count;
 #endif
+        }
+        /// <summary>
+        /// Насильный пропуск задачи
+        /// </summary>
+        internal void SkipTask()
+        {
+            activeMission.SkipTask();
         }
     }
 }

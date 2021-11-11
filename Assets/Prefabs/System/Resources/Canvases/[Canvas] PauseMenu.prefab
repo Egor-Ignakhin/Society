@@ -85,8 +85,9 @@ GameObject:
   - component: {fileID: 5999898452445801502}
   - component: {fileID: 8481152753302284345}
   - component: {fileID: 3943325428536891648}
+  - component: {fileID: 4841133180456969901}
   m_Layer: 18
-  m_Name: PercentHistory
+  m_Name: Percent of plot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -208,6 +209,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4841133180456969901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216076258807429384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b174300d9d38ea145851bb68f4fb152a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawableText: {fileID: 3943325428536891648}
 --- !u!1 &386820781524309937
 GameObject:
   m_ObjectHideFlags: 0

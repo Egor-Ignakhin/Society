@@ -1,8 +1,8 @@
-﻿using Society.Player;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Society.Player;
 
 namespace Society.Debugger
 {
@@ -53,8 +53,10 @@ namespace Society.Debugger
             (string type, string command) = Substring(input);
             if (!commands.ContainsKey(type))
                 return $"Erorr: {input}: command not found!";
+#if !UNITY_EDITOR
             if ((gameMode == 0) && (type != nameof(GAMEMODE)) && (type != nameof(HELP)))
                 return $"Error: {input}: insufficient permissions!";
+#endif
             commands[type](command);
             if (type == nameof(HELP))
                 return "HELP COMMAND";
@@ -76,7 +78,8 @@ namespace Society.Debugger
                 {nameof(ENDLESSWATER),ENDLESSWATER },
                 {nameof(ENDLESSAMMO),ENDLESSAMMO },
                 {nameof(HELP),HELP },
-                {nameof(GET),GET }
+                {nameof(GET),GET },
+                { nameof(SKIPTASK),SKIPTASK }
             };
         }
         private static void HELP(string c)
@@ -96,7 +99,7 @@ namespace Society.Debugger
             debugConsole.Print($"{++i}. Use 'ENDLESSAMMO n' to set the mode to 'Infinite Ammo'", true, 20);
             debugConsole.Print($"{++i}. Use 'HELP' to get help", true, 20);
             debugConsole.Print($"{++i}. Use 'GET HEALTH' to get info about health ", true, 20);
-
+            debugConsole.Print($"{++i}. Use 'SKIPTASK _ to skip task", true, 20);
         }
         /// <summary>
         /// бесконесное здоровье
@@ -234,6 +237,10 @@ namespace Society.Debugger
             {
                 debugConsole.Print($"Health is" + BasicNeeds.Instance.Health);
             }
+        }
+        private static void SKIPTASK(string _)
+        {
+            Missions.MissionsManager.Instance.SkipTask();
         }
     }
 }

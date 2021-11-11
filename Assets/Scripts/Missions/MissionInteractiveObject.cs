@@ -1,7 +1,6 @@
 ﻿using Society.Patterns;
 
 using System.Linq;
-
 using UnityEngine;
 namespace Society.Missions
 {
@@ -26,7 +25,7 @@ namespace Society.Missions
 
         protected virtual void Start()
         {
-            mMission = FindObjectsOfType<Mission>().First(m => m.MissionNumber == missionNumber);
+            mMission = FindObjectsOfType<Mission>().First(m => m.GetMissionNumber() == missionNumber);
         }
         public override void Interact() => Report();
         protected void Report()
@@ -41,7 +40,17 @@ namespace Society.Missions
             mMission.Report();
         }
 
-        internal bool CanInteract() => mMission.GetCurrentTask() == (task - 1);
+        internal bool CanInteract() => ((mMission == MissionsManager.Instance.GetActiveMission()) &&
+            (mMission.GetCurrentTask() == (task - 1)));
+
+        internal bool CanForceInteract()=> ((mMission == MissionsManager.Instance.GetActiveMission()) &&
+            (mMission.GetCurrentTask() == (task - 2)));
+        internal void ForceInteract()
+        {
+            hasInteracted = true;
+
+            mMission.Report();
+        }
 
 #if UNITY_EDITOR
         public void OnValidate()

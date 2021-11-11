@@ -32,6 +32,7 @@ namespace Society.Localization
             public string MissionTitle;
             public List<string> Tasks;// пути к задачам
             public string GetTask(int ch) => Tasks[ch];
+            public int GetNumberTasks() => Tasks.Count;
         }
 
         [System.Serializable]
@@ -187,6 +188,7 @@ namespace Society.Localization
         private static string GetDialog(int missionNumber, int checkpoint) => dialogContent.GetTask(checkpoint);
 
         private static string GetTask(int missionNumber, int checkpoint) => taskContent.GetTask(checkpoint);
+        public static int GetNumberOfActiveMissionTasks() => taskContent.GetNumberTasks();
 
         public static string GetHint(InteractiveObject interactiveObject)
         {

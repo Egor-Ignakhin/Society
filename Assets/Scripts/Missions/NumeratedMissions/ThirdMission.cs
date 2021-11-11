@@ -16,7 +16,8 @@ namespace Society.Missions.NumeratedMissions
     public sealed class ThirdMission : Mission
     {
         [SerializeField] private HermeticDoor hermeticDoor;
-        public override int MissionNumber => 3;
+
+        public override int GetMissionNumber() => 3;
         protected override void StartMission()
         {
             OnTaskActions.Add("1", () =>

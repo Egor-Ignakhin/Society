@@ -14,7 +14,7 @@ namespace Society.Missions.NumeratedMissions
 {
     public sealed class PrologMission : Mission
     {
-        public override int MissionNumber => 1;
+        public override int GetMissionNumber() => 1;
         [SerializeField] private BedMesh onLoadBedMesh;
         [SerializeField] private SanSanychPerson sanSanych;
         [SerializeField] private IlyaiPerson ilya;
