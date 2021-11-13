@@ -56,7 +56,7 @@ namespace Society.Missions
             SetTask(currentTask);
         }
 
-        protected void FinishMission()
+        public virtual void FinishMission()
         {
             MissionsManager.Instance.FinishMission();
             gameObject.SetActive(false);
@@ -78,7 +78,30 @@ namespace Society.Missions
         /// </summary>
         internal void SkipTask()
         {
-            FindObjectsOfType<MissionInteractiveObject>().First(mio => mio.CanForceInteract()).ForceInteract();
+            List<MissionInteractiveObject> mioArr = FindObjectsOfType<MissionInteractiveObject>().ToList();
+
+            //Удаление из массива тех трекеров, чьи миссии не совпадают с активной
+            for (int i = 0; i < mioArr.Count; i++)
+            {
+                if (!mioArr[i].GetMission().Equals(MissionsManager.Instance.GetActiveMission()))
+                {
+                    mioArr.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < mioArr.Count; i++)
+            {
+                if (mioArr[i].GetTask() < (currentTask))
+                {
+                    mioArr.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            var sortedMioArr = mioArr.OrderBy(m => m.GetTask());// Сортировка по возрастанию задания
+
+            sortedMioArr.First().ForceInteract();
         }
     }
 }

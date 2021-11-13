@@ -3,12 +3,10 @@ using Society.Inventory.Other;
 using Society.Localization;
 using Society.Patterns;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
 #if UNITY_EDITOR
-using UnityEditor;
 
 #endif
 using UnityEngine;
@@ -21,9 +19,9 @@ namespace Society.Missions
         public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\State.json"; // папка с сохранением    
         private State currentState;// состояние миссий        
         public DescriptionDrawer DescriptionDrawer { get; private set; }
-        public const int MinMissions = 1;
+        public const int MinMissions = 0;
 
-        public const int MaxMissions = 5;
+        public const int MaxMissions = 4;
         private TaskSystem.TaskDrawer taskDrawer;
         private Mission activeMission;
         [SerializeField] private List<Mission> MissionList = new List<Mission>();
@@ -126,11 +124,12 @@ namespace Society.Missions
 
             StartOrContinueMission();
         }
+        public State GetState() => currentState;
 
         [System.Serializable]
         public class State
         {
-            public int currentMission = 1;
+            public int currentMission = 0;
             public int currentTask = 0;
         }
 
@@ -139,21 +138,19 @@ namespace Society.Missions
         {
 #if UNITY_EDITOR
 
-            private static System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent> infoAboutMissions = new System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent>();
+            private static Dictionary<int, LocalizationManager.TaskContent> infoAboutMissions = new Dictionary<int, LocalizationManager.TaskContent>();
 
-            [MenuItem("Tools/Update Info About Missions")]
-            public static void UpdateInfoAboutMissions()
+            public static void UpdateInfo()
             {
                 if (infoAboutMissions != null)
                     infoAboutMissions.Clear();
 
-                infoAboutMissions = new System.Collections.Generic.Dictionary<int, LocalizationManager.TaskContent>();
+                infoAboutMissions = new Dictionary<int, LocalizationManager.TaskContent>();
 
-                System.Collections.Generic.List<LocalizationManager.TaskContent> tasks = new System.Collections.Generic.List<LocalizationManager.TaskContent>();
-                for (int i = 1; i <= MaxMissions; i++)
+                List<LocalizationManager.TaskContent> tasks = new List<LocalizationManager.TaskContent>();
+                for (int i = 0; i <= MaxMissions; i++)
                 {
-                    string path = $"Localization\\Missions\\MissionTask_{i}.json";
-                    string data = File.ReadAllText(path);
+                    string data = File.ReadAllText(LocalizationManager.GetPathToMission(i));
                     tasks.Add(JsonUtility.FromJson<LocalizationManager.TaskContent>(data));
                     infoAboutMissions.Add(i, tasks[tasks.Count - 1]);
                 }
@@ -161,31 +158,33 @@ namespace Society.Missions
                     tc.OnValidate();
 
             }
-            public static string GetMissionTitleByIndex(int index)
+            public static string GetMissionTitleByIndex(int missionIndex)
             {
                 if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
-                    UpdateInfoAboutMissions();
+                    UpdateInfo();
 
                 try
                 {
-                    return infoAboutMissions[index].MissionTitle;
+                    return infoAboutMissions[missionIndex].MissionTitle;
                 }
                 catch
                 {
-                    throw new Exception("Invalid index = " + index);
+                    Debug.LogError($"Mission, Task. Invalid index = {missionIndex}");
+                    return "ErrorTasks";
                 }
             }
             public static string GetMissionTaskTitleByIndex(int missionIndex, int taskIndex)
             {
                 if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
-                    UpdateInfoAboutMissions();
+                    UpdateInfo();
                 try
                 {
                     return infoAboutMissions[missionIndex].Tasks[taskIndex];
                 }
                 catch
                 {
-                    throw new Exception($"Mission, Task. Invalid index = {missionIndex} {taskIndex}");
+                    Debug.LogError($"Mission, Task. Invalid index = {missionIndex}_{taskIndex}");
+                    return "ErrorTasks";
                 }
             }
 
