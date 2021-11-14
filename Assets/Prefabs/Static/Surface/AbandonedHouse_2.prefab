@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &5048513591825790068
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5390392644386736409}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8009476669664675621, guid: 8ac8b3059b6dc7740aeb724ee8070814, type: 3}
 --- !u!1 &5048513593558515484
 GameObject:
   m_ObjectHideFlags: 0
@@ -38,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5048513593558515484}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 448.6074, y: 2.905232, z: 304.24002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -70,11 +56,25 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5894783088339242789}
-  - screenRelativeHeight: 0.05645627
+  - screenRelativeHeight: 0.006208971
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5894783089362431981}
   m_Enabled: 1
+--- !u!64 &5048513591825790068
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5390392644386736409}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8009476669664675621, guid: 8ac8b3059b6dc7740aeb724ee8070814, type: 3}
 --- !u!1001 &5048513591825790024
 PrefabInstance:
   m_ObjectHideFlags: 0

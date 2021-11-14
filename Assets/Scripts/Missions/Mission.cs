@@ -39,6 +39,7 @@ namespace Society.Missions
             if (!isMissionItem)//если сообщение явл. обычнм трекером
             {
                 MissionsManager.Instance.ReportTask();
+
                 SetTask(++currentTask);
                 OnReportTask();
             }

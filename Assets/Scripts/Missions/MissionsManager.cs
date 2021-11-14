@@ -82,7 +82,10 @@ namespace Society.Missions
         /// <summary>
         /// Сообщает при завершении задачи
         /// </summary>
-        public void ReportTask() => currentState.currentTask++;
+        public void ReportTask()
+        {
+            currentState.currentTask++;
+        }
         /// <summary>
         /// Вызывается для начала или продолжения миссии с последней задачи
         /// </summary>
