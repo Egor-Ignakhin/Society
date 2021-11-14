@@ -206,6 +206,7 @@ GameObject:
   - component: {fileID: 827567986707971362}
   - component: {fileID: 1239657592534025587}
   - component: {fileID: 2804279601184525324}
+  - component: {fileID: 712434651}
   m_Layer: 0
   m_Name: part1
   m_TagString: Untagged
@@ -300,9 +301,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0d05a6fe60b0d49b47112e32ae0625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missionNumber: 1
+  missionNumber: 0
   missionTitle: Prologue
-  task: 9
+  task: 6
   taskTitle: "\u0412\u044B\u0439\u0442\u0438 \u043D\u0430 \u043F\u043E\u0432\u0435\u0440\u0445\u043D\u043E\u0441\u0442\u044C"
 --- !u!82 &1239657592534025587
 AudioSource:
@@ -412,3 +413,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c56ead13b3501924d95dd5766ea0959c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &712434651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7454244418689619916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a0d05a6fe60b0d49b47112e32ae0625, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  missionNumber: 2
+  missionTitle: Giving <electric component>
+  task: 1
+  taskTitle: "\u0412\u044B\u0439\u0442\u0438 \u043D\u0430 \u043F\u043E\u0432\u0435\u0440\u0445\u043D\u043E\u0441\u0442\u044C"

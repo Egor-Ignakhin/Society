@@ -96,7 +96,7 @@ namespace Society.Player
         }
 
         private readonly float defaultHealth = 30;// изначальное здоровья
-        public float MaximumHealth = 100;// максимальное кол-во здоровья              
+        public float MaximumHealth { get; private set; } = 100;// максимальное кол-во здоровья              
 
         private readonly float defaultThirst = 100;// изначальное кол-во воды
         private readonly float thirstDifference = 1;// количество воды, которое будет отниматься в таймере      

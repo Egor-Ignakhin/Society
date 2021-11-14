@@ -25,6 +25,8 @@ namespace Society.Editor
             if (Application.isPlaying)
                 return;
 
+            MissionsManager.MissionInfo.UpdateInfo();
+
             autoRepaintOnSceneChange = true;
 
             titleContent.text = $"Missions Helper";
@@ -33,9 +35,14 @@ namespace Society.Editor
 
             var currentState = Missions.MissionsManager.LoadState();
 
-            Missions.MissionsManager.MissionInfo.UpdateInfoAboutMissions();
+            Missions.MissionsManager.MissionInfo.UpdateInfo();
             string cmTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(currentState.currentMission);
             string ctTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(currentState.currentMission, currentState.currentTask);
+
+            if(ctTitle == "ErrorTasks")
+            {
+                ResetTasks();
+            }
 
             EditorGUILayout.LabelField("Current mission:");
             EditorGUILayout.LabelField("    ID - " + currentState.currentMission);

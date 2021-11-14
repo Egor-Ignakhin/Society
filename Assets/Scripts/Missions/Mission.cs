@@ -1,7 +1,6 @@
-﻿using Society.Missions.TaskSystem;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 namespace Society.Missions
@@ -12,12 +11,12 @@ namespace Society.Missions
     public abstract class Mission : MonoBehaviour
     {
         private bool isInitialized = false;
-        protected int currentTask = 0;        
-        protected int missionItems = 0;        
+        protected int currentTask = 0;
+        protected int missionItems = 0;
         protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
 
         protected virtual void StartMission()
-        {            
+        {
             OnReportTask(true);
             isInitialized = true;
         }
@@ -40,6 +39,7 @@ namespace Society.Missions
             if (!isMissionItem)//если сообщение явл. обычнм трекером
             {
                 MissionsManager.Instance.ReportTask();
+
                 SetTask(++currentTask);
                 OnReportTask();
             }
@@ -47,7 +47,7 @@ namespace Society.Missions
                 OnReportTask(false, true);
         }
 
-        public abstract int MissionNumber { get; }
+        public abstract int GetMissionNumber();
 
         public void ContinueMission(int skipLength)
         {
@@ -57,14 +57,14 @@ namespace Society.Missions
             SetTask(currentTask);
         }
 
-        protected void FinishMission()
+        public virtual void FinishMission()
         {
             MissionsManager.Instance.FinishMission();
             gameObject.SetActive(false);
         }
         protected void SetTask(int number)
         {
-            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, MissionNumber, number);
+            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
 
             MissionsManager.Instance.GetTaskDrawer().DrawNewTask(neededContent);
         }
@@ -73,5 +73,36 @@ namespace Society.Missions
 
 
         protected abstract void OnReportTask(bool isLoad = false, bool isMissiomItem = false);
+
+        /// <summary>
+        /// Насильный пропуск задачи
+        /// </summary>
+        internal void SkipTask()
+        {
+            List<MissionInteractiveObject> mioArr = FindObjectsOfType<MissionInteractiveObject>().ToList();
+
+            //Удаление из массива тех трекеров, чьи миссии не совпадают с активной
+            for (int i = 0; i < mioArr.Count; i++)
+            {
+                if (!mioArr[i].GetMission().Equals(MissionsManager.Instance.GetActiveMission()))
+                {
+                    mioArr.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < mioArr.Count; i++)
+            {
+                if (mioArr[i].GetTask() < (currentTask))
+                {
+                    mioArr.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            var sortedMioArr = mioArr.OrderBy(m => m.GetTask());// Сортировка по возрастанию задания
+
+            sortedMioArr.First().ForceInteract();
+        }
     }
 }

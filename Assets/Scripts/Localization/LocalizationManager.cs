@@ -1,7 +1,7 @@
-﻿using Society.Patterns;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+
+using Society.Patterns;
 
 using UnityEngine;
 namespace Society.Localization
@@ -18,13 +18,23 @@ namespace Society.Localization
         private static MedicalItems medicalItems;
 
         public enum Type { Dialogs, Tasks, Hints }
+
+        /// <summary>
+        /// Возвращает путь до файла миссии по ей идентификатору
+        /// </summary>
+        /// <param name="missionId"></param>
+        /// <returns></returns>
+        public static string GetPathToMission(int missionId)
+        {
+            return $"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\Mission_{missionId}.json";
+        }
         public static class MainTypes
         {
             public const string Default = "Взаимодествовать";
             public const string Item = "Поднять предмет";
         }
-        private static TaskContent taskContent;
-        private static firstMDialogsContent dialogContent;
+        private static readonly List<TaskContent> taskContents = new List<TaskContent>();
+        //   private static firstMDialogsContent dialogContent;
 
         [System.Serializable]
         public class TaskContent
@@ -32,28 +42,32 @@ namespace Society.Localization
             public string MissionTitle;
             public List<string> Tasks;// пути к задачам
             public string GetTask(int ch) => Tasks[ch];
+            public int GetNumberTasks() => Tasks.Count;
         }
 
-        [System.Serializable]
-        public class firstMDialogsContent
-        {
-            public List<string> Dialogs;// пути к задачам
-            public string GetTask(int ch) => Dialogs[ch];
-        }
+        /*    [System.Serializable]
+            public class firstMDialogsContent
+            {
+                public List<string> Dialogs;// пути к диалогам
+                public string GetTask(int ch) => Dialogs[ch];
+            }*/
 
         public static void InitDialogsTasks(Missions.MissionsManager.State tempState)
         {
             // инициализация путей
             #region SetDialogs
             {
-                string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionDialogs_{tempState.currentMission}.json");
-                dialogContent = JsonUtility.FromJson<firstMDialogsContent>(data);
+                //  string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionDialogs_{tempState.currentMission}.json");
+                // dialogContent = JsonUtility.FromJson<firstMDialogsContent>(data);
             }
             #endregion
             #region SetTasks
             {
-                string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionTask_{tempState.currentMission}.json");
-                taskContent = JsonUtility.FromJson<TaskContent>(data);
+                for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
+                {                    
+                    string data = File.ReadAllText(GetPathToMission(i));
+                    taskContents.Add(JsonUtility.FromJson<TaskContent>(data));
+                }
             }
             #endregion
 
@@ -65,7 +79,7 @@ namespace Society.Localization
         };
             #endregion
         }
-
+        #region InitRegion
         private static void InitHD()
         {
             string hdata = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Descriptions.json");
@@ -109,7 +123,7 @@ namespace Society.Localization
                 medicalItems.medItems.Add((int)myStatus, (medicalItems.Items[i].Health, medicalItems.Items[i].Radiation));
             }
         }
-
+        #endregion
         public class HintsData : SerialisableInventoryList
         {
             public List<Hint> Types;
@@ -176,17 +190,45 @@ namespace Society.Localization
         {
             switch (type)
             {
-                case Type.Dialogs:
-                    return GetDialog(missionNumber, checkpoint);
+                //   case Type.Dialogs:
+                //     return GetDialog(missionNumber, checkpoint);
                 case Type.Tasks:
                     return GetTask(missionNumber, checkpoint);
                 default:
                     return null;
             }
         }
-        private static string GetDialog(int missionNumber, int checkpoint) => dialogContent.GetTask(checkpoint);
+        //private static string GetDialog(int missionNumber, int checkpoint) => dialogContent.GetTask(checkpoint);
 
-        private static string GetTask(int missionNumber, int checkpoint) => taskContent.GetTask(checkpoint);
+        private static string GetTask(int missionNumber, int checkpoint) => taskContents[missionNumber].GetTask(checkpoint);
+        public static int GetNumberOfMissionTasks(int missionNumber) => taskContents[missionNumber].GetNumberTasks();
+        public static int GetNumberOfMissionTasks()
+        {
+            int temp = 0;
+            for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
+            {
+                temp += taskContents[i].GetNumberTasks();
+            }
+            return temp;
+        }
+
+        internal static int GetNumberOfCompletedMissionTasks(int currentMissionNumber, int currentTaskNumber)
+        {
+            int temp = 0;
+            for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
+            {
+                //Если тек. миссия моложе итерационной
+                if (currentMissionNumber > i)
+                {
+                    temp += taskContents[i].GetNumberTasks();// прибавить к текущим задачам все итерационные
+                }
+                else if (currentMissionNumber == i)
+                {
+                    temp += Mathf.Clamp(currentTaskNumber, 0, int.MaxValue);
+                }
+            }
+            return temp;
+        }
 
         public static string GetHint(InteractiveObject interactiveObject)
         {
