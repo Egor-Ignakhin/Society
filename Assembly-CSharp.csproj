@@ -376,14 +376,20 @@
     <Compile Include="Assets\Shaders\Purchased\Particle Lines\Demo\Scripts\VertexColorToonLight.cs" />
     <Compile Include="Assets\Shaders\Purchased\Particle Lines\Scripts\ParticleLines.cs" />
     <Compile Include="Assets\Shaders\Purchased\Particle Lines\Scripts\SimpleLineRenderer.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders Demo\Scripts\DemoMovement.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Scripts\Runtime\AOT.cs" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\XBoxOne.hlsl" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorDiffuse.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft Scroll.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Common\Nodes\Integrations\Nature Renderer.cginc" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\Metal.hlsl" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorToonSimpleTransparent.shader" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\GLES2.hlsl" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorTransparent.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\_Effects\MuzzleFlashes\!MuzzleFlash Differences.txt" />
@@ -412,6 +418,7 @@
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Particle Multiply A8.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorToonSimple.shader" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Prefabs\Readme.txt" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\Vulkan.hlsl" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\Bloom\Resources\Bloom.cginc" />
@@ -429,20 +436,24 @@
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Shaders\_BloomAndFlares\BrightPassFilter2.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\AddTrail.shader" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\Switch.hlsl" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\Projector Light.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\Resources\ProceduralSky.shader" />
     <None Include="Assets\Models\Simple city plain\Read_me.txt" />
-    <None Include="Assets\Shaders\FrostedGlass.shader" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\GLCore.hlsl" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColor.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Particle AddSoft A8.shader" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\PSSL.hlsl" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\!WarFX Readme.txt" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\GLES3.hlsl" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\Add_CenterGlow.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Alpha-Diffuse TintColor.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorToon.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\D3D11.hlsl" />
     <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Shared\Shaders\SurfaceShader_VC.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
@@ -633,6 +644,36 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Community">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Community.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Nature">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Nature Shaders/Plugins/VisualDesignCafe.Nature.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.PackageManager">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.PackageManager.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.ShaderX">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.ShaderX.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.ShaderX.Editor">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.ShaderX.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Events">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Packages">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Packages.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Nature.Editor">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Nature Shaders/Plugins/VisualDesignCafe.Nature.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Web">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.ShaderX">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.Editor.ShaderX.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>

@@ -374,6 +374,8 @@ namespace Society.Enemies
         {
             UVariables.ChangeHealthEvent -= Death;
             stepEnemy.OnDestroy();
+
+            PlayerSoundReceiversCollection.RemoveListner(this);
         }
 
         public float GetDistanceToTarget() => enemy ? CalculateRemainingDistance(target.position) : 100000;

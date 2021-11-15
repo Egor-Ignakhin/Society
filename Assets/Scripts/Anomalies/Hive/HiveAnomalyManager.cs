@@ -78,6 +78,10 @@ namespace Society.Anomalies.Hive
 
             Instantiate(hiveBeeArtefactInstance, transform.position, Quaternion.identity);
         }
+        private void OnDestroy()
+        {
+            PlayerSoundReceiversCollection.RemoveListner(this);
+        }
         private IEnumerator AttackPlayer()
         {
             while (true)
@@ -95,6 +99,6 @@ namespace Society.Anomalies.Hive
                     playerBn.InjurePerson(bee.Damage());
                 }
             }
-        }
+        }        
     }
 }
