@@ -63,7 +63,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Models\AssetStoreOriginals\_SNAPS_PrototypingAssets\About\Scripts\Readme.cs" />
+    <Compile Include="Assets\Models\Barrier Pack\Scripts\ContrastStretch.cs" />
+    <Compile Include="Assets\Models\Barrier Pack\Scripts\GlobalFog.cs" />
     <Compile Include="Assets\Models\Cold War Weapons\AK74M\Demo\CameraRotate.cs" />
+    <Compile Include="Assets\Models\com\heparo\terrain\toolkit\scripts\TerrainToolkit.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\ProceduralSky.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\ProceduralSkyRenderer.cs" />
     <Compile Include="Assets\Samples\MeshCombiner\Scripts\MeshCombiner.cs" />
@@ -379,8 +383,10 @@
     <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders Demo\Scripts\DemoMovement.cs" />
     <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Scripts\Runtime\AOT.cs" />
     <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\XBoxOne.hlsl" />
+    <None Include="Assets\Samples\Terrain Tools\0.1.0-preview\Terrain Assets\ThirdPartyNotices.txt" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft.shader" />
+    <None Include="Assets\Models\Barrier Pack\Shaders\GlobalFog.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorDiffuse.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft Scroll.shader" />
@@ -404,11 +410,13 @@
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Add Scroll.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\Bloom\Resources\Bloom.shader" />
+    <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\Apply.shader" />
+    <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\Adaptation.shader" />
     <None Include="Assets\Shaders\JMO Assets\Cartoon FX Easy Editor\CartoonFX Easy Editor Readme.txt" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Shaders\_BloomAndFlares\LensFlareCreate.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Readme.txt" />
-    <None Include="Assets\Images\AllSkyFree\AllSkyFree_Readme.txt" />
+    <None Include="Assets\NormalImages\AllSkyFree\AllSkyFree_Readme.txt" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\_Effects (Mobile)\MuzzleFlashes\!MuzzleFlash Differences.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\Distortion.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
@@ -416,6 +424,7 @@
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\Blend_CenterGlow.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Smoke Scroll.shader" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Particle Multiply A8.shader" />
+    <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\MinMaxReduction.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorToonSimple.shader" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Prefabs\Readme.txt" />
     <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\Vulkan.hlsl" />
@@ -456,6 +465,7 @@
     <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\D3D11.hlsl" />
     <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Shared\Shaders\SurfaceShader_VC.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\Luminance.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Shaders\_BloomAndFlares\BlurAndFlares.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
