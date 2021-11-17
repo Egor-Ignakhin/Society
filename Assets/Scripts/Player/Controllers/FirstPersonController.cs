@@ -264,7 +264,8 @@ namespace Society.Player.Controllers
                 if (!Physics.Raycast(transform.position - new Vector3(0, (playerCollider.height / 2 * transform.localScale.y) - Advanced.MaxStepHeight, 0), MoveDirection, out _, playerCollider.radius + 0.25f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
                 {
                     Advanced.stairMiniHop = true;
-                    transform.position += new Vector3(0, Advanced.MaxStepHeight * 1.2f, 0);
+
+                    fpcRigidbody.position += new Vector3(0, Advanced.MaxStepHeight * 1.2f, 0);
                 }
             }
             #endregion

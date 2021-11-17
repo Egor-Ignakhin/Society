@@ -32,7 +32,7 @@ namespace Society.Parkour
             cameraTransform.SetParent(animatorParent);
             cameraTransform.localScale = Vector3.one;
             posFpcOnStartClimbing = fpc.transform.position;
-            BasicNeeds.Instance.SetPossibleDamgeFromCollision(false);
+            BasicNeeds.Instance.SetEnableDamageFromCollision(false);
 
             isInteracted = true;
         }
@@ -85,7 +85,7 @@ namespace Society.Parkour
             cameraTransform.localScale = Vector3.one;
             isInteracted = false;
             fpc.SetPossibleJump(false);
-            BasicNeeds.Instance.SetPossibleDamgeFromCollision(true);
+            BasicNeeds.Instance.SetEnableDamageFromCollision(true);
             fpc.ResetRbVelocity();
         }
         public override bool Hide()

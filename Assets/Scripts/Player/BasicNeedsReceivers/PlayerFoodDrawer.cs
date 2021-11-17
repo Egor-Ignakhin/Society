@@ -12,7 +12,7 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         private void OnChangeFood(float value)
         {
 
-            mImage.fillAmount = value / basicNeeds.MaximumFood;
+            mImage.fillAmount = value / basicNeeds.MaxFood;
         }
 
         private void OnDisable() => basicNeeds.FoodChangeValue -= OnChangeFood;

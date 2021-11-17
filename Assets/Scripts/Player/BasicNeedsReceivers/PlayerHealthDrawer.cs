@@ -36,9 +36,9 @@ namespace PlayerClasses.BasicNeedsEventReceivers
 
         private void OnChangePlayerHealth(float health)
         {
-            float fillDef = health / (basicNeeds.MaximumHealth * 0.5f);
-            float fill_Hp_food = (basicNeeds.Food > 0 || (basicNeeds.Thirst > 0)) && (health > (basicNeeds.MaximumHealth / 2)) ? ((health - (basicNeeds.MaximumHealth * 0.5f)) / (basicNeeds.MaximumHealth / 4)) : 0;
-            float fill_Hp_thirst = (basicNeeds.Food > 0) && (health > (basicNeeds.MaximumHealth / 1.5f)) ? ((health - (basicNeeds.MaximumHealth * 0.75f)) / (basicNeeds.MaximumHealth / 4)) : 0;
+            float fillDef = health / (basicNeeds.MaxHealth * 0.5f);
+            float fill_Hp_food = (basicNeeds.Food > 0 || (basicNeeds.Thirst > 0)) && (health > (basicNeeds.MaxHealth / 2)) ? ((health - (basicNeeds.MaxHealth * 0.5f)) / (basicNeeds.MaxHealth / 4)) : 0;
+            float fill_Hp_thirst = (basicNeeds.Food > 0) && (health > (basicNeeds.MaxHealth / 1.5f)) ? ((health - (basicNeeds.MaxHealth * 0.75f)) / (basicNeeds.MaxHealth / 4)) : 0;
             mImage.fillAmount = fillDef;
 
 
@@ -50,29 +50,29 @@ namespace PlayerClasses.BasicNeedsEventReceivers
         {
             if (basicNeeds.Food == 0)
             {
-                if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
+                if (basicNeeds.Health > basicNeeds.MaxHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
                 {
-                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.75f));
+                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaxHealth * 0.75f));
                 }
                 if (basicNeeds.Thirst == 0)
                 {
-                    if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.5f)
+                    if (basicNeeds.Health > basicNeeds.MaxHealth * 0.5f)
                     {
-                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.5f));
+                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaxHealth * 0.5f));
                     }
                 }
             }
             if (basicNeeds.Thirst == 0)
             {
-                if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
+                if (basicNeeds.Health > basicNeeds.MaxHealth * 0.75f)// Если хп больше 75, вода есть, а еды нет
                 {
-                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.75f));
+                    BasicNeeds.ForceSetHealth((int)(basicNeeds.MaxHealth * 0.75f));
                 }
                 if (basicNeeds.Food == 0)
                 {
-                    if (basicNeeds.Health > basicNeeds.MaximumHealth * 0.5f)
+                    if (basicNeeds.Health > basicNeeds.MaxHealth * 0.5f)
                     {
-                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaximumHealth * 0.5f));
+                        BasicNeeds.ForceSetHealth((int)(basicNeeds.MaxHealth * 0.5f));
                     }
                 }
             }

@@ -49,7 +49,7 @@ namespace Society.Missions.NumeratedMissions
                 FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
                 FindObjectOfType<InventoryContainer>().SetInteractive(false);
                 FindObjectOfType<InventoryContainer>().ClearInventory();
-                FindObjectOfType<PlayerActionBar>().SetVisible(false);
+                FindObjectOfType<PlayerActionBar>().gameObject.SetActive(false);
                 BasicNeeds.Instance.SetEnableStamins(false);
                 Times.WorldTime.CurrentDate.ForceSetTime("23:32");
                 FindObjectOfType<FirstPersonController>().SetPossibleSprinting(false);

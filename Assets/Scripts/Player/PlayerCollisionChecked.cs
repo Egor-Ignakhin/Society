@@ -1,46 +1,44 @@
 ﻿using UnityEngine;
 namespace Society.Player
 {
-    public sealed partial class BasicNeeds : Patterns.Singleton<BasicNeeds>
-    {    /// <summary>
-         /// класс отвечающий за столкновения с объектами
-         /// </summary>    
-        private sealed class PlayerCollisionChecked : MonoBehaviour
+    /// <summary>
+    /// класс отвечающий за столкновения с объектами
+    /// </summary>    
+    internal sealed class PlayerCollisionChecked : MonoBehaviour
+    {
+        private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
+        private BasicNeeds bn;
+        private Rigidbody playerRb;
+        public delegate void CollisionContactHandler();
+        public event CollisionContactHandler PlayerTakingDamageEvent;
+        public void OnInit(BasicNeeds bn)
         {
-            private readonly float minValue = 100;// минимальная инерция для счёта урона игроку
-            private BasicNeeds bn;
-            private Rigidbody playerRb;
-            public delegate void CollisionContactHandler();
-            public event CollisionContactHandler PlayerTakingDamageEvent;
-            public void OnInit(BasicNeeds bn)
+            this.bn = bn;
+            playerRb = bn.GetComponent<Rigidbody>();
+        }
+        private void OnCollisionEnter(Collision collision)
+        {
+            float force = 0;
+            float mass = playerRb.mass;
+            if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
             {
-                this.bn = bn;
-                playerRb = bn.GetComponent<Rigidbody>();
+                mass = rb.mass;
             }
-            private void OnCollisionEnter(Collision collision)
+
+            for (int i = 0; i < collision.contacts.Length; i++)// итерация по всем точкам соприкосновения
             {
-                float force = 0;
-                float mass = playerRb.mass;
-                if (collision.transform.TryGetComponent<Rigidbody>(out var rb))
-                {
-                    mass = rb.mass;
-                }
+                float len = Vector3.Project(collision.relativeVelocity,
+                                                collision.contacts[i].normal).magnitude;
+                if (force < len) force = len;
+            }
 
-                for (int i = 0; i < collision.contacts.Length; i++)// итерация по всем точкам соприкосновения
+            force = mass * force * force;
+            if (force > minValue * mass)// если сила больше минимальной для нанесения урона
+            {
+                if (bn.IsEnableDamageFromCollision)
                 {
-                    float len = Vector3.Project(collision.relativeVelocity,
-                                                    collision.contacts[i].normal).magnitude;
-                    if (force < len) force = len;
-                }
-
-                force = mass * force * force;
-                if (force > minValue * mass)// если сила больше минимальной для нанесения урона
-                {
-                    if (bn.PossibleDamgeFromCollision)
-                    {
-                        bn.InjurePerson(force / mass / 10);
-                        PlayerTakingDamageEvent?.Invoke();
-                    }
+                    bn.InjurePerson(force / mass / 10);
+                    PlayerTakingDamageEvent?.Invoke();
                 }
             }
         }

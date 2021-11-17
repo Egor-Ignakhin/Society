@@ -45,7 +45,7 @@ namespace Society.Inventory
         [SerializeField] private Transform freeCellsContainer;
         [SerializeField] private Transform busyCellsContainer;
         [SerializeField] private GameObject cellPrefab;
-        private PlayerStatements playerStatements;
+        private BasicNeeds basicNeeds;
         [SerializeField] private GameObject ItemsLabelDescription;
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private Button ModifiersActivator;
@@ -92,7 +92,7 @@ namespace Society.Inventory
         private void OnEnable()
         {
             inventorySoundEffects = new InventorySoundEffects(MInventoryInput);
-            playerStatements = FindObjectOfType<PlayerStatements>();
+            basicNeeds = BasicNeeds.Instance;
             inventoryDrawer = FindObjectOfType<InventoryDrawer>();
 
             EventReceiver.OnEnable();
@@ -179,8 +179,8 @@ namespace Society.Inventory
         public void ActivateItem() => EventReceiver.ActivateItem();
 
         public void CallItemEvent(int id, int count) => ActivateItemEvent?.Invoke(id, count);
-        public void MealPlayer(int food, int water) => playerStatements.MealPlayer(food, water);
-        internal void Heal((float health, float radiation) medical) => playerStatements.HealPlayer(medical.health, medical.radiation);
+        public void MealPlayer(int food, int water) => basicNeeds.AddMeal(food, water);
+        internal void Heal((float health, float radiation) medical) => basicNeeds.Heal(medical.health, medical.radiation);
 
         private void OnDisable()
         {

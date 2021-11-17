@@ -10,7 +10,7 @@ namespace Society.Anomalies
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent<BasicNeeds>(out var basicNeeds))
-                basicNeeds.SetIsInsadeZone(true);
+                basicNeeds.SetIsInsideZone(true);
         }
         private void OnTriggerStay(Collider other)
         {
@@ -26,7 +26,7 @@ namespace Society.Anomalies
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent<BasicNeeds>(out var basicNeeds))
-                basicNeeds.SetIsInsadeZone(false);
+                basicNeeds.SetIsInsideZone(false);
         }
     }
 }

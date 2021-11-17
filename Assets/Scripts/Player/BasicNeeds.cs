@@ -5,18 +5,22 @@ using UnityEngine;
 
 namespace Society.Player
 {
-    public sealed partial class BasicNeeds : Patterns.Singleton<BasicNeeds>
+    public sealed class BasicNeeds : Patterns.Singleton<BasicNeeds>
     {
         #region Fields
         private bool foodWaterMultiply = false;
         public void EnableFoodAndWaterMultiply(bool v) => foodWaterMultiply = v;
 
-        private readonly float waitForThirst = 5f;// частота таймера воды
-        private readonly float waitForHunger = 3.5f;// частота таймера еды
-        private readonly float waitForRadiation = 4;
-        private readonly float regenerationSpeed = 3f;
+        #region Trackers
 
+        private const float waitForThirst = 5f;//Скорость трекера жажды
+        private const float waitForHunger = 3.5f;//Скорость трекера еды
+        private const float waitForRadiation = 4;//Скорость трекера радиации
+        private const float regenerationSpeed = 3f;//Скорость регенерации
+
+        #endregion
         private bool BnInitFlag = false;
+
         private float health;
         public float Health
         {
@@ -32,24 +36,16 @@ namespace Society.Player
                     timeFromLastDamage = 0;
                 }
 
-                value = Mathf.Clamp(value, 0, MaximumHealth);
+                value = Mathf.Clamp(value, 0, MaxHealth);
                 if (value == 0 && BnInitFlag)
-                    Dead();
+                    OnDead();
                 health = value;
                 HealthChangeValue?.Invoke((float)Math.Round(health, 0));
             }
         }
 
-        internal void Heal(float h, float r)
-        {
-            Health += h;
-            Radiation -= r;
-        }
-
-        internal void SetEnableStamins(bool v) => allStaminsEnable = v;
-
         private float thirst;
-        public float Thirst// вода
+        public float Thirst
         {
             get => thirst;
 
@@ -57,8 +53,8 @@ namespace Society.Player
             {
                 if (EndlessWater)
                     return;
-                if (value > MaximumThirst)
-                    value = MaximumThirst;
+                if (value > MaxThirst)
+                    value = MaxThirst;
                 if (value < 0 && isInitialized)
                     value = 0;
 
@@ -67,7 +63,7 @@ namespace Society.Player
         }
 
         private float food;
-        public float Food// еда
+        public float Food
         {
             get => food;
 
@@ -75,8 +71,8 @@ namespace Society.Player
             {
                 if (EndlessFood)
                     return;
-                if (value > MaximumFood)
-                    value = MaximumFood;
+                if (value > MaxFood)
+                    value = MaxFood;
                 if (value < 0 && isInitialized)
                     value = 0;
 
@@ -90,48 +86,53 @@ namespace Society.Player
             get => radiation;
             private set
             {
-                radiation = Mathf.Clamp(value, 0, MaximumRadiation);
+                radiation = Mathf.Clamp(value, 0, MaxRadiation);
                 RadiationChangeValue?.Invoke(value);
             }
         }
 
-        private readonly float defaultHealth = 30;// изначальное здоровья
-        public float MaximumHealth { get; private set; } = 100;// максимальное кол-во здоровья              
+        public float MaxHealth { get; private set; } = 100;
+        public float MaxThirst { get; private set; } = 100;
+        public float MaxFood { get; private set; } = 200;
 
-        private readonly float defaultThirst = 100;// изначальное кол-во воды
-        private readonly float thirstDifference = 1;// количество воды, которое будет отниматься в таймере      
-        public float MaximumThirst { get; private set; } = 100;// максимум еды
+        private const float MaxRadiation = 3000;
 
-        private readonly float defaultFood = 200;// изначальное кол-во еды
-        private readonly float foodDifference = 1;// количество еды, которое будет отниматься в таймере
-        public float MaximumFood { get; private set; } = 200;// максимум еды        
+        /// <summary>
+        /// Игрок в радиоактивной зоне?
+        /// </summary>
+        private bool isInsideRadiationZone;
 
-        private readonly float radiationDifference = 1;// количество радиации, которое будет отниматься в таймере        
-        private readonly float MaximumRadiation = 3000;// максимум радиации
-        private bool isInsadeRadiationZone;
+        /// <summary>
+        /// Активное количество радиоактивных зон
+        /// в которых находится игрок
+        /// </summary>
         private int currentCountOfZones;
+
+        #region Events
 
         public event Action<float> HealthChangeValue;
         public event Action<float> ThirstChangeValue;// событие жажды
         public event Action<float> FoodChangeValue;// событие голодания
         public event Action<float> RadiationChangeValue;// событие голодания   
 
-        private readonly DeadLine deadLine = new DeadLine();
+        #endregion
 
-        private readonly float DamageFromRadiation = 1;
+        private readonly PlayerDeathHandler playerDeathHandler = new PlayerDeathHandler();
+
         private PlayerCollisionChecked playerCollisionChecked;
         private bool allStaminsEnable = true;
-        public static bool EndlessHealth { get; internal set; }
-        public static bool EndlessFood { get; internal set; }
-        public static bool EndlessWater { get; internal set; }
-        public bool PossibleDamgeFromCollision { get; private set; } = true;
+
+        /// <summary>
+        /// Урон от коллизий включён?
+        /// </summary>
+        public bool IsEnableDamageFromCollision { get; private set; } = true;
         private float timeFromLastDamage;
         #endregion
         private void Start()
         {
-            Health = defaultHealth;
-            Thirst = defaultThirst;
-            Food = defaultFood;
+            Health = MaxHealth;
+            Thirst = MaxThirst;
+            Food = MaxFood;
             Radiation = 0;
 
             playerCollisionChecked = gameObject.AddComponent<PlayerCollisionChecked>();
@@ -148,21 +149,21 @@ namespace Society.Player
             StartCoroutine(nameof(RadiationTimer));
             StartCoroutine(nameof(RegenerationTimer));
         }
+
+        internal void Heal(float h, float r)
+        {
+            Health += h;
+            Radiation -= r;
+        }
+
+        internal void SetEnableStamins(bool v) => allStaminsEnable = v;
+
         /// <summary>
         /// Ранить игрока
         /// </summary>
         /// <param урон="value"></param>
         public void InjurePerson(float value) => Health -= value;
-        /// <summary>
-        /// ранить игрока и нанести ещё радиации организму
-        /// </summary>
-        /// <param name="h"></param>
-        /// <param name="r"></param>
-        public void InjurePerson(float h, float r)
-        {
-            Health -= h;
-            Radiation += r;
-        }
+
         /// <summary>
         /// ранить игрока, нанести радиации организму и возможно, плавно убить
         /// </summary>
@@ -218,37 +219,37 @@ namespace Society.Player
         {
             if (Radiation > 0)
             {
-                if (!isInsadeRadiationZone)// радиация снимается в безопасной зоне
-                    Radiation -= radiationDifference;
-                InjurePerson(DamageFromRadiation);
+                if (!isInsideRadiationZone)
+                    Radiation--;
+                InjurePerson(1);
             }
         }
 
-        public void SetIsInsadeZone(bool value)
+        public void SetIsInsideZone(bool value)
         {
             if (value)
             {
-                isInsadeRadiationZone = value;
+                isInsideRadiationZone = value;
                 currentCountOfZones++;
             }
             else
             {
                 currentCountOfZones -= 1;
                 if (currentCountOfZones == 0)
-                    isInsadeRadiationZone = value;
+                    isInsideRadiationZone = value;
             }
         }
         /// <summary>
         /// функция вызывающая загрузку сцены смерти
         /// </summary>
-        private void Dead() => deadLine.LoadDeadScene();
+        private void OnDead() => playerDeathHandler.LoadDeadScene();
 
         /// <summary>
         /// Функция регенерации здоровья
         /// </summary>
         private void Regeneration()
         {
-            if (Mathf.Approximately(Health, MaximumHealth))
+            if (Mathf.Approximately(Health, MaxHealth))
                 return;
             //Воды больше 0 и еды больше 0 и радиации нет
             if ((Thirst > 0)
@@ -261,13 +262,21 @@ namespace Society.Player
             }
         }
 
+
+        /// <summary>
+        /// Установить возможность получать урон от коллизий
+        /// </summary>
+        /// <param name="v"></param>
+        internal void SetEnableDamageFromCollision(bool v) => IsEnableDamageFromCollision = v;
+
+        #region Coroutines
         private IEnumerator ThirstTimer()
         {
             while (true)
             {
                 if (allStaminsEnable)
                 {
-                    Thirst -= thirstDifference * (foodWaterMultiply ? 2 : 1);
+                    Thirst -=  foodWaterMultiply ? 2 : 1;
                 }
                 yield return new WaitForSeconds(waitForThirst);
             }
@@ -277,7 +286,7 @@ namespace Society.Player
             while (true)
             {
                 if (allStaminsEnable)
-                    Food -= foodDifference * (foodWaterMultiply ? 2 : 1);
+                    Food -= foodWaterMultiply ? 2 : 1;
                 yield return new WaitForSeconds(waitForHunger);
             }
         }
@@ -304,7 +313,15 @@ namespace Society.Player
                 timeFromLastDamage += Time.deltaTime;
             }
         }
-        internal void SetPossibleDamgeFromCollision(bool v) => PossibleDamgeFromCollision = v;
+        #endregion
+
+        #region ForceProperties
+
+        public static bool EndlessHealth { get; internal set; }
+        public static bool EndlessFood { get; internal set; }
+        public static bool EndlessWater { get; internal set; }
+
+        #endregion
 
         #region ForceCommands
 
