@@ -84,6 +84,11 @@
     <Compile Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Scripts\Editor\EffectSettingsEditor.cs" />
     <Compile Include="Assets\Shaders\Purchased\Particle Lines\Scripts\Editor\ParticleLinesEditor.cs" />
     <Compile Include="Assets\Shaders\Purchased\Particle Lines\Scripts\ParticleLineScaler\Scripts\Editor\ParticleLineScaler.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Scripts\Editor\NatureAssetImporterEditorWrapper.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Scripts\Editor\NatureAssetImporterWrapper.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Scripts\Editor\ShaderXImporterEditorWrapper.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Scripts\Editor\ShaderXImporterWrapper.cs" />
+    <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Scripts\Editor\TemplateXImporterWrapper.cs" />
     <None Include="Assets\Shaders\Particles\NotNormal\EffectExamples\Editor\PackageManagerAssembly\PackageImportList.txt" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -285,6 +290,36 @@
     </Reference>
     <Reference Include="PackageManagerAssembly">
       <HintPath>F:/Society/Assets/Shaders/Particles/NotNormal/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Nature">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Nature Shaders/Plugins/VisualDesignCafe.Nature.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Nature.Editor">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Nature Shaders/Plugins/VisualDesignCafe.Nature.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Community">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Community.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Events">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.PackageManager">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.PackageManager.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Web">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Editor.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Packages">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Package Manager/VisualDesignCafe.Packages.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.ShaderX">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.Editor.ShaderX.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.ShaderX">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.ShaderX.dll</HintPath>
+    </Reference>
+    <Reference Include="VisualDesignCafe.ShaderX.Editor">
+      <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/ShaderX/Plugins/VisualDesignCafe.ShaderX.Editor.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>F:/Society/Library/PackageCache/com.unity.render-pipelines.core@7.6.0/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>

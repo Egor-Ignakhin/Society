@@ -79,5 +79,10 @@ namespace Society.Dialogs
             MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
             Missions.MissionsManager.Instance.GetActiveMission().Report();
         }
+
+        protected override List<(int mission, int task)> GetInteractableTasksMissions()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

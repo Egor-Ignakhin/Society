@@ -34,6 +34,11 @@ namespace Society.Dialogs
         (DialogType.Player,"Спасибо, Сан Саныч, постараюсь.", "Спасибо, Сан Саныч, постараюсь.",true)
         };
         }
+        protected override List<(int mission, int task)> GetInteractableTasksMissions() => new List<(int mission, int task)>
+        {
+            (0,1),
+            (0,5)
+        };
         protected override IEnumerator DialogsTraker()
         {
             MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
@@ -41,6 +46,7 @@ namespace Society.Dialogs
             {
                 //если говорит дима то звук 2д иначе 3д
 
+                //   if (!GetInteractableTasksMissions().Contains(MissionTask))
                 if (currentAsk > 2 && dialogs[currentAsk - 2].IsBreakDialog)
                 {
                     FinishDialog();
@@ -49,7 +55,7 @@ namespace Society.Dialogs
 
                 if ((dialogs[currentAsk - 1].dt == DialogType.Player) && (currentAsk != 1))
                 {
-                    Dialogs.DialogDrawer drawer = FindObjectOfType<Dialogs.DialogDrawer>();
+                    Dialogs.DialogDrawer drawer = FindObjectOfType<DialogDrawer>();
                     drawer.SetAnswers((dialogs[currentAsk - 1].answerText, TakeAnswerInDialog), (string.Empty, null), (string.Empty, null));
                     answerInDialogHasTaked = false;
                     while (!answerInDialogHasTaked)
@@ -82,14 +88,13 @@ namespace Society.Dialogs
                     yield return null;
                 }
             }
-            currentDialog++;
             MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
 
-            if (currentDialog == 1)
+            if (MissionTask == (0, 1))
             {
                 MissionsManager.Instance.GetActiveMission().Report();
             }
-            else if (currentDialog == 2)
+            else if (MissionTask == (0, 5))
             {
                 FindObjectOfType<InventoryContainer>().AddItem((int)ItemStates.ItemsID.Tablets_1, 10, new SMGInventoryCellGun());
                 MissionsManager.Instance.GetActiveMission().Report();

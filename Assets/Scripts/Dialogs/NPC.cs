@@ -1,9 +1,10 @@
-﻿using Society.GameScreens;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+using Society.GameScreens;
+using Society.Missions;
 using Society.Missions.TaskSystem;
 using Society.Patterns;
-
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.AI;
@@ -26,7 +27,6 @@ namespace Society.Dialogs
         protected List<(DialogType dt, string screenText, string answerText, bool IsBreakDialog)> dialogs;
         protected Missions.MissionInteractiveObject mtaskChecker;
         protected int currentAsk = 1;
-        protected int currentDialog;
         protected float clipLingth;
         protected Animator mAnimator;
         protected NavMeshAgent mAgent;
@@ -34,12 +34,21 @@ namespace Society.Dialogs
         protected bool interactionTakesPlace;
         private TaskDrawer taskDrawer;
         protected abstract string PathToClips();
+        protected abstract List<(int mission, int task)> GetInteractableTasksMissions();
+        protected (int mission, int task) MissionTask
+        {
+            get
+            {
+                var state = MissionsManager.Instance.GetState();
+                return (state.currentMission, state.currentTask);
+            }
+        }
         public override void Interact()
         {
             if (interactionTakesPlace)
                 return;
             interactionTakesPlace = true;
-            var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
+            var ddrawer = FindObjectOfType<DialogDrawer>();
             ddrawer.SetEnableAll(true);
             ddrawer.SetNameAndLevel(personName, personLevel);
             ddrawer.SetRelationAtPlayer(personRelationAtPlayer);
@@ -98,7 +107,7 @@ namespace Society.Dialogs
         protected void TakeAnswerInDialog() => answerInDialogHasTaked = true;
         public void FinishDialog()
         {
-            var ddrawer = FindObjectOfType<Dialogs.DialogDrawer>();
+            var ddrawer = FindObjectOfType<DialogDrawer>();
             ddrawer.SetEnableAll(false);
 
 

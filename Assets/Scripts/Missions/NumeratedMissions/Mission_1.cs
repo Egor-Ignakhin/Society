@@ -13,14 +13,6 @@ namespace Society.Missions.NumeratedMissions
         public override int GetMissionNumber() => 1;
         protected override void StartMission()
         {
-            OnTaskActions.Add("finish", () =>
-            {
-
-                MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
-                DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
-                db.OnInit(2, Color.black);
-                db.SubsctibeOnFinish(OnTaskActions["playbunkerSound"]);
-            });
             OnTaskActions.Add("playbunkerSound", async () =>
             {
                 var Aud1 = gameObject.AddComponent<AudioSource>();
@@ -56,6 +48,13 @@ namespace Society.Missions.NumeratedMissions
             {
                 OnTaskActions["finish"].Invoke();
             }
+        }
+        public override void FinishMission()
+        {
+            MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+            DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
+            db.OnInit(2, Color.black);
+            db.SubsctibeOnFinish(OnTaskActions["playbunkerSound"]);
         }
     }
 }
