@@ -1196,6 +1196,7 @@ GameObject:
   - component: {fileID: 2147786083578924818}
   - component: {fileID: 2147786083578924820}
   - component: {fileID: 326347639}
+  - component: {fileID: 38843477}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -1319,7 +1320,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fe11aff849c9604cbbb65f1c2921c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaximumHealth: 100
 --- !u!114 &2147786083578924818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1359,6 +1359,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8652c625514df594abfc518ba56a35ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &38843477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147786083578924829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1065044345, guid: 1b569252fc267bc4588d2bfc062b15b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trailDuration: 0
 --- !u!1 &2719176984494665644
 GameObject:
   m_ObjectHideFlags: 0
