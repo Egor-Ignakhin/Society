@@ -1,11 +1,12 @@
+using Society.GameScreens;
+
 namespace Society.Player
 {
-    public class PlayerDeathHandler
+    internal sealed class PlayerDeathHandler
     {
-        private const int deadSceneIndex = 4;
-        public void LoadDeadScene()
+        public void OnDeathEvent()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(deadSceneIndex);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.DieScreenScene);
         }
     }
 }

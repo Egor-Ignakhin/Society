@@ -24,10 +24,10 @@ namespace Society.Effects
         private void Awake()
         {
             stepSounds = new Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>>();
-            var terrain = Terrain.activeTerrain;
+            var terrain = GameObject.Find("Terrain_1233221").GetComponent<Terrain>();
             terrainDetector = new TerrainDetector(terrain);
             if (terrain)
-                terrainTr = Terrain.activeTerrain.transform;
+                terrainTr = terrain.transform;
             int lastMatIndex = 0;
             for (int k = 0; k < System.Enum.GetNames(typeof(Layers)).Length; k++)
             {
@@ -71,7 +71,6 @@ namespace Society.Effects
                 return 0;
             return indexFromMats[physMat];
         }
-        public TerrainDetector GetTerrainDetector() => terrainDetector;
         public int GetIndexFromRayCast(RaycastHit hit, Vector3 gmPosition)
         {
             if (hit.transform != terrainTr)

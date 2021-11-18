@@ -38,7 +38,9 @@ namespace Society.Player
 
                 value = Mathf.Clamp(value, 0, MaxHealth);
                 if (value == 0 && BnInitFlag)
-                    OnDead();
+                {
+                    playerDeathHandler.OnDeathEvent();
+                }
                 health = value;
                 HealthChangeValue?.Invoke((float)Math.Round(health, 0));
             }
@@ -238,11 +240,7 @@ namespace Society.Player
                 if (currentCountOfZones == 0)
                     isInsideRadiationZone = value;
             }
-        }
-        /// <summary>
-        /// функция вызывающая загрузку сцены смерти
-        /// </summary>
-        private void OnDead() => playerDeathHandler.LoadDeadScene();
+        }        
 
         /// <summary>
         /// Функция регенерации здоровья

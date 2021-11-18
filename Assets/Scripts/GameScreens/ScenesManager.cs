@@ -16,5 +16,6 @@ namespace Society.GameScreens
         public static int MainMenu = 0;
         public static int Bunker = 2;
         public static int Map = 3;
+        public static int DieScreenScene = 4;
     }
 }
