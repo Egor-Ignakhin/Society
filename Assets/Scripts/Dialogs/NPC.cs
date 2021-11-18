@@ -39,7 +39,7 @@ namespace Society.Dialogs
         {
             get
             {
-                var state = MissionsManager.Instance.GetPlotState();
+                var state = MissionsManager.GetPlotState();
                 return (state.currentMission, state.currentTask);
             }
         }

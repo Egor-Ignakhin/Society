@@ -28,6 +28,7 @@ namespace Society.Missions.NumeratedMissions
 
                 MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
             }
+            base.OnReportTask(isLoad, isMissiomItem);
         }
     }
 }

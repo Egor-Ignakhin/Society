@@ -38,6 +38,7 @@ namespace Society.Missions.NumeratedMissions
                 default:
                     break;
             }
+            base.OnReportTask(isLoad, isMissiomItem);
         }
     }
 }

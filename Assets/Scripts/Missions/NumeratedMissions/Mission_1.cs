@@ -48,6 +48,7 @@ namespace Society.Missions.NumeratedMissions
             {
                 OnTaskActions["finish"].Invoke();
             }
+            base.OnReportTask(isLoad, isMissiomItem);
         }
         public override void FinishMission()
         {

@@ -41,7 +41,8 @@ namespace Society.Missions.NumeratedMissions
                 DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                 db.OnInit(2, Color.black);
                 db.SubsctibeOnFinish(OnTaskActions["1"]);
-            }                
+            }
+            base.OnReportTask(isLoad, isMissiomItem);
         }
     }
 }

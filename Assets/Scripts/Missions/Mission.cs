@@ -14,6 +14,7 @@ namespace Society.Missions
         protected int currentTask = 0;
         protected int missionItems = 0;
         protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
+        public event Action<int> ChangeTaskEvent;
 
         protected virtual void StartMission()
         {
@@ -72,7 +73,7 @@ namespace Society.Missions
         internal int GetCurrentTask() => currentTask;
 
 
-        protected abstract void OnReportTask(bool isLoad = false, bool isMissiomItem = false);
+        protected virtual void OnReportTask(bool isLoad = false, bool isMissiomItem = false) { ChangeTaskEvent?.Invoke(currentTask); }
 
         /// <summary>
         /// Насильный пропуск задачи

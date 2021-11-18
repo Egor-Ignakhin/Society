@@ -36,7 +36,7 @@ namespace Society.Editor
 
             GUILayout.BeginVertical();
 
-            var currentState = MissionsManager.Instance.GetPlotState();
+            var currentState = MissionsManager.GetPlotState();
 
             LocalizationManager.InitializeMissions();
             string cmTitle = LocalizationManager.GetMissionTitle(currentState.currentMission);
@@ -78,7 +78,7 @@ namespace Society.Editor
         /// </summary>
         private void ResetMissions()
         {
-            PlotState state = MissionsManager.Instance.GetPlotState();
+            PlotState state = MissionsManager.GetPlotState();
             state.currentMission = MissionsManager.MinMissions;
             state.currentTask = 0;
 
@@ -91,7 +91,7 @@ namespace Society.Editor
         /// </summary>
         private void ResetTasks()
         {
-            var state = MissionsManager.Instance.GetPlotState();
+            var state = MissionsManager.GetPlotState();
             state.currentTask = 0;
 
             string data = JsonConvert.SerializeObject(state, Formatting.Indented);

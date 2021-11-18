@@ -18,7 +18,7 @@ namespace Society.Missions
     public sealed class MissionsManager : Singleton<MissionsManager>
     {
         public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\PlotState.json"; // папка с сохранением    
-        private PlotState plotState;// состояние миссий        
+        private static PlotState plotState;// состояние миссий        
         public DescriptionDrawer DescriptionDrawer { get; private set; }
         public const int MinMissions = 0;
 
@@ -43,7 +43,7 @@ namespace Society.Missions
         /// <summary>
         /// Инициализация состояния миссий
         /// </summary>
-        private void InitializePlotState()
+        private static void InitializePlotState()
         {
             try
             {
@@ -68,7 +68,7 @@ namespace Society.Missions
         /// </summary>
         public static void SaveState()
         {
-            string data = JsonUtility.ToJson(Instance.GetPlotState(), true);
+            string data = JsonUtility.ToJson(GetPlotState(), true);
             File.WriteAllText(SavePath, data);
         }
 
@@ -103,9 +103,9 @@ namespace Society.Missions
             }
             if (foundedMission)
             {
-                foundedMission.ContinueMission(plotState.currentTask);
-
                 activeMission = foundedMission;
+
+                foundedMission.ContinueMission(GetPlotState().currentTask);                
             }
 
         }
@@ -127,7 +127,7 @@ namespace Society.Missions
         /// Возвращает состояния сценария
         /// </summary>
         /// <returns></returns>
-        public PlotState GetPlotState()
+        public static PlotState GetPlotState()
         {
             if (plotState == null)
                 InitializePlotState();

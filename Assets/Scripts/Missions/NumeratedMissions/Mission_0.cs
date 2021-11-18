@@ -43,7 +43,7 @@ namespace Society.Missions.NumeratedMissions
             base.StartMission();
         }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
-        {
+        {            
             if (isLoad)
             {
                 FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
@@ -92,6 +92,7 @@ namespace Society.Missions.NumeratedMissions
                 sanSanych.SetRunningState(true);
                 sanSanych.SetTarget(FindObjectOfType<FirstPersonController>().transform);
             }
+            base.OnReportTask(isLoad, isMissiomItem);
         }
         public override void FinishMission()
         {

@@ -4,7 +4,7 @@ namespace Society.Missions
     {
         public static int CalculateCompletedPercent()
         {
-            var state = MissionsManager.Instance.GetPlotState();
+            var state = MissionsManager.GetPlotState();
 
             int value = (int)((float)Localization.LocalizationManager.GetNumberOfCompletedMissionTasks(
                 state.currentMission, state.currentTask) / Localization.LocalizationManager.GetSumOfAllTasksOfAllMissions() * 100);

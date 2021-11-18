@@ -32,6 +32,13 @@ namespace Society.Missions
         /// </summary>
         [ReadOnlyField] [SerializeField] private string taskTitle = "N/A";
 #endif
+
+
+        /// <summary>
+        /// Метка задачи. Используется по нужде.
+        /// </summary>
+        [SerializeField] private TaskLabel taskLabel;
+
         /// <summary>
         /// Миссия трекера
         /// </summary>
@@ -42,10 +49,24 @@ namespace Society.Missions
         /// </summary>
         private bool hasInteracted;
 
-        protected virtual void Start()
+
+        private void OnChangeTask(int task)
         {
-            //Определение нужной мисии из всех доступных на сцене
+            if (taskLabel)
+            {
+                if (CanInteract())
+                    taskLabel.Activate();
+                else 
+                    taskLabel.Deactivate();
+            }
+        }
+        protected override void Awake()
+        {
+            //Определение нужной мисии из всех доступных на сцене            
             mMission = FindObjectsOfType<Mission>().First(m => m.GetMissionNumber() == missionNumber);
+            mMission.ChangeTaskEvent += OnChangeTask;
+
+            base.Awake();
         }
 
         public override void Interact() => Report();
@@ -66,6 +87,11 @@ namespace Society.Missions
                 mMission.FinishMission();
             else
                 mMission.Report();
+
+            if (taskLabel)
+            {
+                taskLabel.Deactivate();
+            }
         }
 
         /// <summary>
@@ -95,6 +121,12 @@ namespace Society.Missions
         /// </summary>
         /// <returns></returns>
         private bool ThisTaskIsTheLastInMission() => LocalizationManager.GetNumberOfMissionTasks(missionNumber) == (task + 1);
+
+        private void OnDisable()
+        {
+            if (mMission)
+                mMission.ChangeTaskEvent -= OnChangeTask;
+        }
 
 #if UNITY_EDITOR
         public void OnValidate()

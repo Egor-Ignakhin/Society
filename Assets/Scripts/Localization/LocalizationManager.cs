@@ -11,7 +11,7 @@ namespace Society.Localization
         /// <summary>
         /// Подсказки о взаимодействующих клавишах
         /// </summary>
-        private static Dictionary<string, string> upKeysDescriptions;
+        private static IReadOnlyDictionary<string, string> upKeysDescriptions;
 
         /// <summary>
         /// Подсказки по наведению на предмет
@@ -33,7 +33,7 @@ namespace Society.Localization
         /// </summary>
         private static MedicalItems medicalItems;
 
-        private static readonly List<Mission> missions = new List<Mission>();
+        private static List<Mission> missions;
         static LocalizationManager()
         {
             InitializeMissions();
@@ -51,6 +51,7 @@ namespace Society.Localization
         /// </summary>
         public static void InitializeMissions()
         {
+            missions = new List<Mission>();
             for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
             {
                 string data = File.ReadAllText(GetPathToMission(i));
