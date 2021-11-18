@@ -1,5 +1,7 @@
 ﻿using System.IO;
 
+using Newtonsoft.Json;
+
 using UnityEngine;
 
 namespace Society.Menu
@@ -18,31 +20,19 @@ namespace Society.Menu
         }
         public void LoadNewGame()
         {
-            Missions.MissionsManager.State state = new Missions.MissionsManager.State();
-            string data = JsonUtility.ToJson(state, true);
+            Missions.PlotState state = new Missions.PlotState();
+            string data = JsonConvert.SerializeObject(state);
             File.WriteAllText(Missions.MissionsManager.SavePath, data);
 
             LoadGame();
         }
-        public void Settings()
-        {
-            settings.gameObject.SetActive(!settings.gameObject.activeInHierarchy);
-        }
+        public void Settings() => settings.gameObject.SetActive(!settings.gameObject.activeInHierarchy);
         public void Keyboard()
         {
 
         }
-        public void LoadGame()
-        {
-            FindObjectOfType<Society.GameScreens.ScenesManager>().LoadNextScene();
-        }
-        internal void OnButtonEnter()
-        {
-            aud.PlayOneShot(OnButtonEnterSound);
-        }
-        public void ExitFromGame()
-        {
-            Application.Quit();
-        }
+        public void LoadGame() => FindObjectOfType<GameScreens.ScenesManager>().LoadNextScene();
+        internal void OnButtonEnter() => aud.PlayOneShot(OnButtonEnterSound);
+        public void ExitFromGame() => Application.Quit();
     }
 }

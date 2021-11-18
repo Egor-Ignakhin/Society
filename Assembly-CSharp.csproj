@@ -219,7 +219,13 @@
     <Compile Include="Assets\Scripts\Inventory\PrefabsData.cs" />
     <Compile Include="Assets\Scripts\Inventory\SpriteData.cs" />
     <Compile Include="Assets\Scripts\Inventory\SupportItemCircular.cs" />
+    <Compile Include="Assets\Scripts\Localization\HintsData.cs" />
+    <Compile Include="Assets\Scripts\Localization\ItemPropertiesData.cs" />
     <Compile Include="Assets\Scripts\Localization\LocalizationManager.cs" />
+    <Compile Include="Assets\Scripts\Localization\MainTypes.cs" />
+    <Compile Include="Assets\Scripts\Localization\MedicalItems.cs" />
+    <Compile Include="Assets\Scripts\Localization\Mission.cs" />
+    <Compile Include="Assets\Scripts\Localization\NutrientItems.cs" />
     <Compile Include="Assets\Scripts\Localization\SerialisableInventoryItem.cs" />
     <Compile Include="Assets\Scripts\Maps\CompassController.cs" />
     <Compile Include="Assets\Scripts\Maps\StreetNameContainer.cs" />
@@ -244,6 +250,7 @@
     <Compile Include="Assets\Scripts\Missions\NumeratedMissions\Mission_3.cs" />
     <Compile Include="Assets\Scripts\Missions\NumeratedMissions\Mission_4.cs" />
     <Compile Include="Assets\Scripts\Missions\Plot.cs" />
+    <Compile Include="Assets\Scripts\Missions\PlotState.cs" />
     <Compile Include="Assets\Scripts\Missions\TaskSystem\MissionInteractiveObjectTrigger.cs" />
     <Compile Include="Assets\Scripts\Missions\TaskSystem\TaskDrawer.cs" />
     <Compile Include="Assets\Scripts\Music\LocationMusic.cs" />
@@ -416,6 +423,7 @@
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Readme.txt" />
     <None Include="Assets\NormalImages\AllSkyFree\AllSkyFree_Readme.txt" />
+    <None Include="Assets\Samples\JsonDotNet\link.xml" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\_Effects (Mobile)\MuzzleFlashes\!MuzzleFlash Differences.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\Distortion.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
@@ -653,6 +661,9 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.31f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>F:/Society/Assets/Samples/JsonDotNet/Assemblies/Standalone/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="VisualDesignCafe.Nature">
       <HintPath>F:/Society/Assets/Shaders/Purchased/Visual Design Cafe/Nature Shaders/Plugins/VisualDesignCafe.Nature.dll</HintPath>

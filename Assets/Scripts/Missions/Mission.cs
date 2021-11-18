@@ -64,7 +64,7 @@ namespace Society.Missions
         }
         protected void SetTask(int number)
         {
-            string neededContent = Localization.LocalizationManager.PathToCurrentLanguageContent(Localization.LocalizationManager.Type.Tasks, GetMissionNumber(), number);
+            string neededContent = Localization.LocalizationManager.GetTask(GetMissionNumber(), number);
 
             MissionsManager.Instance.GetTaskDrawer().DrawNewTask(neededContent);
         }

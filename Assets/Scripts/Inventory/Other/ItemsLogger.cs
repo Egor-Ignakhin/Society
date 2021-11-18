@@ -54,7 +54,7 @@ namespace Society.Inventory.Other
                 return;
 
             var lg = AddNewLogger();
-            lg.SetText($"Добавлено: {Localization.LocalizationManager.GetHint(id)}  x{count}");
+            lg.SetText($"Добавлено: {Localization.LocalizationManager.GetHint(((ItemStates.ItemsID)id).ToString())}  x{count}");
             lg.color = Color.green;
         }
         private TextMeshProUGUI AddNewLogger()
@@ -84,7 +84,7 @@ namespace Society.Inventory.Other
             if (!inventoryContainer.IsInitialized)
                 return;
             var lg = AddNewLogger();
-            lg.SetText($"Использовано: {Localization.LocalizationManager.GetHint(id)}  x{count}");
+            lg.SetText($"Использовано: {Localization.LocalizationManager.GetHint(((ItemStates.ItemsID)id).ToString())}  x{count}");
             lg.color = Color.white;
         }
         private void DropItem(string title, int count)

@@ -39,6 +39,6 @@ namespace Society.Inventory
 
         internal static bool ItsMedical(int id) => id == (int)ItemsID.Tablets_1;
 
-        internal static (float health, float radiation) GetMedicalPower(int id) => LocalizationManager.GetMedicalProperties(id);
+        internal static (float health, float radiation) GetMedicalPower(int id) => LocalizationManager.GetSalubrity(id);
     }
 }

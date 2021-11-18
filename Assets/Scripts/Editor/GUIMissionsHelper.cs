@@ -1,6 +1,9 @@
 
 using System.IO;
 
+using Newtonsoft.Json;
+
+using Society.Localization;
 using Society.Missions;
 
 using UnityEditor;
@@ -25,7 +28,7 @@ namespace Society.Editor
             if (Application.isPlaying)
                 return;
 
-            MissionsManager.MissionInfo.UpdateInfo();
+            LocalizationManager.InitializeMissions();
 
             autoRepaintOnSceneChange = true;
 
@@ -33,13 +36,13 @@ namespace Society.Editor
 
             GUILayout.BeginVertical();
 
-            var currentState = Missions.MissionsManager.LoadState();
+            var currentState = MissionsManager.Instance.GetPlotState();
 
-            Missions.MissionsManager.MissionInfo.UpdateInfo();
-            string cmTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(currentState.currentMission);
-            string ctTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(currentState.currentMission, currentState.currentTask);
+            LocalizationManager.InitializeMissions();
+            string cmTitle = LocalizationManager.GetMissionTitle(currentState.currentMission);
+            string ctTitle = LocalizationManager.GetTaskTitle(currentState.currentMission, currentState.currentTask);
 
-            if(ctTitle == "ErrorTasks")
+            if(ctTitle == "Error")
             {
                 ResetTasks();
             }
@@ -52,9 +55,9 @@ namespace Society.Editor
             EditorGUILayout.LabelField("Current task:");
             EditorGUILayout.LabelField("    ID - " + currentState.currentTask);
             EditorGUILayout.LabelField("    Title - " + ctTitle);
-            currentState.currentTask = EditorGUILayout.IntSlider(currentState.currentTask, 0, MissionsManager.MissionInfo.GetMaxTasksByIndex(currentState.currentMission) - 1);
+            currentState.currentTask = EditorGUILayout.IntSlider(currentState.currentTask, 0, LocalizationManager.GetNumberOfMissionTasks(currentState.currentMission) - 1);
 
-            Missions.MissionsManager.SaveState(currentState);
+            MissionsManager.SaveState();
 
             GUILayout.BeginHorizontal();
 
@@ -75,7 +78,7 @@ namespace Society.Editor
         /// </summary>
         private void ResetMissions()
         {
-            MissionsManager.State state = MissionsManager.LoadState();
+            PlotState state = MissionsManager.Instance.GetPlotState();
             state.currentMission = MissionsManager.MinMissions;
             state.currentTask = 0;
 
@@ -88,10 +91,10 @@ namespace Society.Editor
         /// </summary>
         private void ResetTasks()
         {
-            MissionsManager.State state = MissionsManager.LoadState();
+            var state = MissionsManager.Instance.GetPlotState();
             state.currentTask = 0;
 
-            string data = JsonUtility.ToJson(state, true);
+            string data = JsonConvert.SerializeObject(state, Formatting.Indented);
             File.WriteAllText(MissionsManager.SavePath, data);
         }
     }

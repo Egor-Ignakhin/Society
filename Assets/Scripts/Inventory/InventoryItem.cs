@@ -72,7 +72,7 @@ namespace Society.Inventory
         private void Start()
         {
             inventoryContainer = FindObjectOfType<InventoryContainer>();
-            MainDescription = Localization.LocalizationManager.MainTypes.Item;
+            MainDescription = Localization.MainTypes.Item;
 
             SetId((int)startItem);
             SetType(startItem.ToString());

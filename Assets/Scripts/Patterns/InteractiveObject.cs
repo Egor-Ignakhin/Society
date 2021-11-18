@@ -27,7 +27,7 @@ namespace Society.Patterns
             Type = t;
             SetDescription();
         }
-        protected void SetDescription() => Description = Society.Localization.LocalizationManager.GetHint(this);
+        protected void SetDescription() => Description = Society.Localization.LocalizationManager.GetHint(Type);
 
     }
 }

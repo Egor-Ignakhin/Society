@@ -1,217 +1,177 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using Society.Patterns;
+using Newtonsoft.Json;
 
 using UnityEngine;
 namespace Society.Localization
 {
     public static class LocalizationManager
     {
-        private static Dictionary<string, string> upKeysDescriptions;// словарь для подсказок (нажатия на клавишу)    
-        internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive) =>
-             $"{upKeysDescriptions[mainType]} ({inputInteractive})";
-
-        private static HintsData hintsData;
-        private static ItemPropertiesData itemProperties;
-        private static NutrientItems nutrientItems;
-        private static MedicalItems medicalItems;
-
-        public enum Type { Dialogs, Tasks, Hints }
+        /// <summary>
+        /// Подсказки о взаимодействующих клавишах
+        /// </summary>
+        private static Dictionary<string, string> upKeysDescriptions;
 
         /// <summary>
-        /// Возвращает путь до файла миссии по ей идентификатору
+        /// Подсказки по наведению на предмет
         /// </summary>
-        /// <param name="missionId"></param>
-        /// <returns></returns>
-        public static string GetPathToMission(int missionId)
-        {
-            return $"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\Mission_{missionId}.json";
-        }
-        public static class MainTypes
-        {
-            public const string Default = "Взаимодествовать";
-            public const string Item = "Поднять предмет";
-        }
-        private static readonly List<TaskContent> taskContents = new List<TaskContent>();
-        //   private static firstMDialogsContent dialogContent;
+        private static HintsData hintsData;
 
-        [System.Serializable]
-        public class TaskContent
+        /// <summary>
+        /// Свойства предметов
+        /// </summary>
+        private static ItemPropertiesData itemProperties;
+
+        /// <summary>
+        /// Питательные предметы
+        /// </summary>
+        private static NutrientItems nutrientItems;
+
+        /// <summary>
+        /// Медецинские предметы
+        /// </summary>
+        private static MedicalItems medicalItems;
+
+        private static readonly List<Mission> missions = new List<Mission>();
+        static LocalizationManager()
         {
-            public string MissionTitle;
-            public List<string> Tasks;// пути к задачам
-            public string GetTask(int ch) => Tasks[ch];
-            public int GetNumberTasks() => Tasks.Count;
+            InitializeMissions();
+            InitializeUpKeysDescriptions();
+            InitializeHints();
+            InitializeWeightMaxCountItems();
+            InitializeNutritiousItems();
+            InitializeMedicalItems();
         }
 
-        /*    [System.Serializable]
-            public class firstMDialogsContent
+        #region Initialization
+
+        /// <summary>
+        /// Инициализация миссий
+        /// </summary>
+        public static void InitializeMissions()
+        {
+            for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
             {
-                public List<string> Dialogs;// пути к диалогам
-                public string GetTask(int ch) => Dialogs[ch];
-            }*/
-
-        public static void InitDialogsTasks(Missions.MissionsManager.State tempState)
-        {
-            // инициализация путей
-            #region SetDialogs
-            {
-                //  string data = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\MissionDialogs_{tempState.currentMission}.json");
-                // dialogContent = JsonUtility.FromJson<firstMDialogsContent>(data);
+                string data = File.ReadAllText(GetPathToMission(i));
+                missions.Add(JsonConvert.DeserializeObject<Mission>(data));
             }
-            #endregion
-            #region SetTasks
-            {
-                for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
-                {                    
-                    string data = File.ReadAllText(GetPathToMission(i));
-                    taskContents.Add(JsonUtility.FromJson<TaskContent>(data));
-                }
-            }
-            #endregion
+        }
 
-            #region SetUpLeys
-            upKeysDescriptions = new Dictionary<string, string>
+        /// <summary>
+        /// Инициализация подсказок о клавишах
+        /// </summary>
+        private static void InitializeUpKeysDescriptions()
         {
+            upKeysDescriptions = new Dictionary<string, string> {
             {string.Empty, MainTypes.Default},
             {MainTypes.Item, MainTypes.Item}
-        };
-            #endregion
+            };
         }
-        #region InitRegion
-        private static void InitHD()
+
+        /// <summary>
+        /// Инициализация подсказок
+        /// </summary>
+        private static void InitializeHints()
         {
             string hdata = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\Descriptions.json");
-            hintsData = JsonUtility.FromJson<HintsData>(hdata);
+            hintsData = JsonConvert.DeserializeObject<HintsData>(hdata);
             hintsData.hints = new Dictionary<string, string>();
             for (int i = 0; i < hintsData.Types.Count; i++)
             {
                 hintsData.hints.Add(hintsData.Types[i].Type, hintsData.Types[i].Desc);
             }
         }
-        private static void InitMCW()
+
+        /// <summary>
+        /// Инициализация массы и макс. кол-ва предметов
+        /// </summary>
+        private static void InitializeWeightMaxCountItems()
         {
             string mcvData = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\WeightAndMaxCountItems.json");
-            itemProperties = JsonUtility.FromJson<ItemPropertiesData>(mcvData);
+            itemProperties = JsonConvert.DeserializeObject<ItemPropertiesData>(mcvData);
             itemProperties.WeightAndMaxCountItems = new Dictionary<int, (int maxCount, decimal weight)>();
             for (int i = 0; i < itemProperties.Properties.Count; i++)
             {
-                System.Enum.TryParse($"{itemProperties.Properties[i].Type}", out Society.Inventory.ItemStates.ItemsID myStatus);
+                System.Enum.TryParse($"{itemProperties.Properties[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
                 itemProperties.WeightAndMaxCountItems.Add((int)myStatus, (itemProperties.Properties[i].MaxCount, (decimal)itemProperties.Properties[i].Weight));
             }
         }
-        private static void InitNTRS()
+
+        /// <summary>
+        /// Инициализация питательных свойства предметов
+        /// </summary>
+        private static void InitializeNutritiousItems()
         {
             string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\NutritiousItems.json");
-            nutrientItems = JsonUtility.FromJson<NutrientItems>(data);
+            nutrientItems = JsonConvert.DeserializeObject<NutrientItems>(data);
             nutrientItems.FoodWaterItems = new Dictionary<int, (int food, int water)>();
             for (int i = 0; i < nutrientItems.MNutritious.Count; i++)
             {
-                System.Enum.TryParse($"{nutrientItems.MNutritious[i].Type}", out Society.Inventory.ItemStates.ItemsID myStatus);
+                System.Enum.TryParse($"{nutrientItems.MNutritious[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
                 nutrientItems.FoodWaterItems.Add((int)myStatus, (nutrientItems.MNutritious[i].Food, nutrientItems.MNutritious[i].Water));
             }
         }
-        private static void InitMed()
+
+        /// <summary>
+        /// Инициализация целебных свойства предметов
+        /// </summary>
+        private static void InitializeMedicalItems()
         {
             string data = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\MedicalItems.json");
-            medicalItems = JsonUtility.FromJson<MedicalItems>(data);
+            medicalItems = JsonConvert.DeserializeObject<MedicalItems>(data);
             medicalItems.medItems = new Dictionary<int, (int health, int radiation)>();
             for (int i = 0; i < medicalItems.Items.Count; i++)
             {
-                System.Enum.TryParse($"{medicalItems.Items[i].Type}", out Society.Inventory.ItemStates.ItemsID myStatus);
+                System.Enum.TryParse($"{medicalItems.Items[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
                 medicalItems.medItems.Add((int)myStatus, (medicalItems.Items[i].Health, medicalItems.Items[i].Radiation));
             }
         }
-        #endregion
-        public class HintsData : SerialisableInventoryList
-        {
-            public List<Hint> Types;
-            public Dictionary<string, string> hints;
-            public string GetHint(string t)
-            {
-                return hints[t];
-            }
 
-            [System.Serializable]
-            public class Hint : SerialisableInventoryItem
-            {
-                public string Desc;
-            }
+        #endregion                      
 
-        }
-        public class ItemPropertiesData : SerialisableInventoryList
-        {
-            public List<ItemProperties> Properties;
-            public Dictionary<int, (int maxCount, decimal weight)> WeightAndMaxCountItems;
-            public int GetMaxCount(int id) => WeightAndMaxCountItems[id].maxCount;
-            public decimal GetWight(int id) => WeightAndMaxCountItems[id].weight;
+        /// <summary>
+        /// Возвращает путь до файла миссии
+        /// </summary>
+        /// <param name="missionId"></param>
+        /// <returns></returns>
+        public static string GetPathToMission(int missionId) =>
+            $"{Directory.GetCurrentDirectory()}\\Localization\\Missions\\Mission_{missionId}.json";
 
-            [System.Serializable]
-            public class ItemProperties : SerialisableInventoryItem
-            {
-                public int MaxCount;
-                public float Weight;
-            }
-        }
-        public class NutrientItems : SerialisableInventoryList
-        {
-            public List<Nutritious> MNutritious;
-            public Dictionary<int, (int food, int water)> FoodWaterItems;
-            [System.Serializable]
-            public class Nutritious : SerialisableInventoryItem
-            {
-                public int Food;
-                public int Water;
-            }
+        /// <summary>
+        /// Возвращает задачу по ключу
+        /// </summary>
+        /// <param name="missionNumber"></param>
+        /// <param name="checkpoint"></param>
+        /// <returns></returns>
+        public static string GetTask(int missionNumber, int checkpoint) => missions[missionNumber].GetTask(checkpoint);
 
-            internal (int food, int water) GetProperties(int id)
-            {
-                return FoodWaterItems[id];
-            }
-        }
-        public class MedicalItems : SerialisableInventoryList
-        {
-            public List<Medicals> Items;
-            public Dictionary<int, (int health, int radiation)> medItems;
-            [System.Serializable]
-            public class Medicals : SerialisableInventoryItem
-            {
-                public int Health;
-                public int Radiation;
-            }
+        /// <summary>
+        /// Возвращает количество задач в миссии
+        /// </summary>
+        /// <param name="missionNumber"></param>
+        /// <returns></returns>
+        public static int GetNumberOfMissionTasks(int missionNumber) => missions[missionNumber].GetNumberTasks();
 
-            internal (int health, int radiation) GetProperties(int id)
-            {
-                return medItems[id];
-            }
-        }
-        public static string PathToCurrentLanguageContent(Type type, int missionNumber, int checkpoint)// возвращает путь до нужного содержимого
-        {
-            switch (type)
-            {
-                //   case Type.Dialogs:
-                //     return GetDialog(missionNumber, checkpoint);
-                case Type.Tasks:
-                    return GetTask(missionNumber, checkpoint);
-                default:
-                    return null;
-            }
-        }
-        //private static string GetDialog(int missionNumber, int checkpoint) => dialogContent.GetTask(checkpoint);
-
-        private static string GetTask(int missionNumber, int checkpoint) => taskContents[missionNumber].GetTask(checkpoint);
-        public static int GetNumberOfMissionTasks(int missionNumber) => taskContents[missionNumber].GetNumberTasks();
-        public static int GetNumberOfMissionTasks()
+        /// <summary>
+        /// Возвращает число сумму всех задач всех миссий
+        /// </summary>
+        /// <returns></returns>
+        public static int GetSumOfAllTasksOfAllMissions()
         {
             int temp = 0;
             for (int i = 0; i <= Missions.MissionsManager.MaxMissions; i++)
-            {
-                temp += taskContents[i].GetNumberTasks();
-            }
+                temp += missions[i].GetNumberTasks();
+
             return temp;
         }
 
+        /// <summary>
+        /// Возвращает количество пройденных задач
+        /// </summary>
+        /// <param name="currentMissionNumber"></param>
+        /// <param name="currentTaskNumber"></param>
+        /// <returns></returns>
         internal static int GetNumberOfCompletedMissionTasks(int currentMissionNumber, int currentTaskNumber)
         {
             int temp = 0;
@@ -220,7 +180,7 @@ namespace Society.Localization
                 //Если тек. миссия моложе итерационной
                 if (currentMissionNumber > i)
                 {
-                    temp += taskContents[i].GetNumberTasks();// прибавить к текущим задачам все итерационные
+                    temp += missions[i].GetNumberTasks();// прибавить к текущим задачам все итерационные
                 }
                 else if (currentMissionNumber == i)
                 {
@@ -230,42 +190,77 @@ namespace Society.Localization
             return temp;
         }
 
-        public static string GetHint(InteractiveObject interactiveObject)
+        /// <summary>
+        /// Возвращает подсказку об объекте
+        /// </summary>
+        /// <param name="interactiveObject"></param>
+        /// <returns></returns>
+        public static string GetHint(string type) => type != null ? hintsData.GetHint(type) : null;
+
+        /// <summary>
+        /// Возвращает макс. количество предметов в стаке
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static int GetMaxCountItem(int id) => itemProperties.GetMaxCount(id);
+
+        /// <summary>
+        /// Возвращает вес предмета
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        internal static decimal GetWeightItem(int id) => itemProperties.GetWight(id);
+
+        /// <summary>
+        /// Возвращает питательность предмета
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        internal static (int food, int water) GetNutrition(int id) => nutrientItems.GetProperties(id);
+
+        /// <summary>
+        /// Возвращает целебные свойства предмета
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        internal static (float health, float radiation) GetSalubrity(int id) => medicalItems.GetSalubrity(id);
+
+        /// <summary>
+        /// Возвращает подсказку по наведению на объект
+        /// </summary>
+        /// <param name="mainType"></param>
+        /// <param name="inputInteractive"></param>
+        /// <returns></returns>
+        internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive) =>
+             $"{upKeysDescriptions[mainType]} ({inputInteractive})";
+
+#if UNITY_EDITOR
+        public static string GetMissionTitle(int missionId)
         {
-            if (hintsData == null)
-                InitHD();
-            return interactiveObject.Type != null ? hintsData.GetHint(interactiveObject.Type) : null;
-        }
-        public static string GetHint(int id)
-        {
-            if (hintsData == null)
-                InitHD();
-            return id != 0 ? hintsData.GetHint(((Society.Inventory.ItemStates.ItemsID)id).ToString()) : null;
-        }
-        public static int GetMaxCountItem(int id)
-        {
-            if (itemProperties == null)
-                InitMCW();
-            return itemProperties.GetMaxCount(id);
-        }
-        internal static decimal GetWeightItem(int id)
-        {
-            if (itemProperties == null)
-                InitMCW();
-            return itemProperties.GetWight(id);
-        }
-        internal static (int food, int water) GetNutrition(int id)
-        {
-            if (nutrientItems == null)
-                InitNTRS();
-            return nutrientItems.GetProperties(id);
+            try
+            {
+                return missions[missionId].Title;
+            }
+            catch
+            {
+                Debug.LogError($"Failed to get mission title. Invalid mission id = {missionId}");
+                return "Error";
+            }
         }
 
-        internal static (float health, float radiation) GetMedicalProperties(int id)
+        public static string GetTaskTitle(int missionId, int taskId)
         {
-            if (nutrientItems == null)
-                InitMed();
-            return medicalItems.GetProperties(id);
+            try
+            {
+                return missions[missionId].GetTask(taskId);
+            }
+            catch
+            {
+                Debug.LogError($"Failed to get task title. " +
+                    $"Invalid mission id = {missionId}, Invalid task id = {taskId}");
+                return "Error";
+            }            
         }
+#endif
     }
 }

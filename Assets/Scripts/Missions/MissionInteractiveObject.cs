@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 
+using Society.Localization;
 using Society.Patterns;
 
 using UnityEngine;
@@ -93,16 +94,13 @@ namespace Society.Missions
         /// Задача трекера - последняя в миссии?
         /// </summary>
         /// <returns></returns>
-        private bool ThisTaskIsTheLastInMission()
-        {
-            return Localization.LocalizationManager.GetNumberOfMissionTasks(missionNumber) == (task + 1);
-        }
+        private bool ThisTaskIsTheLastInMission() => LocalizationManager.GetNumberOfMissionTasks(missionNumber) == (task + 1);
 
 #if UNITY_EDITOR
         public void OnValidate()
         {
-            missionTitle = MissionsManager.MissionInfo.GetMissionTitleByIndex(missionNumber);
-            taskTitle = MissionsManager.MissionInfo.GetMissionTaskTitleByIndex(missionNumber, task);
+            missionTitle = LocalizationManager.GetMissionTitle(missionNumber);
+            taskTitle = LocalizationManager.GetTaskTitle(missionNumber, task);
         }
 #endif        
     }

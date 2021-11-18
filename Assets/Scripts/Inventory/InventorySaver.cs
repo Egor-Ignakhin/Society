@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
+using Newtonsoft.Json;
+
 using UnityEngine;
 
 
@@ -16,11 +18,11 @@ namespace Society.Inventory
 
         public void Save(List<InventoryCell> cells)
         {
-            // Start save date
+            // Start save data
             SaverContainer container = new SaverContainer(cells);
-            string savingData = JsonUtility.ToJson(container, true);
+            string savingData = JsonUtility.ToJson(container, true);                        
             File.WriteAllText(path, savingData);
-            // End save date
+            // End save data
         }
     }
     [System.Serializable]

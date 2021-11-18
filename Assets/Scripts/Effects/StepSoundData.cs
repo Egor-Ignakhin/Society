@@ -24,7 +24,7 @@ namespace Society.Effects
         private void Awake()
         {
             stepSounds = new Dictionary<(TypeOfMovement type, int matIndex), List<AudioClip>>();
-            var terrain = GameObject.Find("Terrain_1233221").GetComponent<Terrain>();
+            var terrain= Terrain.activeTerrain;
             terrainDetector = new TerrainDetector(terrain);
             if (terrain)
                 terrainTr = terrain.transform;

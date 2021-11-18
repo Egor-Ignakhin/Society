@@ -1,6 +1,7 @@
 ﻿
+using Newtonsoft.Json;
+
 using Society.Inventory.Other;
-using Society.Localization;
 using Society.Patterns;
 
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ namespace Society.Missions
     /// </summary>    
     public sealed class MissionsManager : Singleton<MissionsManager>
     {
-        public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\State.json"; // папка с сохранением    
-        private State currentState;// состояние миссий        
+        public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\PlotState.json"; // папка с сохранением    
+        private PlotState plotState;// состояние миссий        
         public DescriptionDrawer DescriptionDrawer { get; private set; }
         public const int MinMissions = 0;
 
@@ -28,11 +29,7 @@ namespace Society.Missions
 
         internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
 
-        private void Awake()
-        {
-            currentState = LoadState();
-            LocalizationManager.InitDialogsTasks(currentState);
-        }
+        private void Awake() => InitializePlotState();
 
         private void Start()
         {
@@ -44,48 +41,47 @@ namespace Society.Missions
         internal void SetDescriptionDrawer(DescriptionDrawer dD) => DescriptionDrawer = dD;
 
         /// <summary>
-        /// загрузка состояния миссий
+        /// Инициализация состояния миссий
         /// </summary>
-        public static State LoadState()
+        private void InitializePlotState()
         {
-            State reState;
             try
             {
                 string data = File.ReadAllText(SavePath);
-                reState = JsonUtility.FromJson<State>(data);
+                plotState = JsonConvert.DeserializeObject<PlotState>(data);
             }
             catch
             {
-                reState = new State();
+                plotState = new PlotState();
                 if (!File.Exists(SavePath))
                     File.Create(SavePath);
             }
-
-            return reState;
         }
-
+        /// <summary>
+        /// Возвращает активную миссию
+        /// </summary>
+        /// <returns></returns>
         public Mission GetActiveMission() => activeMission;
 
         /// <summary>
         /// Сохранение миссий
         /// </summary>
-        public static void SaveState(State state)
+        public static void SaveState()
         {
-            string data = JsonUtility.ToJson(state, true);
+            string data = JsonUtility.ToJson(Instance.GetPlotState(), true);
             File.WriteAllText(SavePath, data);
         }
+
         /// <summary>
         /// Сбрасывает задачи для активной миссии
         /// </summary>
-        private void ResetTasks() => currentState.currentTask = 0;
+        private void ResetTasks() => plotState.currentTask = 0;
 
         /// <summary>
         /// Сообщает при завершении задачи
         /// </summary>
-        public void ReportTask()
-        {
-            currentState.currentTask++;
-        }
+        public void ReportTask() => plotState.currentTask++;
+
         /// <summary>
         /// Вызывается для начала или продолжения миссии с последней задачи
         /// </summary>
@@ -99,7 +95,7 @@ namespace Society.Missions
             Mission foundedMission = null;
             foreach (var m in all)
             {
-                if (m.GetMissionNumber() == currentState.currentMission)
+                if (m.GetMissionNumber() == plotState.currentMission)
                 {
                     foundedMission = m;
                     break;
@@ -107,99 +103,40 @@ namespace Society.Missions
             }
             if (foundedMission)
             {
-                foundedMission.ContinueMission(currentState.currentTask);
+                foundedMission.ContinueMission(plotState.currentTask);
 
                 activeMission = foundedMission;
             }
 
         }
-        private void OnDisable() => SaveState(currentState);
+
+        private void OnDisable() => SaveState();
 
         /// <summary>
         /// Сообщает при завершении миссии
         /// </summary>
         public void FinishMission()
         {
-            currentState.currentMission++;
+            plotState.currentMission++;
             ResetTasks();
-
-            LocalizationManager.InitDialogsTasks(currentState);
 
             StartOrContinueMission();
         }
-        public State GetState() => currentState;
 
-        [System.Serializable]
-        public class State
+        /// <summary>
+        /// Возвращает состояния сценария
+        /// </summary>
+        /// <returns></returns>
+        public PlotState GetPlotState()
         {
-            public int currentMission = 0;
-            public int currentTask = 0;
+            if (plotState == null)
+                InitializePlotState();
+            return plotState;
         }
 
-        [ExecuteAlways]
-        public sealed class MissionInfo : MonoBehaviour
-        {
-#if UNITY_EDITOR
-
-            private static Dictionary<int, LocalizationManager.TaskContent> infoAboutMissions = new Dictionary<int, LocalizationManager.TaskContent>();
-
-            public static void UpdateInfo()
-            {
-                if (infoAboutMissions != null)
-                    infoAboutMissions.Clear();
-
-                infoAboutMissions = new Dictionary<int, LocalizationManager.TaskContent>();
-
-                List<LocalizationManager.TaskContent> tasks = new List<LocalizationManager.TaskContent>();
-                for (int i = 0; i <= MaxMissions; i++)
-                {
-                    string data = File.ReadAllText(LocalizationManager.GetPathToMission(i));
-                    tasks.Add(JsonUtility.FromJson<LocalizationManager.TaskContent>(data));
-                    infoAboutMissions.Add(i, tasks[tasks.Count - 1]);
-                }
-                foreach (var tc in FindObjectsOfType<MissionInteractiveObject>())
-                    tc.OnValidate();
-
-            }
-            public static string GetMissionTitleByIndex(int missionIndex)
-            {
-                if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
-                    UpdateInfo();
-
-                try
-                {
-                    return infoAboutMissions[missionIndex].MissionTitle;
-                }
-                catch
-                {
-                    Debug.LogError($"Mission, Task. Invalid index = {missionIndex}");
-                    return "ErrorTasks";
-                }
-            }
-            public static string GetMissionTaskTitleByIndex(int missionIndex, int taskIndex)
-            {
-                if ((infoAboutMissions == null) || infoAboutMissions.Count == 0)
-                    UpdateInfo();
-                try
-                {
-                    return infoAboutMissions[missionIndex].Tasks[taskIndex];
-                }
-                catch
-                {
-                    Debug.LogError($"Mission, Task. Invalid index = {missionIndex}_{taskIndex}");
-                    return "ErrorTasks";
-                }
-            }
-
-            public static int GetMaxTasksByIndex(int missionIndex) => infoAboutMissions[missionIndex].Tasks.Count;
-#endif
-        }
         /// <summary>
         /// Насильный пропуск задачи
         /// </summary>
-        internal void SkipTask()
-        {
-            activeMission.SkipTask();
-        }
+        internal void SkipTask() => activeMission.SkipTask();
     }
 }

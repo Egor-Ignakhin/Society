@@ -92,7 +92,7 @@ namespace Society.Inventory
             var powerForce = 5;
             item.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * powerForce, ForceMode.Impulse);
 
-            DropEvent?.Invoke(LocalizationManager.GetHint(id), count);
+            DropEvent?.Invoke(LocalizationManager.GetHint(((ItemStates.ItemsID)id).ToString()), count);
         }
 
         internal void DropModifier(ModifierCharacteristics.SMGTitleTypeIndex tti)
