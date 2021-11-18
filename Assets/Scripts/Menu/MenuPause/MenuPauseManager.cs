@@ -16,7 +16,7 @@ namespace Society.Menu.PauseMenu
     /// <summary>
     /// класс - управлящий меню паузой
     /// </summary>
-    internal sealed class MenuPauseManager : MonoBehaviour, IGameScreen
+    internal sealed class MenuPauseManager : MenuManager, IGameScreen
     {
         private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
         [SerializeField] private Transform mainParent;// контейнер сод. кнопки
@@ -133,6 +133,7 @@ namespace Society.Menu.PauseMenu
         }
         public void OpenSettings()
         {
+            genericPanel.SetActive(false);
             menuEventReceiver.Doing(CommandContainer.Doings.OpenSettings);
 
         }

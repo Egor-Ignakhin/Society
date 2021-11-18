@@ -810,6 +810,10 @@
       <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>
       <Name>PathCreatorEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="UniRx.csproj">
+      <Project>{D5DA7214-4A59-DC5B-53A9-15C4D23902D0}</Project>
+      <Name>UniRx</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
