@@ -549,7 +549,6 @@ namespace Society.Player.Controllers
     {
         private FirstPersonController t;
         private SerializedObject SerT;
-        private static bool showCrouchMods = false;
 
         private void OnEnable()
         {
@@ -564,28 +563,8 @@ namespace Society.Player.Controllers
                 Debug.LogWarning("Scale needs to be (1,1,1)! \n Please scale controller via Capsule collider height/raduis.");
             }
             SerT.Update();
-            EditorGUILayout.Space();
 
-
-            #region Movement Setup                
-            EditorGUILayout.Space();
-            showCrouchMods = EditorGUILayout.BeginFoldoutHeaderGroup(showCrouchMods, new GUIContent("Crouch Modifiers", "Stat modifiers that will apply when player is crouching."));
-            if (showCrouchMods)
-            {
-                t.MCrouchModifiers.crouchKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Crouch Key", "Determines what key needs to be pressed to crouch"), t.MCrouchModifiers.crouchKey);
-                t.MCrouchModifiers.toggleCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Toggle Crouch?", "Determines if the crouching behaviour is on a toggle or momentary basis."), t.MCrouchModifiers.toggleCrouch);
-                t.MCrouchModifiers.crouchWalkSpeedMultiplier = EditorGUILayout.Slider(new GUIContent("Crouch Movement Speed Multiplier", "Determines how fast the player can move while crouching."), t.MCrouchModifiers.crouchWalkSpeedMultiplier, 0.01f, 1.5f);
-                t.MCrouchModifiers.crouchJumpPowerMultiplier = EditorGUILayout.Slider(new GUIContent("Crouching Jump Power Mult.", "Determines how much the player's jumping power is increased or reduced while crouching."), t.MCrouchModifiers.crouchJumpPowerMultiplier, 0, 1.5f);
-            }
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            EditorGUILayout.Space();
-            EditorGUILayout.EndFoldoutHeaderGroup();
-            EditorGUILayout.Space();
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
             GUI.enabled = true;
-            EditorGUILayout.Space();
-            #endregion
         }
     }
 #endif

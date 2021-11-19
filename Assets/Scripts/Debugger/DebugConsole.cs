@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Society.Debugger
 {
     /// <summary>
-    /// класс для работы с консолью
+    /// Консоль разработчика
     /// </summary>
     public sealed class DebugConsole : MonoBehaviour, IDebug
     {
@@ -26,8 +26,9 @@ namespace Society.Debugger
         private void Awake()
         {
             CommandsContainer.SetDebugConsole(this);
-            // дефолтные надписи в консоли
-            Print("Society Console", true);
+
+            //Создание стандартных приветствий в консоли.
+            Print("Hello, i'm Society Console.", true);
             Print("Use 'Help' to get page of help", true, 20);
         }
         private void Update()

@@ -6,15 +6,46 @@ using Society.Player;
 
 namespace Society.Debugger
 {
-    public static class CommandsContainer// класс содержащий список возможных команд для консоли и их исполняющий
+    /// <summary>
+    /// Список возможных команд для консоли и их исполняющий
+    /// </summary>
+    public static class CommandsContainer
     {
+        /// <summary>
+        /// Консоль разработчика
+        /// </summary>
         private static DebugConsole debugConsole;
-        public static Dictionary<string, Action<string>> commands;// словарь команд
-        private static int gameMode;// 0 is deadly; 1 is godly
+
+        /// <summary>
+        /// Cловарь команд
+        /// </summary>
+        public static IReadOnlyDictionary<string, Action<string>> commands = new Dictionary<string, Action<string>> {
+                {nameof(SETTIME), SETTIME},
+                {nameof(GAMEMODE), GAMEMODE},
+                {nameof(SETHEALTH), SETHEALTH},
+                {nameof(SETFOOD), SETFOOD},
+                {nameof(SETWATER), SETWATER},
+                {nameof(SETRADIATION), SETRADIATION},
+                {nameof(HEAL), HEAL},
+                {nameof(SETPOS), SETPOS},
+                {nameof(ENDLESSHEALTH),ENDLESSHEALTH },
+                {nameof(ENDLESSFOOD),ENDLESSFOOD },
+                {nameof(ENDLESSWATER),ENDLESSWATER },
+                {nameof(ENDLESSAMMO),ENDLESSAMMO },
+                {nameof(HELP),HELP },
+                {nameof(GET),GET },
+                { nameof(SKIPTASK),SKIPTASK }
+           };
+
+        /// <summary>
+        /// Тип игры, 0 = обычный, 1 = разработчик.
+        /// </summary>
+        private static int gameMode;
 
         public static void SetDebugConsole(DebugConsole dc) => debugConsole = dc;
+
         /// <summary>
-        /// // распил строки на тип команды и параметры для неё
+        /// Распил строки на тип команды и параметры для неё
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -39,8 +70,9 @@ namespace Society.Debugger
 
             return (type, command);
         }
+
         /// <summary>
-        /// исполнитель команд команды
+        /// Исполнитель команд
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -62,26 +94,6 @@ namespace Society.Debugger
                 return "HELP COMMAND";
             return string.Empty;
         }
-        static CommandsContainer()
-        {
-            commands = new Dictionary<string, Action<string>> {
-                {nameof(SETTIME), SETTIME},
-                {nameof(GAMEMODE), GAMEMODE},
-                {nameof(SETHEALTH), SETHEALTH},
-                {nameof(SETFOOD), SETFOOD},
-                {nameof(SETWATER), SETWATER},
-                {nameof(SETRADIATION), SETRADIATION},
-                {nameof(HEAL), HEAL},
-                {nameof(SETPOS), SETPOS},
-                {nameof(ENDLESSHEALTH),ENDLESSHEALTH },
-                {nameof(ENDLESSFOOD),ENDLESSFOOD },
-                {nameof(ENDLESSWATER),ENDLESSWATER },
-                {nameof(ENDLESSAMMO),ENDLESSAMMO },
-                {nameof(HELP),HELP },
-                {nameof(GET),GET },
-                { nameof(SKIPTASK),SKIPTASK }
-            };
-        }
         private static void HELP(string c)
         {
             int i = 0;
@@ -101,6 +113,7 @@ namespace Society.Debugger
             debugConsole.Print($"{++i}. Use 'GET HEALTH' to get info about health ", true, 20);
             debugConsole.Print($"{++i}. Use 'SKIPTASK _ to skip task", true, 20);
         }
+
         /// <summary>
         /// бесконесное здоровье
         /// </summary>
@@ -110,6 +123,7 @@ namespace Society.Debugger
             int v = Convert.ToInt32(c);
             BasicNeeds.EndlessHealth = (v == 1);// если 1 то беск. хп
         }
+
         /// <summary>
         /// бесконечная еда
         /// </summary>
@@ -119,6 +133,7 @@ namespace Society.Debugger
             int v = Convert.ToInt32(c);
             BasicNeeds.EndlessFood = (v == 1);// если 1 то беск. хп
         }
+
         /// <summary>
         /// бесконечная вода
         /// </summary>
@@ -128,18 +143,20 @@ namespace Society.Debugger
             int v = Convert.ToInt32(c);
             BasicNeeds.EndlessWater = (v == 1);// если 1 то беск. хп
         }
+
+        /// <summary>
+        /// Запрещает патронам тратиться.
+        /// 0 = обычный. 1 = бесконечный.
+        /// </summary>
+        /// <param name="c"></param>
         private static void ENDLESSAMMO(string c)
         {
-            try
+            if (int.TryParse(c, out int v))
             {
-                int v = Convert.ToInt32(c);
-                Shoot.Gun.EndlessBullets = (v == 1);// если 1 то беск. хп
-            }
-            catch
-            {
-
+                Shoot.Gun.EndlessBullets = v == 1;
             }
         }
+
         /// <summary>
         /// установка мирового времени
         /// </summary>
@@ -159,6 +176,7 @@ namespace Society.Debugger
             }
             catch { }
         }
+
         /// <summary>
         /// установка режимов : смертный, бог
         /// </summary>
@@ -167,6 +185,7 @@ namespace Society.Debugger
         {
             int.TryParse(command, out gameMode);
         }
+
         /// <summary>
         /// устанока здоровья
         /// </summary>
@@ -176,6 +195,7 @@ namespace Society.Debugger
             int.TryParse(command, out int value);
             BasicNeeds.ForceSetHealth(value);
         }
+
         /// <summary>
         /// установка еды
         /// </summary>
@@ -185,6 +205,7 @@ namespace Society.Debugger
             int.TryParse(command, out int value);
             BasicNeeds.ForceSetFood(value);
         }
+
         /// <summary>
         /// установка воды
         /// </summary>
@@ -194,6 +215,7 @@ namespace Society.Debugger
             int.TryParse(command, out int value);
             BasicNeeds.ForceSetWater(value);
         }
+
         /// <summary>
         /// установка радиационного излучения
         /// </summary>
@@ -203,6 +225,7 @@ namespace Society.Debugger
             int.TryParse(command, out int value);
             BasicNeeds.ForceSetRadiation(value);
         }
+
         /// <summary>
         /// полное восстановление все необходимых для жизни стамин
         /// </summary>
@@ -215,8 +238,9 @@ namespace Society.Debugger
             SETWATER(input);
             SETRADIATION("0");
         }
+
         /// <summary>
-        /// установка координат игрока
+        /// Установка координат игрока
         /// </summary>
         /// <param name="pos"></param>
         private static void SETPOS(string posStr)// (50,60,70.1)
@@ -231,6 +255,11 @@ namespace Society.Debugger
 
             BasicNeeds.Instance.transform.position = pos;
         }
+
+        /// <summary>
+        /// Возвращает значение свойства
+        /// </summary>
+        /// <param name="args"></param>
         private static void GET(string args)
         {
             if (args == "HEALTH")
@@ -238,6 +267,11 @@ namespace Society.Debugger
                 debugConsole.Print($"Health is" + BasicNeeds.Instance.Health);
             }
         }
+
+        /// <summary>
+        /// Пропуск активной задачи
+        /// </summary>
+        /// <param name="_"></param>
         private static void SKIPTASK(string _)
         {
             Missions.MissionsManager.Instance.SkipTask();
