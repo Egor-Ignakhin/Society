@@ -1,4 +1,4 @@
-﻿using Society.Menu.PauseMenu;
+﻿using Society.Menu.MenuPause;
 
 using System.IO;
 

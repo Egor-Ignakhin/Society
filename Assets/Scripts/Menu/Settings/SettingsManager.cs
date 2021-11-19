@@ -1,4 +1,8 @@
 
+using System;
+
+using Society.Patterns;
+
 using UniRx;
 
 using UnityEngine;
@@ -6,13 +10,18 @@ using UnityEngine.UI;
 
 namespace Society.Menu.Settings
 {
-    public class SettingsManager : MonoBehaviour
+    /// <summary>
+    /// Меню настроек, едино для всех меню.
+    /// </summary>
+    public sealed class SettingsManager : Singleton<SettingsManager>
     {
-        #region SubPanels
+        #region Properties
 
-        [SerializeField] private Button subpanelGame;
-        [SerializeField] private Button subpanelInput;
-        [SerializeField] private Button subpanelVideo;
+        #region Buttons_supanels
+
+        [SerializeField] private Button buttonGame;
+        [SerializeField] private Button buttonInput;
+        [SerializeField] private Button buttonVideo;
 
         #endregion
 
@@ -25,31 +34,73 @@ namespace Society.Menu.Settings
 
         #endregion
 
-        #region Dynamic
+        [Space(5)]
 
-        private GameObject activeSubpanel;
+        #region SubPanels
+
+        [SerializeField] private GameObject gameSubpanel;
+        [SerializeField] private GameObject inputSubpanel;
+        [SerializeField] private GameObject videoSubpanel;
 
         #endregion
 
+        [Space(5)]
+
         [SerializeField] private MenuManager menuManager;
+
+        public event Action ApplySettingsEvent;
+
+        #endregion
 
         private void Awake()
         {
-            subpanelGame.OnClickAsObservable().Subscribe(_ => Debug.Log("Test UniRx"));
+            buttonGame.OnClickAsObservable().Subscribe(_ => ShowSubpanel(gameSubpanel));
+            buttonInput.OnClickAsObservable().Subscribe(_ => ShowSubpanel(inputSubpanel));
+            buttonVideo.OnClickAsObservable().Subscribe(_ => ShowSubpanel(videoSubpanel));
+
+
             backButton.OnClickAsObservable().Subscribe(_ =>
             {
-                gameObject.SetActive(false);
-                menuManager.ShowGenericPanel();
+                HidePanel();
             });
+            applyButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                ApplySettingsEvent?.Invoke();
+
+                
+            });
+
+            HidePanel();
         }
 
         private void ShowSubpanel(GameObject subpanel)
         {
-            if (activeSubpanel)
-                activeSubpanel.SetActive(false);
+            gameSubpanel.SetActive(false);
+            inputSubpanel.SetActive(false);
+            videoSubpanel.SetActive(false);
 
-            activeSubpanel = subpanel;
-            activeSubpanel.SetActive(true);
+
+            subpanel.SetActive(true);
+        }
+
+        /// <summary>
+        /// Закрыть панель настроек
+        /// </summary>
+        internal void HidePanel()
+        {
+            gameObject.SetActive(false);
+
+            menuManager.ShowGenericPanel();
+        }
+
+        /// <summary>
+        /// Открыть панель настроек
+        /// </summary>
+        internal void ShowPanel()
+        {
+            gameObject.SetActive(true);
+
+            ShowSubpanel(gameSubpanel);
         }
     }
 }

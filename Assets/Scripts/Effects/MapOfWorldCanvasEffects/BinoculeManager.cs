@@ -38,7 +38,7 @@ namespace Society.Effects.MapOfWorldCanvasEffects
             if (!possibleActive)
             {
                 bin.SetActive(isActive = false);
-                mainCam.fieldOfView = GameSettings.FOV();
+                mainCam.fieldOfView = GameSettings.Fov;
                 iterator = 1;
             }
             time = 0;
@@ -61,7 +61,7 @@ namespace Society.Effects.MapOfWorldCanvasEffects
             }
             if (isStopped)
             {
-                if (Mathf.Approximately(mainCam.fieldOfView, GameSettings.FOV() + additionalFov * iterator))
+                if (Mathf.Approximately(mainCam.fieldOfView, GameSettings.Fov + additionalFov * iterator))
                 {
                     bin.SetActive(isActive = false);
                     isStopped = false;
@@ -83,7 +83,7 @@ namespace Society.Effects.MapOfWorldCanvasEffects
         private float y = 0;
         private void Animate()
         {
-            float targetFov = isActive ? GameSettings.FOV() + additionalFov * iterator : GameSettings.FOV();
+            float targetFov = isActive ? GameSettings.Fov + additionalFov * iterator : GameSettings.Fov;
             mainCam.fieldOfView = Mathf.MoveTowards(mainCam.fieldOfView, targetFov, 1);
             InventoryEventReceiver.LockScrollEvent(isActive);
             if (isActive)

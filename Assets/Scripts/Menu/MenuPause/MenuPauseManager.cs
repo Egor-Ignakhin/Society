@@ -3,7 +3,7 @@ using System.IO;
 
 using Society.Effects;
 using Society.GameScreens;
-using Society.Menu.PauseMenu;
+using Society.Menu.Settings;
 using Society.Player.Controllers;
 
 using TMPro;
@@ -11,7 +11,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Society.Menu.PauseMenu
+namespace Society.Menu.MenuPause
 {
     /// <summary>
     /// класс - управлящий меню паузой
@@ -21,7 +21,12 @@ namespace Society.Menu.PauseMenu
         private MenuEventReceiver menuEventReceiver;// обработчик событий меню-паузы
         [SerializeField] private Transform mainParent;// контейнер сод. кнопки
         [SerializeField] private GameObject MenuUI;// главный бэкграунд и носитель кнопок
-        [SerializeField] private GameObject SettingsObj;// меню настроек     
+
+        /// <summary>
+        /// Меню настроек
+        /// </summary>
+        [SerializeField] private SettingsManager settingsManager;
+
         [SerializeField] private Slider fovSlider;
         [SerializeField] private TextMeshProUGUI fovText;
         private FirstPersonController fpc;// контроллёр игрока
@@ -39,7 +44,7 @@ namespace Society.Menu.PauseMenu
         {
             fpc = FindObjectOfType<FirstPersonController>();
             effectsManager = FindObjectOfType<EffectsManager>();
-            menuEventReceiver = new MenuEventReceiver(MenuUI, SettingsObj, this, effectsManager, latestCameraRender, menuCamera);
+            menuEventReceiver = new MenuEventReceiver(MenuUI, settingsManager, this, effectsManager, latestCameraRender, menuCamera);
             LoadData();
         }
         private void Start()
@@ -54,7 +59,6 @@ namespace Society.Menu.PauseMenu
 
             effectsManager.SetEnableBloom(currentGameSettings.BloomEnabled);
             bloomToggle.isOn = currentGameSettings.BloomEnabled;
-            SettingsObj.SetActive(false);
             sensivitySlider.onValueChanged.AddListener(ChangeSensivitySlider);
             fovSlider.onValueChanged.AddListener(ChangeFovSlider);
 
@@ -154,15 +158,15 @@ namespace Society.Menu.PauseMenu
         private class MenuEventReceiver
         {
             private readonly GameObject menuUI;
-            private readonly GameObject SettingsObj;
+            private readonly SettingsManager settingsManager;
             private readonly CommandContainer commandContainer;
             private readonly MenuPauseManager menuPauseManager;
             private readonly EffectsManager effectsManager;
             private readonly Camera menuCamera;
-            public MenuEventReceiver(GameObject menu, GameObject stn, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender, Camera menuCamera)
+            public MenuEventReceiver(GameObject menu, SettingsManager settignsManager, MenuPauseManager mpm, EffectsManager em, RawImage latestCameraRender, Camera menuCamera)
             {
                 menuUI = menu;
-                SettingsObj = stn;
+                settingsManager = settignsManager;
                 menuPauseManager = mpm;
                 effectsManager = em;
                 this.menuCamera = menuCamera;
@@ -175,7 +179,7 @@ namespace Society.Menu.PauseMenu
             public void Disable()
             {
                 commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
-                SettingsObj.SetActive(false);
+                settingsManager.HidePanel();
             }
 
             public void Doing(CommandContainer.Doings doi)
@@ -186,7 +190,7 @@ namespace Society.Menu.PauseMenu
                         commandContainer.SetEnableMenu(false, menuUI, menuPauseManager, effectsManager, menuCamera);
                         break;
                     case CommandContainer.Doings.OpenSettings:
-                        commandContainer.Settings(SettingsObj);
+                        settingsManager.ShowPanel();
                         break;
                     case CommandContainer.Doings.GoToMainMenu:
                         commandContainer.ExitToMainMenu();
@@ -211,10 +215,6 @@ namespace Society.Menu.PauseMenu
                 OpenSettings,
                 GoToMainMenu
             }
-            public void Settings(GameObject SettingsObj)
-            {
-                SettingsObj.SetActive(!SettingsObj.activeInHierarchy);
-            }
             public void ExitToMainMenu()
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(ScenesManager.MainMenu);
@@ -224,7 +224,6 @@ namespace Society.Menu.PauseMenu
                 menuCamera.gameObject.SetActive(menuIsActive);
                 menu.SetActive(menuIsActive);
                 Time.timeScale = menuIsActive ? 0 : 1;
-                // пауза при открытии инвентаря                                                        
 
                 ScreensManager.SetScreen(menuIsActive ? mpm : null);
 
@@ -287,29 +286,5 @@ namespace Society.Menu.PauseMenu
                 return texture;
             }
         }
-    }
-    [System.Serializable]
-    public class CurrentGameSettings
-    {
-        public float minFov = 60;
-        public float FOV = 70;
-        public float maxFov = 80;
-
-        public bool BloomEnabled = true;
-
-        public int MinSensivity = 0;
-        public int Sensivity = 3;
-        public int MaxSensivity = 10;
-
-        public bool reloadEffectEnabled = true;
-    }
-}
-
-internal class GameSettings
-{
-    public static float MinFov() => MenuPauseManager.GetCurrentGameSettings().minFov;
-    public static float FOV() => MenuPauseManager.GetCurrentGameSettings().FOV;
-    public static float MaxFov() => MenuPauseManager.GetCurrentGameSettings().maxFov;
-
-    public static float GetSensivity() => MenuPauseManager.GetCurrentGameSettings().Sensivity;
+    }    
 }

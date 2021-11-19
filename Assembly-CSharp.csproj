@@ -237,6 +237,8 @@
     <Compile Include="Assets\Scripts\Menu\MenuButton.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuClock.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuPause\CurrentGameSettings.cs" />
+    <Compile Include="Assets\Scripts\Menu\MenuPause\GameSettings.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuPause\MenuPauseManager.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuPause\PlotPercentDrawer.cs" />
     <Compile Include="Assets\Scripts\Menu\MusicToggle.cs" />
@@ -1135,6 +1137,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="UniRx.csproj">
+      <Project>{D5DA7214-4A59-DC5B-53A9-15C4D23902D0}</Project>
+      <Name>UniRx</Name>
+    </ProjectReference>
     <ProjectReference Include="Toolbox.csproj">
       <Project>{CEEF1589-CF27-627B-D054-27AAAF6A6F59}</Project>
       <Name>Toolbox</Name>
@@ -1162,10 +1168,6 @@
     <ProjectReference Include="PathCreatorEditor.csproj">
       <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>
       <Name>PathCreatorEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="UniRx.csproj">
-      <Project>{D5DA7214-4A59-DC5B-53A9-15C4D23902D0}</Project>
-      <Name>UniRx</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
