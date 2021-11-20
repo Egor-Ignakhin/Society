@@ -1,5 +1,9 @@
-
 using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
+
+using Newtonsoft.Json;
 
 using Society.Patterns;
 
@@ -67,7 +71,7 @@ namespace Society.Menu.Settings
             {
                 ApplySettingsEvent?.Invoke();
 
-                
+                SaveSettings();
             });
 
             HidePanel();
@@ -102,5 +106,30 @@ namespace Society.Menu.Settings
 
             ShowSubpanel(gameSubpanel);
         }
+
+
+        private void SaveSettings()
+        {
+            ///Получаем все приватные статические поля класса <see cref="Society.Settings.GameSettings"/>            
+            FieldInfo[] gameSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+
+            //Создаём анонимный тип содержащий поля всех настроек
+            Type allSettings = new { Name = 1, Tytpe = "dsdslsdjkdfndjkfbdfdbkhdzfbkfdbhj" }.GetType();
+
+            //Сериализуем все настройки
+            string data = JsonConvert.SerializeObject(allSettings);
+
+            string pathGameSettings = Directory.GetCurrentDirectory() + "\\Saves\\Settings_V2.json";
+
+            //Записываем настройки в файл на диск
+            using (var stream = new FileStream(pathGameSettings,
+                                                FileMode.OpenOrCreate,
+                                                FileAccess.ReadWrite,
+                                                FileShare.None))
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes(data);
+                stream.Write(info, 0, info.Length);
+            };
+        }        
     }
 }

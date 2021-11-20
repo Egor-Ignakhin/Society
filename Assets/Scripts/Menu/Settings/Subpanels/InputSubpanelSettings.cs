@@ -31,5 +31,10 @@ namespace Society.Menu.Settings
         {
             throw new NotImplementedException();
         }
+
+        protected override void OnSettingsSave()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

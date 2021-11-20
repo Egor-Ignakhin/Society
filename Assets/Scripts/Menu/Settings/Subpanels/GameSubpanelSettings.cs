@@ -1,4 +1,3 @@
-using System;
 
 using TMPro;
 
@@ -17,12 +16,17 @@ namespace Society.Menu.Settings
 
         protected override void OnInit()
         {
-            throw new NotImplementedException();
+            //         musicVolumeSlider.OnValueChangedAsObservable().Subscribe(_ => Society.Settings.GameSettings.S);
+        }
+
+        protected override void OnSettingsSave()
+        {
+            Society.Settings.GameSettings.SetMusicVolume(musicVolumeSlider.value);
         }
 
         protected override void UpdateFields()
         {
-            throw new NotImplementedException();
+            musicVolumeSlider.SetValueWithoutNotify(Society.Settings.GameSettings.GetMusicVolume());
         }
     }
 }

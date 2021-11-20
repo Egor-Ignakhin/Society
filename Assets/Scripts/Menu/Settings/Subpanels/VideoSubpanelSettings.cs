@@ -16,9 +16,14 @@ namespace Society.Menu.Settings
         protected override void OnInit()
         {
             throw new System.NotImplementedException();
-        }
+        }        
 
         protected override void UpdateFields()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void OnSettingsSave()
         {
             throw new System.NotImplementedException();
         }

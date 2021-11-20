@@ -1,6 +1,6 @@
-﻿using Society.Player.Controllers;
+﻿using System.Collections;
 
-using System.Collections;
+using Society.Player.Controllers;
 
 using UnityEngine;
 namespace Society.Music
@@ -16,9 +16,14 @@ namespace Society.Music
         private int randomMusicNumber;
         private int previousMusicNumber = -1;
         private bool musicIsEnabled = true;
+
+        [SerializeField] private bool isNonFPCScene = false;
         private void Start()
         {
-            playerCollider = FindObjectOfType<FirstPersonController>().GetCollider();
+            var fpc = FindObjectOfType<FirstPersonController>();
+            if (fpc)
+                playerCollider = fpc.GetCollider();
+
             audioSource = gameObject.GetComponent<AudioSource>(); // Вешаем скрипт и AudioSource на объект, где будет идти музыка
             audioSource.priority = 0;
             MusicFlag();
@@ -27,16 +32,12 @@ namespace Society.Music
         private void OnTriggerStay(Collider other) // Проверка вошел ли персонаж в зону действия триггера для включения музыки
         {
             if (other == playerCollider)
-            {
                 canPlayMusic = true;
-            }
         }
         private void OnTriggerExit(Collider other)
         {
             if (other == playerCollider)
-            {
                 canPlayMusic = false;
-            }
         }
         private void Update()
         {
@@ -53,8 +54,8 @@ namespace Society.Music
         public void SetVolume(float v) => audioSource.volume = v;
         public void SetEnabledMusic(bool v) => musicIsEnabled = v;
         private bool MusicFlag()
-        {
-            if ((!canPlayMusic) || (!musicIsEnabled)) // Проверка 2ух положений, вошел ли персонаж в триггер зону и включено ли в настройках разрешение на воспроизведение музыки (если нет, то выполняются действия ниже)
+        {// Проверка 2ух положений, вошел ли персонаж в триггер зону и включено ли в настройках разрешение на воспроизведение музыки (если нет, то выполняются действия ниже)
+            if (((!canPlayMusic) || (!musicIsEnabled)) && (!isNonFPCScene))
             {
                 audioSource.Stop();
                 audioSource.enabled = false;
