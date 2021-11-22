@@ -1,6 +1,7 @@
 ﻿using Society.GameScreens;
 using Society.Localization;
 using Society.Player.Controllers;
+using Society.Settings;
 using Society.SMG;
 
 using System;
@@ -24,7 +25,6 @@ namespace Society.Inventory
         public event Action InputKeyDrop;
         public event EventHandler ScrollEvent;
 
-        private const KeyCode changeActiveKeyCode = KeyCode.E;
         private const KeyCode dropCode = KeyCode.BackQuote;
         private bool isEnabled;
         private FirstPersonController fps;
@@ -46,7 +46,7 @@ namespace Society.Inventory
                 return;
             if (ScreensManager.HasActiveScreen() && !isEnabled || gunAnimator.IsAiming)
                 return;
-            if (Input.GetKeyDown(changeActiveKeyCode))
+            if (Input.GetKeyDown(InputSettings.GetInventoryKeyCode()))
                 SetEnable(isEnabled = !isEnabled);
             if (Input.anyKeyDown)
                 SelectCell(Input.inputString);

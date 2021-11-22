@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Society.Inventory;
 using Society.Player.Controllers;
+using Society.Settings;
 
 using UnityEngine;
 
@@ -40,8 +41,8 @@ namespace Society.Shoot
         private AudioSource unitAudioSource;
         private InventoryContainer inventoryContainer;
         private InventoryEventReceiver InventoryEventReceiver;
-        private Society.SMG.SMGEventReceiver SMGEventReceiver;
-        private Society.SMG.SMGMain SMGMain;
+        private SMG.SMGEventReceiver SMGEventReceiver;
+        private SMG.SMGMain SMGMain;
 
         private void Start()
         {
@@ -83,9 +84,9 @@ namespace Society.Shoot
 
         private States GetSlant()
         {
-            if (Input.GetKey(KeyCode.Q))
+            if (Input.GetKey(InputSettings.GetLeanLeftKeyCode()))
                 return States.LSlant;
-            else if (Input.GetKey(KeyCode.E))
+            else if (Input.GetKey(InputSettings.GetLeanRightKeyCode()))
                 return States.Rlant;
 
             return States.dSlant;

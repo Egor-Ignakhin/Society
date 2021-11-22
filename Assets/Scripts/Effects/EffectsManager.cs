@@ -13,6 +13,7 @@ namespace Society.Effects
         private Volume globalVolume;
         private DepthOfField volumeDOF;
         private Bloom volumeBloom;
+        private Fog volumeFog;
         public void Init()
         {
             globalVolume = GameObject.Find("Global Volume Real").GetComponent<Volume>();
@@ -21,6 +22,7 @@ namespace Society.Effects
 
             globalVolume.profile.TryGet(out volumeDOF);
             globalVolume.profile.TryGet(out volumeBloom);
+            globalVolume.profile.TryGet(out volumeFog);
 
             Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettings;
         }
@@ -33,9 +35,11 @@ namespace Society.Effects
 
         private void OnUpdateSettings()
         {
-
             if (volumeBloom)
                 volumeBloom.active = Settings.VideoSettings.GetBloomIsEnabled();
+
+            if (volumeFog)
+                volumeFog.active = Settings.VideoSettings.GetFogIsEnabled();
         }
         private void OnDestroy()
         {

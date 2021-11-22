@@ -46,6 +46,12 @@ namespace Society.Menu.MenuPause
 
         public bool Hide()
         {
+            if (settingsManager.isActiveAndEnabled)
+            {
+                settingsManager.HidePanel();
+                return false;
+            }
+
             Disable();
             return true;
         }

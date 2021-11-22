@@ -8,6 +8,7 @@ using Society.Inventory;
 using Society.Menu.GameOverlay;
 using Society.Patterns;
 using Society.Player;
+using Society.Settings;
 
 using UnityEngine;
 
@@ -133,7 +134,7 @@ namespace Society.Shoot
 
             Reload();
 
-            if (Input.GetKeyUp(KeyCode.R) && checkoutCBTimer > 0)
+            if (Input.GetKeyUp(InputSettings.GetReloadKeyCode()) && checkoutCBTimer > 0)
             {
                 checkoutCBTimer = 0;
                 gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, false);
@@ -143,14 +144,14 @@ namespace Society.Shoot
                 return;
 
 
-            if (Input.GetKey(KeyCode.R) &&
+            if (Input.GetKey(InputSettings.GetReloadKeyCode()) &&
                 (checkoutCBTimer += Time.deltaTime) > 0.5f)
             {
                 gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, true, ChangeBulletType);
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(InputSettings.GetReloadKeyCode()))
             {
                 IsReload = true;
             }

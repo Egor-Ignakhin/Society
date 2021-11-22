@@ -2,6 +2,7 @@
 
 using Society.Effects;
 using Society.GameScreens;
+using Society.Settings;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -39,7 +40,6 @@ namespace Society.Player.Controllers
         private readonly float WalkSpeed = 4f;
         private float RecumbentingSpeed;
 
-        private const KeyCode SprintKey = KeyCode.LeftShift;
         private float SprintSpeed = 8f;
         private readonly float JumpPower = 5f;
         private bool Jump;
@@ -57,14 +57,12 @@ namespace Society.Player.Controllers
         public sealed class CrouchModifiers
         {
             public bool toggleCrouch = false;
-            public KeyCode crouchKey = KeyCode.LeftControl;
             public float crouchWalkSpeedMultiplier = 0.5f;
             public float crouchJumpPowerMultiplier = 0f;
         }
 
         public sealed class RecumbentModifiers
         {
-            public const KeyCode recumbentKey = KeyCode.Z;
             public float RecumbenthWalkSpeedMultiplier { get; set; } = 0.25f;
             public float RecumbentJumpPowerMultiplier { get; set; } = 0f;
         }
@@ -180,7 +178,7 @@ namespace Society.Player.Controllers
         {
             #region Look Settings - Update
 
-            if (!Society.GameScreens.ScreensManager.HasActiveScreen())
+            if (!ScreensManager.HasActiveScreen())
             {
                 float mouseYInput = Input.GetAxis("Mouse Y");
                 float mouseXInput = Input.GetAxis("Mouse X") + AdditionalXMouse;
@@ -188,9 +186,9 @@ namespace Society.Player.Controllers
                 if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
                 if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
 
-                targetAngles.y += mouseXInput * (float)Settings.InputSettings.GetMouseSensivity() * SensivityM;//rotate camera
+                targetAngles.y += mouseXInput * (float)InputSettings.GetMouseSensivity() * SensivityM;//rotate camera
 
-                targetAngles.x += mouseYInput * (float)Settings.InputSettings.GetMouseSensivity() * SensivityM;
+                targetAngles.x += mouseYInput * (float)InputSettings.GetMouseSensivity() * SensivityM;
 
                 targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
                 followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, CameraSmoothing / 100);
@@ -201,23 +199,23 @@ namespace Society.Player.Controllers
             #endregion
 
             #region Input Settings - Update
-            if (PossibleJump && Input.GetButtonDown("Jump") && !ScreensManager.HasActiveScreen())
+            if (PossibleJump && Input.GetKeyDown(InputSettings.GetJumpKeyCode()) && !ScreensManager.HasActiveScreen())
                 Jump = true;
-            else if (Input.GetButtonUp("Jump"))
+            else if (Input.GetKeyUp(InputSettings.GetJumpKeyCode()))
                 Jump = false;
 
 
             if (!ScreensManager.HasActiveScreen())
             {
-                isCrouching = Input.GetKey(MCrouchModifiers.crouchKey) && !isRecumbenting;
+                isCrouching = Input.GetKey(InputSettings.GetCrouchKeyCode()) && !isRecumbenting;
 
-                if (Input.GetKeyDown(RecumbentModifiers.recumbentKey) && !isCrouching)
+                if (Input.GetKeyDown(InputSettings.GetProneKeyCode()) && !isCrouching)
                 {
                     isRecumbenting = !isRecumbenting;
                 }
             }
 
-            Sprint = (Input.GetKey(SprintKey)) && (!ScreensManager.HasActiveScreen()) && (CanSprinting);
+            Sprint = (Input.GetKey(InputSettings.GetSprintKeyCode())) && (!ScreensManager.HasActiveScreen()) && (CanSprinting);
             BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
             #endregion
@@ -269,8 +267,21 @@ namespace Society.Player.Controllers
             }
             #endregion
             float m = ScreensManager.HasActiveScreen() ? 0 : 1;
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+
+
+            float horizontalInput =  Input.GetAxis("Horizontal");
+            float verticalInput =  Input.GetAxis("Vertical");
+
+         /*   if (Input.GetKey(InputSettings.GetMoveFrontKeyCode()))
+                verticalInput += 1;
+            if (Input.GetKey(InputSettings.GetMoveBackKeyCode()))
+                verticalInput -= 1;
+
+            if (Input.GetKey(InputSettings.GetMoveLeftKeyCode()))
+                horizontalInput -= 1;
+            if (Input.GetKey(InputSettings.GetMoveRightKeyCode()))
+                verticalInput += 1;*/
+
             inputXY = new Vector2(horizontalInput, verticalInput) * m * additionalBraking;
             if (inputXY.magnitude > 1)
                 inputXY.Normalize();

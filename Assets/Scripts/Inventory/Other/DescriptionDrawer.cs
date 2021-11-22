@@ -1,4 +1,5 @@
 ﻿using Society.Player;
+using Society.Settings;
 
 using TMPro;
 
@@ -27,7 +28,7 @@ namespace Society.Inventory.Other
             if (!gameObject.activeSelf)
                 return;
             textDesc.SetText(str + countStr);
-            textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, PlayerInteractive.InputInteractive));
+            textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, InputSettings.GetInteractionKeyCode()));
         }
 
         internal void SetIrremovableHint(string v)

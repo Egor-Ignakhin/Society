@@ -1,3 +1,5 @@
+using static UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData;
+
 namespace Society.Settings
 {
     internal static class VideoSettings
@@ -6,7 +8,7 @@ namespace Society.Settings
         private static ScreenResolutions screenResolution;
         private static bool isFullScreen;
         private static bool vSyncIsEnabled;
-        private static AntiAliasingTypes antiAliasingType;
+        private static AntialiasingMode antiAliasingMode;
 
         #region PostProccess
 
@@ -29,7 +31,13 @@ namespace Society.Settings
 
         internal static ScreenResolutions GetScreenResolution() => screenResolution;
 
-        internal static void SetScreenResolution(ScreenResolutions newResolution) => screenResolution = newResolution;
+        internal static void SetScreenResolution(ScreenResolutions value) => screenResolution = value;
+
+        internal static AntialiasingMode GetAntialiasingType() => antiAliasingMode;
+
+        internal static void SetAntialiasingType(AntialiasingMode value) => antiAliasingMode = value;
+
+        #region PostProccess
 
         internal static bool GetBloomIsEnabled() => bloomIsEnabled;
 
@@ -38,5 +46,7 @@ namespace Society.Settings
         internal static bool GetFogIsEnabled() => fogIsEnabled;
 
         internal static void SetFogIsEnabled(bool value) => fogIsEnabled = value;
+
+        #endregion
     }
 }

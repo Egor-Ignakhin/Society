@@ -15,24 +15,18 @@ namespace Society.Menu.Settings
         [SerializeField] private TMP_Dropdown resolutionQualityTMP_Dropdown;
         [SerializeField] private Toggle isFullScreenToggle;
         [SerializeField] private Toggle vSyncIsEnabledToggle;
+        [SerializeField] private TMP_Dropdown antialiasingTypeTMP_Dropdown;
         [SerializeField] private Toggle bloomIsEnabledToggle;
         [SerializeField] private Toggle fogIsEnabledToggle;
 
         protected override void OnInit()
         {
-            List<string> graphicsQualities = new List<string>();
+            graphicsQualityTMP_Dropdown.FillOptionsWithNamesEnum(typeof(Society.Settings.GraphicsLevels));
 
-            for (int i = 0; i < System.Enum.GetNames(typeof(Society.Settings.GraphicsLevels)).Length; i++)
-                graphicsQualities.Add(System.Enum.GetNames(typeof(Society.Settings.GraphicsLevels))[i].ToString());
+            resolutionQualityTMP_Dropdown.FillOptionsWithNamesEnum(typeof(Society.Settings.ScreenResolutions));
 
-            graphicsQualityTMP_Dropdown.AddOptions(graphicsQualities);
-
-            List<string> screenResolutions = new List<string>();
-
-            for (int i = 0; i < System.Enum.GetNames(typeof(Society.Settings.ScreenResolutions)).Length; i++)
-                screenResolutions.Add(System.Enum.GetNames(typeof(Society.Settings.ScreenResolutions))[i].ToString());
-
-            resolutionQualityTMP_Dropdown.AddOptions(screenResolutions);
+            antialiasingTypeTMP_Dropdown.FillOptionsWithNamesEnum(
+                typeof(UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData.AntialiasingMode));
         }
 
 
@@ -42,6 +36,8 @@ namespace Society.Menu.Settings
             Society.Settings.VideoSettings.SetScreenResolution((Society.Settings.ScreenResolutions)resolutionQualityTMP_Dropdown.value);
             Society.Settings.VideoSettings.SetIsFullScreen(isFullScreenToggle.isOn);
             Society.Settings.VideoSettings.SetVSyncIsEnabled(vSyncIsEnabledToggle.isOn);
+            Society.Settings.VideoSettings.SetAntialiasingType(
+                (UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData.AntialiasingMode)antialiasingTypeTMP_Dropdown.value);
             Society.Settings.VideoSettings.SetBloomIsEnabled(bloomIsEnabledToggle.isOn);
             Society.Settings.VideoSettings.SetFogIsEnabled(fogIsEnabledToggle.isOn);
         }

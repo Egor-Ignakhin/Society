@@ -82,7 +82,7 @@ namespace Society.Menu.Settings
                 SaveSettings();
 
                 SettingsUpdateEvent?.Invoke();
-            });
+            });            
 
             HidePanel();
         }
@@ -95,6 +95,8 @@ namespace Society.Menu.Settings
 
 
             subpanel.SetActive(true);
+
+            SettingsUpdateEvent?.Invoke();
         }
 
         /// <summary>

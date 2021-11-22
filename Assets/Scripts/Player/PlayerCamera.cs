@@ -1,20 +1,24 @@
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace Society.Player
 {
     internal sealed class PlayerCamera : MonoBehaviour
     {
-        private Camera playerCamera;
+        private Camera myCamera;
+        private HDAdditionalCameraData additionalCameraData;
         private void Awake()
         {
-            playerCamera = Camera.main;
+            myCamera = Camera.main;
+            additionalCameraData = GetComponent<HDAdditionalCameraData>();
 
             Society.Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettings;
         }
 
         private void OnUpdateSettings()
         {
-            playerCamera.fieldOfView = (float)Settings.GameSettings.GetFieldOfView();
+            myCamera.fieldOfView = (float)Settings.GameSettings.GetFieldOfView();
+            additionalCameraData.antialiasing = Settings.VideoSettings.GetAntialiasingType();
         }
         private void OnDestroy()
         {

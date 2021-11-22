@@ -2,6 +2,7 @@
 using Society.Inventory.Other;
 using Society.Patterns;
 using Society.Player.Controllers;
+using Society.Settings;
 
 using System.Linq;
 
@@ -15,7 +16,6 @@ namespace Society.Player
         private const float interctionDistance = 2;
         private const float sphereCasterRadius = 0.01f;
         private const float sphSCastRadiusMultiply = 10;
-        public static KeyCode InputInteractive { get; set; } = KeyCode.F;
         private bool inputedButton = false;
         private DescriptionDrawer descriptionDrawer;
         private Vector3 lasHitPoint;
@@ -34,9 +34,9 @@ namespace Society.Player
 
         private void Update()
         {
-            if (Input.GetKeyDown(InputInteractive))
+            if (Input.GetKeyDown(InputSettings.GetInteractionKeyCode()))
                 inputedButton = true;
-            else if (Input.GetKeyUp(InputInteractive))
+            else if (Input.GetKeyUp(InputSettings.GetInteractionKeyCode()))
                 inputedButton = false;
         }
 
