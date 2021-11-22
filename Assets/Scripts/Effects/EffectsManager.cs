@@ -12,21 +12,34 @@ namespace Society.Effects
     {
         private Volume globalVolume;
         private DepthOfField volumeDOF;
-        private Bloom volumeBloom;                        
+        private Bloom volumeBloom;
         public void Init()
         {
-                 globalVolume = GameObject.Find("Global Volume Real").GetComponent<Volume>();
-               if (!globalVolume)
-                 return;
+            globalVolume = GameObject.Find("Global Volume Real").GetComponent<Volume>();
+            if (!globalVolume)
+                return;
+
             globalVolume.profile.TryGet(out volumeDOF);
-            globalVolume.profile.TryGet(out volumeBloom);                        
+            globalVolume.profile.TryGet(out volumeBloom);
+
+            Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettings;
         }
         public void SetEnableSimpleDOF(bool active) => volumeDOF.active = active;
 
-        public void SetEnableBloom(bool v) => volumeBloom.active = v;
-        internal void SetEnableAllEffects(bool v)
+        internal void SetEnableGlobalVolume(bool v)
         {
             globalVolume.enabled = v;
+        }
+
+        private void OnUpdateSettings()
+        {
+
+            if (volumeBloom)
+                volumeBloom.active = Settings.VideoSettings.GetBloomIsEnabled();
+        }
+        private void OnDestroy()
+        {
+            Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnUpdateSettings;
         }
     }
 }

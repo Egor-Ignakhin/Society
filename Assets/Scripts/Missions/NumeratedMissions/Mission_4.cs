@@ -15,7 +15,7 @@ namespace Society.Missions.NumeratedMissions
             OnTaskActions.Add("exitToMenu", () =>
             {
                 ScreensManager.SetScreen(null);
-                SceneManager.LoadScene(ScenesManager.MainMenu);
+                SceneManager.LoadScene((int)Scenes.MainMenu);
             });
 
             base.StartMission();

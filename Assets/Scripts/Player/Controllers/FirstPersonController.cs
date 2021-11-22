@@ -17,7 +17,6 @@ namespace Society.Player.Controllers
         private float VerticalRotationRange = 0f;
         private readonly float HeadMaxY = 90;
         private readonly float HeadMinY = -90;
-        private float Sensitivity = 3;
 
         public float SensivityM { get; set; } = 1;
         public float AdditionalXMouse { get; set; } = 0;
@@ -189,9 +188,9 @@ namespace Society.Player.Controllers
                 if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
                 if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
 
-                targetAngles.y += mouseXInput * Sensitivity * SensivityM;//rotate camera
+                targetAngles.y += mouseXInput * (float)Settings.InputSettings.GetMouseSensivity() * SensivityM;//rotate camera
 
-                targetAngles.x += mouseYInput * Sensitivity * SensivityM;
+                targetAngles.x += mouseYInput * (float)Settings.InputSettings.GetMouseSensivity() * SensivityM;
 
                 targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
                 followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, CameraSmoothing / 100);
@@ -505,6 +504,7 @@ namespace Society.Player.Controllers
         {
             private readonly FirstPersonController fpc;
             private readonly IMovableController fpcController;
+            private readonly float sourceVolume = 0.25f;
             public StepFpc(IMovableController firstPersonController, StepSoundData ssd)
             {
                 fpcController = firstPersonController;
@@ -513,24 +513,33 @@ namespace Society.Player.Controllers
                 fpc.PlayerStepEvent += OnStep;
 
                 stepPlayerSource = fpc.gameObject.AddComponent<AudioSource>();
-                stepPlayerSource.volume = 0.25f;
                 stepPlayerSource.priority = 126;
+
+                Menu.Settings.SettingsManager.SettingsUpdateEvent += OnSettingsUpdate;
             }
 
             public override void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
             {
                 if (!fpc.IsGrounded)
                     return;
+
                 if (!fpcController.StepEventIsEnabled)
                     return;
+
                 base.OnStep(physicMaterialIndex, movementType);
             }
 
-            public void OnDestroy() => fpc.PlayerStepEvent -= OnStep;
+            private void OnSettingsUpdate()
+            {
+                stepPlayerSource.volume = (float)(sourceVolume * Settings.GameSettings.GetGeneralVolume());
+            }
 
+            public void OnDestroy()
+            {
+                fpc.PlayerStepEvent -= OnStep;
+                Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnSettingsUpdate;
+            }
         }
-        internal void SetSensivity(int sensivity) => Sensitivity = sensivity;
-
         public float GetPlayerHeight() => playerCollider.height;
         internal Transform GetCameraHost() => transform.GetChild(0);
         internal void ResetRbVelocity()
@@ -540,7 +549,10 @@ namespace Society.Player.Controllers
             oldPos = transform.position;
         }
 
-        private void OnDestroy() => stepPlayer.OnDestroy();
+        private void OnDestroy()
+        {
+            stepPlayer.OnDestroy();
+        }
     }
 
 #if UNITY_EDITOR

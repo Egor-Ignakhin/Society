@@ -69,7 +69,8 @@ namespace Society.GameScreens
                 if (ScreensManager.GetActiveScreen().Hide())
                     ScreensManager.ClearScreen();
             }
-            else pauseManager.Enable();
+            else 
+                pauseManager.Enable();
         }
     }
 }

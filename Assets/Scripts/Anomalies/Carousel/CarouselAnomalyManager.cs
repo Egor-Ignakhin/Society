@@ -172,7 +172,7 @@ namespace Society.Anomalies.Carousel
             playerAcceleration = new Vector3(0, 0, 0);
             while (true)
             {
-                targetPos = Extensions.CalculateSpawnPositionInRange(zone.transform, zone);
+                targetPos = Vector3Extensions.CalculateSpawnPositionInRange(zone.transform, zone);
                 yield return new WaitForSeconds(4);
             }
         }

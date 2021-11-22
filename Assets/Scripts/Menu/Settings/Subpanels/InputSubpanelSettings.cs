@@ -1,5 +1,9 @@
 using System;
 
+using TMPro;
+
+using UniRx;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +11,11 @@ namespace Society.Menu.Settings
 {
     internal sealed class InputSubpanelSettings : SubpanelSettings
     {
+        [Space(5)]
         [SerializeField] private Slider mouseSensivitySlider;
+        [SerializeField] private TextMeshProUGUI mouseSensivityTMP;
+        [Space(5)]
+
         [SerializeField] private Button moveFrontButton;
         [SerializeField] private Button moveBackButton;
         [SerializeField] private Button moveLeftButton;
@@ -24,17 +32,19 @@ namespace Society.Menu.Settings
 
         protected override void OnInit()
         {
-            throw new NotImplementedException();
+            mouseSensivitySlider.OnValueChangedAsObservable().Subscribe(_ => mouseSensivityTMP.SetText(((int)mouseSensivitySlider.value).ToString()));
         }
-
-        protected override void UpdateFields()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         protected override void OnSettingsSave()
         {
-            throw new System.NotImplementedException();
+            Society.Settings.InputSettings.SetMouseSensivity(mouseSensivitySlider.value);
+        }
+
+        protected override void UpdateFields()
+        {            
+            mouseSensivitySlider.value = (float)Society.Settings.InputSettings.GetMouseSensivity();
+            mouseSensivityTMP.SetText(((int)mouseSensivitySlider.value).ToString());
         }
     }
 }

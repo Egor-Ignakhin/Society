@@ -78,7 +78,7 @@ namespace Society.SMG
             var cams = FindObjectsOfType<Camera>();
             foreach (var c in cams)
                 c.enabled = !IsActive;
-            effectsManager.SetEnableAllEffects(!IsActive);
+            effectsManager.SetEnableGlobalVolume(!IsActive);
 
             MSMG.gameObject.SetActive(IsActive);
 

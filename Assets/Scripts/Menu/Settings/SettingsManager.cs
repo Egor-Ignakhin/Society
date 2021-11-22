@@ -55,7 +55,9 @@ namespace Society.Menu.Settings
 
         [SerializeField] private MenuManager menuManager;
 
-        public event Action ApplySettingsEvent;
+        public static event Action SettingsUpdateEvent;
+
+        public static event Action ApplySettingsEvent;
 
         #endregion
 
@@ -78,6 +80,8 @@ namespace Society.Menu.Settings
                 ApplySettingsEvent?.Invoke();
 
                 SaveSettings();
+
+                SettingsUpdateEvent?.Invoke();
             });
 
             HidePanel();
@@ -131,22 +135,15 @@ namespace Society.Menu.Settings
                      Concat(videoSettingsFI.Select(fieldVideo => new { name = fieldVideo.Name, value = fieldVideo.GetValue(null) }));
 
             //Сериализуем все настройки
-            string data = JsonConvert.SerializeObject(result, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter());
+            string data = JsonConvert.SerializeObject(result, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter(), new Newtonsoft.Json.Converters.BoolToStringConverter());
 
             //Записываем настройки в файл на диск
-            using (var stream = new FileStream(GetPathToSettings(),
-                                                FileMode.OpenOrCreate,
-                                                FileAccess.Write,
-                                                FileShare.None))
-            {
-                byte[] info = new UTF8Encoding(true).GetBytes(data);
-                stream.Write(info, 0, info.Length);
-            };
+            File.WriteAllText(GetPathToSettings(), data);            
         }
         private void LoadSettings()
         {
 
-            //try
+            //  try
             {
                 var data = File.ReadAllText(GetPathToSettings());
 
@@ -171,18 +168,28 @@ namespace Society.Menu.Settings
 
                         if (field.FieldType.IsEnum)
                         {
-                            //string tempEnum = (string)value;
                             value = Enum.Parse(field.FieldType, value);
                         }
 
+
+                        if ((field.FieldType == typeof(bool))
+                            && ((value == "false") || (value == "true")))
+                        {
+                            if (value == "false")
+                                value = false;
+                            if (value == "true")
+                                value = true;
+                        }
 
                         field.SetValue(null, value);
                     }
                 }
             }
-            //catch
+            // catch 
             {
-                //  Debug.LogError("Failed load settings!");
+                //    Debug.LogError("Failed load settings!");
+
+                //    SaveSettings();
             }
         }
 
@@ -190,6 +197,6 @@ namespace Society.Menu.Settings
         /// Путь сохранения настроек
         /// </summary>
         /// <returns></returns>
-        private string GetPathToSettings() => Directory.GetCurrentDirectory() + "\\Saves\\Settings_V2.json";
+        private string GetPathToSettings() => Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
     }
 }

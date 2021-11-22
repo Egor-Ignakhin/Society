@@ -31,6 +31,10 @@ namespace Society.Debugger
         {
             if (isMoving)
                 Move();
+
+            if (!Settings.GameSettings.GetIsDevMode())
+                return;
+
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 if (ScreensManager.HasActiveScreen())

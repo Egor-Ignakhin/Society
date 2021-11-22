@@ -21,7 +21,6 @@ namespace Society.Debugger
         /// </summary>
         public static IReadOnlyDictionary<string, Action<string>> commands = new Dictionary<string, Action<string>> {
                 {nameof(SETTIME), SETTIME},
-                {nameof(GAMEMODE), GAMEMODE},
                 {nameof(SETHEALTH), SETHEALTH},
                 {nameof(SETFOOD), SETFOOD},
                 {nameof(SETWATER), SETWATER},
@@ -36,11 +35,6 @@ namespace Society.Debugger
                 {nameof(GET),GET },
                 { nameof(SKIPTASK),SKIPTASK }
            };
-
-        /// <summary>
-        /// Тип игры, 0 = обычный, 1 = разработчик.
-        /// </summary>
-        private static int gameMode;
 
         public static void SetDebugConsole(DebugConsole dc) => debugConsole = dc;
 
@@ -85,13 +79,12 @@ namespace Society.Debugger
             (string type, string command) = Substring(input);
             if (!commands.ContainsKey(type))
                 return $"Erorr: {input}: command not found!";
-#if !UNITY_EDITOR
-            if ((gameMode == 0) && (type != nameof(GAMEMODE)) && (type != nameof(HELP)))
-                return $"Error: {input}: insufficient permissions!";
-#endif
+
             commands[type](command);
+
             if (type == nameof(HELP))
                 return "HELP COMMAND";
+
             return string.Empty;
         }
         private static void HELP(string c)
@@ -181,10 +174,6 @@ namespace Society.Debugger
         /// установка режимов : смертный, бог
         /// </summary>
         /// <param name="command"></param>
-        private static void GAMEMODE(string command)
-        {
-            int.TryParse(command, out gameMode);
-        }
 
         /// <summary>
         /// устанока здоровья

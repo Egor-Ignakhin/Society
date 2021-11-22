@@ -25,7 +25,7 @@ namespace Society.Missions.NumeratedMissions
             {
                 MissionsManager.Instance.FinishMission();
                 ScreensManager.SetScreen(null);
-                SceneManager.LoadScene(ScenesManager.Bunker);
+                SceneManager.LoadScene((int)Scenes.Bunker);
             });
             base.StartMission();
         }

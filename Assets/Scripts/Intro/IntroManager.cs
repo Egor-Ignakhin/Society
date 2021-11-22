@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using Society.GameScreens;
+
 using UnityEngine;
 
 namespace Society.Intro
@@ -14,6 +16,7 @@ namespace Society.Intro
 
         private void OnEnable()
         {
+            UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.Bunker);
             EnableNextList();
         }
         private void DisableOldList()
@@ -56,7 +59,7 @@ namespace Society.Intro
         }
         private void StartGame()
         {
-            FindObjectOfType<Society.GameScreens.ScenesManager>().LoadNextScene();
+            UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.Bunker);
         }
     }
 }

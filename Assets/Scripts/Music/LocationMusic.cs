@@ -18,6 +18,8 @@ namespace Society.Music
         private bool musicIsEnabled = true;
 
         [SerializeField] private bool isNonFPCScene = false;
+
+        [SerializeField, Range(0, 1)] private float sourceVolume;
         private void Start()
         {
             var fpc = FindObjectOfType<FirstPersonController>();
@@ -28,6 +30,8 @@ namespace Society.Music
             audioSource.priority = 0;
             MusicFlag();
             MusicPlaying();
+
+            Menu.Settings.SettingsManager.SettingsUpdateEvent += OnSettingsUpdate;
         }
         private void OnTriggerStay(Collider other) // Проверка вошел ли персонаж в зону действия триггера для включения музыки
         {
@@ -78,6 +82,15 @@ namespace Society.Music
             audioSource.clip = musicList[randomMusicNumber];
             audioSource.Play();
             StopCoroutine(startMusic);
+        }
+
+        private void OnSettingsUpdate()
+        {
+            audioSource.volume = (float)(sourceVolume * Settings.GameSettings.GetMusicVolume());
+        }
+        private void OnDestroy()
+        {
+            Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnSettingsUpdate;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Society.Missions.NumeratedMissions
             OnTaskActions.Add("LoadMap", () =>
             {
                 ScreensManager.SetScreen(null);
-                SceneManager.LoadScene(ScenesManager.Map);
+                SceneManager.LoadScene((int)Scenes.Map);
             });
             base.StartMission();
         }

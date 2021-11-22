@@ -174,7 +174,7 @@ namespace Society.Shoot
         /// </summary>
         public class AdvancedSettings
         {
-            public float BaseCamFOV { get => GameSettings.Fov; }
+            public float BaseCamFOV => (float)Settings.GameSettings.GetFieldOfView();
             public const float FOVAim = 22.5f;
             public float fovRef;
         }

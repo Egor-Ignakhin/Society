@@ -133,7 +133,6 @@
     <Compile Include="Assets\Scripts\Anomalies\PlayerDamageZone.cs" />
     <Compile Include="Assets\Scripts\Anomalies\RadiationZone.cs" />
     <Compile Include="Assets\Scripts\ApplicationTools\ApplicationVersion.cs" />
-    <Compile Include="Assets\Scripts\ApplicationTools\SettingsMain.cs" />
     <Compile Include="Assets\Scripts\DeadScene\DeadSceneManager.cs" />
     <Compile Include="Assets\Scripts\Debugger\CommandsContainer.cs" />
     <Compile Include="Assets\Scripts\Debugger\DebugConsole.cs" />
@@ -191,7 +190,8 @@
     <Compile Include="Assets\Scripts\Enviroment\Doors\MedicalDoorChecker.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Radio\RadioButton.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Radio\RadioManager.cs" />
-    <Compile Include="Assets\Scripts\Extension\Vector3Extension.cs" />
+    <Compile Include="Assets\Scripts\Extensions\BoolToStringConverter.cs" />
+    <Compile Include="Assets\Scripts\Extensions\Vector3Extension.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\MailboxExample.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\RandomlyBox.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\TrunkExample.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="Assets\Scripts\FriendlyPersons\PersonsPoint.cs" />
     <Compile Include="Assets\Scripts\FriendlyPersons\YanController.cs" />
     <Compile Include="Assets\Scripts\GameScreens\LoadScreensManager.cs" />
-    <Compile Include="Assets\Scripts\GameScreens\ScenesManager.cs" />
+    <Compile Include="Assets\Scripts\GameScreens\Scenes.cs" />
     <Compile Include="Assets\Scripts\GameScreens\ScreensManager.cs" />
     <Compile Include="Assets\Scripts\Intro\IntroManager.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryCell.cs" />
@@ -237,8 +237,6 @@
     <Compile Include="Assets\Scripts\Menu\MenuButton.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuClock.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuManager.cs" />
-    <Compile Include="Assets\Scripts\Menu\MenuPause\CurrentGameSettings.cs" />
-    <Compile Include="Assets\Scripts\Menu\MenuPause\GameSettings.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuPause\MenuPauseManager.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuPause\PlotPercentDrawer.cs" />
     <Compile Include="Assets\Scripts\Menu\MusicToggle.cs" />
@@ -285,6 +283,7 @@
     <Compile Include="Assets\Scripts\Player\Controllers\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Player\Controllers\SeatController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerActionBar.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCollisionChecked.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerDeathHandler.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteractive.cs" />
@@ -316,6 +315,7 @@
     <Compile Include="Assets\Scripts\SMG\SMGSaver.cs" />
     <Compile Include="Assets\Scripts\SMG\WorkbenchSMG.cs" />
     <Compile Include="Assets\Scripts\Settings\AntiAliasingTypes.cs" />
+    <Compile Include="Assets\Scripts\Settings\BridgeToProjectSettings.cs" />
     <Compile Include="Assets\Scripts\Settings\GameSettings.cs" />
     <Compile Include="Assets\Scripts\Settings\GrahicsLevel.cs" />
     <Compile Include="Assets\Scripts\Settings\InputSettings.cs" />
