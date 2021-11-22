@@ -26,7 +26,7 @@ namespace Society.Menu.Settings
 
         protected override void UpdateFields()
         {
-            musicVolumeSlider.SetValueWithoutNotify(Society.Settings.GameSettings.GetMusicVolume());
+            musicVolumeSlider.SetValueWithoutNotify((float)Society.Settings.GameSettings.GetMusicVolume());
         }
     }
 }

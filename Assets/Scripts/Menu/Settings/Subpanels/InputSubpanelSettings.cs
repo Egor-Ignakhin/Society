@@ -7,7 +7,7 @@ namespace Society.Menu.Settings
 {
     internal sealed class InputSubpanelSettings : SubpanelSettings
     {
-        [SerializeField] private Slider sensivitySlider;
+        [SerializeField] private Slider mouseSensivitySlider;
         [SerializeField] private Button moveFrontButton;
         [SerializeField] private Button moveBackButton;
         [SerializeField] private Button moveLeftButton;

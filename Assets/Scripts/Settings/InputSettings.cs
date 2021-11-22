@@ -4,7 +4,7 @@ namespace Society.Settings
 {
     internal static class InputSettings
     {
-        private static float sensivity;
+        private static float mouseSensivity;
         private static KeyCode moveFrontKeyCode;
         private static KeyCode moveBackKeyCode;
         private static KeyCode moveLeftKeyCode;
