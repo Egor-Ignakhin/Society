@@ -84,9 +84,9 @@ namespace Society.Shoot
 
         private States GetSlant()
         {
-            if (Input.GetKey(InputSettings.GetLeanLeftKeyCode()))
+            if (Input.GetKey(GameSettings.GetLeanLeftKeyCode()))
                 return States.LSlant;
-            else if (Input.GetKey(InputSettings.GetLeanRightKeyCode()))
+            else if (Input.GetKey(GameSettings.GetLeanRightKeyCode()))
                 return States.Rlant;
 
             return States.dSlant;

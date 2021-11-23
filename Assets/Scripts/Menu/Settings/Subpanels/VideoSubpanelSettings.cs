@@ -32,24 +32,24 @@ namespace Society.Menu.Settings
 
         protected override void OnSettingsSave()
         {
-            Society.Settings.VideoSettings.SetGraphicsQuality((Society.Settings.GraphicsLevels)graphicsQualityTMP_Dropdown.value);
-            Society.Settings.VideoSettings.SetScreenResolution((Society.Settings.ScreenResolutions)resolutionQualityTMP_Dropdown.value);
-            Society.Settings.VideoSettings.SetIsFullScreen(isFullScreenToggle.isOn);
-            Society.Settings.VideoSettings.SetVSyncIsEnabled(vSyncIsEnabledToggle.isOn);
-            Society.Settings.VideoSettings.SetAntialiasingType(
+            Society.Settings.GameSettings.SetGraphicsQuality((Society.Settings.GraphicsLevels)graphicsQualityTMP_Dropdown.value);
+            Society.Settings.GameSettings.SetScreenResolution((Society.Settings.ScreenResolutions)resolutionQualityTMP_Dropdown.value);
+            Society.Settings.GameSettings.SetIsFullScreen(isFullScreenToggle.isOn);
+            Society.Settings.GameSettings.SetVSyncIsEnabled(vSyncIsEnabledToggle.isOn);
+            Society.Settings.GameSettings.SetAntialiasingType(
                 (UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData.AntialiasingMode)antialiasingTypeTMP_Dropdown.value);
-            Society.Settings.VideoSettings.SetBloomIsEnabled(bloomIsEnabledToggle.isOn);
-            Society.Settings.VideoSettings.SetFogIsEnabled(fogIsEnabledToggle.isOn);
+            Society.Settings.GameSettings.SetBloomIsEnabled(bloomIsEnabledToggle.isOn);
+            Society.Settings.GameSettings.SetFogIsEnabled(fogIsEnabledToggle.isOn);
         }
 
         protected override void UpdateFields()
         {
-            graphicsQualityTMP_Dropdown.value = (int)Society.Settings.VideoSettings.GetQualityLevel();
-            resolutionQualityTMP_Dropdown.value = (int)Society.Settings.VideoSettings.GetScreenResolution();
-            isFullScreenToggle.isOn = Society.Settings.VideoSettings.GetIsFullScreen();
-            vSyncIsEnabledToggle.isOn = Society.Settings.VideoSettings.GetVSyncIsEnabled();
-            bloomIsEnabledToggle.isOn = Society.Settings.VideoSettings.GetBloomIsEnabled();
-            fogIsEnabledToggle.isOn = Society.Settings.VideoSettings.GetFogIsEnabled();
+            graphicsQualityTMP_Dropdown.value = (int)Society.Settings.GameSettings.GetQualityLevel();
+            resolutionQualityTMP_Dropdown.value = (int)Society.Settings.GameSettings.GetScreenResolution();
+            isFullScreenToggle.isOn = Society.Settings.GameSettings.GetIsFullScreen();
+            vSyncIsEnabledToggle.isOn = Society.Settings.GameSettings.GetVSyncIsEnabled();
+            bloomIsEnabledToggle.isOn = Society.Settings.GameSettings.GetBloomIsEnabled();
+            fogIsEnabledToggle.isOn = Society.Settings.GameSettings.GetFogIsEnabled();
         }
     }
 }

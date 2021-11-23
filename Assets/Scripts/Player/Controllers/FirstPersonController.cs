@@ -186,9 +186,9 @@ namespace Society.Player.Controllers
                 if (targetAngles.y > 180) { targetAngles.y -= 360; followAngles.y -= 360; } else if (targetAngles.y < -180) { targetAngles.y += 360; followAngles.y += 360; }
                 if (targetAngles.x > 180) { targetAngles.x -= 360; followAngles.x -= 360; } else if (targetAngles.x < -180) { targetAngles.x += 360; followAngles.x += 360; }
 
-                targetAngles.y += mouseXInput * (float)InputSettings.GetMouseSensivity() * SensivityM;//rotate camera
+                targetAngles.y += mouseXInput * (float)GameSettings.GetMouseSensivity() * SensivityM;//rotate camera
 
-                targetAngles.x += mouseYInput * (float)InputSettings.GetMouseSensivity() * SensivityM;
+                targetAngles.x += mouseYInput * (float)GameSettings.GetMouseSensivity() * SensivityM;
 
                 targetAngles.x = Mathf.Clamp(targetAngles.x, -0.5f * VerticalRotationRange, 0.5f * VerticalRotationRange);
                 followAngles = Vector3.SmoothDamp(followAngles, targetAngles, ref followVelocity, CameraSmoothing / 100);
@@ -199,23 +199,23 @@ namespace Society.Player.Controllers
             #endregion
 
             #region Input Settings - Update
-            if (PossibleJump && Input.GetKeyDown(InputSettings.GetJumpKeyCode()) && !ScreensManager.HasActiveScreen())
+            if (PossibleJump && Input.GetKeyDown(GameSettings.GetJumpKeyCode()) && !ScreensManager.HasActiveScreen())
                 Jump = true;
-            else if (Input.GetKeyUp(InputSettings.GetJumpKeyCode()))
+            else if (Input.GetKeyUp(GameSettings.GetJumpKeyCode()))
                 Jump = false;
 
 
             if (!ScreensManager.HasActiveScreen())
             {
-                isCrouching = Input.GetKey(InputSettings.GetCrouchKeyCode()) && !isRecumbenting;
+                isCrouching = Input.GetKey(GameSettings.GetCrouchKeyCode()) && !isRecumbenting;
 
-                if (Input.GetKeyDown(InputSettings.GetProneKeyCode()) && !isCrouching)
+                if (Input.GetKeyDown(GameSettings.GetProneKeyCode()) && !isCrouching)
                 {
                     isRecumbenting = !isRecumbenting;
                 }
             }
 
-            Sprint = (Input.GetKey(InputSettings.GetSprintKeyCode())) && (!ScreensManager.HasActiveScreen()) && (CanSprinting);
+            Sprint = (Input.GetKey(GameSettings.GetSprintKeyCode())) && (!ScreensManager.HasActiveScreen()) && (CanSprinting);
             BasicNeeds.Instance.EnableFoodAndWaterMultiply(Sprint);
 
             #endregion

@@ -34,9 +34,9 @@ namespace Society.Player
 
         private void Update()
         {
-            if (Input.GetKeyDown(InputSettings.GetInteractionKeyCode()))
+            if (Input.GetKeyDown(GameSettings.GetInteractionKeyCode()))
                 inputedButton = true;
-            else if (Input.GetKeyUp(InputSettings.GetInteractionKeyCode()))
+            else if (Input.GetKeyUp(GameSettings.GetInteractionKeyCode()))
                 inputedButton = false;
         }
 

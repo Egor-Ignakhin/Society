@@ -13,19 +13,19 @@ public static class BridgeToProjectSettings
 
     private static void OnUpdateSettingsEvent()
     {
-        Screen.fullScreen = VideoSettings.GetIsFullScreen();
+        Screen.fullScreen = GameSettings.GetIsFullScreen();
 
-        QualitySettings.vSyncCount = VideoSettings.GetVSyncIsEnabled() ? 1 : 0;
+        QualitySettings.vSyncCount = GameSettings.GetVSyncIsEnabled() ? 1 : 0;
 
-        QualitySettings.SetQualityLevel((int)System.Enum.Parse(typeof(GraphicsLevels), VideoSettings.GetQualityLevel().ToString()));
+        QualitySettings.SetQualityLevel((int)System.Enum.Parse(typeof(GraphicsLevels), GameSettings.GetQualityLevel().ToString()));
 
         int screenWidth = 0;
         int screenHeight = 0;
-        string[] splitedSR = VideoSettings.GetScreenResolution().ToString().Split('x');
+        string[] splitedSR = GameSettings.GetScreenResolution().ToString().Split('x');
         screenWidth = int.Parse(splitedSR[0].Substring(1, splitedSR.Length));
         screenHeight = int.Parse(splitedSR[1]);
 
-        Screen.SetResolution(screenWidth, screenHeight, VideoSettings.GetIsFullScreen());
+        Screen.SetResolution(screenWidth, screenHeight, GameSettings.GetIsFullScreen());
 
     }
 }

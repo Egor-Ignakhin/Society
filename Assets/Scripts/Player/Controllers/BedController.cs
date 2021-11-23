@@ -23,7 +23,7 @@ namespace Society.Player.Controllers
         }
         private void Start()
         {
-            sensitivity = (float)Settings.InputSettings.GetMouseSensivity();
+            sensitivity = (float)Settings.GameSettings.GetMouseSensivity();
         }
         private void Update()
         {

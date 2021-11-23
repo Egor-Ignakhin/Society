@@ -46,7 +46,7 @@ namespace Society.Inventory
                 return;
             if (ScreensManager.HasActiveScreen() && !isEnabled || gunAnimator.IsAiming)
                 return;
-            if (Input.GetKeyDown(InputSettings.GetInventoryKeyCode()))
+            if (Input.GetKeyDown(GameSettings.GetInventoryKeyCode()))
                 SetEnable(isEnabled = !isEnabled);
             if (Input.anyKeyDown)
                 SelectCell(Input.inputString);

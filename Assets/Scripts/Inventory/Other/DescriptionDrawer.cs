@@ -28,7 +28,7 @@ namespace Society.Inventory.Other
             if (!gameObject.activeSelf)
                 return;
             textDesc.SetText(str + countStr);
-            textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, InputSettings.GetInteractionKeyCode()));
+            textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, GameSettings.GetInteractionKeyCode()));
         }
 
         internal void SetIrremovableHint(string v)

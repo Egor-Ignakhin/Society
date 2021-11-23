@@ -18,7 +18,7 @@ namespace Society.Player
         private void OnUpdateSettings()
         {
             myCamera.fieldOfView = (float)Settings.GameSettings.GetFieldOfView();
-            additionalCameraData.antialiasing = Settings.VideoSettings.GetAntialiasingType();
+            additionalCameraData.antialiasing = Settings.GameSettings.GetAntialiasingType();
         }
         private void OnDestroy()
         {

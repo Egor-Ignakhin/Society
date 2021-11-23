@@ -36,10 +36,10 @@ namespace Society.Effects
         private void OnUpdateSettings()
         {
             if (volumeBloom)
-                volumeBloom.active = Settings.VideoSettings.GetBloomIsEnabled();
+                volumeBloom.active = Settings.GameSettings.GetBloomIsEnabled();
 
             if (volumeFog)
-                volumeFog.active = Settings.VideoSettings.GetFogIsEnabled();
+                volumeFog.active = Settings.GameSettings.GetFogIsEnabled();
         }
         private void OnDestroy()
         {

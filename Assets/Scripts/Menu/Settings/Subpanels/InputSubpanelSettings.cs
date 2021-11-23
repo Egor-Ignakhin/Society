@@ -35,19 +35,19 @@ namespace Society.Menu.Settings
         {
             mouseSensivitySlider.OnValueChangedAsObservable().Subscribe(_ => mouseSensivityTMP.SetText(((int)mouseSensivitySlider.value).ToString()));
 
-            SimplificationKeyCodesInit(moveFrontTMP_InputField, InputSettings.GetMoveFrontKeyCode());
-            SimplificationKeyCodesInit(moveBackTMP_InputField, InputSettings.GetMoveBackKeyCode());
-            SimplificationKeyCodesInit(moveLeftTMP_InputField, InputSettings.GetMoveLeftKeyCode());
-            SimplificationKeyCodesInit(moveRightTMP_InputField, InputSettings.GetMoveRightKeyCode());
-            SimplificationKeyCodesInit(leanLeftTMP_InputField, InputSettings.GetLeanLeftKeyCode());
-            SimplificationKeyCodesInit(leanRightTMP_InputField, InputSettings.GetLeanRightKeyCode());
-            SimplificationKeyCodesInit(jumpTMP_InputField, InputSettings.GetJumpKeyCode());
-            SimplificationKeyCodesInit(crouchTMP_InputField, InputSettings.GetCrouchKeyCode());
-            SimplificationKeyCodesInit(proneTMP_InputField, InputSettings.GetProneKeyCode());
-            SimplificationKeyCodesInit(sprintTMP_InputField, InputSettings.GetSprintKeyCode());
-            SimplificationKeyCodesInit(inventoryTMP_InputField, InputSettings.GetInventoryKeyCode());
-            SimplificationKeyCodesInit(interactionTMP_InputField, InputSettings.GetInteractionKeyCode());
-            SimplificationKeyCodesInit(reloadTMP_InputField, InputSettings.GetReloadKeyCode());
+            SimplificationKeyCodesInit(moveFrontTMP_InputField, GameSettings.GetMoveFrontKeyCode());
+            SimplificationKeyCodesInit(moveBackTMP_InputField, GameSettings.GetMoveBackKeyCode());
+            SimplificationKeyCodesInit(moveLeftTMP_InputField, GameSettings.GetMoveLeftKeyCode());
+            SimplificationKeyCodesInit(moveRightTMP_InputField, GameSettings.GetMoveRightKeyCode());
+            SimplificationKeyCodesInit(leanLeftTMP_InputField, GameSettings.GetLeanLeftKeyCode());
+            SimplificationKeyCodesInit(leanRightTMP_InputField, GameSettings.GetLeanRightKeyCode());
+            SimplificationKeyCodesInit(jumpTMP_InputField, GameSettings.GetJumpKeyCode());
+            SimplificationKeyCodesInit(crouchTMP_InputField, GameSettings.GetCrouchKeyCode());
+            SimplificationKeyCodesInit(proneTMP_InputField, GameSettings.GetProneKeyCode());
+            SimplificationKeyCodesInit(sprintTMP_InputField, GameSettings.GetSprintKeyCode());
+            SimplificationKeyCodesInit(inventoryTMP_InputField, GameSettings.GetInventoryKeyCode());
+            SimplificationKeyCodesInit(interactionTMP_InputField, GameSettings.GetInteractionKeyCode());
+            SimplificationKeyCodesInit(reloadTMP_InputField, GameSettings.GetReloadKeyCode());
 
         }
         private void SimplificationKeyCodesInit(TMP_InputField tMP_InputField, KeyCode defaultKey)
@@ -66,41 +66,41 @@ namespace Society.Menu.Settings
 
         protected override void OnSettingsSave()
         {
-            InputSettings.SetMouseSensivity(mouseSensivitySlider.value);
+            GameSettings.SetMouseSensivity(mouseSensivitySlider.value);
 
-            InputSettings.SetMoveFrontKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveFrontTMP_InputField.text));
-            InputSettings.SetMoveBackKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveBackTMP_InputField.text));
-            InputSettings.SetMoveLeftKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveLeftTMP_InputField.text));
-            InputSettings.SetMoveRightKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveRightTMP_InputField.text));
-            InputSettings.SetLeanLeftKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), leanLeftTMP_InputField.text));
-            InputSettings.SetLeanRightKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), leanRightTMP_InputField.text)); InputSettings.SetMoveFrontKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveFrontTMP_InputField.text));
-            InputSettings.SetJumpKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), jumpTMP_InputField.text));
-            InputSettings.SetCrouchKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), crouchTMP_InputField.text));
-            InputSettings.SetProneKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), proneTMP_InputField.text));
-            InputSettings.SetSprintKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), sprintTMP_InputField.text));
-            InputSettings.SeInventoryKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), inventoryTMP_InputField.text));
-            InputSettings.SetInteractionKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), interactionTMP_InputField.text));
-            InputSettings.SetReloadKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), reloadTMP_InputField.text));
+            GameSettings.SetMoveFrontKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveFrontTMP_InputField.text));
+            GameSettings.SetMoveBackKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveBackTMP_InputField.text));
+            GameSettings.SetMoveLeftKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveLeftTMP_InputField.text));
+            GameSettings.SetMoveRightKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), moveRightTMP_InputField.text));
+            GameSettings.SetLeanLeftKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), leanLeftTMP_InputField.text));
+            GameSettings.SetLeanRightKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), leanRightTMP_InputField.text));            
+            GameSettings.SetJumpKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), jumpTMP_InputField.text));
+            GameSettings.SetCrouchKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), crouchTMP_InputField.text));
+            GameSettings.SetProneKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), proneTMP_InputField.text));
+            GameSettings.SetSprintKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), sprintTMP_InputField.text));
+            GameSettings.SeInventoryKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), inventoryTMP_InputField.text));
+            GameSettings.SetInteractionKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), interactionTMP_InputField.text));
+            GameSettings.SetReloadKeyCode((KeyCode)System.Enum.Parse(typeof(KeyCode), reloadTMP_InputField.text));
         }
 
         protected override void UpdateFields()
         {
-            mouseSensivitySlider.value = (float)InputSettings.GetMouseSensivity();
+            mouseSensivitySlider.value = (float)GameSettings.GetMouseSensivity();
             mouseSensivityTMP.SetText(((int)mouseSensivitySlider.value).ToString());
 
-            moveFrontTMP_InputField.SetTextWithoutNotify(InputSettings.GetMoveFrontKeyCode().ToString());
-            moveBackTMP_InputField.SetTextWithoutNotify(InputSettings.GetMoveBackKeyCode().ToString());
-            moveLeftTMP_InputField.SetTextWithoutNotify(InputSettings.GetMoveLeftKeyCode().ToString());
-            moveRightTMP_InputField.SetTextWithoutNotify(InputSettings.GetMoveRightKeyCode().ToString());
-            leanLeftTMP_InputField.SetTextWithoutNotify(InputSettings.GetLeanLeftKeyCode().ToString());
-            leanRightTMP_InputField.SetTextWithoutNotify(InputSettings.GetLeanRightKeyCode().ToString());
-            jumpTMP_InputField.SetTextWithoutNotify(InputSettings.GetJumpKeyCode().ToString());
-            crouchTMP_InputField.SetTextWithoutNotify(InputSettings.GetCrouchKeyCode().ToString());
-            proneTMP_InputField.SetTextWithoutNotify(InputSettings.GetProneKeyCode().ToString());
-            sprintTMP_InputField.SetTextWithoutNotify(InputSettings.GetSprintKeyCode().ToString());
-            inventoryTMP_InputField.SetTextWithoutNotify(InputSettings.GetInventoryKeyCode().ToString());
-            interactionTMP_InputField.SetTextWithoutNotify(InputSettings.GetInteractionKeyCode().ToString());
-            reloadTMP_InputField.SetTextWithoutNotify(InputSettings.GetReloadKeyCode().ToString());
+            moveFrontTMP_InputField.SetTextWithoutNotify(GameSettings.GetMoveFrontKeyCode().ToString());
+            moveBackTMP_InputField.SetTextWithoutNotify(GameSettings.GetMoveBackKeyCode().ToString());
+            moveLeftTMP_InputField.SetTextWithoutNotify(GameSettings.GetMoveLeftKeyCode().ToString());
+            moveRightTMP_InputField.SetTextWithoutNotify(GameSettings.GetMoveRightKeyCode().ToString());
+            leanLeftTMP_InputField.SetTextWithoutNotify(GameSettings.GetLeanLeftKeyCode().ToString());
+            leanRightTMP_InputField.SetTextWithoutNotify(GameSettings.GetLeanRightKeyCode().ToString());
+            jumpTMP_InputField.SetTextWithoutNotify(GameSettings.GetJumpKeyCode().ToString());
+            crouchTMP_InputField.SetTextWithoutNotify(GameSettings.GetCrouchKeyCode().ToString());
+            proneTMP_InputField.SetTextWithoutNotify(GameSettings.GetProneKeyCode().ToString());
+            sprintTMP_InputField.SetTextWithoutNotify(GameSettings.GetSprintKeyCode().ToString());
+            inventoryTMP_InputField.SetTextWithoutNotify(GameSettings.GetInventoryKeyCode().ToString());
+            interactionTMP_InputField.SetTextWithoutNotify(GameSettings.GetInteractionKeyCode().ToString());
+            reloadTMP_InputField.SetTextWithoutNotify(GameSettings.GetReloadKeyCode().ToString());
         }
     }
 }

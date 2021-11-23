@@ -4,7 +4,6 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Newtonsoft.Json;
 
@@ -82,9 +81,7 @@ namespace Society.Menu.Settings
                 SaveSettings();
 
                 SettingsUpdateEvent?.Invoke();
-            });            
-
-            HidePanel();
+            });
         }
 
         private void ShowSubpanel(GameObject subpanel)
@@ -126,10 +123,10 @@ namespace Society.Menu.Settings
             FieldInfo[] gameSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
 
             ///Получаем все приватные статические поля класса <see cref="Society.Settings.InputSettings"/>            
-            FieldInfo[] inputSettingsFI = typeof(Society.Settings.InputSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+            FieldInfo[] inputSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
 
             ///Получаем все приватные статические поля класса <see cref="Society.Settings.VideoSettings"/>            
-            FieldInfo[] videoSettingsFI = typeof(Society.Settings.VideoSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+            FieldInfo[] videoSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
 
             //Создаём перечисление содержащее поля всех настроек
             IEnumerable result = gameSettingsFI.Select(fieldGame => new { name = fieldGame.Name, value = fieldGame.GetValue(null) })
@@ -137,62 +134,55 @@ namespace Society.Menu.Settings
                      Concat(videoSettingsFI.Select(fieldVideo => new { name = fieldVideo.Name, value = fieldVideo.GetValue(null) }));
 
             //Сериализуем все настройки
-            string data = JsonConvert.SerializeObject(result, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter(), new Newtonsoft.Json.Converters.BoolToStringConverter());
+            string data = JsonConvert.SerializeObject(Society.Settings.GameSettings.GetSerializableSettins()
+                , Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter(), new Newtonsoft.Json.Converters.BoolToStringConverter());
 
             //Записываем настройки в файл на диск
-            File.WriteAllText(GetPathToSettings(), data);            
+            File.WriteAllText(GetPathToSettings(), data);
+
+            print("Save");
         }
         private void LoadSettings()
         {
 
-            //  try
+            var data = File.ReadAllText(GetPathToSettings());
+
+            //  IEnumerable mergedAnonymeType = (IEnumerable)JsonConvert.DeserializeObject<object>(data);
+
+            ///Получаем все приватные статические поля класса <see cref="Society.Settings.GameSettings"/>            
+            //  FieldInfo[] gameSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+
+            //foreach (var may in mergedAnonymeType)
+            // {
+            // var anonymusObject = new { name, value = new object { } };
+            // foreach (var field in gameSettingsFI)
+            // {
+            Society.Settings.GameSettings.SetSerializableSettins(JsonConvert.DeserializeObject<Society.Settings.GameSettings.SerializableGameSettins>(data));
+
+            /*
+            if (a.name != field.Name)
             {
-                var data = File.ReadAllText(GetPathToSettings());
-
-                IEnumerable mergedAnonymeType = (IEnumerable)JsonConvert.DeserializeObject<object>(data);
-
-                ///Получаем все приватные статические поля класса <see cref="Society.Settings.GameSettings"/>            
-                FieldInfo[] gameSettingsFI = typeof(Society.Settings.GameSettings).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
-
-                foreach (var may in mergedAnonymeType)
-                {
-                    var anonymusObject = new { name, value = new object { } };
-                    foreach (var field in gameSettingsFI)
-                    {
-                        var a = JsonConvert.DeserializeAnonymousType(may.ToString(), anonymusObject);
-
-                        dynamic value = a.value;
-
-                        if (a.name != field.Name)
-                        {
-                            continue;
-                        }
-
-                        if (field.FieldType.IsEnum)
-                        {
-                            value = Enum.Parse(field.FieldType, value);
-                        }
-
-
-                        if ((field.FieldType == typeof(bool))
-                            && ((value == "false") || (value == "true")))
-                        {
-                            if (value == "false")
-                                value = false;
-                            if (value == "true")
-                                value = true;
-                        }
-
-                        field.SetValue(null, value);
-                    }
-                }
+                continue;
             }
-            // catch 
+
+            if (field.FieldType.IsEnum)
             {
-                //    Debug.LogError("Failed load settings!");
-
-                //    SaveSettings();
+                value = Enum.Parse(field.FieldType, value);
             }
+
+
+            if ((field.FieldType == typeof(bool))
+                && ((value == "false") || (value == "true")))
+            {
+                if (value == "false")
+                    value = false;
+                if (value == "true")
+                    value = true;
+            }
+
+            field.SetValue(null, value);*/
+            // }
+            // }
         }
 
         /// <summary>

@@ -134,7 +134,7 @@ namespace Society.Shoot
 
             Reload();
 
-            if (Input.GetKeyUp(InputSettings.GetReloadKeyCode()) && checkoutCBTimer > 0)
+            if (Input.GetKeyUp(GameSettings.GetReloadKeyCode()) && checkoutCBTimer > 0)
             {
                 checkoutCBTimer = 0;
                 gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, false);
@@ -144,14 +144,14 @@ namespace Society.Shoot
                 return;
 
 
-            if (Input.GetKey(InputSettings.GetReloadKeyCode()) &&
+            if (Input.GetKey(GameSettings.GetReloadKeyCode()) &&
                 (checkoutCBTimer += Time.deltaTime) > 0.5f)
             {
                 gameOverlayManager.SetEnableMenu(GameOverlayType.ChangeBullet, true, ChangeBulletType);
                 return;
             }
 
-            if (Input.GetKeyDown(InputSettings.GetReloadKeyCode()))
+            if (Input.GetKeyDown(GameSettings.GetReloadKeyCode()))
             {
                 IsReload = true;
             }
