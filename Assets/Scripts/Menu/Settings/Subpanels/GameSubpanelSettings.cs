@@ -1,3 +1,4 @@
+
 using TMPro;
 
 using UniRx;
@@ -30,7 +31,7 @@ namespace Society.Menu.Settings
             Society.Settings.GameSettings.SetMusicVolume(musicVolumeSlider.value);
             Society.Settings.GameSettings.SetGeneralVolume(genericVolumeSlider.value);
             Society.Settings.GameSettings.SetFieldOfView(fieldOfViewVolumeSlider.value);
-
+            Society.Settings.GameSettings.SetLanguage(languageTMP_Dropdown.value == 0 ? SystemLanguage.Russian : SystemLanguage.English);
             Society.Settings.GameSettings.SetIsDevMode(isDevModeToggle.isOn);
         }
 
@@ -42,7 +43,8 @@ namespace Society.Menu.Settings
             fieldOfViewVolumeSlider.value = (float)Society.Settings.GameSettings.GetFieldOfView();
             fieldOfViewTMP.SetText(((int)fieldOfViewVolumeSlider.value).ToString());
 
-
+            var systemLanguage = Society.Settings.GameSettings.GetSystemLanguage();
+            languageTMP_Dropdown.value = (systemLanguage == SystemLanguage.Russian ? 0 : 1);
             isDevModeToggle.isOn = Society.Settings.GameSettings.GetIsDevMode();
         }
     }

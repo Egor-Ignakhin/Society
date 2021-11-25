@@ -8,6 +8,8 @@ using EasyExcelGenerated;
 
 using Newtonsoft.Json;
 
+using Society.Settings;
+
 using UnityEngine;
 namespace Society.Localization
 {
@@ -26,7 +28,7 @@ namespace Society.Localization
         /// <summary>
         /// Свойства предметов
         /// </summary>
-       // private static ItemPropertiesData itemProperties;
+        // private static ItemPropertiesData itemProperties;
 
         /// <summary>
         /// Питательные предметы
@@ -39,8 +41,12 @@ namespace Society.Localization
         private static MedicalItems medicalItems;
 
         private static List<Mission> missions;
+
+        private static AllItems_MainList_Sheet allItemsSheet;
+        private static LocalizationSheet_Languages_Sheet localizationSheet;
         static LocalizationManager()
         {
+            localizationSheet = Load($"\\{nameof(LocalizationSheet_Languages_Sheet)}") as LocalizationSheet_Languages_Sheet;
             InitializeMissions();
             InitializeUpKeysDescriptions();
             InitializeHints();
@@ -49,7 +55,6 @@ namespace Society.Localization
             InitializeMedicalItems();
         }
 
-        private static AllItems_MainList_Sheet allItemsSheet;
 
         #region Initialization
 
@@ -97,13 +102,6 @@ namespace Society.Localization
         private static void InitializeWeightMaxCountItems()
         {
             allItemsSheet = Load($"\\{nameof(AllItems_MainList_Sheet)}") as AllItems_MainList_Sheet;
-
-            /*itemProperties.WeightAndMaxCountItems = new Dictionary<int, (int maxCount, decimal weight)>();
-            for (int i = 0; i < itemProperties.Properties.Count; i++)
-            {
-                System.Enum.TryParse($"{itemProperties.Properties[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
-                itemProperties.WeightAndMaxCountItems.Add((int)myStatus, (itemProperties.Properties[i].MaxCount, (decimal)itemProperties.Properties[i].Weight));
-            }*/
         }
         public static EERowDataCollection Load(string sheetClassName)
         {
@@ -250,6 +248,21 @@ namespace Society.Localization
         /// <returns></returns>
         internal static string GetUpKeyDescription(string mainType, KeyCode inputInteractive) =>
              $"{upKeysDescriptions[mainType]} ({inputInteractive})";
+
+        internal static string Translate(LanguageIdentifiers commonLanguageIdentifier)
+        {
+            switch (GameSettings.GetSystemLanguage())
+            {
+                case SystemLanguage.English:
+                    return (localizationSheet.GetData((int)commonLanguageIdentifier) as Languages).EN;
+
+                case SystemLanguage.Russian:
+                    return (localizationSheet.GetData((int)commonLanguageIdentifier) as Languages).RU;
+
+                default:
+                    throw new Exception("Failed to translate!");
+            }
+        }
 
 #if UNITY_EDITOR
         public static string GetMissionTitle(int missionId)

@@ -82,6 +82,9 @@ namespace Society.Settings
 
         internal static void SetFieldOfView(double value) => serializableGameSettins.fieldOfView = value;
 
+        internal static SystemLanguage GetSystemLanguage() => serializableGameSettins.systemLanguage;
+        internal static void SetLanguage(SystemLanguage systemLanguage)=>serializableGameSettins.systemLanguage = systemLanguage;        
+
         internal static bool GetIsDevMode() => serializableGameSettins.isDevMode;
 
         internal static void SetIsDevMode(bool value) => serializableGameSettins.isDevMode = value;

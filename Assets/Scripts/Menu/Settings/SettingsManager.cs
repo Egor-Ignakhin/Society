@@ -59,6 +59,7 @@ namespace Society.Menu.Settings
 
         public static event Action SaveSettingsEvent;
 
+
         private BridgeToProjectSettings bridgeToProjectSettings;
 
         [SerializeField] private GameObject settingsPanel;
@@ -85,8 +86,11 @@ namespace Society.Menu.Settings
                 SettingsUpdateEvent?.Invoke();
             });
 
-            bridgeToProjectSettings = new BridgeToProjectSettings();
+            bridgeToProjectSettings = new BridgeToProjectSettings();            
+        }
 
+        private void Start()
+        {
             SettingsUpdateEvent?.Invoke();
         }
 
@@ -122,6 +126,10 @@ namespace Society.Menu.Settings
             ShowSubpanel(gameSubpanel);
         }
 
+        internal bool PanelIsActive()
+        {
+            return settingsPanel.activeInHierarchy;
+        }
 
         private void SaveSettings()
         {
