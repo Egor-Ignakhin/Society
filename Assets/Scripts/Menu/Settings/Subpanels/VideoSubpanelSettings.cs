@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 
 using TMPro;
-
-using UniRx;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +20,8 @@ namespace Society.Menu.Settings
         {
             graphicsQualityTMP_Dropdown.FillOptionsWithNamesEnum(typeof(Society.Settings.GraphicsLevels));
 
-            resolutionQualityTMP_Dropdown.FillOptionsWithNamesEnum(typeof(Society.Settings.ScreenResolutions));
+            resolutionQualityTMP_Dropdown.FillOptionsWithNamesEnum(
+                typeof(Society.Settings.ScreenResolutions), 1);
 
             antialiasingTypeTMP_Dropdown.FillOptionsWithNamesEnum(
                 typeof(UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData.AntialiasingMode));

@@ -1,17 +1,15 @@
 using Society.Settings;
 
-using UnityEditor;
-
 using UnityEngine;
 
-public static class BridgeToProjectSettings
+public class BridgeToProjectSettings
 {
-    static BridgeToProjectSettings()
+    public BridgeToProjectSettings()
     {
         Society.Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettingsEvent;
     }
 
-    private static void OnUpdateSettingsEvent()
+    private void OnUpdateSettingsEvent()
     {
         Screen.fullScreen = GameSettings.GetIsFullScreen();
 
@@ -19,13 +17,13 @@ public static class BridgeToProjectSettings
 
         QualitySettings.SetQualityLevel((int)System.Enum.Parse(typeof(GraphicsLevels), GameSettings.GetQualityLevel().ToString()));
 
-        int screenWidth = 0;
-        int screenHeight = 0;
-        string[] splitedSR = GameSettings.GetScreenResolution().ToString().Split('x');
-        screenWidth = int.Parse(splitedSR[0].Substring(1, splitedSR.Length));
-        screenHeight = int.Parse(splitedSR[1]);
+        var wh = GameSettings.GetAndDescriptScreenResolution();
 
-        Screen.SetResolution(screenWidth, screenHeight, GameSettings.GetIsFullScreen());
+        Screen.SetResolution(wh.width, wh.height, GameSettings.GetIsFullScreen());
+    }
 
+    ~BridgeToProjectSettings()
+    {
+        Society.Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnUpdateSettingsEvent;
     }
 }

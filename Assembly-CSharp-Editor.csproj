@@ -341,6 +341,9 @@
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>F:/Society/Library/PackageCache/com.unity.render-pipelines.core@7.6.0/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>F:/Society/Assets/Plugins/Purchased/EasyExcel/Editor/Plugins/EPPlus/EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>F:/Society/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
@@ -787,9 +790,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{C2C7B0E1-AB7D-E17C-8E83-F0F10958BF83}</Project>
+      <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
       <Project>{CFDE963A-6F82-5B5A-4D6F-BA6D6E423693}</Project>
       <Name>Assembly-CSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="Assembly-CSharp-Editor-firstpass.csproj">
+      <Project>{B5EF87EF-1E99-714E-AA82-80DE1A03565D}</Project>
+      <Name>Assembly-CSharp-Editor-firstpass</Name>
     </ProjectReference>
     <ProjectReference Include="UniRx.csproj">
       <Project>{D5DA7214-4A59-DC5B-53A9-15C4D23902D0}</Project>

@@ -20,6 +20,8 @@ namespace Society.Player.Controllers
         private readonly float HeadMinY = -90;
 
         public float SensivityM { get; set; } = 1;
+        private float slidingH;
+        private float slidingV;
         public float AdditionalXMouse { get; set; } = 0;
         private readonly float CameraSmoothing = 5f;
 
@@ -269,18 +271,23 @@ namespace Society.Player.Controllers
             float m = ScreensManager.HasActiveScreen() ? 0 : 1;
 
 
-            float horizontalInput =  Input.GetAxis("Horizontal");
-            float verticalInput =  Input.GetAxis("Vertical");
+            float horizontalInput = 0;
+            float verticalInput = 0;
 
-         /*   if (Input.GetKey(InputSettings.GetMoveFrontKeyCode()))
-                verticalInput += 1;
-            if (Input.GetKey(InputSettings.GetMoveBackKeyCode()))
-                verticalInput -= 1;
+            if (Input.GetKey(GameSettings.GetMoveFrontKeyCode()))
+                verticalInput = 1;
+            if (Input.GetKey(GameSettings.GetMoveBackKeyCode()))
+                verticalInput = -1;
+            if (Input.GetKey(GameSettings.GetMoveLeftKeyCode()))
+                horizontalInput = -1;
+            if (Input.GetKey(GameSettings.GetMoveRightKeyCode()))
+                horizontalInput = 1;
 
-            if (Input.GetKey(InputSettings.GetMoveLeftKeyCode()))
-                horizontalInput -= 1;
-            if (Input.GetKey(InputSettings.GetMoveRightKeyCode()))
-                verticalInput += 1;*/
+            //Важная хрень, сделана, чтобы можно было менять клавиши ходьбы и оставалось сглаживание как при GetAxis
+            var smoothedInput = SmoothInput(horizontalInput, verticalInput);
+
+            horizontalInput = smoothedInput.x;
+            verticalInput = smoothedInput.y;
 
             inputXY = new Vector2(horizontalInput, verticalInput) * m * additionalBraking;
             if (inputXY.magnitude > 1)
@@ -378,6 +385,22 @@ namespace Society.Player.Controllers
             IsGrounded = false;
         }
 
+        private Vector2 SmoothInput(float targetH, float targetV)
+        {
+            float sensitivity = 3;
+            float deadZone = 0.001f;
+
+            slidingH = Mathf.MoveTowards(slidingH,
+                          targetH, sensitivity * Time.deltaTime);
+
+
+            slidingV = Mathf.MoveTowards(slidingV,
+                          targetV, sensitivity * Time.deltaTime);
+
+            return new Vector2(
+                   (Mathf.Abs(slidingH) < deadZone) ? 0f : slidingH,
+                   (Mathf.Abs(slidingV) < deadZone) ? 0f : slidingV);
+        }
         private void SetPhysMaterial()
         {
             if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit))

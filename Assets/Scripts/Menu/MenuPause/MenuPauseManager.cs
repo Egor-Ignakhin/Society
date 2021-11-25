@@ -35,7 +35,7 @@ namespace Society.Menu.MenuPause
             public static readonly Color PressedColor = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
         }
 
-        private void Awake()
+        protected override void OnInit()
         {
             mainCamera = Camera.main;
             effectsManager = FindObjectOfType<EffectsManager>();

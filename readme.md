@@ -5,7 +5,9 @@
 
 - Animations — анимации;
 - Audio — open-source звуки, музыка;
+- Balance - баланс, таблицы;
 - Fonts — наши шрифты;
+- Images - open-source спрайты, фотографии;
 - Models — open-source модели, текстуры;
 - NormalAudio — наши звуки, музыка;
 - NormalImages — наши спрайты, фотографии;

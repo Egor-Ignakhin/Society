@@ -14,9 +14,7 @@ using UnityEngine.UI;
 namespace Society.Menu
 {
     public sealed class MainMenuManager : MenuManager
-    {
-        private AudioClip OnButtonEnterSound;
-        private AudioSource aud;
+    {          
         [SerializeField] private SettingsManager settings;
 
 
@@ -25,12 +23,8 @@ namespace Society.Menu
         [SerializeField] private Button settingsGameButton;
         [SerializeField] private Button exitGameButton;
 
-        private void Awake()
-        {
-            OnButtonEnterSound = Resources.Load<AudioClip>("Inventory\\tic_2");
-            aud = gameObject.AddComponent<AudioSource>();
-            aud.volume = 0.5f;            
-
+        protected override void OnInit()
+        {           
             newGameButton.OnClickAsObservable().Subscribe(_ =>
             {
                 Missions.PlotState state = new Missions.PlotState();
@@ -58,8 +52,6 @@ namespace Society.Menu
 
             exitGameButton.OnClickAsObservable().
                  Subscribe(_ => Application.Quit());
-        }
-
-        internal void OnButtonEnter() => aud.PlayOneShot(OnButtonEnterSound);
+        }        
     }
 }

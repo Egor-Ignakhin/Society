@@ -243,6 +243,7 @@
     <Compile Include="Assets\Scripts\Menu\MusicToggle.cs" />
     <Compile Include="Assets\Scripts\Menu\MusicVolume.cs" />
     <Compile Include="Assets\Scripts\Menu\Settings\SettingsManager.cs" />
+    <Compile Include="Assets\Scripts\Menu\Settings\SettingsSaveNotificator.cs" />
     <Compile Include="Assets\Scripts\Menu\Settings\SubpanelSettings.cs" />
     <Compile Include="Assets\Scripts\Menu\Settings\Subpanels\GameSubpanelSettings.cs" />
     <Compile Include="Assets\Scripts\Menu\Settings\Subpanels\InputSubpanelSettings.cs" />
@@ -437,7 +438,6 @@
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Readme.txt" />
     <None Include="Assets\NormalImages\AllSkyFree\AllSkyFree_Readme.txt" />
-    <None Include="Assets\link.xml" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\_Effects (Mobile)\MuzzleFlashes\!MuzzleFlash Differences.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\Distortion.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
@@ -1155,6 +1155,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
+      <Project>{C2C7B0E1-AB7D-E17C-8E83-F0F10958BF83}</Project>
+      <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
     <ProjectReference Include="UniRx.csproj">
       <Project>{D5DA7214-4A59-DC5B-53A9-15C4D23902D0}</Project>
       <Name>UniRx</Name>

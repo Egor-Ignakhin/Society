@@ -6,7 +6,7 @@ namespace Society.Menu.Settings
     {
         private void Awake()
         {
-            SettingsManager.ApplySettingsEvent += OnSettingsSave;
+            SettingsManager.SaveSettingsEvent += OnSettingsSave;
 
             OnInit();
         }
@@ -23,7 +23,7 @@ namespace Society.Menu.Settings
 
         private void OnDestroy()
         {
-            SettingsManager.ApplySettingsEvent -= OnSettingsSave;
+            SettingsManager.SaveSettingsEvent -= OnSettingsSave;
         }
     }
 }

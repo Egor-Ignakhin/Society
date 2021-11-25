@@ -5,13 +5,13 @@ namespace Society.Menu
 {
     internal class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private MainMenuManager menuManager;
+        private MenuManager menuManager;
         private TMPro.TextMeshProUGUI text;
         private Color selectColor = new Color(0.75f, 0.75f, 0.75f);
         private void Awake()
         {
-            menuManager = FindObjectOfType<MainMenuManager>();
-            transform.GetChild(0).TryGetComponent(out text);
+            menuManager = FindObjectOfType<MenuManager>();
+            TryGetComponent(out text);
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
