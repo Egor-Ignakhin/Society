@@ -1,4 +1,5 @@
 ﻿using Society.Inventory;
+using Society.Localization;
 using Society.Patterns;
 
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace Features.RandomBoxes
         {
             foreach (var r in randomlyDroppedItems)
             {
-                r.Count = Mathf.Clamp(r.Count, 1, ItemStates.GetMaxCount((int)r.Id));
+                r.Count = Mathf.Clamp(r.Count, 1, LocalizationManager.GetMaxCountItem((int)r.Id));
             }
         }
 

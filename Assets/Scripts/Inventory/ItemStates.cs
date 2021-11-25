@@ -25,14 +25,7 @@ namespace Society.Inventory
         /// <param name="id"></param>
         /// <returns></returns>
         public static bool ItsGun(int id) => id == (int)ItemsID.TTPistol || id == (int)ItemsID.Ak_74;
-
-        /// <summary>
-        /// возвращает максимальное число стака предмета в инвентаре
-        /// </summary>
-        /// <param id="id"></param>
-        /// <returns></returns>
-        public static int GetMaxCount(int id) => LocalizationManager.GetMaxCountItem(id);
-        public static decimal GetWeightItem(int id) => LocalizationManager.GetWeightItem(id);
+                
         public static (int food, int water) GetMeatNutrition(int id) => LocalizationManager.GetNutrition(id);
 
         internal static bool ItsMeal(int id) => id == (int)ItemsID.CannedFood || id == (int)ItemsID.Milk;

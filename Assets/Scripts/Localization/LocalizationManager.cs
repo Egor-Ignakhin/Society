@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+
+using EasyExcel;
+
+using EasyExcelGenerated;
 
 using Newtonsoft.Json;
 
@@ -21,7 +26,7 @@ namespace Society.Localization
         /// <summary>
         /// Свойства предметов
         /// </summary>
-        private static ItemPropertiesData itemProperties;
+       // private static ItemPropertiesData itemProperties;
 
         /// <summary>
         /// Питательные предметы
@@ -43,6 +48,8 @@ namespace Society.Localization
             InitializeNutritiousItems();
             InitializeMedicalItems();
         }
+
+        private static AllItems_MainList_Sheet allItemsSheet;
 
         #region Initialization
 
@@ -89,14 +96,23 @@ namespace Society.Localization
         /// </summary>
         private static void InitializeWeightMaxCountItems()
         {
-            string mcvData = File.ReadAllText(Directory.GetCurrentDirectory() + "\\Localization\\WeightAndMaxCountItems.json");
-            itemProperties = JsonConvert.DeserializeObject<ItemPropertiesData>(mcvData);
-            itemProperties.WeightAndMaxCountItems = new Dictionary<int, (int maxCount, decimal weight)>();
+            allItemsSheet = Load($"\\{nameof(AllItems_MainList_Sheet)}") as AllItems_MainList_Sheet;
+
+            /*itemProperties.WeightAndMaxCountItems = new Dictionary<int, (int maxCount, decimal weight)>();
             for (int i = 0; i < itemProperties.Properties.Count; i++)
             {
                 System.Enum.TryParse($"{itemProperties.Properties[i].Type}", out Inventory.ItemStates.ItemsID myStatus);
                 itemProperties.WeightAndMaxCountItems.Add((int)myStatus, (itemProperties.Properties[i].MaxCount, (decimal)itemProperties.Properties[i].Weight));
-            }
+            }*/
+        }
+        public static EERowDataCollection Load(string sheetClassName)
+        {
+            var headName = sheetClassName;
+            var filePath = EESettings.Current.GeneratedAssetPath.
+                               Substring(EESettings.Current.GeneratedAssetPath.IndexOf("Resources/", StringComparison.Ordinal) + "Resources/".Length)
+                           + headName;
+            var collection = Resources.Load(filePath) as EERowDataCollection;
+            return collection;
         }
 
         /// <summary>
@@ -203,14 +219,14 @@ namespace Society.Localization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static int GetMaxCountItem(int id) => itemProperties.GetMaxCount(id);
+        public static int GetMaxCountItem(int id) => (allItemsSheet.GetData(id) as MainList).MaxCount;
 
         /// <summary>
         /// Возвращает вес предмета
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        internal static decimal GetWeightItem(int id) => itemProperties.GetWight(id);
+        internal static double GetWeightItem(int id) => (allItemsSheet.GetData(id) as MainList).Weight;
 
         /// <summary>
         /// Возвращает питательность предмета
@@ -260,7 +276,7 @@ namespace Society.Localization
                 Debug.LogError($"Failed to get task title. " +
                     $"Invalid mission id = {missionId}, Invalid task id = {taskId}");
                 return "Error";
-            }            
+            }
         }
 #endif
     }

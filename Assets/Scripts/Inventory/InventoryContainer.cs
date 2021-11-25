@@ -1,4 +1,5 @@
 ﻿using Society.Inventory.Other;
+using Society.Localization;
 using Society.Player;
 using Society.Player.Controllers;
 
@@ -159,7 +160,7 @@ namespace Society.Inventory
             cell.SetItem(id, count, gun, false);
 
 
-            int outOfRange = cell.Count - ItemStates.GetMaxCount(cell.Id);
+            int outOfRange = cell.Count - LocalizationManager.GetMaxCountItem(cell.Id);
             if (outOfRange > 0)
             {
                 cell.DelItem(outOfRange);

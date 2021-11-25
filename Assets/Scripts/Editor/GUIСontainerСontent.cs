@@ -11,6 +11,7 @@ using System.Linq;
 
 using Society.Inventory;
 using Society.Inventory.Other;
+using Society.Localization;
 
 namespace Society.Editor
 {
@@ -125,7 +126,7 @@ namespace Society.Editor
                 int.TryParse(string.Join("", outCount.Where(c => char.IsDigit(c))), out int value);
                 newCount = value;
             }
-            newCount = Mathf.Clamp(newCount, 1, ItemStates.GetMaxCount(items[item]));
+            newCount = Mathf.Clamp(newCount, 1, LocalizationManager.GetMaxCountItem(items[item]));
             container.SetStartedCount(item, newCount);
 
             GUILayout.EndVertical();

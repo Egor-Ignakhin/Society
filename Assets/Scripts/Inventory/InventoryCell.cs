@@ -1,4 +1,5 @@
-﻿using Society.Patterns;
+﻿using Society.Localization;
+using Society.Patterns;
 
 using TMPro;
 
@@ -248,7 +249,7 @@ namespace Society.Inventory
             public bool IsFilled { get => Count > MaxCount - 1; }
             public int Id { get; set; }
             public int Count { get; private set; } = 0;
-            public int MaxCount { get => ItemStates.GetMaxCount(Id); }
+            public int MaxCount { get => LocalizationManager.GetMaxCountItem(Id); }
             public bool IsEmpty { get => Count == 0; }
             public void DelItem(int count)
             {
@@ -293,7 +294,8 @@ namespace Society.Inventory
                 Id = c.Id;
                 PossibleGun = c.MGun;
             }
-            public bool Equals(CopyPasteCell obj) => obj.Id == Id && obj.Count < ItemStates.GetMaxCount(Id) && Count < ItemStates.GetMaxCount(Id);
+            public bool Equals(CopyPasteCell obj) => obj.Id == Id
+                && obj.Count < LocalizationManager.GetMaxCountItem(Id) && Count < LocalizationManager.GetMaxCountItem(Id);
 
         }
 

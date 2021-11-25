@@ -1,4 +1,5 @@
 ﻿using Society.Inventory.Other;
+using Society.Localization;
 using Society.Player.Controllers;
 using Society.SMG;
 
@@ -306,13 +307,13 @@ namespace Society.Inventory
 
             int id = SelectedCell.Id;
             int count = SelectedCell.Count;
-            decimal outRangeWeightItem = ItemStates.GetWeightItem(id) * count;
+            double outRangeWeightItem = LocalizationManager.GetWeightItem(id) * count;
             if (SelectedCell)
             {
                 if (SelectedCell.Activate())
                     inventoryContainer.CallItemEvent(id, 1);
             }
-            inventoryMassCalculator.DeleteItem(outRangeWeightItem - ItemStates.GetWeightItem(id) * count);
+            inventoryMassCalculator.DeleteItem(outRangeWeightItem - LocalizationManager.GetWeightItem(id) * count);
         }
         private void OnScrollEvent(bool forward)
         {
@@ -462,8 +463,8 @@ namespace Society.Inventory
 
         public class InventoryMassCalculator
         {
-            public decimal Weight { get; private set; } = 0;
-            public const decimal MaxWeightForRunningMass = 30;
+            public double Weight { get; private set; } = 0;
+            public const double MaxWeightForRunningMass = 30;
             private readonly FirstPersonController fps;
             private readonly TextMeshProUGUI weightText;
             public InventoryMassCalculator(FirstPersonController controller, TextMeshProUGUI wT)
@@ -474,25 +475,25 @@ namespace Society.Inventory
 
             public void AddItem(int id, int count)
             {
-                Weight += ItemStates.GetWeightItem(id) * count;
+                Weight += LocalizationManager.GetWeightItem(id) * count;
                 RecalculatePlayerSpeed();
             }
             public void DeleteItem(int id, int count)
             {
-                Weight -= ItemStates.GetWeightItem(id) * count;
+                Weight -= LocalizationManager.GetWeightItem(id) * count;
                 RecalculatePlayerSpeed();
             }
-            public void DeleteItem(decimal w)
+            public void DeleteItem(double w)
             {
                 Weight -= w;
                 RecalculatePlayerSpeed();
             }
             public void RecalculatePlayerSpeed()
             {
-                decimal playerBraking = 1 - (Weight / MaxWeightForRunningMass / 5);
-                if (playerBraking < .8m)// становление самой минимальной скорости
+                double playerBraking = 1 - (Weight / MaxWeightForRunningMass / 5);
+                if (playerBraking < .8d)// становление самой минимальной скорости
                 {
-                    playerBraking = .8m;
+                    playerBraking = .8d;
                     weightText.color = Color.red;
                 }
                 else weightText.color = Color.white;
