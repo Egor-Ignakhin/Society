@@ -117,10 +117,7 @@ namespace Society.Menu.Settings
             ShowSubpanel(gameSubpanel);
         }
 
-        internal bool PanelIsActive()
-        {
-            return settingsPanel.activeInHierarchy;
-        }
+        internal bool PanelIsActive() => settingsPanel.activeInHierarchy;
 
         private void SaveSettings()
         {

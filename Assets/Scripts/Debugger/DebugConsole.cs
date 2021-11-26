@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 using TMPro;
 
@@ -29,7 +31,7 @@ namespace Society.Debugger
 
             //Создание стандартных приветствий в консоли.
             Print("Hello, i'm Society Console.", true);
-            Print("Use 'Help' to get page of help", true, 20);
+            Print("Use 'Help' to get page of help", true, 18);
         }
         private void Update()
         {
@@ -99,9 +101,15 @@ namespace Society.Debugger
             enteredCommands.Add(lastCommand);// добавление в лист команд 
             commandIterator = enteredCommands.Count;// присвоение итератору позиицю последней команды
 
-            string errorType = CommandsContainer.Execution(lastCommand);// вызов обработки команды и одновременно сбор возможной ошибки команды            
+            (string errorType, MethodInfo calledmthd, string command) = CommandsContainer.Execution(lastCommand);// вызов обработки команды и одновременно сбор возможной ошибки команды            
+
+            //Выводим написанную пользователем команду
+            Print("> " + lastCommand);
             if (errorType == string.Empty)// если команда прошла без ошибок
-                Print("> " + lastCommand);// создание нового поля
+            {
+                object[] l_args = new object[1] { command };
+                calledmthd.Invoke(null, l_args);                
+            }
 
             inputField.text = string.Empty;
             inputField.ActivateInputField();
@@ -115,8 +123,7 @@ namespace Society.Debugger
         {
             if (type == string.Empty)
                 return;
-            if (type == "HELP COMMAND")
-                return;
+
             Print(type);
         }
         #region SelectDeselectEvents

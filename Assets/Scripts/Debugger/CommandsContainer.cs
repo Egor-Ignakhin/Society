@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Society.Player;
 
@@ -19,22 +20,27 @@ namespace Society.Debugger
         /// <summary>
         /// Cловарь команд
         /// </summary>
-        public static IReadOnlyDictionary<string, Action<string>> commands = new Dictionary<string, Action<string>> {
-                {nameof(SETTIME), SETTIME},
-                {nameof(SETHEALTH), SETHEALTH},
-                {nameof(SETFOOD), SETFOOD},
-                {nameof(SETWATER), SETWATER},
-                {nameof(SETRADIATION), SETRADIATION},
-                {nameof(HEAL), HEAL},
-                {nameof(SETPOS), SETPOS},
-                {nameof(ENDLESSHEALTH),ENDLESSHEALTH },
-                {nameof(ENDLESSFOOD),ENDLESSFOOD },
-                {nameof(ENDLESSWATER),ENDLESSWATER },
-                {nameof(ENDLESSAMMO),ENDLESSAMMO },
-                {nameof(HELP),HELP },
-                {nameof(GET),GET },
-                { nameof(SKIPTASK),SKIPTASK }
-           };
+        private static readonly Dictionary<string, MethodInfo> consoleCommands;
+
+        static CommandsContainer()
+        {
+            consoleCommands = new Dictionary<string, MethodInfo>();
+
+
+            //Составляем список всех консольных команд
+            var mthCommands = typeof(CommandsContainer)
+                .GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)//Собираем все методы класса
+                .Where(x => x.GetCustomAttributes(typeof(ConsoleCommandAttribute), false).FirstOrDefault() != null);// Оставляем только имеющие атрибует ConsoleCommandAttribute
+
+            //Проходим по списку и добавляем в словарь все команды.
+            foreach (var method in mthCommands)
+            {
+                consoleCommands.Add(method.Name, typeof(CommandsContainer)
+                    .GetMethod(method.Name, BindingFlags.DeclaredOnly |
+                    BindingFlags.Public | BindingFlags.NonPublic |
+                    BindingFlags.Instance | BindingFlags.Static));
+            }
+        }
 
         public static void SetDebugConsole(DebugConsole dc) => debugConsole = dc;
 
@@ -69,58 +75,61 @@ namespace Society.Debugger
         /// Исполнитель команд
         /// </summary>
         /// <param name="input"></param>
-        /// <returns></returns>
-        public static string Execution(string input)
+        /// <returns></returns>.
+        public static (string s, MethodInfo calledmthd, string outputedCommand) Execution(string input)
         {
             input = input.ToUpper();
             input = input.TrimStart(' ');
             input = input.TrimEnd(' ');
 
             (string type, string command) = Substring(input);
-            if (!commands.ContainsKey(type))
-                return $"Erorr: {input}: command not found!";
+            if (!consoleCommands.ContainsKey(type))
+                return ($"Erorr: command not found!", null, null);
 
-            commands[type](command);
-
-            if (type == nameof(HELP))
-                return "HELP COMMAND";
-
-            return string.Empty;
+            return (string.Empty, consoleCommands[type], command);
         }
-        private static void HELP(string c)
+
+        #region ConsoleCommands
+
+        /// <summary>
+        /// Вывод список всех возможных команд
+        /// а также краткое описание работы каждой из них.
+        /// </summary>
+        /// <param name="_"></param>
+        [ConsoleCommand("", "to get page of help")]
+        private static void HELP(string _)
         {
-            int i = 0;
-            debugConsole.Print($"{++i}. Use 'Settime hrs:min' to setup global time", true, 20);
-            debugConsole.Print($"{++i}. Use 'GAMEMODE n' to setup god mode", true, 20);
-            debugConsole.Print($"{++i}. Use 'SETHEALTH n' to set the amount of health to the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'SETFOOD n' to set the amount of food to the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'SETWATER n' to set the amount of water to the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'SETRADIATION n' to set the amount of radiation to the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'HEAL' to fully restore the characteristics of the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'SETPOS (x,y,z)' to setup global postion of the player", true, 20);
-            debugConsole.Print($"{++i}. Use 'ENDLESSHEALTH n' to set the mode to 'Infinite Health'", true, 20);
-            debugConsole.Print($"{++i}. Use 'ENDLESSFOOD n' to set the mode to 'Infinite Food'", true, 20);
-            debugConsole.Print($"{++i}. Use 'ENDLESSWATER n' to set the mode to 'Infinite Water'", true, 20);
-            debugConsole.Print($"{++i}. Use 'ENDLESSAMMO n' to set the mode to 'Infinite Ammo'", true, 20);
-            debugConsole.Print($"{++i}. Use 'HELP' to get help", true, 20);
-            debugConsole.Print($"{++i}. Use 'GET HEALTH' to get info about health ", true, 20);
-            debugConsole.Print($"{++i}. Use 'SKIPTASK _ to skip task", true, 20);
+            int k = 0;
+            foreach (var cc in consoleCommands)
+            {
+                var ccAtr = cc.Value.GetCustomAttribute<ConsoleCommandAttribute>();
+
+                //Если команда скрытая от обозрения
+                if (ccAtr.IsHiddenCommand)
+                    //Пропускаем
+                    continue;
+
+                debugConsole.Print($"{++k}. Use " +
+                    $"'{cc.Key} {ccAtr.Args}' {ccAtr.Description}", true, 20);
+            }                        
         }
 
         /// <summary>
         /// бесконесное здоровье
         /// </summary>
         /// <param name="c"></param>
+        [ConsoleCommand("b", "to set the mode to 'Infinite Health'")]
         private static void ENDLESSHEALTH(string c)
         {
             int v = Convert.ToInt32(c);
-            BasicNeeds.EndlessHealth = (v == 1);// если 1 то беск. хп
+            BasicNeeds.EndlessHealth = v == 1;// если 1 то беск. хп
         }
 
         /// <summary>
         /// бесконечная еда
         /// </summary>
         /// <param name="c"></param>
+        [ConsoleCommand ("b", "to set the mode to 'Infinite Food'")]
         private static void ENDLESSFOOD(string c)
         {
             int v = Convert.ToInt32(c);
@@ -131,6 +140,7 @@ namespace Society.Debugger
         /// бесконечная вода
         /// </summary>
         /// <param name="c"></param>
+        [ConsoleCommand ("b", "to set the mode to 'Infinite Water'")]
         private static void ENDLESSWATER(string c)
         {
             int v = Convert.ToInt32(c);
@@ -142,6 +152,7 @@ namespace Society.Debugger
         /// 0 = обычный. 1 = бесконечный.
         /// </summary>
         /// <param name="c"></param>
+        [ConsoleCommand ("b", "to set the mode to 'Infinite Ammo'")]
         private static void ENDLESSAMMO(string c)
         {
             if (int.TryParse(c, out int v))
@@ -154,6 +165,7 @@ namespace Society.Debugger
         /// установка мирового времени
         /// </summary>
         /// <param name="command"></param>
+        [ConsoleCommand("hrs:min", "to setup global time")]
         private static void SETTIME(string command)
         {
             foreach (var c in command)
@@ -171,14 +183,10 @@ namespace Society.Debugger
         }
 
         /// <summary>
-        /// установка режимов : смертный, бог
-        /// </summary>
-        /// <param name="command"></param>
-
-        /// <summary>
         /// устанока здоровья
         /// </summary>
         /// <param name="command"></param>
+        [ConsoleCommand("n","to set the amount of health to the player")]
         private static void SETHEALTH(string command)
         {
             int.TryParse(command, out int value);
@@ -189,6 +197,7 @@ namespace Society.Debugger
         /// установка еды
         /// </summary>
         /// <param name="command"></param>
+        [ConsoleCommand("n", "to set the amount of food to the player")]
         private static void SETFOOD(string command)
         {
             int.TryParse(command, out int value);
@@ -199,6 +208,7 @@ namespace Society.Debugger
         /// установка воды
         /// </summary>
         /// <param name="command"></param>
+        [ConsoleCommand ("n", "to set the amount of water to the player")]
         private static void SETWATER(string command)
         {
             int.TryParse(command, out int value);
@@ -209,6 +219,7 @@ namespace Society.Debugger
         /// установка радиационного излучения
         /// </summary>
         /// <param name="command"></param>
+        [ConsoleCommand("n", "to set the amount of radiation to the player")]
         private static void SETRADIATION(string command)
         {
             int.TryParse(command, out int value);
@@ -219,6 +230,7 @@ namespace Society.Debugger
         /// полное восстановление все необходимых для жизни стамин
         /// </summary>
         /// <param name="_"></param>
+        [ConsoleCommand ("", "to fully restore the characteristics of the player")]
         private static void HEAL(string _)
         {
             string input = "10000";
@@ -232,6 +244,7 @@ namespace Society.Debugger
         /// Установка координат игрока
         /// </summary>
         /// <param name="pos"></param>
+        [ConsoleCommand ("(x, y, z)", "to setup global postion of the player")]
         private static void SETPOS(string posStr)// (50,60,70.1)
         {
             posStr = System.Text.RegularExpressions.Regex.Replace(posStr, @"[()]", "");
@@ -249,21 +262,36 @@ namespace Society.Debugger
         /// Возвращает значение свойства
         /// </summary>
         /// <param name="args"></param>
-        private static void GET(string args)
-        {
-            if (args == "HEALTH")
-            {
-                debugConsole.Print($"Health is" + BasicNeeds.Instance.Health);
-            }
-        }
+        [ConsoleCommand ("", "to get info about health")]
+        private static void GETHEALTH(string _) =>
+            debugConsole.Print($"Health is" + BasicNeeds.Instance.Health);
 
         /// <summary>
         /// Пропуск активной задачи
         /// </summary>
         /// <param name="_"></param>
+        [ConsoleCommand("", "to skip task")]
         private static void SKIPTASK(string _)
         {
             Missions.MissionsManager.Instance.SkipTask();
+
+            debugConsole.Print($"Task skipped..");
         }
+
+        #region Hidden commands
+
+        /// <summary>
+        /// В чём смысл жизни?
+        /// </summary>
+        /// <param name="_"></param>
+        [ConsoleCommand(true)]
+        private static void WHATISTHESENSEOFLIFE(string _)
+        {
+            debugConsole.Print("The meaning of life is human perfection.");
+        }
+
+        #endregion
+
+        #endregion
     }
 }
