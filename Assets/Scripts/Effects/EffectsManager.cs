@@ -24,7 +24,7 @@ namespace Society.Effects
             globalVolume.profile.TryGet(out volumeBloom);
             globalVolume.profile.TryGet(out volumeFog);
 
-            Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettings;
+            Settings.GameSettings.UpdateSettingsEvent += OnUpdateSettings;
         }
         public void SetEnableSimpleDOF(bool active) => volumeDOF.active = active;
 
@@ -43,7 +43,7 @@ namespace Society.Effects
         }
         private void OnDestroy()
         {
-            Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnUpdateSettings;
+            Settings.GameSettings.UpdateSettingsEvent -= OnUpdateSettings;
         }
     }
 }

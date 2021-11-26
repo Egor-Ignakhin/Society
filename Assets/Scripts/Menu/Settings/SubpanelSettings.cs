@@ -1,19 +1,21 @@
+using Society.Settings;
+
 using UnityEngine;
 
 namespace Society.Menu.Settings
 {
+    /// <summary>
+    /// Подпанель настроек
+    /// </summary>
     public abstract class SubpanelSettings : MonoBehaviour
     {
         private void Awake()
         {
-            SettingsManager.SaveSettingsEvent += OnSettingsSave;
+            GameSettings.SaveSettingsEvent += OnSettingsSave;
 
             OnInit();
         }
-        private void OnEnable()
-        {
-            UpdateFields();
-        }
+        private void OnEnable() => UpdateFields();
 
         protected abstract void UpdateFields();
 
@@ -21,9 +23,6 @@ namespace Society.Menu.Settings
 
         protected abstract void OnSettingsSave();
 
-        private void OnDestroy()
-        {
-            SettingsManager.SaveSettingsEvent -= OnSettingsSave;
-        }
+        private void OnDestroy() => GameSettings.SaveSettingsEvent -= OnSettingsSave;
     }
 }

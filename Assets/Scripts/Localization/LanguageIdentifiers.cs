@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Society.Localization
 {
+	/// <summary>
+	/// языковые идентификаторы
+	/// </summary>
 	public enum LanguageIdentifiers
 	{
 		MainMenu_NewGame,

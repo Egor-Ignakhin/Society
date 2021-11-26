@@ -15,6 +15,7 @@ namespace Society.Localization
 {
     public static class LocalizationManager
     {
+        #region Properties
         /// <summary>
         /// Подсказки о взаимодействующих клавишах
         /// </summary>
@@ -42,19 +43,39 @@ namespace Society.Localization
 
         private static List<Mission> missions;
 
-        private static AllItems_MainList_Sheet allItemsSheet;
-        private static LocalizationSheet_Languages_Sheet localizationSheet;
+        /// <summary>
+        /// Таблица с характеристиками всех предметов
+        /// </summary>
+        private static readonly AllItems_MainList_Sheet allItemsSheet;
+
+        /// <summary>
+        /// Хеш, чтобы в game loop постоянно не кастовать таблицы
+        /// </summary>
+        private static readonly List<MainList> allListsItems = new List<MainList>();
+
+        /// <summary>
+        /// Таблица с переводами
+        /// </summary>
+        private static readonly LocalizationSheet_Languages_Sheet localizationSheet;
+
+        #endregion
+
         static LocalizationManager()
         {
             localizationSheet = Load($"\\{nameof(LocalizationSheet_Languages_Sheet)}") as LocalizationSheet_Languages_Sheet;
+            allItemsSheet = Load($"\\{nameof(AllItems_MainList_Sheet)}") as AllItems_MainList_Sheet;
+
+            for (int i = 0; i < allItemsSheet.GetDataCount(); i++)
+            {
+                allListsItems.Add(allItemsSheet.GetData(i) as MainList);
+            }
+
             InitializeMissions();
             InitializeUpKeysDescriptions();
             InitializeHints();
-            InitializeWeightMaxCountItems();
             InitializeNutritiousItems();
             InitializeMedicalItems();
         }
-
 
         #region Initialization
 
@@ -94,14 +115,6 @@ namespace Society.Localization
             {
                 hintsData.hints.Add(hintsData.Types[i].Type, hintsData.Types[i].Desc);
             }
-        }
-
-        /// <summary>
-        /// Инициализация массы и макс. кол-ва предметов
-        /// </summary>
-        private static void InitializeWeightMaxCountItems()
-        {
-            allItemsSheet = Load($"\\{nameof(AllItems_MainList_Sheet)}") as AllItems_MainList_Sheet;
         }
         public static EERowDataCollection Load(string sheetClassName)
         {
@@ -195,7 +208,8 @@ namespace Society.Localization
                 //Если тек. миссия моложе итерационной
                 if (currentMissionNumber > i)
                 {
-                    temp += missions[i].GetNumberTasks();// прибавить к текущим задачам все итерационные
+                    // прибавить к текущим задачам все итерационные
+                    temp += missions[i].GetNumberTasks();
                 }
                 else if (currentMissionNumber == i)
                 {
@@ -217,14 +231,14 @@ namespace Society.Localization
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static int GetMaxCountItem(int id) => (allItemsSheet.GetData(id) as MainList).MaxCount;
+        public static int GetMaxCountItem(int id) => allListsItems[id].MaxCount;
 
         /// <summary>
         /// Возвращает вес предмета
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        internal static double GetWeightItem(int id) => (allItemsSheet.GetData(id) as MainList).Weight;
+        internal static double GetWeightItem(int id) => allListsItems[id].Weight;
 
         /// <summary>
         /// Возвращает питательность предмета

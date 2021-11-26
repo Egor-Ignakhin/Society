@@ -1,5 +1,8 @@
 namespace Society.Settings
 {
+    /// <summary>
+    /// Все возможные разрешения экрана игры.
+    /// </summary>
     internal enum ScreenResolutions
     {
         _1920x1080,

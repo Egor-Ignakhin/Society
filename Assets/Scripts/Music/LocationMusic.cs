@@ -31,7 +31,7 @@ namespace Society.Music
             MusicFlag();
             MusicPlaying();
 
-            Menu.Settings.SettingsManager.SettingsUpdateEvent += OnSettingsUpdate;
+            Settings.GameSettings.UpdateSettingsEvent += OnSettingsUpdate;
         }
         private void OnTriggerStay(Collider other) // Проверка вошел ли персонаж в зону действия триггера для включения музыки
         {
@@ -55,7 +55,6 @@ namespace Society.Music
                 startMusic = StartCoroutine(SetNewMusic());
             }
         }
-        public void SetVolume(float v) => audioSource.volume = v;
         public void SetEnabledMusic(bool v) => musicIsEnabled = v;
         private bool MusicFlag()
         {// Проверка 2ух положений, вошел ли персонаж в триггер зону и включено ли в настройках разрешение на воспроизведение музыки (если нет, то выполняются действия ниже)
@@ -90,7 +89,7 @@ namespace Society.Music
         }
         private void OnDestroy()
         {
-            Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnSettingsUpdate;
+            Settings.GameSettings.UpdateSettingsEvent -= OnSettingsUpdate;
         }
     }
 }

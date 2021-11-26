@@ -13,15 +13,22 @@ using UnityEngine.UI;
 
 namespace Society.Menu
 {
+    /// <summary>
+    /// Главное меню игры.
+    /// </summary>
     public sealed class MainMenuManager : MenuManager
     {          
+        /// <summary>
+        /// Панель настроек
+        /// </summary>
         [SerializeField] private SettingsManager settings;
 
-
+        //Общие кнопки
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button continueGameButton;
         [SerializeField] private Button settingsGameButton;
         [SerializeField] private Button exitGameButton;
+        //Общие кнопки
 
         protected override void OnInit()
         {           

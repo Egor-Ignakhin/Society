@@ -18,7 +18,7 @@ using UnityEngine.UI;
 namespace Society.Menu.Settings
 {
     /// <summary>
-    /// Меню настроек, едино для всех меню.
+    /// Панель настроек, едино для всех меню.
     /// </summary>
     public sealed class SettingsManager : Singleton<SettingsManager>
     {
@@ -55,10 +55,6 @@ namespace Society.Menu.Settings
 
         [SerializeField] private MenuManager menuManager;
 
-        public static event Action SettingsUpdateEvent;
-
-        public static event Action SaveSettingsEvent;
-
 
         private BridgeToProjectSettings bridgeToProjectSettings;
 
@@ -79,20 +75,17 @@ namespace Society.Menu.Settings
             });
             applyButton.OnClickAsObservable().Subscribe(_ =>
             {
-                SaveSettingsEvent?.Invoke();
+                GameSettings.CallSaveSettingsEvent();
 
                 SaveSettings();
 
-                SettingsUpdateEvent?.Invoke();
+               GameSettings.CallSettingsUpdateEvent();
             });
 
             bridgeToProjectSettings = new BridgeToProjectSettings();            
         }
 
-        private void Start()
-        {
-            SettingsUpdateEvent?.Invoke();
-        }
+        private void Start() => GameSettings.CallSettingsUpdateEvent();
 
         private void ShowSubpanel(GameObject subpanel)
         {
@@ -101,9 +94,7 @@ namespace Society.Menu.Settings
             videoSubpanel.SetActive(false);
 
 
-            subpanel.SetActive(true);
-
-            SettingsUpdateEvent?.Invoke();
+            subpanel.SetActive(true);            
         }
 
         /// <summary>

@@ -1,12 +1,13 @@
-using System;
 using System.Collections;
-using System.Threading;
 
-using UniRx;
+using Society.Settings;
+
 using UnityEngine;
 
 namespace Society.Menu.Settings
-{
+{/// <summary>
+/// Уведомление об  успехе сохранения настроек
+/// </summary>
     internal sealed class SettingsSaveNotificator : MonoBehaviour
     {
         private TMPro.TextMeshProUGUI mText;
@@ -16,16 +17,12 @@ namespace Society.Menu.Settings
             TryGetComponent(out mText);
             TryGetComponent(out mAnimator);
 
-            SettingsManager.SaveSettingsEvent += OnSettingsSave;
+            GameSettings.SaveSettingsEvent += OnSettingsSave;
 
             gameObject.SetActive(false);
         }
-        private void DisableObject()
-        {
-            gameObject.SetActive(false);
-        }
 
-        IEnumerator WaitForRealSeconds()
+        private IEnumerator WaitForRealSeconds()
         {
             float startTime = Time.realtimeSinceStartup;
             while (Time.realtimeSinceStartup - startTime < 3)
@@ -41,11 +38,9 @@ namespace Society.Menu.Settings
             mText.SetText("OPTIONS APPLIED!");
             gameObject.SetActive(true);
 
-            StartCoroutine(nameof(WaitForRealSeconds));           
+            StartCoroutine(nameof(WaitForRealSeconds));
         }
-        private void OnDestroy()
-        {
-            SettingsManager.SaveSettingsEvent -= OnSettingsSave;
-        }
+
+        private void OnDestroy() => GameSettings.SaveSettingsEvent -= OnSettingsSave;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,11 +13,11 @@ namespace Society.Settings
 {
     internal static class GameSettings
     {
-        private static SerializableGameSettins serializableGameSettins;
-
-        [System.Serializable]
+        [Serializable]
         public class SerializableGameSettins
         {
+            #region GameSubpanel
+
             public double musicVolume = 0.5D;
             public double generalVolume = 1D;
             public double fieldOfView = 70D;
@@ -26,6 +27,10 @@ namespace Society.Settings
 
             [JsonConverter(typeof(BoolToStringConverter))]
             public bool isDevMode = false;
+
+            #endregion
+
+            #region InputSubpanel
 
             public double mouseSensivity = 3D;
             public KeyCode moveFrontKeyCode = KeyCode.W;
@@ -42,6 +47,10 @@ namespace Society.Settings
             public KeyCode interactionKeyCode = KeyCode.F;
             public KeyCode reloadKeyCode = KeyCode.R;
 
+            #endregion
+
+            #region VideoSubpanel
+
             public GraphicsLevels grahicsLevel;
             public ScreenResolutions screenResolution;
             public bool isFullScreen;
@@ -53,17 +62,57 @@ namespace Society.Settings
             public bool bloomIsEnabled;
             public bool fogIsEnabled;
 
-
+            #endregion
 
             #endregion
         }
-        public static string GetPathToSettings() => Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
+
+        private static SerializableGameSettins serializableGameSettins;
+
+        #region Events
+
+        public static event Action UpdateSettingsEvent;
+
+        public static event Action SaveSettingsEvent;
+
+
+        public static void CallSettingsUpdateEvent() => UpdateSettingsEvent?.Invoke();
+
+        public static void CallSaveSettingsEvent() => SaveSettingsEvent?.Invoke();
+
+        #endregion
+
         static GameSettings()
         {
+            resolutionsDictionary = new Dictionary<ScreenResolutions, (int widht, int height)> 
+        {
+                { ScreenResolutions._1920x1080, (1920, 1080) },
+                { ScreenResolutions._1680x1050, (1680, 1050) },
+                { ScreenResolutions._1600x1024, (1600, 1024) },
+                { ScreenResolutions._1600x900, (1600, 900)   },
+                { ScreenResolutions._1440x900, (1440, 900)   },
+                { ScreenResolutions._1366x768, (1366, 768)   },
+                { ScreenResolutions._1360x768, (1360, 768)   },
+                { ScreenResolutions._1280x1024, (1280, 1024) },
+                { ScreenResolutions._1280x960, (1280, 960)   },
+                { ScreenResolutions._1280x800, (1280, 800)   },
+                { ScreenResolutions._1280x768, (1280, 768)   },
+                { ScreenResolutions._1280x720, (1280, 720)   },
+                { ScreenResolutions._1176x664, (1176, 664)   },
+                { ScreenResolutions._1152x864, (1150, 864)   },
+                { ScreenResolutions._1024x768, (1024, 768)   },
+                { ScreenResolutions._800x600, (800, 600)     },
+                { ScreenResolutions._720x576, (720, 576)     },
+                { ScreenResolutions._720x480, (720, 480)     },
+                { ScreenResolutions._640x480, (640, 480)     }
+            };
+
             var data = File.ReadAllText(GetPathToSettings());
 
             SetSerializableSettins(JsonConvert.DeserializeObject<SerializableGameSettins>(data));
         }
+
+        public static string GetPathToSettings() => Directory.GetCurrentDirectory() + "\\Saves\\Settings.json";
 
         public static SerializableGameSettins GetSerializableSettins() => serializableGameSettins;
         public static void SetSerializableSettins(SerializableGameSettins value) => serializableGameSettins = value;
@@ -71,22 +120,18 @@ namespace Society.Settings
         #region Game
 
         internal static double GetMusicVolume() => serializableGameSettins.musicVolume;
-
         internal static void SetMusicVolume(double value) => serializableGameSettins.musicVolume = value;
 
         internal static double GetGeneralVolume() => serializableGameSettins.generalVolume;
-
         internal static void SetGeneralVolume(double value) => serializableGameSettins.generalVolume = value;
 
         internal static double GetFieldOfView() => serializableGameSettins.fieldOfView;
-
         internal static void SetFieldOfView(double value) => serializableGameSettins.fieldOfView = value;
 
         internal static SystemLanguage GetSystemLanguage() => serializableGameSettins.systemLanguage;
-        internal static void SetLanguage(SystemLanguage systemLanguage)=>serializableGameSettins.systemLanguage = systemLanguage;        
+        internal static void SetLanguage(SystemLanguage systemLanguage) => serializableGameSettins.systemLanguage = systemLanguage;
 
         internal static bool GetIsDevMode() => serializableGameSettins.isDevMode;
-
         internal static void SetIsDevMode(bool value) => serializableGameSettins.isDevMode = value;
 
         #endregion
@@ -139,67 +184,33 @@ namespace Society.Settings
 
         #region Video
 
-        
+        private static readonly Dictionary<ScreenResolutions, (int widht, int height)> resolutionsDictionary;
 
-        private static Dictionary<ScreenResolutions, (int widht, int height)> resolutionsDictionaty
-            = new Dictionary<ScreenResolutions, (int widht, int height)>
-        {
-                { ScreenResolutions._1920x1080, (1920, 1080) },
-                { ScreenResolutions._1680x1050, (1680, 1050) },
-                { ScreenResolutions._1600x1024, (1600, 1024) },
-                { ScreenResolutions._1600x900, (1600, 900)   },
-                { ScreenResolutions._1440x900, (1440, 900)   },
-                { ScreenResolutions._1366x768, (1366, 768)   },
-                { ScreenResolutions._1360x768, (1360, 768)   },
-                { ScreenResolutions._1280x1024, (1280, 1024) },
-                { ScreenResolutions._1280x960, (1280, 960)   },
-                { ScreenResolutions._1280x800, (1280, 800)   },
-                { ScreenResolutions._1280x768, (1280, 768)   },
-                { ScreenResolutions._1280x720, (1280, 720)   },
-                { ScreenResolutions._1176x664, (1176, 664)   },
-                { ScreenResolutions._1152x864, (1150, 864)   },
-                { ScreenResolutions._1024x768, (1024, 768)   },
-                { ScreenResolutions._800x600, (800, 600)     },
-                { ScreenResolutions._720x576, (720, 576)     },
-                { ScreenResolutions._720x480, (720, 480)     },
-                { ScreenResolutions._640x480, (640, 480)     }
-        };
-
-        
         internal static GraphicsLevels GetQualityLevel() => serializableGameSettins.grahicsLevel;
-
         internal static void SetGraphicsQuality(GraphicsLevels value) => serializableGameSettins.grahicsLevel = value;
 
         internal static bool GetIsFullScreen() => serializableGameSettins.isFullScreen;
-
         internal static void SetIsFullScreen(bool value) => serializableGameSettins.isFullScreen = value;
 
         internal static bool GetVSyncIsEnabled() => serializableGameSettins.vSyncIsEnabled;
-
         internal static void SetVSyncIsEnabled(bool value) => serializableGameSettins.vSyncIsEnabled = value;
 
         internal static (int width, int height) GetAndDescriptScreenResolution()
-        {
-            return resolutionsDictionaty[serializableGameSettins.screenResolution];
-        }
+            => resolutionsDictionary[serializableGameSettins.screenResolution];
 
         internal static ScreenResolutions GetScreenResolution() => serializableGameSettins.screenResolution;
-
         internal static void SetScreenResolution(ScreenResolutions value) => serializableGameSettins.screenResolution = value;
 
         internal static AntialiasingMode GetAntialiasingType() => serializableGameSettins.antiAliasingMode;
-
         internal static void SetAntialiasingType(AntialiasingMode value) => serializableGameSettins.antiAliasingMode = value;
 
 
         #region PostProccess
 
         internal static bool GetBloomIsEnabled() => serializableGameSettins.bloomIsEnabled;
-
         internal static void SetBloomIsEnabled(bool value) => serializableGameSettins.bloomIsEnabled = value;
 
         internal static bool GetFogIsEnabled() => serializableGameSettins.fogIsEnabled;
-
         internal static void SetFogIsEnabled(bool value) => serializableGameSettins.fogIsEnabled = value;
 
         #endregion

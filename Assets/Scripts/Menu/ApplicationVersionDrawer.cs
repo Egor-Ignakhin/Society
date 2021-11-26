@@ -18,6 +18,7 @@ namespace Society.ApplicationTools
         [PostProcessBuild()]
         public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
         {
+            //Увеличиваем индекс на единицу после каждой сборки.
             string inputData = File.ReadAllText(PathToAppInfo);
             var appInfo = JsonUtility.FromJson<ApplicationVersion>(inputData);
             appInfo.BuildVersion++;

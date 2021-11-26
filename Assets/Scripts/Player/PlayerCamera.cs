@@ -12,7 +12,7 @@ namespace Society.Player
             myCamera = Camera.main;
             additionalCameraData = GetComponent<HDAdditionalCameraData>();
 
-            Society.Menu.Settings.SettingsManager.SettingsUpdateEvent += OnUpdateSettings;
+            Settings.GameSettings.UpdateSettingsEvent += OnUpdateSettings;
         }
 
         private void OnUpdateSettings()
@@ -22,7 +22,7 @@ namespace Society.Player
         }
         private void OnDestroy()
         {
-            Society.Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnUpdateSettings;
+            Settings.GameSettings.UpdateSettingsEvent -= OnUpdateSettings;
         }
     }
 }

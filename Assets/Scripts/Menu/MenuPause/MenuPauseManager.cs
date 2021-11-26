@@ -4,75 +4,119 @@ using Society.Effects;
 using Society.GameScreens;
 using Society.Menu.Settings;
 
+using UniRx;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Society.Menu.MenuPause
 {
+    #region Properties
     /// <summary>
-    /// Управлящий меню паузой
+    /// Управлящий меню паузой в обычной игре.
     /// </summary>
     internal sealed class MenuPauseManager : MenuManager, IGameScreen
     {
-        [SerializeField] private Transform mainParent;// контейнер сод. кнопки
-        [SerializeField] private GameObject MenuUI;// главный бэкграунд и носитель кнопок
+        /// <summary>
+        /// Меню
+        /// </summary>
+        [SerializeField] private GameObject MenuUI;
 
         /// <summary>
-        /// Меню настроек
+        /// Панель настроек
         /// </summary>
         [SerializeField] private SettingsManager settingsManager;
 
+        /// <summary>
+        /// Управляющий эффектами сцены
+        /// </summary>
         private EffectsManager effectsManager;
 
+        /// <summary>
+        /// Фоновое изображение. 
+        /// Создаётся каждый раз при запуске меню.
+        /// </summary>
         [SerializeField] private RawImage latestCameraRender;
+
+        /// <summary>
+        /// Камера отрисовывающая меню паузы.
+        /// </summary>
         [SerializeField] private Camera menuCamera;
-        private Camera mainCamera;
 
-        private sealed class AdvancedSettings
-        {
-            public static readonly Color SelectedColor = new Color(0.33f, 0.33f, 0.33f, 1);// цвет при наведении на кнопку
-            public static readonly Color DefaultColor = new Color(0, 0, 0, 0);// обычный цвет кнопки
-            public static readonly Color PressedColor = new Color(0.25f, 0.25f, 0.25f, 1);// цвет при нажатии на кнопку
-        }
+        /// <summary>
+        /// Камера игрока
+        /// </summary>
+        private Camera playerCamera;
 
-        protected override void OnInit()
-        {
-            mainCamera = Camera.main;
-            effectsManager = FindObjectOfType<EffectsManager>();
+        [SerializeField] private Button backToGameButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Button exitToMainMenuButton;
 
-            Disable();
-        }
-        public void Enable() => SetEnableMenu(true);
-
-        public bool Hide()
-        {
-            if (settingsManager.PanelIsActive())
-            {
-                settingsManager.HidePanel();
-                return false;
-            }
-
-            Disable();
-            return true;
-        }
-
-        public void BackToGame() => SetEnableMenu(false);
-        public void OpenSettings()
-        {
-            genericPanel.SetActive(false);
-            settingsManager.ShowPanel();
-        }
-        public void GoToMainMenu() => UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.MainMenu);
+        private readonly List<Canvas> screenSpaceOverlayCanvases = new List<Canvas>();
 
         public KeyCode HideKey() => KeyCode.Escape;
 
-        private readonly List<Canvas> screenSpaceOverlayCanvases = new List<Canvas>();
-        public void Disable()
+        #endregion
+
+        /// <summary>
+        /// Инициализация меню
+        /// </summary>
+        protected override void OnInit()
+        {
+            playerCamera = Camera.main;
+            effectsManager = FindObjectOfType<EffectsManager>();
+
+            backToGameButton.OnClickAsObservable().Subscribe(_ => SetEnableMenu(false));
+            settingsButton.OnClickAsObservable().Subscribe(_ =>
+            {
+                genericPanel.SetActive(false);
+                settingsManager.ShowPanel();
+            });
+            exitToMainMenuButton.OnClickAsObservable().Subscribe(_ => UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.MainMenu));
+
+            //Выключение меню после инициализации
+            DisableMenu();
+        }
+
+        /// <summary>
+        /// Включение меню
+        /// </summary>
+        public void EnableMenu() => SetEnableMenu(true);
+
+        /// <summary>
+        /// Скрыть меню.
+        /// </summary>
+        /// <returns></returns>
+        public bool Hide()
+        {
+            //Если меню настроек активно
+            if (settingsManager.PanelIsActive())
+            {
+                //Меню настроек выключается
+                settingsManager.HidePanel();
+
+                return false;
+            }
+
+            //Меню выключается
+            DisableMenu();
+
+            return true;
+        }        
+
+        /// <summary>
+        /// Выключение меню
+        /// </summary>
+        public void DisableMenu()
         {
             SetEnableMenu(false);
             settingsManager.HidePanel();
         }
 
+        /// <summary>
+        /// Включение меню
+        /// </summary>
+        /// <param name="menuIsActive"></param>
         private void SetEnableMenu(bool menuIsActive)
         {
             menuCamera.gameObject.SetActive(menuIsActive);
@@ -83,15 +127,20 @@ namespace Society.Menu.MenuPause
 
             effectsManager.SetEnableSimpleDOF(menuIsActive);
 
-            SetupModeCanvases(menuIsActive);
+            PrepareCanvasesModeToScreenShot(menuIsActive);
 
             if (menuIsActive)
-                latestCameraRender.texture = MakeScrenshot(mainCamera);
+                latestCameraRender.texture = MakeScrenshot(playerCamera);
 
-            mainCamera.enabled = !menuIsActive;
+            playerCamera.enabled = !menuIsActive;
 
         }
-        private void SetupModeCanvases(bool menuIsActive)
+
+        /// <summary>
+        /// Подготовка с созданию скриншота
+        /// </summary>
+        /// <param name="menuIsActive"></param>
+        private void PrepareCanvasesModeToScreenShot(bool menuIsActive)
         {
             if (menuIsActive)
             {
@@ -112,8 +161,8 @@ namespace Society.Menu.MenuPause
                 else
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    canvas.planeDistance = mainCamera.nearClipPlane * 1.1f;
-                    canvas.worldCamera = mainCamera;
+                    canvas.planeDistance = playerCamera.nearClipPlane * 1.1f;
+                    canvas.worldCamera = playerCamera;
                 }
             }
         }

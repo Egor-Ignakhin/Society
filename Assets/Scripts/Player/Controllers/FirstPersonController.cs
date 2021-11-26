@@ -549,7 +549,7 @@ namespace Society.Player.Controllers
                 stepPlayerSource = fpc.gameObject.AddComponent<AudioSource>();
                 stepPlayerSource.priority = 126;
 
-                Menu.Settings.SettingsManager.SettingsUpdateEvent += OnSettingsUpdate;
+                GameSettings.UpdateSettingsEvent += OnSettingsUpdate;
             }
 
             public override void OnStep(int physicMaterialIndex, StepSoundData.TypeOfMovement movementType)
@@ -571,7 +571,7 @@ namespace Society.Player.Controllers
             public void OnDestroy()
             {
                 fpc.PlayerStepEvent -= OnStep;
-                Menu.Settings.SettingsManager.SettingsUpdateEvent -= OnSettingsUpdate;
+                GameSettings.UpdateSettingsEvent -= OnSettingsUpdate;
             }
         }
         public float GetPlayerHeight() => playerCollider.height;

@@ -70,7 +70,7 @@ namespace Society.GameScreens
                     ScreensManager.ClearScreen();
             }
             else 
-                pauseManager.Enable();
+                pauseManager.EnableMenu();
         }
     }
 }

@@ -3,6 +3,9 @@ using UnityEngine.EventSystems;
 
 namespace Society.Menu
 {
+    /// <summary>
+    /// Компонент, который анимирует наведение и сведение курсора с текста элемента
+    /// </summary>
     internal class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private MenuManager menuManager;
