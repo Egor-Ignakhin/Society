@@ -14,29 +14,48 @@ namespace Society.Inventory.Other
         [SerializeField] private TextMeshProUGUI textDesc;
         [SerializeField] private TextMeshProUGUI textTakeKey;
         private bool canChangeHint = true;
+        private PlayerInteractive playerInteractive;
         private void Awake()
         {
             FindObjectOfType<Missions.MissionsManager>().SetDescriptionDrawer(this);
+            playerInteractive = FindObjectOfType<PlayerInteractive>();
         }
-        public void SetHint(string str, string mainType, int count)
+        private void FixedUpdate()
         {
             if (!canChangeHint)
                 return;
 
+            (string str, string mainType, int count) = (playerInteractive.
+                GetiISubDescription().ToString(),
+                playerInteractive.GetiIMainDescription().ToString(),
+                playerInteractive.GetIICount());
+
             string countStr = count > 1 ? $" x{count}" : string.Empty;
-            gameObject.SetActive(!string.IsNullOrEmpty(str));
-            if (!gameObject.activeSelf)
+
+            bool drawerIsActive = !string.IsNullOrEmpty(str);
+
+            textDesc.enabled = drawerIsActive;
+            textTakeKey.enabled = drawerIsActive;
+
+            if (!drawerIsActive)
                 return;
+
             textDesc.SetText(str + countStr);
             textTakeKey.SetText(Localization.LocalizationManager.GetUpKeyDescription(mainType, GameSettings.GetInteractionKeyCode()));
         }
 
+        /// <summary>
+        /// Установить неудаляемую подсказку
+        /// </summary>
+        /// <param name="v"></param>
         internal void SetIrremovableHint(string v)
         {
             textTakeKey.SetText(v);
             canChangeHint = string.IsNullOrEmpty(v);
             textDesc.SetText(string.Empty);
-            gameObject.SetActive(!canChangeHint);
+
+            textDesc.enabled = !canChangeHint;
+            textTakeKey.enabled = !canChangeHint;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Society.Parkour
             if (isInteracted)
                 return;
             Society.GameScreens.ScreensManager.SetScreen(this, false);
-            float stepPosY = playerInteractive.GetHitPoint().y;
+            float stepPosY = playerInteractive.GetLastHitPoint().y;
             stepPosY = Mathf.Clamp(stepPosY, lowestPlace.y, highestPlace.y + playerHeight);
             animatorParent.position = new Vector3(animatorParent.position.x, stepPosY + playerHeight, animatorParent.position.z);
 

@@ -43,7 +43,7 @@ namespace Features
                 MoveShowerToPlayerPointer();
                 MoveShowerToReloadLever();
                 MoveRopesToShowerCenter();
-                if (!playerInteractive.ObjectIsDirected(shower))
+                if (!playerInteractive.IOUnderTheBeam(shower))
                 {
                     ClearReferences();
                 }
@@ -58,7 +58,7 @@ namespace Features
         private void MoveShowerToPlayerPointer()
         {
             Vector3 shPos = xzCenter.position;
-            Vector3 target = playerInteractive.GetHitPoint();
+            Vector3 target = playerInteractive.GetLastHitPoint();
             target.y = shPos.y;
 
             var dist = Vector3.Distance(shPos, target);

@@ -26,7 +26,7 @@ namespace Society.Parkour
             if (isInteracted)
                 return;
             Society.GameScreens.ScreensManager.SetScreen(this, false);
-            float startPosY = Mathf.Clamp(playerInteractive.GetHitPoint().y, lowestPlace.position.y, highestPlace.position.y);
+            float startPosY = Mathf.Clamp(playerInteractive.GetLastHitPoint().y, lowestPlace.position.y, highestPlace.position.y);
             animatorParent.position = new Vector3(animatorParent.position.x, startPosY, animatorParent.position.z);
 
             cameraTransform.SetParent(animatorParent);

@@ -68,7 +68,7 @@ namespace Features.RandomBoxes
                 movableAudioSource = new MovableAudioSource();
 
 
-            movableAudioSource.PlayClip(playerInteractive.GetHitPoint(), clipsByIT[inveractionType]);
+            movableAudioSource.PlayClip(playerInteractive.GetLastHitPoint(), clipsByIT[inveractionType]);
         }
 
         protected List<(int id, bool isConsumable)> UnlockItems;
