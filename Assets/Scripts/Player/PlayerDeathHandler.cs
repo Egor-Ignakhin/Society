@@ -6,7 +6,7 @@ namespace Society.Player
     {
         public void OnDeathEvent()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.DieScreenScene);
+            LoadScreensManager.Instance.LoadScene((int)Scenes.DieScreenScene);
         }
     }
 }

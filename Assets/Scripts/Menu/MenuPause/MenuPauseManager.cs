@@ -72,7 +72,7 @@ namespace Society.Menu.MenuPause
                 genericPanel.SetActive(false);
                 settingsManager.ShowPanel();
             });
-            exitToMainMenuButton.OnClickAsObservable().Subscribe(_ => UnityEngine.SceneManagement.SceneManager.LoadScene((int)Scenes.MainMenu));
+            exitToMainMenuButton.OnClickAsObservable().Subscribe(_ => LoadScreensManager.Instance.LoadScene((int)Scenes.MainMenu));
 
             //Выключение меню после инициализации
             DisableMenu();

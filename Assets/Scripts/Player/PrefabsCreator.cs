@@ -1,6 +1,5 @@
-﻿using System.Threading.Tasks;
-
-using Society.Menu.Settings;
+﻿
+using Society.GameScreens;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,7 +7,7 @@ namespace Society.Player
 {
     internal sealed class PrefabsCreator : MonoBehaviour
     {
-        private async void Awake()
+        private void Awake()
         {
             var parent = GameObject.Find("UI").transform;
             var prefabs = Resources.LoadAll("Canvases\\");
