@@ -3,6 +3,7 @@
 using Society.Effects;
 using Society.GameScreens;
 using Society.Settings;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -101,7 +102,7 @@ namespace Society.Player.Controllers
             public float ColliderRadius { get; set; }
             public float ColliderHeight { get; set; }
             public float ChangeTime = 1;
-        }
+        }       
 
         internal void SetPossibleJump(bool v) => PossibleJump = v;
 
@@ -582,7 +583,11 @@ namespace Society.Player.Controllers
             fpcRigidbody.angularVelocity = Vector3.zero;
             oldPos = transform.position;
         }
-
+        internal void SetPosition(Vector3 position)
+        {
+            fpcRigidbody.position = position;
+            oldPos = position;
+        }
         private void OnDestroy()
         {
             stepPlayer.OnDestroy();

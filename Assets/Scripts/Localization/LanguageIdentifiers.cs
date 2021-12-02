@@ -14,6 +14,7 @@ namespace Society.Localization
 		MainMenu_NewGame,
 		MainMenu_Continue,
 		MainMenu_Settings,
-		MainMenu_Exit
+		MainMenu_Exit,
+		Prologue_firstComment
 	}
 }

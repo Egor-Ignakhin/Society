@@ -4,12 +4,12 @@ using Society.Effects.MapOfWorldCanvasEffects;
 using Society.Enviroment.Bed;
 using Society.GameScreens;
 using Society.Inventory;
+using Society.Missions.TaskSystem;
 using Society.Music;
 using Society.Player;
 using Society.Player.Controllers;
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 namespace Society.Missions.NumeratedMissions
 {
     public sealed class Mission_0 : Mission
@@ -17,9 +17,12 @@ namespace Society.Missions.NumeratedMissions
         public override int GetMissionNumber() => 0;
         [SerializeField] private BedMesh onLoadBedMesh;
         [SerializeField] private SanSanychNPC sanSanych;
-        [SerializeField] private IlyaiNPC ilya;
         [SerializeField] private GameObject ilyaObjects;
         [SerializeField] private Enviroment.Doors.HermeticDoor hermeticDoor;
+
+        [SerializeField] private AudioSource mSource;
+
+        [SerializeField] private Transform task_0_place;
         protected override void StartMission()
         {
             OnTaskActions.Add("0", () =>
@@ -29,7 +32,7 @@ namespace Society.Missions.NumeratedMissions
                  FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
              });
             OnTaskActions.Add("1", () =>
-             {                 
+             {
                  hermeticDoor.Interact(true, OnTaskActions["LoadMap"]);
                  FindObjectOfType<LocationMusic>().SetEnabledMusic(false);
 
@@ -43,7 +46,7 @@ namespace Society.Missions.NumeratedMissions
             base.StartMission();
         }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
-        {            
+        {
             if (isLoad)
             {
                 FindObjectOfType<MapOfWorldCanvas>().SetVisible(false);
@@ -67,6 +70,9 @@ namespace Society.Missions.NumeratedMissions
             }
             if (currentTask == 0)
             {
+                mSource.clip = Resources.Load<AudioClip>("Missions\\Mission_0\\mission_0_noise");
+                mSource.Play();
+
                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
                 СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
                 lb.OnInit(6, Color.black);
@@ -76,6 +82,8 @@ namespace Society.Missions.NumeratedMissions
 
                 onLoadBedMesh.Interact();
                 FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
+
+                FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
             }
             if (currentTask == 1)
             {
@@ -99,7 +107,7 @@ namespace Society.Missions.NumeratedMissions
             MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
             DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
             db.OnInit(2, Color.black);
-            db.SubsctibeOnFinish(OnTaskActions["1"]);            
+            db.SubsctibeOnFinish(OnTaskActions["1"]);
         }
         private void Update()
         {
@@ -109,6 +117,8 @@ namespace Society.Missions.NumeratedMissions
                 {
                     MissionsManager.Instance.DescriptionDrawer.SetIrremovableHint(null);
                     MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
+
+                    CommentDrawer.Instance.Push(Localization.LocalizationManager.Translate(Localization.LanguageIdentifiers.Prologue_firstComment));
                 }
             }
         }
