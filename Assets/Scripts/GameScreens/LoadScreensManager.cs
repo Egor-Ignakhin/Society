@@ -24,6 +24,7 @@ namespace Society.GameScreens
 
         [SerializeField] private Image progressImage;
         [SerializeField] private GameObject operationProgress;
+        private bool finishAnimationIsStarted = false;
 
         private void Awake()
         {
@@ -57,13 +58,12 @@ namespace Society.GameScreens
         }
 
         public void StartAsyncLoading()
-        {           
+        {
             Resources.UnloadUnusedAssets();
             System.GC.Collect(2);
 
             currentAsyncLoad = SceneManager.LoadSceneAsync(nextScene);
-
-            currentAsyncLoad.completed += OnLoadCompleted;
+            currentAsyncLoad.allowSceneActivation = false;
 
             operationProgress.SetActive(true);
             StartCoroutine(nameof(ProgressLineUpdater));
@@ -103,13 +103,19 @@ namespace Society.GameScreens
             while (true)
             {
                 progressImage.fillAmount = currentAsyncLoad.progress;
+                if (currentAsyncLoad.progress >= 0.9f)
+                    OnLoadCompleted();
 
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
         }
-        private void OnLoadCompleted(AsyncOperation _)
+        private void OnLoadCompleted()
         {
-            mAnimator.SetTrigger("OnFinishLoadScene");                    
+            if (!finishAnimationIsStarted)
+            {
+                mAnimator.SetTrigger("OnFinishLoadScene");
+                finishAnimationIsStarted = true;
+            }
         }
 
         public void DisableAllUIElements()
@@ -124,6 +130,11 @@ namespace Society.GameScreens
                 prefabs.GetChild(i).gameObject.SetActive(false);
             }
 
+
+            if (currentAsyncLoad != null)
+                currentAsyncLoad.allowSceneActivation = true;
+
+            finishAnimationIsStarted = false;
         }
     }
 }
