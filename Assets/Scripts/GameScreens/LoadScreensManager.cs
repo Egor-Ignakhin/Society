@@ -1,98 +1,129 @@
-﻿using Society.Patterns;
-
-using System.IO;
+﻿using System.Collections;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 namespace Society.GameScreens
 {
-    public class LoadScreensManager : Singleton<LoadScreensManager>, IGameScreen
+    internal sealed class LoadScreensManager : MonoBehaviour, IGameScreen
     {
-        [SerializeField] private TMPro.TextMeshProUGUI text;
-        [SerializeField] private GameObject background;
-        [SerializeField] private GameObject pressKeyText;
-        [SerializeField] private Image img;
-        [SerializeField] private TMPro.TextMeshProUGUI descText;
+        [SerializeField] private GameObject canvas;
 
-        private static LastLoadLevelContainer lastLoadLevel;
+        public static LoadScreensManager Instance;
+
+        private static AsyncOperation currentAsyncLoad;
+
+        [SerializeField] private Animator mAnimator;
+
+        private int nextScene;
+
+        [SerializeField] private Transform prefabs;
+
+        private GameObject activePrefab;
+
+        [SerializeField] private Image progressImage;
+        [SerializeField] private GameObject operationProgress;
 
         private void Awake()
         {
             Instance = this;
 
-            if (lastLoadLevel == null)
-            {
-                OnClose();
-                return;
-            }
-            if (pressKeyText)
-                pressKeyText.SetActive(false);
-            if (lastLoadLevel != null)
-            {
-                if (pressKeyText)
-                    pressKeyText.SetActive(true);
-                if (img)
-                    img.sprite = lastLoadLevel.sprite;
-                if (descText)
-                    descText.SetText(lastLoadLevel.description);
-            }
+
+
+            DontDestroyOnLoad(gameObject);
+
+            canvas.SetActive(false);
+
+            DisableAllUIElements();
         }
 
-        public void LoadLevel(int level, int currentLevel)
+        public void LoadScene(int buildIndex)
         {
+            ScreensManager.SetScreen(this);
+
+            canvas.SetActive(true);
+
+            transform.SetAsLastSibling();
+
+            mAnimator.enabled = true;
+            mAnimator.SetTrigger("OnStartLoadScene");
+
+            nextScene = buildIndex;
+        }
+        public void ShowPictures()
+        {
+            StartCoroutine(nameof(ImagesChanger));
+        }
+
+        public void StartAsyncLoading()
+        {           
             Resources.UnloadUnusedAssets();
             System.GC.Collect(2);
-            UnityEngine.SceneManagement.SceneManager.LoadScene(currentLevel == -1 ? level : currentLevel);
-            if (background)
-                background.SetActive(true);
-            int imgIt = Random.Range(1, 8);
 
-            string text = null;
-            using (StreamReader sr = new StreamReader($"{Directory.GetCurrentDirectory()}\\Localization\\LoadScreens\\LoadTexts\\{imgIt}.txt", System.Text.Encoding.GetEncoding(1251)))
-            {
-                text = sr.ReadToEnd();
-            }
-            if (descText)
-                descText.SetText(text);
-            lastLoadLevel = new LastLoadLevelContainer(img ? img.sprite = Resources.Load<Sprite>($"LoadScreensImages\\{imgIt}\\LoadImage_{imgIt}") : null, text);
-            ScreensManager.SetScreen(this);
-        }
-        private void Update()
-        {
-            if (lastLoadLevel != null)
-            {
-                if (Input.anyKeyDown)
-                {
-                    OnClose();
-                }
-            }
-        }
-        private void OnClose()
-        {
-            if (background)
-                background.SetActive(false);
-            lastLoadLevel = null;
-            Input.ResetInputAxes();
-            if (img)
-                img.sprite = null;
+            currentAsyncLoad = SceneManager.LoadSceneAsync(nextScene);
+
+            currentAsyncLoad.completed += OnLoadCompleted;
+
+            operationProgress.SetActive(true);
+            StartCoroutine(nameof(ProgressLineUpdater));
         }
 
-        public bool Hide()
-        {
-            return false;
-        }
+        public bool Hide() => false;
 
         public KeyCode HideKey() => KeyCode.Escape;
 
-        public class LastLoadLevelContainer
+        private IEnumerator ImagesChanger()
         {
-            public readonly string description;
-            public readonly Sprite sprite;
-            public LastLoadLevelContainer(Sprite s, string t)
+            while (true)
             {
-                sprite = s;
-                description = t;
+                int randomIndex = Random.Range(0, prefabs.childCount);
+
+                if (activePrefab)
+                {
+                    while (randomIndex == activePrefab.transform.GetSiblingIndex())
+                        randomIndex = Random.Range(0, prefabs.childCount);
+                }
+
+
+                for (int i = 0; i < prefabs.childCount; i++)
+                {
+                    prefabs.GetChild(i).gameObject.SetActive(false);
+                }
+                activePrefab = prefabs.GetChild(randomIndex).gameObject;
+
+
+                activePrefab.SetActive(true);
+
+                yield return new WaitForSeconds(15);
             }
+        }
+        private IEnumerator ProgressLineUpdater()
+        {
+            while (true)
+            {
+                progressImage.fillAmount = currentAsyncLoad.progress;
+
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        private void OnLoadCompleted(AsyncOperation _)
+        {
+            mAnimator.SetTrigger("OnFinishLoadScene");                    
+        }
+
+        public void DisableAllUIElements()
+        {
+            activePrefab = null;
+            operationProgress.SetActive(false);
+
+            StopAllCoroutines();
+
+            for (int i = 0; i < prefabs.childCount; i++)
+            {
+                prefabs.GetChild(i).gameObject.SetActive(false);
+            }
+
         }
     }
 }

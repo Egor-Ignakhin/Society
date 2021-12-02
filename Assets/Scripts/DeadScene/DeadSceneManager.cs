@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Society.GameScreens;
+
+using UnityEngine;
 
 namespace Society.DeadScene
 {
@@ -107,7 +109,7 @@ namespace Society.DeadScene
         /// </summary>
         private void LoadLastSave()
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(3);
+            LoadScreensManager.Instance.LoadScene((int)Scenes.Map);
         }
     }
 }

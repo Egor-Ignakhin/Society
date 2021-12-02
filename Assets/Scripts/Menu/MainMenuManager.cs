@@ -38,7 +38,7 @@ namespace Society.Menu
                 string data = JsonConvert.SerializeObject(state);
                 File.WriteAllText(Missions.MissionsManager.SavePath, data);
 
-                SceneManager.LoadScene((int)Scenes.Intro);
+                LoadScreensManager.Instance.LoadScene((int)Scenes.Intro);
             });
 
             continueGameButton.OnClickAsObservable().Subscribe(_ =>
@@ -47,7 +47,7 @@ namespace Society.Menu
                 string data = JsonConvert.SerializeObject(state);
                 File.WriteAllText(Missions.MissionsManager.SavePath, data);
 
-                SceneManager.LoadScene((int)Scenes.Intro);
+                LoadScreensManager.Instance.LoadScene((int)Scenes.Intro);
             });
 
             settingsGameButton.OnClickAsObservable().
