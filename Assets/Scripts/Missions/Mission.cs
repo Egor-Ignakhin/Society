@@ -8,13 +8,14 @@ namespace Society.Missions
     /// <summary>
     /// абстрактный класс миссии, содержит общие свойства
     /// </summary>
-    public abstract class Mission : MonoBehaviour
+    internal abstract class Mission : MonoBehaviour
     {
         private bool isInitialized = false;
         protected int currentTask = 0;
-        protected int missionItems = 0;
         protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
         public event Action<int> ChangeTaskEvent;
+
+        protected abstract Dictionary<MissionItem, bool> MissionItems { get; set; }
 
         protected virtual void StartMission()
         {
@@ -26,9 +27,9 @@ namespace Society.Missions
         /// <summary>
         /// Вызывается при подборе миссионного предмета (химза, таблетки к примеру)
         /// </summary>
-        internal void OnAddMissionItem()
+        internal void AddMissionItem(MissionItem mi)
         {
-            missionItems++;
+            MissionItems[mi] = true;
             Report(true);
         }
 

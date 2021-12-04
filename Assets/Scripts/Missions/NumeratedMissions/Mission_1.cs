@@ -1,6 +1,7 @@
 ﻿using Society.Effects;
 using Society.GameScreens;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Society.Missions.NumeratedMissions
 {
     internal sealed class Mission_1 : Mission
     {
+        protected override Dictionary<MissionItem, bool> MissionItems { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
         public override int GetMissionNumber() => 1;
         protected override void StartMission()
         {

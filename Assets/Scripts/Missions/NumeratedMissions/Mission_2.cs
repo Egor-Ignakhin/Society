@@ -13,9 +13,11 @@ using UnityEngine.SceneManagement;
 
 namespace Society.Missions.NumeratedMissions
 {
-    public sealed class Mission_2 : Mission
+    internal sealed class Mission_2 : Mission
     {
         [SerializeField] private HermeticDoor hermeticDoor;
+
+        protected override Dictionary<MissionItem, bool> MissionItems { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override int GetMissionNumber() => 2;
         protected override void StartMission()

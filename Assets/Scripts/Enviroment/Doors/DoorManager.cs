@@ -1,6 +1,6 @@
-﻿using Society.Patterns;
+﻿using System;
 
-using System;
+using Society.Patterns;
 
 using UnityEngine;
 namespace Society.Enviroment.Doors
@@ -63,10 +63,7 @@ namespace Society.Enviroment.Doors
             lastDoorMesh.SetType("None");
             mAud.PlayOneShot(openCloseClip);
         }
-        public void SetStateAfterNextInteract(State state)
-        {
-            nextState = state;
-        }
+
         private void FixedUpdate()
         {
             if (IsOpen && !canInteract)
@@ -121,10 +118,8 @@ namespace Society.Enviroment.Doors
             lastDoorMesh = d;
             SetDescription();
         }
-        public void SetExtrimSituation(bool value)
-        {
-            isExtrimSituation = value;
-        }
+
+        internal void SetState(State s) => currentState = s;
 
         public void ChangeState()
         {
@@ -134,9 +129,6 @@ namespace Society.Enviroment.Doors
                 nextState = State.nullable;
             }
         }
-        public State GetState()
-        {
-            return currentState;
-        }
+        public State GetState() => currentState;
     }
 }

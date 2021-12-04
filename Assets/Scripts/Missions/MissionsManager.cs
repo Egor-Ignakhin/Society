@@ -61,7 +61,7 @@ namespace Society.Missions
         /// Возвращает активную миссию
         /// </summary>
         /// <returns></returns>
-        public Mission GetActiveMission() => activeMission;
+        internal Mission GetActiveMission() => activeMission;
 
         /// <summary>
         /// Сохранение миссий

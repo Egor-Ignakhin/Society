@@ -1,7 +1,10 @@
-﻿using Society.Dialogs;
+﻿using System.Collections.Generic;
+
+using Society.Dialogs;
 using Society.Effects;
 using Society.Effects.MapOfWorldCanvasEffects;
 using Society.Enviroment.Bed;
+using Society.Enviroment.Doors;
 using Society.GameScreens;
 using Society.Inventory;
 using Society.Missions.TaskSystem;
@@ -12,17 +15,30 @@ using Society.Player.Controllers;
 using UnityEngine;
 namespace Society.Missions.NumeratedMissions
 {
-    public sealed class Mission_0 : Mission
+    internal sealed class Mission_0 : Mission
     {
         public override int GetMissionNumber() => 0;
         [SerializeField] private BedMesh onLoadBedMesh;
         [SerializeField] private SanSanychNPC sanSanych;
         [SerializeField] private GameObject ilyaObjects;
-        [SerializeField] private Enviroment.Doors.HermeticDoor hermeticDoor;
+        [SerializeField] private HermeticDoor hermeticDoor;
 
         [SerializeField] private AudioSource mSource;
 
         [SerializeField] private Transform task_0_place;
+        [SerializeField] private DoorManager firstTaskDoorManager;
+
+        [SerializeField] private MissionItem mi0;
+        [SerializeField] private MissionItem mi1;
+        [SerializeField] private MissionItem mi2;
+        [SerializeField] private MissionItem mi3;
+
+        private void Awake()
+        {
+            MissionItems = new Dictionary<MissionItem, bool> { {mi0, false}, {mi1, false}, { mi2, false }, { mi3, false } };
+        }
+        protected override Dictionary<MissionItem, bool> MissionItems { get; set; } = new Dictionary<MissionItem, bool>();
+
         protected override void StartMission()
         {
             OnTaskActions.Add("0", () =>
@@ -59,9 +75,16 @@ namespace Society.Missions.NumeratedMissions
             }
             if (isMissiomItem)
             {
+                if(currentTask == 0)
+                {
+                    if (MissionItems[mi0])
+                    {
+                        firstTaskDoorManager.SetState(Patterns.State.unlocked);
+                    }
+                }
                 if (currentTask == 3)
                 {
-                    if (missionItems == 3)
+                    if (MissionItems[mi1] && MissionItems[mi2] && MissionItems[mi3])
                     {
                         Report();
                     }
@@ -70,6 +93,8 @@ namespace Society.Missions.NumeratedMissions
             }
             if (currentTask == 0)
             {
+                firstTaskDoorManager.SetState(Patterns.State.locked);
+
                 mSource.clip = Resources.Load<AudioClip>("Missions\\Mission_0\\mission_0_noise");
                 mSource.Play();
 

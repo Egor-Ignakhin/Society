@@ -113,7 +113,7 @@ namespace Society.Missions
 
             mMission.Report();
         }
-        public Mission GetMission() => mMission;
+        internal Mission GetMission() => mMission;
         public int GetTask() => task;
 
         /// <summary>

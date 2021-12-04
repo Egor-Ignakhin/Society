@@ -406,6 +406,7 @@
     <Compile Include="Assets\Shaders\Purchased\Visual Design Cafe\Nature Shaders\Scripts\Runtime\AOT.cs" />
     <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\XBoxOne.hlsl" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\Models\Locker_room_props\readme.txt" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Multiply Soft.shader" />
     <None Include="Assets\Models\Barrier Pack\Shaders\GlobalFog.shader" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\VertexColorDiffuse.shader" />
@@ -431,6 +432,8 @@
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Samples\High Definition RP\7.7.1\Material Samples\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Shaders\JMO Assets\WarFX\Shaders\WFX_S Add Scroll.shader" />
+    <None Include="Assets\Models\AdventureForge\CabinetsAndShelvesReadme.txt" />
+    <None Include="Assets\Models\Locker\Shaders\VIS_BumpSpec.shader" />
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\Bloom\Resources\Bloom.shader" />
     <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\Apply.shader" />
     <None Include="Assets\Models\Barrier Pack\Shaders\Contrast Stretch\Adaptation.shader" />
@@ -467,6 +470,7 @@
     <None Include="Assets\Shaders\KriptoFX\Realistic Effects Pack 3\Effects\ImageEffects\Shaders\_BloomAndFlares\BrightPassFilter2.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Shaders\Hovl Studio\AOE Magic spells Vol.1\Shaders\AddTrail.shader" />
+    <None Include="Assets\Models\Abandoned_Asylum\Read_me.txt" />
     <None Include="Assets\Shaders\Purchased\Visual Design Cafe\ShaderX\Templates\API\Switch.hlsl" />
     <None Include="Assets\Shaders\Purchased\Particle Lines\Demo\Shaders\Projector Light.shader" />
     <None Include="Assets\Samples\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
@@ -1172,9 +1176,17 @@
       <Project>{C4F9C90D-E216-5AD7-CC17-28198443457E}</Project>
       <Name>Toolbox-Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="TexturePacker.Editor.csproj">
+      <Project>{39781871-EA67-0A98-1DC1-729FDAD019B6}</Project>
+      <Name>TexturePacker.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.Recorder.Samples.Editor.csproj">
       <Project>{49E5F78C-F10A-DCC3-0F1A-4A1B886C8D57}</Project>
       <Name>Unity.Recorder.Samples.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="TexturePacker.Runtime.csproj">
+      <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
+      <Name>TexturePacker.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="PathCreator.csproj">
       <Project>{9ED27AB3-8EAA-8728-DBF8-515B24AC1F14}</Project>
@@ -1183,14 +1195,6 @@
     <ProjectReference Include="PathCreatorEditor.csproj">
       <Project>{2D4DD972-A1D6-3879-DBD0-FCFFD4CE5F3A}</Project>
       <Name>PathCreatorEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="TexturePacker.Editor.csproj">
-      <Project>{39781871-EA67-0A98-1DC1-729FDAD019B6}</Project>
-      <Name>TexturePacker.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="TexturePacker.Runtime.csproj">
-      <Project>{9C4C3719-70B0-BD07-222D-B24964A1F470}</Project>
-      <Name>TexturePacker.Runtime</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
