@@ -35,7 +35,7 @@ namespace Society.Missions.NumeratedMissions
 
         private void Awake()
         {
-            MissionItems = new Dictionary<MissionItem, bool> { {mi0, false}, {mi1, false}, { mi2, false }, { mi3, false } };
+            MissionItems = new Dictionary<MissionItem, bool> { { mi0, false }, { mi1, false }, { mi2, false }, { mi3, false } };
         }
         protected override Dictionary<MissionItem, bool> MissionItems { get; set; } = new Dictionary<MissionItem, bool>();
 
@@ -75,7 +75,7 @@ namespace Society.Missions.NumeratedMissions
             }
             if (isMissiomItem)
             {
-                if(currentTask == 0)
+                if (currentTask == 0)
                 {
                     if (MissionItems[mi0])
                     {
@@ -113,6 +113,11 @@ namespace Society.Missions.NumeratedMissions
             }
             if (currentTask == 1)
             {
+                FindObjectOfType<ReflectionMission_0>().StartTask();
+            }
+            
+            if (currentTask == 2)
+            {
                 sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));
             }
 
@@ -120,7 +125,7 @@ namespace Society.Missions.NumeratedMissions
             {
                 ilyaObjects.SetActive(true);
             }
-            if (currentTask == 5)
+            if (currentTask == 6)
             {
                 //завхоз бежит
                 sanSanych.SetRunningState(true);

@@ -42,7 +42,7 @@ namespace Society.Missions
             {
                 MissionsManager.Instance.ReportTask();
 
-                SetTask(++currentTask);
+                DrawTask(++currentTask);
                 OnReportTask();
             }
             else
@@ -53,10 +53,12 @@ namespace Society.Missions
 
         public void ContinueMission(int skipLength)
         {
-            if (!isInitialized)
-                StartMission();
             currentTask = skipLength;
-            SetTask(currentTask);
+
+            if (!isInitialized)
+                StartMission();       
+            
+            DrawTask(currentTask);
         }
 
         public virtual void FinishMission()
@@ -64,7 +66,7 @@ namespace Society.Missions
             MissionsManager.Instance.FinishMission();
             gameObject.SetActive(false);
         }
-        protected void SetTask(int number)
+        protected void DrawTask(int number)
         {
             string neededContent = Localization.LocalizationManager.GetTask(GetMissionNumber(), number);
 
