@@ -22,7 +22,7 @@ namespace Society.Parkour
             lowestPlace.y = GetComponent<BoxCollider>().bounds.min.y;
             fpc = FindObjectOfType<FirstPersonController>();
             cameraTransform = fpc.GetCamera().transform;
-            playerHeight = fpc.GetPlayerHeight();
+            playerHeight = fpc.GetPlayerColliderHeight();
             input = new FireEscapeInput();
             input.SetClimbMethod(Climb);
         }

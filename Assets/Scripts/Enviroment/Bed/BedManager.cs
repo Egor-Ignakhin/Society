@@ -6,16 +6,18 @@ namespace Society.Enviroment.Bed
 {
     internal sealed class BedManager : MonoBehaviour
     {
-        private Transform playerT;
+        private Transform playerCameraTransform;
         private BedController bc;// игрок
         private Vector3 sleepAngles = new Vector3(-30, 90, 0);// положение во сне
         private Transform lastPlayerParent;
         //координаты игрока до сна
         private Vector3 lastPlayerLocalEulerAngles;
         private Vector3 lastPlayerPosition;
+        [SerializeField]
+        private BedAnimator mBedAnimator;
         private void Awake()
         {
-            playerT = Camera.main.transform;
+            playerCameraTransform = Camera.main.transform;
             bc = FindObjectOfType<BedController>();
         }
 
@@ -25,39 +27,30 @@ namespace Society.Enviroment.Bed
         /// <param name="b"></param>
         public void StraightenBed(BedMesh b)
         {
-            if (b.IsOccupied)// если кровать занята
+            if (b.GetIsOccupied())// если кровать занята
             {
-                //Возвращение позиций в исходное значение
-                playerT.SetParent(lastPlayerParent);
-                playerT.localEulerAngles = lastPlayerLocalEulerAngles;
-                playerT.position = lastPlayerPosition;
-                playerT.localScale = Vector3.one;
-                //конец возвращений позиций            
-                b.SetOccupied(false);// кровать больше не занята
+                mBedAnimator.Deoccupied(lastPlayerParent, b);
                 return;
             }
             //иначе если кровать свободна
 
             //перемещение позиций в спальное значение
-            lastPlayerParent = playerT.parent;
-            playerT.SetParent(b.GetSleepPlace());
+            lastPlayerParent = playerCameraTransform.parent;
+            playerCameraTransform.SetParent(b.GetSleepingPlace());
 
-            lastPlayerLocalEulerAngles = playerT.localEulerAngles;
-            playerT.localEulerAngles = sleepAngles;
+            lastPlayerLocalEulerAngles = playerCameraTransform.localEulerAngles;
+            playerCameraTransform.localEulerAngles = sleepAngles;
 
-            lastPlayerPosition = playerT.position;
-            playerT.position = b.GetSleepPlace().position;
+            lastPlayerPosition = playerCameraTransform.position;
+            playerCameraTransform.position = b.GetSleepingPlace().position;
             //конец перемещения позиций
 
             bc.SetState(State.locked, this, b);
         }
-        /// <summary>
-        /// поднятся с кровати
-        /// </summary>
-        /// <param name="bedMesh"></param>
-        public void RiseUp(BedMesh bedMesh)
+
+        public void BedAnimatorAnimDeOccupied()
         {
-            StraightenBed(bedMesh);
+            mBedAnimator.AnimDeoccipied();
         }
     }
 }

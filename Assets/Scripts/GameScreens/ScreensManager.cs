@@ -8,7 +8,7 @@ namespace Society.GameScreens
     /// </summary>
     internal static class ScreensManager
     {
-        private static IGameScreen currentScreen;
+        private static IGameScreen activeScreen;
         public static void OnInit()
         {
             new GameObject("ScreensSystem_InputReceiver").AddComponent<ScreenInputReceiver>();
@@ -16,13 +16,13 @@ namespace Society.GameScreens
 
         public static void SetScreen(IGameScreen screen, bool slsc = true)
         {
-            currentScreen = screen;
+            activeScreen = screen;
             if (slsc)
                 SetLockStateCursor();
         }
         public static void ClearScreen()
         {
-            currentScreen = null;
+            activeScreen = null;
             SetLockStateCursor();
         }
         private static void SetLockStateCursor()
@@ -35,12 +35,12 @@ namespace Society.GameScreens
         /// возвращает true если активен какой-либо экран
         /// </summary>
         /// <returns></returns>
-        public static bool HasActiveScreen() => currentScreen != null;
+        public static bool HasActiveScreen() => activeScreen != null;
         /// <summary>
         /// возвращает активный экран
         /// </summary>
         /// <returns></returns>
-        public static IGameScreen GetActiveScreen() => currentScreen;
+        public static IGameScreen GetActiveScreen() => activeScreen;
     }
     public interface IGameScreen
     {

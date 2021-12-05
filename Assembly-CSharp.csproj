@@ -65,15 +65,14 @@
   <ItemGroup>
     <Compile Include="Assets\Balance\EasyExcel\Example\AutoGenCode\AllItems_MainList_Sheet.cs" />
     <Compile Include="Assets\Balance\EasyExcel\Example\AutoGenCode\LocalizationSheet_Languages_Sheet.cs" />
-    <Compile Include="Assets\Models\AssetStoreOriginals\_SNAPS_PrototypingAssets\About\Scripts\Readme.cs" />
     <Compile Include="Assets\Models\Barrier Pack\Scripts\ContrastStretch.cs" />
     <Compile Include="Assets\Models\Barrier Pack\Scripts\GlobalFog.cs" />
     <Compile Include="Assets\Models\Cold War Weapons\AK74M\Demo\CameraRotate.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\ProceduralSky.cs" />
     <Compile Include="Assets\Samples\High Definition RP\7.7.1\Procedural Sky\Runtime\ProceduralSky\ProceduralSkyRenderer.cs" />
     <Compile Include="Assets\Samples\MeshCombiner\Scripts\MeshCombiner.cs" />
+    <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\CinematicPathFollower.cs" />
     <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\GeneratePathExample.cs" />
-    <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\PathFollower.cs" />
     <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\PathPlacer.cs" />
     <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\PathSceneTool.cs" />
     <Compile Include="Assets\Samples\PathCreator\Examples\Scripts\PathSpawner.cs" />
@@ -178,6 +177,7 @@
     <Compile Include="Assets\Scripts\Enemies\PlayerSoundReceiversCollection.cs" />
     <Compile Include="Assets\Scripts\Enemies\StepEnemy.cs" />
     <Compile Include="Assets\Scripts\Enemies\TargetPointsManager.cs" />
+    <Compile Include="Assets\Scripts\Enviroment\Bed\BedAnimator.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Bed\BedManager.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Bed\BedMesh.cs" />
     <Compile Include="Assets\Scripts\Enviroment\CallInteractObject.cs" />
@@ -287,7 +287,7 @@
     <Compile Include="Assets\Scripts\Player\Controllers\FirstPersonController.cs" />
     <Compile Include="Assets\Scripts\Player\Controllers\SeatController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerActionBar.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerCamera.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerCameraSettings.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCollisionChecked.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerDeathHandler.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteractive.cs" />

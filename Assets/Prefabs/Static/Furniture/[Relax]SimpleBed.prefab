@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1583368698}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.479, z: 0}
-  m_LocalScale: {x: 1.35, y: 0.25, z: 0.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1827615706}
   m_Father: {fileID: 925256214882838058}
@@ -44,7 +44,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.35, y: 0.25, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1583368700
 MonoBehaviour:
@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 925256214643244049}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.215, z: 0}
-  m_LocalScale: {x: 1.35, y: 0.25, z: 0.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 925256215203377670}
   m_Father: {fileID: 925256214882838058}
@@ -134,7 +134,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.35, y: 0.25, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &925256214643244074
 MonoBehaviour:
@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73eb0e1cf2029454c8707b5d407cae1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mBedAnimator: {fileID: 0}
 --- !u!1001 &925256214883331892
 PrefabInstance:
   m_ObjectHideFlags: 0

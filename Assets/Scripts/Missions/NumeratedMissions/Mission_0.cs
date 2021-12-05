@@ -43,7 +43,7 @@ namespace Society.Missions.NumeratedMissions
         {
             OnTaskActions.Add("0", () =>
              {
-                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
+                 //FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
                  MissionsManager.Instance.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
                  FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
              });
@@ -106,9 +106,10 @@ namespace Society.Missions.NumeratedMissions
                 MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
 
                 onLoadBedMesh.Interact();
-                FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
+                //FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
 
                 FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
+                FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;
             }
             if (currentTask == 1)
             {

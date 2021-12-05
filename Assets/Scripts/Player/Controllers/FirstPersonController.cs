@@ -182,7 +182,7 @@ namespace Society.Player.Controllers
             #region Look Settings - Update
 
             if (!ScreensManager.HasActiveScreen())
-            {
+            {                
                 float mouseYInput = Input.GetAxis("Mouse Y");
                 float mouseXInput = Input.GetAxis("Mouse X") + AdditionalXMouse;
 
@@ -575,7 +575,7 @@ namespace Society.Player.Controllers
                 GameSettings.UpdateSettingsEvent -= OnSettingsUpdate;
             }
         }
-        public float GetPlayerHeight() => playerCollider.height;
+        public float GetPlayerColliderHeight() => playerCollider.height;
         internal Transform GetCameraHost() => transform.GetChild(0);
         internal void ResetRbVelocity()
         {

@@ -17,28 +17,22 @@ namespace Society.Player.Controllers
         private readonly float maximumVert = 45.0f;
         private FirstPersonController fpc;
 
-        private void Awake()
-        {
-            fpc = FindObjectOfType<FirstPersonController>();
-        }
-        private void Start()
-        {
-            sensitivity = (float)Settings.GameSettings.GetMouseSensivity();
-        }
+        private void Awake() => fpc = FindObjectOfType<FirstPersonController>();
+        private void Start() => sensitivity = (float)Settings.GameSettings.GetMouseSensivity();
         private void Update()
         {
-            if (isSleeping)
-            {
-                float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
-                float rotationY = Input.GetAxis("Mouse X") * sensitivity;
+            if (!isSleeping)
+                return;
 
-                currentParent.localEulerAngles += new Vector3(0, rotationY, rotationX);
-                Vector3 cAngles = currentParent.eulerAngles;
-                if (cAngles.z < 315 && cAngles.z > maximumVert * 2)
-                    currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, minimumVert);
-                if (cAngles.z < maximumVert * 2 && cAngles.z > maximumVert)
-                    currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, maximumVert);
-            }
+            float rotationX = Input.GetAxis("Mouse Y") * sensitivity;
+            float rotationY = Input.GetAxis("Mouse X") * sensitivity;
+
+            currentParent.localEulerAngles += new Vector3(0, rotationY, rotationX);
+            Vector3 cAngles = currentParent.eulerAngles;
+            if (cAngles.z < 315 && cAngles.z > maximumVert * 2)
+                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, minimumVert);
+            if (cAngles.z < maximumVert * 2 && cAngles.z > maximumVert)
+                currentParent.eulerAngles = new Vector3(cAngles.x, cAngles.y, maximumVert);
         }
 
         internal void SetPossibleDeoccupied(bool v) => PossibleDeoccupied = v;
@@ -65,11 +59,10 @@ namespace Society.Player.Controllers
 
             switch (s)
             {
-                case State.unlocked:// в случае поднятия с кровати
-                    lastBedManager.RiseUp(lastBedMesh);// заправить кровать
+                case State.unlocked:// в случае поднятия с кровати                    
+                    lastBedManager.StraightenBed(lastBedMesh);
                     lastBedMesh = null;
-                    lastBedManager = null;
-                    ScreensManager.SetScreen(null);
+                    lastBedManager = null;                    
                     isSleeping = false;
                     currentParent = null;
                     break;
@@ -77,7 +70,7 @@ namespace Society.Player.Controllers
                 case State.locked:// в случае укладывания в кровать
                     ScreensManager.SetScreen(this, false);
                     isSleeping = true;
-                    currentParent = bMesh.GetSleepPlace();
+                    currentParent = bMesh.GetSleepingPlace();
                     break;
             }
             fpc.SetPossibleJump(false);
@@ -86,8 +79,10 @@ namespace Society.Player.Controllers
         {
             if (!PossibleDeoccupied)
                 return false;
+
             SetState(State.unlocked);
-            return true;
+
+            return false;
         }
 
         public KeyCode HideKey() => KeyCode.Space;

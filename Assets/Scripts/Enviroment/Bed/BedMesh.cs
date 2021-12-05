@@ -7,15 +7,19 @@ namespace Society.Enviroment.Bed
     {
         [SerializeField] private BedManager mManager;
         [SerializeField] private Transform SleepPlace;
+        private bool isOccupied;
 
-        public bool IsOccupied { get; private set; }
+        public bool GetIsOccupied() => isOccupied;
+
+        private void SetIsOccupied(bool value) => isOccupied = value;
+
         public override void Interact()
         {
             mManager.StraightenBed(this);
-            IsOccupied = true;
+            SetIsOccupied(true);
         }
-        public void SetOccupied(bool value) => IsOccupied = value;
+        public void SetOccupied(bool value) => SetIsOccupied(value);
 
-        public Transform GetSleepPlace() => SleepPlace;
+        public Transform GetSleepingPlace() => SleepPlace;
     }
 }
