@@ -1,13 +1,9 @@
-﻿using UnityEngine;
-
-using Society.Effects;
+﻿using Society.Effects;
 using Society.GameScreens;
 using Society.Settings;
-using System;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine;
+
 namespace Society.Player.Controllers
 {
     [RequireComponent(typeof(CapsuleCollider)), RequireComponent(typeof(Rigidbody)), AddComponentMenu("First Person Controller")]
@@ -102,7 +98,7 @@ namespace Society.Player.Controllers
             public float ColliderRadius { get; set; }
             public float ColliderHeight { get; set; }
             public float ChangeTime = 1;
-        }       
+        }
 
         internal void SetPossibleJump(bool v) => PossibleJump = v;
 
@@ -182,7 +178,7 @@ namespace Society.Player.Controllers
             #region Look Settings - Update
 
             if (!ScreensManager.HasActiveScreen())
-            {                
+            {
                 float mouseYInput = Input.GetAxis("Mouse Y");
                 float mouseXInput = Input.GetAxis("Mouse X") + AdditionalXMouse;
 
@@ -588,35 +584,6 @@ namespace Society.Player.Controllers
             fpcRigidbody.position = position;
             oldPos = position;
         }
-        private void OnDestroy()
-        {
-            stepPlayer.OnDestroy();
-        }
+        private void OnDestroy() => stepPlayer.OnDestroy();
     }
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(FirstPersonController)), InitializeOnLoad]
-    public sealed class FirstPersonController_Editor : Editor
-    {
-        private FirstPersonController t;
-        private SerializedObject SerT;
-
-        private void OnEnable()
-        {
-            t = (FirstPersonController)target;
-            SerT = new SerializedObject(t);
-        }
-        public override void OnInspectorGUI()
-        {
-            if (t.transform.localScale != Vector3.one)
-            {
-                t.transform.localScale = Vector3.one;
-                Debug.LogWarning("Scale needs to be (1,1,1)! \n Please scale controller via Capsule collider height/raduis.");
-            }
-            SerT.Update();
-
-            GUI.enabled = true;
-        }
-    }
-#endif
 }

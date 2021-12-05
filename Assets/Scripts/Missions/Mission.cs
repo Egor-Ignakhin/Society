@@ -10,9 +10,29 @@ namespace Society.Missions
     /// </summary>
     internal abstract class Mission : MonoBehaviour
     {
-        private bool isInitialized = false;
+        /// <summary>
+        /// Миссия инициализирована?
+        /// </summary>
+        private bool missionIsInitialized = false;
+
+        /// <summary>
+        /// Текущее задание
+        /// </summary>
         protected int currentTask = 0;
-        protected readonly Dictionary<string, Action> OnTaskActions = new Dictionary<string, Action>();
+
+        /// <summary>
+        /// Deprecated! Please use <see cref="taskActions"/>
+        /// </summary>
+        protected Dictionary<string, Action> OnTaskActions { get; set; } = new Dictionary<string, Action>();
+
+        /// <summary>
+        /// Список событий, которые вызываются при смене задания
+        /// </summary>
+        protected List<Action> taskActions = new List<Action>();
+
+        /// <summary>
+        /// Событие смены задания
+        /// </summary>
         public event Action<int> ChangeTaskEvent;
 
         protected abstract Dictionary<MissionItem, bool> MissionItems { get; set; }
@@ -20,7 +40,7 @@ namespace Society.Missions
         protected virtual void StartMission()
         {
             OnReportTask(true);
-            isInitialized = true;
+            missionIsInitialized = true;
         }
 
 
@@ -55,7 +75,7 @@ namespace Society.Missions
         {
             currentTask = skipLength;
 
-            if (!isInitialized)
+            if (!missionIsInitialized)
                 StartMission();       
             
             DrawTask(currentTask);
@@ -76,7 +96,7 @@ namespace Society.Missions
         internal int GetCurrentTask() => currentTask;
 
 
-        protected virtual void OnReportTask(bool isLoad = false, bool isMissiomItem = false) { ChangeTaskEvent?.Invoke(currentTask); }
+        protected virtual void OnReportTask(bool isLoad = false, bool isMissiomItem = false) => ChangeTaskEvent?.Invoke(currentTask);
 
         /// <summary>
         /// Насильный пропуск задачи

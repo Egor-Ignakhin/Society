@@ -36,31 +36,42 @@ namespace Society.Missions.NumeratedMissions
         private void Awake()
         {
             MissionItems = new Dictionary<MissionItem, bool> { { mi0, false }, { mi1, false }, { mi2, false }, { mi3, false } };
+
+            taskActions = new List<System.Action>
+            {
+               ()=> {  firstTaskDoorManager.SetState(Patterns.State.locked);
+
+                mSource.clip = Resources.Load<AudioClip>("Missions\\Mission_0\\mission_0_noise");
+                mSource.Play();
+
+                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
+                СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
+                lb.OnInit(6, Color.black);
+                lb.SubsctibeOnFinish(()=>{
+                 FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
+                 MissionsManager.Instance.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
+                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
+                });
+
+                MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+
+                onLoadBedMesh.Interact();
+                FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
+
+                FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
+                FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;},
+                () => {FindObjectOfType<ReflectionMission_0>().StartTask(); },
+                () => { sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));},
+                () => { ilyaObjects.SetActive(true);},
+                () => { },
+                () => { },
+                () => { //завхоз бежит
+                sanSanych.SetRunningState(true);
+                sanSanych.SetTarget(FindObjectOfType<FirstPersonController>().transform);}
+            };
         }
         protected override Dictionary<MissionItem, bool> MissionItems { get; set; } = new Dictionary<MissionItem, bool>();
 
-        protected override void StartMission()
-        {
-            OnTaskActions.Add("0", () =>
-             {
-                 //FindObjectOfType<BedController>().SetPossibleDeoccupied(true);
-                 MissionsManager.Instance.DescriptionDrawer.SetIrremovableHint($"Чтобы встать нажмите '{FindObjectOfType<BedController>().HideKey()}' ");
-                 FindObjectOfType<FirstPersonController>().StepEventIsEnabled = true;
-             });
-            OnTaskActions.Add("1", () =>
-             {
-                 hermeticDoor.Interact(true, OnTaskActions["LoadMap"]);
-                 FindObjectOfType<LocationMusic>().SetEnabledMusic(false);
-
-                 base.FinishMission();
-             });
-            OnTaskActions.Add("LoadMap", () =>
-            {
-                ScreensManager.SetScreen(null);
-                LoadScreensManager.Instance.LoadScene((int)Scenes.Map);
-            });
-            base.StartMission();
-        }
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
             if (isLoad)
@@ -91,46 +102,9 @@ namespace Society.Missions.NumeratedMissions
                 }
                 return;
             }
-            if (currentTask == 0)
-            {
-                firstTaskDoorManager.SetState(Patterns.State.locked);
 
-                mSource.clip = Resources.Load<AudioClip>("Missions\\Mission_0\\mission_0_noise");
-                mSource.Play();
+            taskActions[currentTask]?.Invoke();
 
-                FindObjectOfType<FirstPersonController>().StepEventIsEnabled = false;
-                СleansingScreenEffect lb = new GameObject(nameof(СleansingScreenEffect)).AddComponent<СleansingScreenEffect>();
-                lb.OnInit(6, Color.black);
-                lb.SubsctibeOnFinish(OnTaskActions["0"]);
-
-                MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
-
-                onLoadBedMesh.Interact();
-                //FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
-
-                FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
-                FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;
-            }
-            if (currentTask == 1)
-            {
-                FindObjectOfType<ReflectionMission_0>().StartTask();
-            }
-            
-            if (currentTask == 2)
-            {
-                sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));
-            }
-
-            if (currentTask == 3)
-            {
-                ilyaObjects.SetActive(true);
-            }
-            if (currentTask == 6)
-            {
-                //завхоз бежит
-                sanSanych.SetRunningState(true);
-                sanSanych.SetTarget(FindObjectOfType<FirstPersonController>().transform);
-            }
             base.OnReportTask(isLoad, isMissiomItem);
         }
         public override void FinishMission()
@@ -138,7 +112,17 @@ namespace Society.Missions.NumeratedMissions
             MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
             DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
             db.OnInit(2, Color.black);
-            db.SubsctibeOnFinish(OnTaskActions["1"]);
+            db.SubsctibeOnFinish(() =>
+            {
+                hermeticDoor.Interact(true, () =>
+                {
+                    ScreensManager.SetScreen(null);
+                    LoadScreensManager.Instance.LoadScene((int)Scenes.Map);
+                });
+                FindObjectOfType<LocationMusic>().SetEnabledMusic(false);
+
+                base.FinishMission();
+            });
         }
         private void Update()
         {
