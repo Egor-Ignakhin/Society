@@ -36,7 +36,10 @@ namespace Society.Effects
         private void OnUpdateSettings()
         {
             if (volumeBloom)
-                volumeBloom.active = Settings.GameSettings.GetBloomIsEnabled();
+            {
+                var bloomIsEnabled = Settings.GameSettings.GetBloomIsEnabled();
+                volumeBloom.intensity.value = bloomIsEnabled ? 0.1f : 0.0f;
+            }
 
             if (volumeFog)
                 volumeFog.active = Settings.GameSettings.GetFogIsEnabled();
