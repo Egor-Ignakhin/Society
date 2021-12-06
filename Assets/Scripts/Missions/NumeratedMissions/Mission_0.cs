@@ -39,7 +39,8 @@ namespace Society.Missions.NumeratedMissions
 
             taskActions = new List<System.Action>
             {
-               ()=> {  firstTaskDoorManager.SetState(Patterns.State.locked);
+               ()=> { 
+                   //firstTaskDoorManager.SetState(Patterns.State.locked);
 
                 mSource.clip = Resources.Load<AudioClip>("Missions\\Mission_0\\mission_0_noise");
                 mSource.Play();
@@ -90,7 +91,7 @@ namespace Society.Missions.NumeratedMissions
                 {
                     if (MissionItems[mi0])
                     {
-                        firstTaskDoorManager.SetState(Patterns.State.unlocked);
+                       // firstTaskDoorManager.SetState(Patterns.State.unlocked);
                     }
                 }
                 if (currentTask == 3)
