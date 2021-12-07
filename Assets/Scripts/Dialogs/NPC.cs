@@ -12,6 +12,8 @@ namespace Society.Dialogs
 {
     public abstract class NPC : InteractiveObject, IGameScreen
     {
+        [SerializeField] private NPCInteractTypes InteractType;
+
         protected AudioSource personSource;
         [SerializeField] protected Transform cameraPlace;
         protected Transform lastCameraParent;

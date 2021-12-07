@@ -5,6 +5,7 @@ using Society.Effects;
 using Society.Effects.MapOfWorldCanvasEffects;
 using Society.Enviroment.Bed;
 using Society.Enviroment.Doors;
+using Society.Features.Sink;
 using Society.GameScreens;
 using Society.Inventory;
 using Society.Missions.TaskSystem;
@@ -33,6 +34,8 @@ namespace Society.Missions.NumeratedMissions
         [SerializeField] private MissionItem mi2;
         [SerializeField] private MissionItem mi3;
 
+        [SerializeField] private SinkInteractiveObject sinkInteractiveObject;
+        [SerializeField] private AudioClip gulGeneratorClip;
         private void Awake()
         {
             MissionItems = new Dictionary<MissionItem, bool> { { mi0, false }, { mi1, false }, { mi2, false }, { mi3, false } };
@@ -60,9 +63,9 @@ namespace Society.Missions.NumeratedMissions
                 FindObjectOfType<BedController>().SetPossibleDeoccupied(false);
 
                 FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
-                FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;},
-                () => {FindObjectOfType<ReflectionMission_0>().StartTask(); },
-                () => { sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));},
+                FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;
+               sinkInteractiveObject.FinishProcedureEvent += () => {Report();}; },                
+                () => {mSource.PlayOneShot(gulGeneratorClip); /*sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));*/},
                 () => { ilyaObjects.SetActive(true);},
                 () => { },
                 () => { },
@@ -91,7 +94,7 @@ namespace Society.Missions.NumeratedMissions
                 {
                     if (MissionItems[mi0])
                     {
-                       // firstTaskDoorManager.SetState(Patterns.State.unlocked);
+                        // firstTaskDoorManager.SetState(Patterns.State.unlocked);
                     }
                 }
                 if (currentTask == 3)
