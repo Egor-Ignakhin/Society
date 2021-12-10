@@ -41,7 +41,7 @@ namespace Society.Dialogs
         };
         protected override IEnumerator DialogsTraker()
         {
-            MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+            //MissionsManager.Instance.TaskDrawer.SetVisible(false);
             while (true)
             {
                 //если говорит дима то звук 2д иначе 3д
@@ -88,7 +88,7 @@ namespace Society.Dialogs
                     yield return null;
                 }
             }
-            MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
+            //MissionsManager.Instance.TaskDrawer.SetVisible(true);
 
             if (MissionTask == (0, 1))
             {

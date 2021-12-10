@@ -1,11 +1,10 @@
-﻿using Society.Inventory;
-using Society.Inventory.Other;
+﻿using System.Linq;
+using System.Text;
+
+using Society.Inventory;
 using Society.Patterns;
 using Society.Player.Controllers;
 using Society.Settings;
-
-using System.Linq;
-using System.Text;
 
 using UnityEngine;
 
@@ -74,7 +73,7 @@ namespace Society.Player
         /// <summary>
         /// Количество возможного инвентарного предмеиа
         /// </summary>
-        int iICount = 1;
+        private int iICount = 1;
 
         /// <summary>
         /// Подсобное описание IO
@@ -86,7 +85,7 @@ namespace Society.Player
         /// </summary>
         private StringBuilder iIMainDescription = new StringBuilder();
 
-
+        internal bool CanPlayerInteract { get; set; }
         private void Start()
         {
             playerCamera = GetComponent<FirstPersonController>().GetCamera();
@@ -124,55 +123,57 @@ namespace Society.Player
             //Бросам луч для 
             RayThrowForActivateSuppurtCurcular();
         }
-        
+
         private void RayThrow()
-        {           
+        {
             //Очищаем описания II
-            iISubDescription = iISubDescription.Clear();            
+            iISubDescription = iISubDescription.Clear();
             iIMainDescription = iIMainDescription.Clear();
 
             //Обнуляем IRTO
             interactiveRayThrowingObjects = null;
 
-
-            if (Physics.SphereCast(currentRay.origin, sphereCasterRadius,
-                currentRay.direction, out RaycastHit hit, maxInterctionDistance, 
-                interactionLayers, QueryTriggerInteraction.Ignore))
+            if (CanPlayerInteract)
             {
-                //Присваиваем IRTO IO компоненты луче-пресекателя
-                interactiveRayThrowingObjects = hit.transform.GetComponents<InteractiveObject>();
-
-                //Если размер IRTO больше 0
-                if (interactiveRayThrowingObjects.Length > 0)
+                if (Physics.SphereCast(currentRay.origin, sphereCasterRadius,
+                    currentRay.direction, out RaycastHit hit, maxInterctionDistance,
+                    interactionLayers, QueryTriggerInteraction.Ignore))
                 {
-                    //Указываем последнюю точку как текущую
-                    lastHitPoint = hit.point;
+                    //Присваиваем IRTO IO компоненты луче-пресекателя
+                    interactiveRayThrowingObjects = hit.transform.GetComponents<InteractiveObject>();
 
-                    //Проходимся по IRTO
-                    for (int i = 0; i < interactiveRayThrowingObjects.Length; i++)
+                    //Если размер IRTO больше 0
+                    if (interactiveRayThrowingObjects.Length > 0)
                     {
+                        //Указываем последнюю точку как текущую
+                        lastHitPoint = hit.point;
 
-                        InteractiveObject currentIO = interactiveRayThrowingObjects[i];
-                        string getDesc = currentIO.Description;
-                        string getMainDesc = currentIO.MainDescription;
-
-                        int getCount = currentIO is InventoryItem ? (currentIO as InventoryItem).GetCount() : 1;
-                        if (!string.IsNullOrEmpty(getDesc))
+                        //Проходимся по IRTO
+                        for (int i = 0; i < interactiveRayThrowingObjects.Length; i++)
                         {
-                            iISubDescription = iISubDescription.Clear();
-                            iIMainDescription = iIMainDescription.Clear();
-                            iISubDescription.Append(getDesc);
-                            iIMainDescription.Append(getMainDesc);
-                            iICount = getCount;
+
+                            InteractiveObject currentIO = interactiveRayThrowingObjects[i];
+                            string getDesc = currentIO.Description;
+                            string getMainDesc = currentIO.MainDescription;
+
+                            int getCount = currentIO is InventoryItem ? (currentIO as InventoryItem).GetCount() : 1;
+                            if (!string.IsNullOrEmpty(getDesc))
+                            {
+                                iISubDescription = iISubDescription.Clear();
+                                iIMainDescription = iIMainDescription.Clear();
+                                iISubDescription.Append(getDesc);
+                                iIMainDescription.Append(getMainDesc);
+                                iICount = getCount;
+                            }
+
+
+                            if (!interactionButtonPressed)
+                                continue;
+
+                            currentIO.Interact();
+                            if (++i == interactiveRayThrowingObjects.Length)
+                                interactionButtonPressed = false;
                         }
-
-                        
-                        if (!interactionButtonPressed)
-                            continue;
-
-                        currentIO.Interact();
-                        if (++i == interactiveRayThrowingObjects.Length)
-                            interactionButtonPressed = false;
                     }
                 }
                 currentPointContact = hit.point;
@@ -191,13 +192,16 @@ namespace Society.Player
         private void RayThrowForActivateSuppurtCurcular()
         {
             float tempOpacity = 0;
-            //float max            
-            if (Physics.SphereCast(currentRay.origin, sphereCasterRadius * sphSCastRadiusMultiply,
-                currentRay.direction, out RaycastHit hit, maxInterctionDistance, interactionLayers, QueryTriggerInteraction.Ignore))// Бросок сфера удвоенного радиуса
+
+            if (CanPlayerInteract)
             {
-                if (hit.transform.GetComponent<InteractiveObject>())
+                if (Physics.SphereCast(currentRay.origin, sphereCasterRadius * sphSCastRadiusMultiply,
+                    currentRay.direction, out RaycastHit hit, maxInterctionDistance, interactionLayers, QueryTriggerInteraction.Ignore))// Бросок сфера удвоенного радиуса
                 {
-                    tempOpacity = 1 / Vector3.Distance(hit.point, currentPointContact) / 100;
+                    if (hit.transform.GetComponent<InteractiveObject>())
+                    {
+                        tempOpacity = 1 / Vector3.Distance(hit.point, currentPointContact) / 100;
+                    }
                 }
             }
 

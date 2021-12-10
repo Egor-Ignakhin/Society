@@ -26,7 +26,8 @@ namespace Society.Features.Bunker.EmergencySystem
 
         private void OnDisable()
         {
-            BunkerEmergencyManager.Instance.ChangeEmergencyTypeEvent -= OnChangeEmergencyType;
+            if (BunkerEmergencyManager.Instance)
+                BunkerEmergencyManager.Instance.ChangeEmergencyTypeEvent -= OnChangeEmergencyType;
         }
     }
 }

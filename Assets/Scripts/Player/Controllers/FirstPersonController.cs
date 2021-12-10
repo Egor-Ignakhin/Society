@@ -36,7 +36,7 @@ namespace Society.Player.Controllers
         private bool Sprint = false;
         private bool CanSprinting = true;
         public void SetPossibleSprinting(bool v) => CanSprinting = v;
-        private readonly float WalkSpeed = 4f;
+        public float WalkSpeed { get; set; } = 4f;
         private float RecumbentingSpeed;
 
         private float SprintSpeed = 8f;
@@ -512,6 +512,11 @@ namespace Society.Player.Controllers
             transform.rotation = point.rotation;
 
             followAngles = targetAngles = point.eulerAngles;
+        }
+        public void SetRotation(Quaternion quaternion)
+        {
+            followAngles = targetAngles = quaternion.eulerAngles;
+            transform.rotation = quaternion;
         }
 
         public void Rocking(Vector3 v)

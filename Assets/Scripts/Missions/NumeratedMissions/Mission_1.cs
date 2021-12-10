@@ -55,7 +55,7 @@ namespace Society.Missions.NumeratedMissions
         }
         public override void FinishMission()
         {
-            MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+            //MissionsManager.Instance.TaskDrawer.SetVisible(false);
             DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
             db.OnInit(2, Color.black);
             db.SubsctibeOnFinish(OnTaskActions["playbunkerSound"]);

@@ -1,15 +1,13 @@
 ﻿
-using Newtonsoft.Json;
-
-using Society.Inventory.Other;
-using Society.Patterns;
-
 using System.Collections.Generic;
 using System.IO;
 
-#if UNITY_EDITOR
+using Newtonsoft.Json;
 
-#endif
+using Society.Inventory.Other;
+using Society.Missions.TaskSystem;
+using Society.Patterns;
+
 using UnityEngine;
 namespace Society.Missions
 {   /// <summary>
@@ -20,20 +18,19 @@ namespace Society.Missions
         public static string SavePath => Directory.GetCurrentDirectory() + "\\Saves\\PlotState.json"; // папка с сохранением    
         private static PlotState plotState;// состояние миссий        
         public DescriptionDrawer DescriptionDrawer { get; private set; }
+        internal TaskDrawer TaskDrawer { get; set; }
+
         public const int MinMissions = 0;
 
         public const int MaxMissions = 4;
-        private TaskSystem.TaskDrawer taskDrawer;
         private Mission activeMission;
         [SerializeField] private List<Mission> MissionList = new List<Mission>();
-
-        internal TaskSystem.TaskDrawer GetTaskDrawer() => taskDrawer;
 
         private void Awake() => InitializePlotState();
 
         private void Start()
         {
-            taskDrawer = FindObjectOfType<TaskSystem.TaskDrawer>();
+            TaskDrawer = FindObjectOfType<TaskDrawer>();
 
             StartOrContinueMission();
         }
@@ -105,7 +102,7 @@ namespace Society.Missions
             {
                 activeMission = foundedMission;
 
-                foundedMission.ContinueMission(GetPlotState().currentTask);                
+                foundedMission.ContinueMission(GetPlotState().currentTask);
             }
 
         }

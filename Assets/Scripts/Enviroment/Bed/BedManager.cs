@@ -7,18 +7,15 @@ namespace Society.Enviroment.Bed
     internal sealed class BedManager : MonoBehaviour
     {
         private Transform playerCameraTransform;
-        private BedController bc;// игрок
+        private BedController bedController;// игрок
         private Vector3 sleepAngles = new Vector3(-30, 90, 0);// положение во сне
         private Transform lastPlayerParent;
-        //координаты игрока до сна
-        private Vector3 lastPlayerLocalEulerAngles;
-        private Vector3 lastPlayerPosition;
         [SerializeField]
         private BedAnimator mBedAnimator;
         private void Awake()
         {
             playerCameraTransform = Camera.main.transform;
-            bc = FindObjectOfType<BedController>();
+            bedController = FindObjectOfType<BedController>();
         }
 
         /// <summary>
@@ -38,19 +35,14 @@ namespace Society.Enviroment.Bed
             lastPlayerParent = playerCameraTransform.parent;
             playerCameraTransform.SetParent(b.GetSleepingPlace());
 
-            lastPlayerLocalEulerAngles = playerCameraTransform.localEulerAngles;
             playerCameraTransform.localEulerAngles = sleepAngles;
 
-            lastPlayerPosition = playerCameraTransform.position;
             playerCameraTransform.position = b.GetSleepingPlace().position;
             //конец перемещения позиций
 
-            bc.SetState(State.locked, this, b);
+            bedController.SetState(State.locked, this, b);
         }
 
-        public void BedAnimatorAnimDeOccupied()
-        {
-            mBedAnimator.AnimDeoccipied();
-        }
+        public void BedAnimatorAnimDeOccupied() => mBedAnimator.AnimDeoccipied();
     }
 }

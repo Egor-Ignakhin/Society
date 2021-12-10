@@ -32,7 +32,7 @@ namespace Society.Dialogs
 
         protected override IEnumerator DialogsTraker()
         {
-            MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+            //MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
             while (true)
             {
                 //если говорит дима то звук 2д иначе 3д
@@ -76,8 +76,8 @@ namespace Society.Dialogs
                     yield return null;
                 }
             }
-            MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
-            Missions.MissionsManager.Instance.GetActiveMission().Report();
+            //MissionsManager.Instance.TaskDrawer.SetVisible(true);
+            MissionsManager.Instance.GetActiveMission().Report();
         }
 
         protected override List<(int mission, int task)> GetInteractableTasksMissions()

@@ -90,7 +90,7 @@ namespace Society.Missions
         {
             string neededContent = Localization.LocalizationManager.GetTask(GetMissionNumber(), number);
 
-            MissionsManager.Instance.GetTaskDrawer().DrawNewTask(neededContent);
+            //MissionsManager.Instance.TaskDrawer.DrawNewTask(neededContent);
         }
 
         internal int GetCurrentTask() => currentTask;

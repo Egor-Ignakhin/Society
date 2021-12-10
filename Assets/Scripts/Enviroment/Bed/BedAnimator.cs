@@ -1,5 +1,8 @@
 
 using Society.GameScreens;
+using Society.Missions;
+using Society.Missions.TaskSystem;
+using Society.Player.Controllers;
 
 using UnityEngine;
 
@@ -11,8 +14,19 @@ namespace Society.Enviroment.Bed
         private BedMesh bedMesh;
         private Transform lastPlayerParent;
 
+        private Player.PlayerInteractive playerInteractive;
+        private FirstPersonController fpc;        
+        private void Awake()
+        {
+            playerInteractive = FindObjectOfType<Player.PlayerInteractive>();
+            fpc = FindObjectOfType<FirstPersonController>();
+        }
+
         public void Deoccupied(Transform lastPlayerParent, BedMesh bedMesh)
-        {               
+        {
+            playerInteractive.CanPlayerInteract = false;
+            MissionsManager.Instance.DescriptionDrawer.SetIrremovableHint(null);
+            FindObjectOfType<CommentDrawer>().Push(Localization.LocalizationManager.Translate(Localization.LanguageIdentifiers.Prologue_firstComment));
             this.bedMesh = bedMesh;
             this.lastPlayerParent = lastPlayerParent;
 
@@ -23,6 +37,10 @@ namespace Society.Enviroment.Bed
 
         public void AnimDeoccipied()
         {
+            playerInteractive.CanPlayerInteract = true;
+            fpc.transform.localPosition = new Vector3(47.32485f, -8.196042f, -13.98516f);
+            MissionsManager.Instance.TaskDrawer.SetVisible(true);
+            fpc.SetRotation(Quaternion.Euler(0, 90,0));
             ScreensManager.SetScreen(null);
 
             //¬озвращение позиций в исходное значение

@@ -30,7 +30,7 @@ namespace Society.Missions.NumeratedMissions
                 db.SubsctibeOnFinish(OnTaskActions["OnFinish"]);
                 Destroy(db.gameObject, 3);
 
-                MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+                //MissionsManager.Instance.TaskDrawer.SetVisible(false);
             }
             base.OnReportTask(isLoad, isMissiomItem);
         }

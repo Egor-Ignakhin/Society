@@ -27,13 +27,13 @@ namespace Society.Missions.NumeratedMissions
 
         protected override void OnReportTask(bool isLoad = false, bool isMissiomItem = false)
         {
-            if (isLoad)
-                MissionsManager.Instance.GetTaskDrawer().SetVisible(true);
+            //if (isLoad)
+                //MissionsManager.Instance.TaskDrawer.SetVisible(true);
             switch (currentTask)
             {
 
                 case 1:
-                    MissionsManager.Instance.GetTaskDrawer().SetVisible(false);
+                    //MissionsManager.Instance.TaskDrawer.SetVisible(false);
                     DirtyingScreenEffect db = new GameObject(nameof(DirtyingScreenEffect)).AddComponent<DirtyingScreenEffect>();
                     db.OnInit(2, Color.black);
                     db.SubsctibeOnFinish(OnTaskActions["exitToMenu"]);

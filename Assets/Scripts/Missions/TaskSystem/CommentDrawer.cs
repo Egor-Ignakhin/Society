@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-using Society.Patterns;
 
 using TMPro;
 
@@ -12,7 +6,7 @@ using UnityEngine;
 
 namespace Society.Missions.TaskSystem
 {
-    public class CommentDrawer : Singleton<CommentDrawer>
+    internal sealed class CommentDrawer : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;
 
