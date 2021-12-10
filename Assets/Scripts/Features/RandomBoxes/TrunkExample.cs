@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Features.RandomBoxes
+namespace Society.Features.RandomBoxes
 {
     internal sealed class TrunkExample : RandomlyBox
     {

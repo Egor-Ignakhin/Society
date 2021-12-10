@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Features
+namespace Society.Features.ShowerGardenSystem
 {
     internal sealed class ShowerLeverOnWall : Society.Patterns.InteractiveObject
     {

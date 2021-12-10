@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Features
+namespace Society.Features.ShowerGardenSystem
 {
     /// <summary>
     /// рычаг подачи воды для душа

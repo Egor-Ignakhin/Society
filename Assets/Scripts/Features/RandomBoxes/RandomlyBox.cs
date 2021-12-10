@@ -5,7 +5,7 @@ using Society.Patterns;
 using System.Collections.Generic;
 
 using UnityEngine;
-namespace Features.RandomBoxes
+namespace Society.Features.RandomBoxes
 {
     public abstract class RandomlyBox : InteractiveObject
     {

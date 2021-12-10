@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 using Society.Patterns;
 
@@ -14,6 +12,9 @@ namespace Society.Features.Sink
         public event Action FinishProcedureEvent;
 
         [SerializeField] private GameObject particleSystemEffect;
+
+        [SerializeField] private AudioSource mAudioSource;
+        [SerializeField] private AudioClip procedureClip;
         public override void Interact()
         {
             particleSystemEffect.SetActive(true);
@@ -23,8 +24,12 @@ namespace Society.Features.Sink
 
         private IEnumerator Procedure()
         {
-            yield return new WaitForSeconds(2);
+            mAudioSource.clip = procedureClip;
+            mAudioSource.Play();
 
+            yield return new WaitForSeconds(5);
+
+            mAudioSource.Stop();
             particleSystemEffect.SetActive(false);
             FinishProcedureEvent?.Invoke();
         }

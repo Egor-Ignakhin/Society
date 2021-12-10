@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using Society.Features.Bunker.EmergencySystem;
 using Society.Dialogs;
 using Society.Effects;
 using Society.Effects.MapOfWorldCanvasEffects;
@@ -65,7 +66,7 @@ namespace Society.Missions.NumeratedMissions
                 FindObjectOfType<FirstPersonController>().SetPosition(task_0_place.position);
                 FindObjectOfType<FirstPersonController>().transform.rotation = task_0_place.rotation;
                sinkInteractiveObject.FinishProcedureEvent += () => {Report();}; },                
-                () => {mSource.PlayOneShot(gulGeneratorClip); /*sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));*/},
+                () => { BunkerEmergencyManager.Instance.SetEmergencyType(EmergencyTypes.PowerProblems);  /*sanSanych.Say(Resources.Load<AudioClip>("Dialogs\\Other\\SanSanych\\0"));*/},
                 () => { ilyaObjects.SetActive(true);},
                 () => { },
                 () => { },

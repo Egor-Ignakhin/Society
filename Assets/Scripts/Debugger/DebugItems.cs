@@ -11,7 +11,7 @@ namespace Society.Debugger
     /// </summary>
     internal sealed class DebugItems : MonoBehaviour, IDebug
     {
-        public bool Active { get; set; }
+        public bool IsActive { get; set; }
         GameObject IDebug.gameObject => gameObject;
         private InventoryContainer inventoryContainer;
         [SerializeField] private Transform ItemsContent;
@@ -47,7 +47,7 @@ namespace Society.Debugger
 
         public void Activate()
         {
-            Active = true;
+            IsActive = true;
             gameObject.SetActive(true);
         }
     }

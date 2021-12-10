@@ -1,11 +1,11 @@
 ﻿namespace Society.Debugger
 {
     /// <summary>
-    /// интерфейс для дебаггерв-частиц
+    /// интерфейс для дебаггеров-компонент
     /// </summary>
     public interface IDebug
     {
-        bool Active { get; set; }
+        bool IsActive { get; set; }
         UnityEngine.GameObject gameObject { get; }
         void Activate();
     }

@@ -141,7 +141,7 @@
     <Compile Include="Assets\Scripts\Debugger\DebugManager.cs" />
     <Compile Include="Assets\Scripts\Debugger\FpsDrawer.cs" />
     <Compile Include="Assets\Scripts\Debugger\IDebug.cs" />
-    <Compile Include="Assets\Scripts\Debugger\XYZDrawer.cs" />
+    <Compile Include="Assets\Scripts\Debugger\PlayerPositionDrawer.cs" />
     <Compile Include="Assets\Scripts\Dialogs\DialogAnswer.cs" />
     <Compile Include="Assets\Scripts\Dialogs\DialogDrawer.cs" />
     <Compile Include="Assets\Scripts\Dialogs\DialogWindow.cs" />
@@ -197,6 +197,11 @@
     <Compile Include="Assets\Scripts\Extensions\BoolToStringConverter.cs" />
     <Compile Include="Assets\Scripts\Extensions\TMP_DropdownExistions.cs" />
     <Compile Include="Assets\Scripts\Extensions\Vector3Extension.cs" />
+    <Compile Include="Assets\Scripts\Features\Bunker\EmergencySystem\BunkerEmergencyManager.cs" />
+    <Compile Include="Assets\Scripts\Features\Bunker\EmergencySystem\EmergencyLamp.cs" />
+    <Compile Include="Assets\Scripts\Features\Bunker\EmergencySystem\EmergencyTypes.cs" />
+    <Compile Include="Assets\Scripts\Features\Bunker\EmergencySystem\Lamp.cs" />
+    <Compile Include="Assets\Scripts\Features\Bunker\Generator\GeneratorManager.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\MailboxExample.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\RandomlyBox.cs" />
     <Compile Include="Assets\Scripts\Features\RandomBoxes\TrunkExample.cs" />

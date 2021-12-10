@@ -22,7 +22,7 @@ namespace Society.Debugger
         private int commandIterator = 0;// итератор для система управления стрелка вверх и вниз
         private bool isSelected;// выделено ли поле ввода
 
-        public bool Active { get; set; } = true;
+        public bool IsActive { get; set; } = true;
         GameObject IDebug.gameObject => gameObject;
 
         private void Awake()
@@ -35,7 +35,7 @@ namespace Society.Debugger
         }
         private void Update()
         {
-            if (!Active)
+            if (!IsActive)
                 return;
             if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))// отработка команды при нажатии энтера
             {
@@ -59,14 +59,14 @@ namespace Society.Debugger
         /// </summary>
         public void Activate()
         {
-            Active = true;
+            IsActive = true;
             gameObject.SetActive(true);
             inputField.ActivateInputField();
         }
         //считывание строки из поля ввода
         public void ReadCommand(string command)
         {
-            if (!Active)
+            if (!IsActive)
                 return;
             if (command != string.Empty)// если строка не пустая
                 lastCommand = command;

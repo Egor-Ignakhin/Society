@@ -1,7 +1,7 @@
 ﻿using Society.Player;
 
 using UnityEngine;
-namespace Features
+namespace Society.Features.ShowerGardenSystem
 {
     /// <summary>
     /// Класс душа. Душом можно управлять: двигать по 2 осям и поливать пол.

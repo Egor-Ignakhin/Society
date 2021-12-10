@@ -1,9 +1,9 @@
 ﻿using System;
 
 using UnityEngine;
-namespace Features
+namespace Society.Features.ShowerGardenSystem
 {
-    internal sealed class ShowerExample : Society.Patterns.InteractiveObject
+    internal sealed class ShowerExample : Patterns.InteractiveObject
     {
         [SerializeField] private ShowerManager showerGarden;
         [SerializeField] private AudioSource mAudS;
@@ -26,10 +26,7 @@ namespace Features
         private float waterVolume;
         public float MaxWaterVolume { get; set; } = 20;
 
-        public float GetWaterVolume()
-        {
-            return waterVolume;
-        }
+        public float GetWaterVolume() => waterVolume;
 
         public void SetWaterVolume(float value)
         {
