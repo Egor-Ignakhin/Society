@@ -1,3 +1,6 @@
+https://drive.google.com/drive/folders/1zI5J0igMYTNU6o9Polf1GywZ4nW9xqAq?usp=sharing
+
+
 # Society
 
 ## Документация по вложенным папкам *Assets*:
